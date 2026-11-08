@@ -1,0 +1,268 @@
+{
+  "policy_version": "np-1.0.0",
+  "energy_equation_version": "msj-1.0.0",
+  "source_document": "mealora-plans/docs/nutrition-policy-v1.md",
+  "technical_review_document": "mealora-plans/docs/nutrition-policy-v1-technical-review.md",
+  "note": "Kebijakan ini berlaku tanpa gerbang persetujuan berlisensi untuk Mealora MVP 1 (aplikasi lokal, pemakaian perorangan). Lihat openspec/changes/002-nutrition-policy-v1/design.md, keputusan D13.",
+  "outcomes": [
+    "approved",
+    "needs_user_correction",
+    "needs_professional_review",
+    "unsupported_profile"
+  ],
+  "programs": [
+    "turun_berat",
+    "naik_berat",
+    "pertahankan",
+    "makan_sehat"
+  ],
+  "eligibility": {
+    "age_years": {
+      "min_inclusive": 19,
+      "max_inclusive": 64,
+      "below_min": {
+        "outcome": "unsupported_profile",
+        "reason_code": "age_below_minimum",
+        "applies_to": ["turun_berat", "naik_berat", "pertahankan"],
+        "makan_sehat_runs_without_targets": true
+      },
+      "above_max": {
+        "outcome": "needs_professional_review",
+        "reason_code": "age_above_supported",
+        "applies_to": ["turun_berat", "naik_berat"]
+      }
+    },
+    "pregnancy_or_lactation": {
+      "turun_berat": {
+        "outcome": "unsupported_profile",
+        "reason_code": "pregnancy_or_lactation"
+      },
+      "naik_berat": {
+        "outcome": "needs_professional_review",
+        "reason_code": "pregnancy_or_lactation"
+      },
+      "pertahankan": {
+        "outcome": "needs_professional_review",
+        "reason_code": "pregnancy_or_lactation"
+      }
+    },
+    "bmi": {
+      "underweight_below": 18.5,
+      "underweight": {
+        "outcome": "unsupported_profile",
+        "reason_code": "underweight_bmi",
+        "applies_to": ["turun_berat"]
+      },
+      "above_supported_at_or_above": 37.5,
+      "above_supported": {
+        "outcome": "needs_professional_review",
+        "reason_code": "bmi_above_supported",
+        "applies_to": ["turun_berat", "naik_berat"]
+      }
+    },
+    "declared_conditions": {
+      "outcome": "needs_professional_review",
+      "reason_code": "declared_medical_condition",
+      "items": [
+        "diabetes",
+        "kidney_disease",
+        "liver_disease",
+        "weight_or_appetite_affecting_medication"
+      ]
+    },
+    "eating_disorder_current_or_past": {
+      "makan_sehat_runs_without_targets": true,
+      "applies_to": ["turun_berat", "naik_berat"],
+      "outcome_for_weight_changing_programs": "needs_professional_review",
+      "reason_code_for_weight_changing_programs": "declared_medical_condition"
+    },
+    "unintended_weight_change": {
+      "threshold_percent_of_body_weight": 5.0,
+      "window_days": 30,
+      "comparison": "greater_than",
+      "outcome": "needs_professional_review",
+      "reason_code": "rapid_unintended_weight_change"
+    },
+    "missing_required_input": {
+      "outcome": "needs_user_correction",
+      "reason_code": "missing_required_input",
+      "must_name_missing_fields": true
+    }
+  },
+  "energy_equation": {
+    "name": "mifflin_st_jeor",
+    "resting_energy": {
+      "weight_kg_coefficient": 10.0,
+      "height_cm_coefficient": 6.25,
+      "age_years_coefficient": -5.0,
+      "constant_male": 5.0,
+      "constant_female": -161.0
+    },
+    "activity_multipliers": {
+      "lebih_banyak_duduk": 1.40,
+      "cukup_bergerak": 1.60,
+      "sangat_aktif": 1.80
+    },
+    "activity_multiplier_basis": "Batas bawah pita PAL FAO/WHO/UNU 2004 (1,40-1,69 / 1,70-1,99 / 2,00-2,40), diturunkan sedikit karena Mifflin-St Jeor mengestimasi energi istirahat di atas energi basal.",
+    "presentation": {
+      "label_as_estimate": true
+    }
+  },
+  "energy_targets": {
+    "turun_berat": {
+      "deficit_fraction_of_tdee": 0.20,
+      "deficit_min_kcal": 300,
+      "deficit_max_kcal": 750,
+      "floor_resting_energy": true,
+      "floor_absolute_kcal": {
+        "female": 1200,
+        "male": 1500
+      },
+      "hard_floor_kcal": 800,
+      "warn_when_floor_applied": true,
+      "remaining_deficit_min_kcal": 300,
+      "below_remaining_deficit_min": {
+        "outcome": "needs_professional_review",
+        "reason_code": "target_below_minimum_energy"
+      },
+      "note": "Dengan pengali aktivitas minimum 1,40, target selalu >= 1,12x energi istirahat; lantai resting-energy tidak pernah mengikat secara aritmetika pada np-1.0.0 dan dipertahankan sebagai jaring pengaman (lihat tinjauan teknis, temuan T8)."
+    },
+    "naik_berat": {
+      "surplus_fraction_of_tdee": 0.10,
+      "surplus_min_kcal": 250,
+      "surplus_max_kcal": 500
+    },
+    "pertahankan": {
+      "target_equals_tdee": true,
+      "tolerance_band_fraction": 0.05,
+      "tolerance_band_min_kcal": 100
+    },
+    "makan_sehat": {
+      "target_equals_tdee": true,
+      "deficit_or_surplus_allowed": false,
+      "requires_target_weight": false,
+      "shows_weight_progress_percent": false
+    }
+  },
+  "weight_change_rate": {
+    "turun_berat": {
+      "min_kg_per_week": 0.25,
+      "max_kg_per_week": 0.75,
+      "max_fraction_of_body_weight_per_week": 0.0075,
+      "cap_rule": "min_of_absolute_and_relative"
+    },
+    "naik_berat": {
+      "min_kg_per_week": 0.125,
+      "max_kg_per_week": 0.5
+    },
+    "out_of_range": {
+      "outcome": "needs_user_correction",
+      "reason_code_too_fast": "requested_pace_too_fast",
+      "reason_code_too_slow": "requested_pace_too_slow",
+      "must_offer_earliest_safe_date": true,
+      "may_silently_clamp_target": false
+    },
+    "target_date_required": false
+  },
+  "target_weight": {
+    "min_bmi": 18.5,
+    "below_min_bmi": {
+      "outcome": "needs_user_correction",
+      "reason_code": "target_weight_out_of_range"
+    },
+    "direction_must_match_program": true,
+    "wrong_direction": {
+      "outcome": "needs_user_correction",
+      "reason_code": "target_weight_out_of_range"
+    }
+  },
+  "macronutrients": {
+    "reference_weight": {
+      "rule": "min(current_weight, weight_at_bmi)",
+      "bmi_cap": 23.0,
+      "rounding_kg": 0.1,
+      "basis": "Klasifikasi IMT Asia-Pasifik (normal 18.5-22.9; berat berlebih >=23; obesitas >=25). Bentuk min() berlaku kontinu, tanpa lompatan nilai pada titik ambang."
+    },
+    "protein": {
+      "g_per_kg_reference_weight": {
+        "turun_berat": 1.6,
+        "naik_berat": 1.4,
+        "pertahankan": 1.4,
+        "makan_sehat": 1.4
+      },
+      "min_fraction_of_energy": 0.10,
+      "max_fraction_of_energy": 0.35,
+      "absolute_min_g_per_kg": 0.8,
+      "kcal_per_g": 4
+    },
+    "fat": {
+      "fraction_of_energy": 0.25,
+      "min_fraction_of_energy": 0.20,
+      "max_fraction_of_energy": 0.35,
+      "kcal_per_g": 9
+    },
+    "carbohydrate": {
+      "source": "remaining_energy",
+      "target_min_fraction_of_energy": 0.45,
+      "target_max_fraction_of_energy": 0.65,
+      "kcal_per_g": 4
+    },
+    "fiber": {
+      "g_per_1000_kcal": 14,
+      "min_g": 20,
+      "max_g": 38
+    },
+    "adjustment_order_when_carbohydrate_below_target": [
+      {
+        "step": 1,
+        "nutrient": "fat",
+        "reduce_to_fraction_of_energy": 0.20
+      },
+      {
+        "step": 2,
+        "nutrient": "protein",
+        "reduce_to_g_per_kg_reference_weight": 1.2
+      }
+    ],
+    "when_still_below_after_adjustment": {
+      "propose_target": true,
+      "emit_warning": true
+    }
+  },
+  "rounding": {
+    "energy_kcal_to_multiple_of": 10,
+    "macronutrient_g_to": 1,
+    "fiber_g_to": 1,
+    "body_weight_kg_to": 0.1,
+    "mode": "half_up",
+    "apply_to_final_values_only": true
+  },
+  "recalculation": {
+    "weight_delta_kg_at_or_above": 2.0,
+    "on_profile_or_activity_change": true,
+    "target_age_days_at_or_above": 90,
+    "requires_user_approval": true,
+    "rewrites_history": false
+  },
+  "reason_codes": [
+    "age_below_minimum",
+    "age_above_supported",
+    "pregnancy_or_lactation",
+    "underweight_bmi",
+    "bmi_above_supported",
+    "declared_medical_condition",
+    "rapid_unintended_weight_change",
+    "target_below_minimum_energy",
+    "requested_pace_too_fast",
+    "requested_pace_too_slow",
+    "target_weight_out_of_range",
+    "missing_required_input"
+  ],
+  "language_constraints": {
+    "no_diagnosis": true,
+    "no_outcome_promise": true,
+    "no_user_blame": true,
+    "must_state_no_target_created": true,
+    "must_offer_next_step": true
+  }
+}

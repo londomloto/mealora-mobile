@@ -41,6 +41,9 @@ flutter:
 
   assets:
     - assets/brand/
+    # Kebijakan gizi berversi (np-1.0.0) — data saja; mesin pembacanya menyusul
+    # pada change berikutnya.
+    - assets/policy/
 
   fonts:
     # Font variabel (sumbu wght). Berat dipilih lewat FontVariation di berkas
