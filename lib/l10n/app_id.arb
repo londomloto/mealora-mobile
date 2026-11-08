@@ -1,0 +1,91 @@
+{
+  "@@locale": "id",
+
+  "appName": "Mealora",
+  "@appName": { "description": "Nama produk." },
+
+  "appTagline": "catat makanan sehatmu",
+  "@appTagline": { "description": "Tagline pada splash." },
+
+  "splashPrivacyPromise": "Pribadi di perangkatmu · siap digunakan offline",
+  "@splashPrivacyPromise": { "description": "Janji penyimpanan lokal pada splash." },
+
+  "splashLoadingSemantics": "Mealora sedang disiapkan",
+  "@splashLoadingSemantics": { "description": "Label pembaca layar untuk indikator muat pada splash." },
+
+  "splashLogoSemantics": "Logo Mealora",
+  "@splashLogoSemantics": { "description": "Label pembaca layar untuk simbol merek." },
+
+  "storageErrorTitle": "Penyimpanan di perangkat belum siap",
+  "@storageErrorTitle": { "description": "Judul keadaan gagal membuka penyimpanan lokal." },
+
+  "storageErrorBody": "Mealora tidak bisa membuka penyimpanan di perangkat ini, jadi catatanmu belum bisa dibaca atau ditulis. Data yang sudah ada tidak diubah.",
+  "@storageErrorBody": { "description": "Penjelasan keadaan gagal membuka penyimpanan lokal." },
+
+  "storageErrorReasonLabel": "Kode kegagalan",
+  "@storageErrorReasonLabel": { "description": "Label untuk kode alasan teknis." },
+
+  "retry": "Coba lagi",
+  "@retry": { "description": "Tindakan mencoba ulang." },
+
+  "navToday": "Hari ini",
+  "navProgram": "Program",
+  "navHistory": "Riwayat",
+  "navProfile": "Profil",
+
+  "navSelectedSemantics": "{destination}, sedang dibuka",
+  "@navSelectedSemantics": {
+    "description": "Label pembaca layar untuk tujuan navigasi yang sedang aktif.",
+    "placeholders": { "destination": { "type": "String" } }
+  },
+
+  "navUnselectedSemantics": "{destination}",
+  "@navUnselectedSemantics": {
+    "description": "Label pembaca layar untuk tujuan navigasi yang tidak aktif.",
+    "placeholders": { "destination": { "type": "String" } }
+  },
+
+  "navRecordSemantics": "Catat makanan",
+  "@navRecordSemantics": { "description": "Label pembaca layar untuk tombol Catat yang terangkat di tengah navigasi." },
+
+  "recordUnavailable": "Pencatatan makanan belum tersedia. Bagian ini menyusul pada tahap berikutnya.",
+  "@recordUnavailable": { "description": "Pesan saat tombol Catat ditekan sebelum pencatatan makanan dibangun." },
+
+  "emptyStateBadge": "Belum ada data",
+  "@emptyStateBadge": { "description": "Penanda keadaan kosong, dipakai bersama ikon agar tidak bergantung warna saja." },
+
+  "todaySubtitle": "Ringkasan energi dan makronutrienmu hari ini.",
+  "programSubtitle": "Program yang sedang kamu jalani beserta targetnya.",
+  "historySubtitle": "Catatan harianmu pada tanggal-tanggal sebelumnya.",
+  "profileSubtitle": "Profil lokal, satuan, dan kendali atas datamu.",
+
+  "todayEmptyTitle": "Belum ada catatan hari ini",
+  "todayEmptyBody": "Di sini nanti muncul energi dan makronutrien yang sudah kamu catat hari ini, dikelompokkan per waktu makan. Pencatatan makanan masuk pada tahap berikutnya.",
+
+  "programEmptyTitle": "Belum ada program",
+  "programEmptyBody": "Di sini nanti muncul program yang sedang kamu jalani beserta target hariannya dan perkembanganmu. Pemilihan program masuk pada tahap berikutnya.",
+
+  "historyEmptyTitle": "Belum ada riwayat",
+  "historyEmptyBody": "Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.",
+
+  "profileEmptyTitle": "Belum ada profil",
+  "profileEmptyBody": "Di sini nanti muncul profil lokalmu, satuan dan bahasa, serta kendali atas data yang tersimpan di perangkat.",
+
+  "routeNotFoundTitle": "Halaman tidak ditemukan",
+  "routeNotFoundBody": "Alamat yang diminta tidak dikenali Mealora. Kamu bisa kembali ke ruang utama dan melanjutkan dari sana.",
+  "routeNotFoundAction": "Kembali ke Hari ini",
+
+  "unitKilogram": "kg",
+  "unitCentimeter": "cm",
+  "unitKilocalorie": "kkal",
+  "unitGram": "g",
+
+  "valueWithUnit": "{value} {unit}",
+  "@valueWithUnit": {
+    "description": "Nilai beserta satuannya, dirangkai sebagai satu kalimat utuh agar satuan dapat diganti belakangan.",
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  }
+}

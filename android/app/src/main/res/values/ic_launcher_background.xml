@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Latar ikon adaptif Mealora — token `soft-green` dari docs/mealora.pen. -->
+    <color name="ic_launcher_background">#DEF3DE</color>
+</resources>

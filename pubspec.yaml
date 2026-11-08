@@ -1,0 +1,53 @@
+name: mealora
+description: "Mealora — teman gizi harianmu. Lokal, offline, tanpa akun."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management (satu-satunya solusi state — assessment §9).
+  flutter_riverpod: ^2.6.1
+
+  # Penyimpanan lokal: Drift di atas SQLite, native (Android) dan WASM (web).
+  drift: 2.34.0
+  drift_flutter: ^0.3.1
+
+  # Identitas record (UUID v7, cadangan v4) — assessment §9 / design D4.
+  uuid: ^4.6.0
+
+  # Format angka/tanggal locale id-ID.
+  intl: 0.20.2
+  flutter_timezone: ^5.1.1
+  sqlite3: ">=3.4.0 <3.5.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: ^2.34.0
+  build_runner: ^2.15.1
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/brand/
+
+  fonts:
+    # Font variabel (sumbu wght). Berat dipilih lewat FontVariation di berkas
+    # token tipografi — lihat lib/app/theme/.
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope.ttf

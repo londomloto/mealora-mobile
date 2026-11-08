@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Latar jendela saat proses mulai, sebelum Flutter menggambar splash Mealora. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/mealora_background" />
+</layer-list>

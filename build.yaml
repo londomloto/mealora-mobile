@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Waktu disimpan sebagai teks ISO-8601 UTC agar presisi utuh dan
+          # urutan leksikografis sama dengan urutan kronologis.
+          store_date_time_values_as_text: true
+          named_parameters: true
