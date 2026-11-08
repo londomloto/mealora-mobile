@@ -1,8 +1,15 @@
 import 'package:drift/drift.dart';
 import 'package:mealora/database/connection/mealora_connection.dart';
+import 'package:mealora/database/migrations/program_indexes.dart';
+import 'package:mealora/database/migrations/program_invariant_trigger.dart';
 import 'package:mealora/database/migrations/user_record_triggers.dart';
+import 'package:mealora/database/seeds/program_catalog_seed.dart';
 import 'package:mealora/database/tables/harness_records.dart';
+import 'package:mealora/database/tables/program_events_table.dart';
+import 'package:mealora/database/tables/program_progress_table.dart';
+import 'package:mealora/database/tables/programs_table.dart';
 import 'package:mealora/database/tables/ui_preferences.dart';
+import 'package:mealora/database/tables/user_programs_table.dart';
 
 part 'app_database.g.dart';
 
@@ -11,10 +18,18 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 1;
+const int kSchemaVersion = 2;
 
 @DriftDatabase(
-  tables: <Type>[HarnessRecords, HarnessRecordNotes, UiPreferences],
+  tables: <Type>[
+    HarnessRecords,
+    HarnessRecordNotes,
+    UiPreferences,
+    Programs,
+    UserPrograms,
+    ProgramProgress,
+    ProgramEvents,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
@@ -28,6 +43,9 @@ class AppDatabase extends _$AppDatabase {
     onCreate: (m) async {
       await m.createAll();
       await createUserRecordTriggers(this);
+      await createProgramIndexes(this);
+      await createProgramInvariantTrigger(this);
+      await seedProgramCatalog(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -35,7 +53,19 @@ class AppDatabase extends _$AppDatabase {
           'Penurunan versi skema tidak didukung (dari $from ke $to).',
         );
       }
-      // Versi 1 adalah titik awal; belum ada langkah migrasi.
+      if (from < 2) {
+        // Versi 1 → 2 (change 004): empat tabel program, indeks, dan
+        // trigger invarian, lalu seed katalog. Tidak menyentuh data versi 1
+        // dan tidak mendaftarkan profil mana pun ke program (Design D8).
+        await m.createTable(programs);
+        await m.createTable(userPrograms);
+        await m.createTable(programProgress);
+        await m.createTable(programEvents);
+        await createUserRecordTriggers(this);
+        await createProgramIndexes(this);
+        await createProgramInvariantTrigger(this);
+        await seedProgramCatalog(this);
+      }
     },
     beforeOpen: (details) async {
       // Kunci asing diaktifkan pada setiap pembukaan koneksi: PRAGMA ini

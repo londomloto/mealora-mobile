@@ -63,7 +63,7 @@ final class ChangeProgramCommand {
   final IdGenerator idGenerator;
   final ProgramEngine engine;
 
-  ChangeResult execute({
+  Future<ChangeResult> execute({
     required String profileId,
     required ProgramCode newProgramCode,
     required ProgramProposalInputs currentInputs,
@@ -71,11 +71,11 @@ final class ChangeProgramCommand {
     required bool programRequiresTargetWeight,
     required bool programRequiresHabitFocus,
     required NutritionEstimate estimate,
-  }) {
+  }) async {
     if (!userConfirmed) {
       return const ChangeRequiresConfirmation();
     }
-    final running = repository.findRunning(profileId);
+    final running = await repository.findRunning(profileId);
     if (running == null) {
       return const ChangeNoRunningProgram();
     }
@@ -132,7 +132,7 @@ final class ChangeProgramCommand {
     ];
 
     try {
-      repository.applyProgramChange(
+      await repository.applyProgramChange(
         supersededProgram: updatedOld,
         newProgram: newProgram,
         events: events,

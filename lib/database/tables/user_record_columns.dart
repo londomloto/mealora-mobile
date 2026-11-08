@@ -38,3 +38,24 @@ mixin UserRecordColumns on Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
+
+/// Kolom wajib untuk tabel milik pengguna yang bersifat tambah-saja
+/// (append-only), seperti jejak peristiwa.
+///
+/// Berbeda dari [UserRecordColumns]: tidak ada `updated_at` atau
+/// `deleted_at` karena baris tidak pernah diubah atau dihapus lunak setelah
+/// ditulis (change 004, assessment `program_events`) — menambah kolom itu
+/// hanya akan mengundang penulisan yang melanggar sifat tambah-saja-nya.
+mixin AppendOnlyRecordColumns on Table {
+  TextColumn get id => text().withLength(min: 1, max: 64)();
+
+  DateTimeColumn get createdAt => dateTime()();
+
+  TextColumn get syncStatus =>
+      text().withLength(min: 1, max: 16).withDefault(const Constant('local'))();
+
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}

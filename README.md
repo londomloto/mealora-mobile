@@ -247,6 +247,18 @@ masuk; lapisan fitur dilarang memakainya dan uji arsitektur menjaganya.
    basis data berisi data versi sebelumnya, dan migrasi yang terputus di
    tengah. Pemeriksaan pasca-migrasi (`verifyMigration`) harus sehat.
 
+### Skema versi 2 (change 004): tabel program
+
+Versi 2 menambah empat tabel (`programs`, `user_programs`, `program_progress`,
+`program_events`), indeksnya, dan trigger invarian "satu program berjalan per
+profil" — lihat `lib/database/migrations/program_invariant_trigger.dart` dan
+`lib/database/migrations/program_indexes.dart`. Migrasi dari versi 1 tidak
+menyentuh data lama (profil, catatan makanan, favorit, riwayat berat — begitu
+tabelnya ada di change berikutnya) dan **tidak mendaftarkan profil mana pun ke
+program**: pengguna lama mendarat di keadaan "belum ada program" setelah
+peningkatan versi. Penurunan dari versi 2 ke versi 1 tidak didukung, sama
+seperti aturan umum di atas.
+
 ### Pratinjau web: penyimpanan tidak bertahan
 
 Penyimpanan web yang bertahan membutuhkan worker bersama yang dapat memuat

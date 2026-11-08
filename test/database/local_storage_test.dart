@@ -209,7 +209,10 @@ void main() {
     });
 
     test('pragma kunci asing menyala pada koneksi yang dibuka', () async {
-      final check = await verifyMigration(db, expectedSchemaVersion: 1);
+      final check = await verifyMigration(
+        db,
+        expectedSchemaVersion: kSchemaVersion,
+      );
 
       expect(check.foreignKeysEnabled, isTrue);
       expect(check.foreignKeyViolations, 0);

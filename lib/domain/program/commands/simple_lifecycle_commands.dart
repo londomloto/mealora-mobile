@@ -50,15 +50,15 @@ base class _BaseLifecycleCommand {
   final Clock clock;
   final IdGenerator idGenerator;
 
-  SimpleCommandResult _run({
+  Future<SimpleCommandResult> _run({
     required String userProgramId,
     required ProgramCommand command,
     required ProgramEventType eventType,
     required UserProgram Function(UserProgram current, DateTime now)
     applyChange,
     String? reasonCode,
-  }) {
-    final current = repository.findById(userProgramId);
+  }) async {
+    final current = await repository.findById(userProgramId);
     if (current == null) {
       return const SimpleCommandNotFound();
     }
@@ -83,8 +83,8 @@ base class _BaseLifecycleCommand {
 
     final now = clock.nowUtc();
     final updated = applyChange(current, now);
-    repository.upsert(updated);
-    repository.appendEvent(
+    await repository.upsert(updated);
+    await repository.appendEvent(
       ProgramEvent(
         id: idGenerator.next(),
         userProgramId: updated.id,
@@ -108,7 +108,7 @@ final class PauseProgramCommand extends _BaseLifecycleCommand {
     required super.idGenerator,
   });
 
-  SimpleCommandResult execute({required String userProgramId}) => _run(
+  Future<SimpleCommandResult> execute({required String userProgramId}) => _run(
     userProgramId: userProgramId,
     command: ProgramCommand.pause,
     eventType: ProgramEventType.paused,
@@ -131,7 +131,7 @@ final class ResumeProgramCommand extends _BaseLifecycleCommand {
     required super.idGenerator,
   });
 
-  SimpleCommandResult execute({required String userProgramId}) => _run(
+  Future<SimpleCommandResult> execute({required String userProgramId}) => _run(
     userProgramId: userProgramId,
     command: ProgramCommand.resume,
     eventType: ProgramEventType.resumed,
@@ -156,7 +156,7 @@ final class CompleteProgramCommand extends _BaseLifecycleCommand {
     required super.idGenerator,
   });
 
-  SimpleCommandResult execute({
+  Future<SimpleCommandResult> execute({
     required String userProgramId,
     required String reasonCode,
   }) => _run(
@@ -181,7 +181,7 @@ final class CancelProgramCommand extends _BaseLifecycleCommand {
     required super.idGenerator,
   });
 
-  SimpleCommandResult execute({required String userProgramId}) => _run(
+  Future<SimpleCommandResult> execute({required String userProgramId}) => _run(
     userProgramId: userProgramId,
     command: ProgramCommand.cancel,
     eventType: ProgramEventType.cancelled,

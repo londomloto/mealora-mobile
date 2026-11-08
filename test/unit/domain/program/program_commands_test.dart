@@ -76,7 +76,7 @@ void main() {
   SequentialIdGenerator ids() => SequentialIdGenerator();
 
   group('ActivateProgramCommand', () {
-    test('mengaktifkan program baru ketika semua syarat terpenuhi', () {
+    test('mengaktifkan program baru ketika semua syarat terpenuhi', () async {
       final repository = repo();
       final command = ActivateProgramCommand(
         repository: repository,
@@ -86,7 +86,7 @@ void main() {
       );
       final inputs = _maintenanceInputs();
 
-      final result = command.execute(
+      final result = await command.execute(
         profileId: 'profile-1',
         program: ProgramCode.maintenance,
         previewInputs: inputs,
@@ -102,10 +102,10 @@ void main() {
       expect(succeeded.program.proposal.energyTarget, isNotNull);
       expect(succeeded.program.proposal.policyVersion, 'np-1.0.0');
       expect(succeeded.program.proposal.calculatorVersion, 'msj-1.0.0');
-      expect(repository.eventsFor(succeeded.program.id), hasLength(1));
+      expect(await repository.eventsFor(succeeded.program.id), hasLength(1));
     });
 
-    test('menolak tanpa konfirmasi pengguna', () {
+    test('menolak tanpa konfirmasi pengguna', () async {
       final command = ActivateProgramCommand(
         repository: repo(),
         clock: clock,
@@ -114,7 +114,7 @@ void main() {
       );
       final inputs = _maintenanceInputs();
 
-      final result = command.execute(
+      final result = await command.execute(
         profileId: 'profile-1',
         program: ProgramCode.maintenance,
         previewInputs: inputs,
@@ -127,30 +127,33 @@ void main() {
       expect(result, isA<ActivationRequiresConfirmation>());
     });
 
-    test('membatalkan aktivasi ketika masukan berubah sejak pratinjau', () {
-      final command = ActivateProgramCommand(
-        repository: repo(),
-        clock: clock,
-        idGenerator: ids(),
-        engine: engine,
-      );
+    test(
+      'membatalkan aktivasi ketika masukan berubah sejak pratinjau',
+      () async {
+        final command = ActivateProgramCommand(
+          repository: repo(),
+          clock: clock,
+          idGenerator: ids(),
+          engine: engine,
+        );
 
-      final result = command.execute(
-        profileId: 'profile-1',
-        program: ProgramCode.maintenance,
-        previewInputs: _maintenanceInputs(currentWeight: 68.4),
-        currentInputs: _maintenanceInputs(currentWeight: 70.0),
-        userConfirmed: true,
-        programRequiresTargetWeight: false,
-        programRequiresHabitFocus: false,
-      );
+        final result = await command.execute(
+          profileId: 'profile-1',
+          program: ProgramCode.maintenance,
+          previewInputs: _maintenanceInputs(currentWeight: 68.4),
+          currentInputs: _maintenanceInputs(currentWeight: 70.0),
+          userConfirmed: true,
+          programRequiresTargetWeight: false,
+          programRequiresHabitFocus: false,
+        );
 
-      expect(result, isA<ActivationInputsChangedSincePreview>());
-    });
+        expect(result, isA<ActivationInputsChangedSincePreview>());
+      },
+    );
 
     test(
       'menolak aktivasi atas hasil yang tidak disetujui meski dikonfirmasi',
-      () {
+      () async {
         final command = ActivateProgramCommand(
           repository: repo(),
           clock: clock,
@@ -165,7 +168,7 @@ void main() {
           activity: ActivityLevel.moderatelyActive,
         );
 
-        final result = command.execute(
+        final result = await command.execute(
           profileId: 'profile-1',
           program: ProgramCode.weightLoss,
           previewInputs: inputs,
@@ -181,7 +184,7 @@ void main() {
 
     test(
       'aktivasi dikirim dua kali tetap menghasilkan satu program berjalan',
-      () {
+      () async {
         final repository = repo();
         final command = ActivateProgramCommand(
           repository: repository,
@@ -191,7 +194,7 @@ void main() {
         );
         final inputs = _maintenanceInputs();
 
-        final first = command.execute(
+        final first = await command.execute(
           profileId: 'profile-1',
           program: ProgramCode.maintenance,
           previewInputs: inputs,
@@ -200,7 +203,7 @@ void main() {
           programRequiresTargetWeight: false,
           programRequiresHabitFocus: false,
         );
-        final second = command.execute(
+        final second = await command.execute(
           profileId: 'profile-1',
           program: ProgramCode.maintenance,
           previewInputs: inputs,
@@ -221,7 +224,7 @@ void main() {
 
     test(
       'draf tidak mengganggu program berjalan — aktivasi program berbeda berarti konflik',
-      () {
+      () async {
         final repository = repo();
         final command = ActivateProgramCommand(
           repository: repository,
@@ -230,7 +233,7 @@ void main() {
           engine: engine,
         );
         final inputs = _maintenanceInputs();
-        command.execute(
+        await command.execute(
           profileId: 'profile-1',
           program: ProgramCode.maintenance,
           previewInputs: inputs,
@@ -241,7 +244,7 @@ void main() {
         );
 
         final healthyEatingInputs = _healthyEatingInputs();
-        final result = command.execute(
+        final result = await command.execute(
           profileId: 'profile-1',
           program: ProgramCode.healthyEating,
           previewInputs: healthyEatingInputs,
@@ -257,7 +260,7 @@ void main() {
   });
 
   group('ChangeProgramCommand', () {
-    test('pergantian berhasil: lama changed tertaut, baru active', () {
+    test('pergantian berhasil: lama changed tertaut, baru active', () async {
       final repository = repo();
       final idGenerator = ids();
       final activate = ActivateProgramCommand(
@@ -268,7 +271,7 @@ void main() {
       );
       final inputs = _maintenanceInputs();
       final activated =
-          activate.execute(
+          await activate.execute(
                 profileId: 'profile-1',
                 program: ProgramCode.maintenance,
                 previewInputs: inputs,
@@ -286,7 +289,7 @@ void main() {
         engine: engine,
       );
       final newInputs = _healthyEatingInputs();
-      final result = change.execute(
+      final result = await change.execute(
         profileId: 'profile-1',
         newProgramCode: ProgramCode.healthyEating,
         currentInputs: newInputs,
@@ -309,78 +312,81 @@ void main() {
         activated.program.id,
       );
 
-      final running = repository.findRunning('profile-1');
+      final running = await repository.findRunning('profile-1');
       expect(running?.id, succeeded.newProgram.id);
     });
 
-    test('pergantian gagal di tengah jalan mengembalikan seluruh keadaan', () {
-      final repository = repo();
-      final idGenerator = ids();
-      final activate = ActivateProgramCommand(
-        repository: repository,
-        clock: clock,
-        idGenerator: idGenerator,
-        engine: engine,
-      );
-      final inputs = _maintenanceInputs();
-      final activated =
-          activate.execute(
-                profileId: 'profile-1',
-                program: ProgramCode.maintenance,
-                previewInputs: inputs,
-                currentInputs: inputs,
-                userConfirmed: true,
-                programRequiresTargetWeight: false,
-                programRequiresHabitFocus: false,
-              )
-              as ActivationSucceeded;
+    test(
+      'pergantian gagal di tengah jalan mengembalikan seluruh keadaan',
+      () async {
+        final repository = repo();
+        final idGenerator = ids();
+        final activate = ActivateProgramCommand(
+          repository: repository,
+          clock: clock,
+          idGenerator: idGenerator,
+          engine: engine,
+        );
+        final inputs = _maintenanceInputs();
+        final activated =
+            await activate.execute(
+                  profileId: 'profile-1',
+                  program: ProgramCode.maintenance,
+                  previewInputs: inputs,
+                  currentInputs: inputs,
+                  userConfirmed: true,
+                  programRequiresTargetWeight: false,
+                  programRequiresHabitFocus: false,
+                )
+                as ActivationSucceeded;
 
-      for (final checkpoint in [
-        'after_supersede',
-        'after_new_program',
-        'after_events',
-      ]) {
-        final failingRepo = repo()
-          ..upsert(activated.program)
-          ..failureInjector = (c) {
+        for (final checkpoint in [
+          'after_supersede',
+          'after_new_program',
+          'after_events',
+        ]) {
+          final failingRepo = repo();
+          await failingRepo.upsert(activated.program);
+          failingRepo.failureInjector = (c) {
             if (c == checkpoint) {
               throw StateError('kegagalan disuntikkan di $checkpoint');
             }
           };
 
-        final change = ChangeProgramCommand(
-          repository: failingRepo,
-          clock: clock,
-          idGenerator: idGenerator,
-          engine: engine,
-        );
-        final newInputs = _healthyEatingInputs();
-        final result = change.execute(
-          profileId: 'profile-1',
-          newProgramCode: ProgramCode.healthyEating,
-          currentInputs: newInputs,
-          userConfirmed: true,
-          programRequiresTargetWeight: false,
-          programRequiresHabitFocus: true,
-          estimate: _estimateFor(newInputs),
-        );
+          final change = ChangeProgramCommand(
+            repository: failingRepo,
+            clock: clock,
+            idGenerator: idGenerator,
+            engine: engine,
+          );
+          final newInputs = _healthyEatingInputs();
+          final result = await change.execute(
+            profileId: 'profile-1',
+            newProgramCode: ProgramCode.healthyEating,
+            currentInputs: newInputs,
+            userConfirmed: true,
+            programRequiresTargetWeight: false,
+            programRequiresHabitFocus: true,
+            estimate: _estimateFor(newInputs),
+          );
 
-        expect(result, isA<ChangeFailed>(), reason: 'checkpoint $checkpoint');
-        final restored = failingRepo.findById(activated.program.id);
-        expect(
-          restored?.state,
-          ProgramState.active,
-          reason: 'checkpoint $checkpoint',
-        );
-        expect(
-          failingRepo.allPrograms.length,
-          1,
-          reason: 'checkpoint $checkpoint: tidak ada program baru yang bocor',
-        );
-      }
-    });
+          expect(result, isA<ChangeFailed>(), reason: 'checkpoint $checkpoint');
+          final restored = await failingRepo.findById(activated.program.id);
+          expect(
+            restored?.state,
+            ProgramState.active,
+            reason: 'checkpoint $checkpoint',
+          );
+          expect(
+            failingRepo.allPrograms.length,
+            1,
+            reason: 'checkpoint $checkpoint: tidak ada program baru yang bocor',
+          );
+        }
+      },
+    );
 
-    test('pembatalan sebelum konfirmasi tidak mengubah apa pun', () {
+    test('pembatalan sebelum konfirmasi tidak mengubah apa pun', () async {
       final repository = repo();
       final idGenerator = ids();
       final activate = ActivateProgramCommand(
@@ -391,7 +397,7 @@ void main() {
       );
       final inputs = _maintenanceInputs();
       final activated =
-          activate.execute(
+          await activate.execute(
                 profileId: 'profile-1',
                 program: ProgramCode.maintenance,
                 previewInputs: inputs,
@@ -409,7 +415,7 @@ void main() {
         engine: engine,
       );
       final newInputs = _healthyEatingInputs();
-      final result = change.execute(
+      final result = await change.execute(
         profileId: 'profile-1',
         newProgramCode: ProgramCode.healthyEating,
         currentInputs: newInputs,
@@ -421,7 +427,7 @@ void main() {
 
       expect(result, isA<ChangeRequiresConfirmation>());
       expect(
-        repository.findById(activated.program.id)?.state,
+        (await repository.findById(activated.program.id))?.state,
         ProgramState.active,
       );
       expect(repository.allPrograms, hasLength(1));
@@ -432,7 +438,7 @@ void main() {
     late InMemoryProgramRepository repository;
     late String programId;
 
-    setUp(() {
+    setUp(() async {
       repository = repo();
       final activate = ActivateProgramCommand(
         repository: repository,
@@ -442,7 +448,7 @@ void main() {
       );
       final inputs = _maintenanceInputs();
       final activated =
-          activate.execute(
+          await activate.execute(
                 profileId: 'profile-1',
                 program: ProgramCode.maintenance,
                 previewInputs: inputs,
@@ -455,13 +461,13 @@ void main() {
       programId = activated.program.id;
     });
 
-    test('jeda mencatat rentang dan berhenti menambah hari aktif', () {
+    test('jeda mencatat rentang dan berhenti menambah hari aktif', () async {
       final pause = PauseProgramCommand(
         repository: repository,
         clock: clock,
         idGenerator: ids(),
       );
-      final result = pause.execute(userProgramId: programId);
+      final result = await pause.execute(userProgramId: programId);
 
       expect(result, isA<SimpleCommandSucceeded>());
       final paused = (result as SimpleCommandSucceeded).program;
@@ -470,7 +476,7 @@ void main() {
       expect(paused.pauseIntervals.single.isOpen, isTrue);
     });
 
-    test('jeda dikirim dua kali tidak mencatat peristiwa ganda', () {
+    test('jeda dikirim dua kali tidak mencatat peristiwa ganda', () async {
       final idGenerator = ids();
       final pause = PauseProgramCommand(
         repository: repository,
@@ -478,14 +484,15 @@ void main() {
         idGenerator: idGenerator,
       );
       final first =
-          pause.execute(userProgramId: programId) as SimpleCommandSucceeded;
-      final second = pause.execute(userProgramId: programId);
+          await pause.execute(userProgramId: programId)
+              as SimpleCommandSucceeded;
+      final second = await pause.execute(userProgramId: programId);
 
       expect(second, isA<SimpleCommandAlreadySatisfied>());
       expect(
-        repository
-            .eventsFor(programId)
-            .where((e) => e.type == ProgramEventType.paused),
+        (await repository.eventsFor(
+          programId,
+        )).where((e) => e.type == ProgramEventType.paused),
         hasLength(1),
       );
       expect(
@@ -498,58 +505,74 @@ void main() {
       );
     });
 
-    test('lanjutkan mengembalikan ke active dan menutup rentang jeda', () {
-      final pause = PauseProgramCommand(
-        repository: repository,
-        clock: clock,
-        idGenerator: ids(),
-      );
-      pause.execute(userProgramId: programId);
+    test(
+      'lanjutkan mengembalikan ke active dan menutup rentang jeda',
+      () async {
+        final pause = PauseProgramCommand(
+          repository: repository,
+          clock: clock,
+          idGenerator: ids(),
+        );
+        await pause.execute(userProgramId: programId);
 
-      clock.advance(const Duration(days: 3));
-      final resume = ResumeProgramCommand(
-        repository: repository,
-        clock: clock,
-        idGenerator: ids(),
-      );
-      final result =
-          resume.execute(userProgramId: programId) as SimpleCommandSucceeded;
+        clock.advance(const Duration(days: 3));
+        final resume = ResumeProgramCommand(
+          repository: repository,
+          clock: clock,
+          idGenerator: ids(),
+        );
+        final result =
+            await resume.execute(userProgramId: programId)
+                as SimpleCommandSucceeded;
 
-      expect(result.program.state, ProgramState.active);
-      expect(result.program.pauseIntervals.single.isOpen, isFalse);
-    });
+        expect(result.program.state, ProgramState.active);
+        expect(result.program.pauseIntervals.single.isOpen, isFalse);
+      },
+    );
 
-    test('melanjutkan program yang sudah selesai ditolak bertipe', () {
+    test('melanjutkan program yang sudah selesai ditolak bertipe', () async {
       final complete = CompleteProgramCommand(
         repository: repository,
         clock: clock,
         idGenerator: ids(),
       );
-      complete.execute(userProgramId: programId, reasonCode: 'goal_reached');
+      await complete.execute(
+        userProgramId: programId,
+        reasonCode: 'goal_reached',
+      );
 
       final resume = ResumeProgramCommand(
         repository: repository,
         clock: clock,
         idGenerator: ids(),
       );
-      final result = resume.execute(userProgramId: programId);
+      final result = await resume.execute(userProgramId: programId);
 
       expect(result, isA<SimpleCommandInvalidTransition>());
-      expect(repository.findById(programId)?.state, ProgramState.completed);
-    });
-
-    test('selesaikan mencatat alasan dan tidak dapat dilanjutkan lagi', () {
-      final complete = CompleteProgramCommand(
-        repository: repository,
-        clock: clock,
-        idGenerator: ids(),
+      expect(
+        (await repository.findById(programId))?.state,
+        ProgramState.completed,
       );
-      final result =
-          complete.execute(userProgramId: programId, reasonCode: 'goal_reached')
-              as SimpleCommandSucceeded;
-
-      expect(result.program.state, ProgramState.completed);
-      expect(result.program.completionReason, 'goal_reached');
     });
+
+    test(
+      'selesaikan mencatat alasan dan tidak dapat dilanjutkan lagi',
+      () async {
+        final complete = CompleteProgramCommand(
+          repository: repository,
+          clock: clock,
+          idGenerator: ids(),
+        );
+        final result =
+            await complete.execute(
+                  userProgramId: programId,
+                  reasonCode: 'goal_reached',
+                )
+                as SimpleCommandSucceeded;
+
+        expect(result.program.state, ProgramState.completed);
+        expect(result.program.completionReason, 'goal_reached');
+      },
+    );
   });
 }

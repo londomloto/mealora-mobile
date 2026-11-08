@@ -4,6 +4,7 @@ import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/connection/web_fallback.dart';
 import 'package:mealora/database/migrations/migration_verification.dart';
+import 'package:mealora/database/migrations/program_catalog_verification.dart';
 
 /// Membuka penyimpanan lokal dan memverifikasinya sebelum dipakai.
 ///
@@ -48,6 +49,15 @@ Future<Result<AppDatabase>> _open(AppDatabase Function() create) async {
       await database.close();
       return Err<AppDatabase>(
         Failure(FailureCode.storageMigrationFailed, detail: check.toString()),
+      );
+    }
+    if (!await verifyProgramCatalog(database)) {
+      await database.close();
+      return const Err<AppDatabase>(
+        Failure(
+          FailureCode.storageMigrationFailed,
+          detail: 'katalog program tidak valid pasca-migrasi',
+        ),
       );
     }
     return Ok<AppDatabase>(database);

@@ -36,7 +36,6 @@ Future<MigrationCheck> verifyMigration(
   final versionRows = await db.customSelect('PRAGMA user_version').get();
   final fkRows = await db.customSelect('PRAGMA foreign_keys').get();
   final violations = await db.customSelect('PRAGMA foreign_key_check').get();
-
   return MigrationCheck(
     schemaVersion: versionRows.first.data.values.first! as int,
     expectedSchemaVersion: expectedSchemaVersion,

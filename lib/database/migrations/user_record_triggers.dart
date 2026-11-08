@@ -4,6 +4,8 @@ import 'package:drift/drift.dart';
 const List<String> kUserRecordTables = <String>[
   'harness_records',
   'harness_record_notes',
+  'user_programs',
+  'program_progress',
 ];
 
 /// Membuat pemicu yang menegakkan konvensi record milik pengguna di tingkat

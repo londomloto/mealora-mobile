@@ -153,7 +153,7 @@ void main() {
   group('uji properti — invarian satu program berjalan', () {
     test(
       '50 urutan perintah siklus hidup acak tidak pernah menghasilkan dua program berjalan',
-      () {
+      () async {
         final sequenceRandom = Random(7);
 
         for (var sequence = 0; sequence < 50; sequence++) {
@@ -204,7 +204,7 @@ void main() {
             final action = sequenceRandom.nextInt(5);
             switch (action) {
               case 0:
-                final result = activate.execute(
+                final result = await activate.execute(
                   profileId: 'profile-1',
                   program: ProgramCode.maintenance,
                   previewInputs: inputs,
@@ -218,22 +218,22 @@ void main() {
                 }
               case 1:
                 if (lastProgramId != null) {
-                  pause.execute(userProgramId: lastProgramId);
+                  await pause.execute(userProgramId: lastProgramId);
                 }
               case 2:
                 if (lastProgramId != null) {
-                  resume.execute(userProgramId: lastProgramId);
+                  await resume.execute(userProgramId: lastProgramId);
                 }
               case 3:
                 if (lastProgramId != null) {
-                  complete.execute(
+                  await complete.execute(
                     userProgramId: lastProgramId,
                     reasonCode: 'test',
                   );
                 }
               case 4:
                 if (lastProgramId != null) {
-                  cancel.execute(userProgramId: lastProgramId);
+                  await cancel.execute(userProgramId: lastProgramId);
                 }
             }
 

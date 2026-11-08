@@ -46,3 +46,12 @@ final class ActivationConflictExistingRunningProgram extends ActivationResult {
 
   final UserProgram existing;
 }
+
+/// Aktivasi gagal diterapkan — Design D4, change 004: penyimpanan SHALL
+/// kembali seperti semula (dibuktikan lewat `ProgramRepository.applyActivation`
+/// yang dipanggil tepat sekali dan diuji atomik).
+final class ActivationFailed extends ActivationResult {
+  const ActivationFailed(this.error);
+
+  final Object error;
+}

@@ -35,7 +35,7 @@ final class ActivateProgramCommand {
   final IdGenerator idGenerator;
   final ProgramEngine engine;
 
-  ActivationResult execute({
+  Future<ActivationResult> execute({
     required String profileId,
     required ProgramCode program,
     required ProgramProposalInputs previewInputs,
@@ -43,7 +43,7 @@ final class ActivateProgramCommand {
     required bool userConfirmed,
     required bool programRequiresTargetWeight,
     required bool programRequiresHabitFocus,
-  }) {
+  }) async {
     if (!userConfirmed) {
       return const ActivationRequiresConfirmation();
     }
@@ -70,7 +70,7 @@ final class ActivateProgramCommand {
     }
     final proposal = outcome.value;
 
-    final existing = repository.findRunning(profileId);
+    final existing = await repository.findRunning(profileId);
     if (existing != null) {
       final sameRequest =
           existing.programCode == program &&
@@ -81,6 +81,7 @@ final class ActivateProgramCommand {
       return ActivationConflictExistingRunningProgram(existing);
     }
 
+    final now = clock.nowUtc();
     final newProgram = UserProgram(
       id: idGenerator.next(),
       profileId: profileId,
@@ -88,18 +89,21 @@ final class ActivateProgramCommand {
       state: ProgramState.active,
       proposal: proposal,
       inputSnapshot: currentInputs,
-      startedAt: clock.nowUtc(),
+      startedAt: now,
     );
-    repository.upsert(newProgram);
-    repository.appendEvent(
-      ProgramEvent(
-        id: idGenerator.next(),
-        userProgramId: newProgram.id,
-        type: ProgramEventType.activated,
-        occurredAt: clock.nowUtc(),
-        toState: ProgramState.active,
-      ),
+    final event = ProgramEvent(
+      id: idGenerator.next(),
+      userProgramId: newProgram.id,
+      type: ProgramEventType.activated,
+      occurredAt: now,
+      toState: ProgramState.active,
     );
+
+    try {
+      await repository.applyActivation(newProgram: newProgram, event: event);
+    } on Object catch (error) {
+      return ActivationFailed(error);
+    }
     return ActivationSucceeded(newProgram);
   }
 
