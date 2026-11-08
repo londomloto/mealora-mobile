@@ -38,6 +38,19 @@ void main() {
       },
     );
 
+    test(
+      'NutritionCalculator (domain/nutrition) tidak mengimpor domain/program',
+      () {
+        final violations = _violations(
+          sources,
+          where: (path) => path.startsWith('lib/domain/nutrition/'),
+          forbidden: <String>['package:mealora/domain/program/'],
+        );
+
+        expect(violations, isEmpty, reason: violations.join('\n'));
+      },
+    );
+
     test('lapisan fitur tidak menyentuh penyimpanan secara langsung', () {
       final violations = _violations(
         sources,
