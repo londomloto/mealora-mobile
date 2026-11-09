@@ -2166,6 +2166,828 @@ class ProgramsCompanion extends UpdateCompanion<Program> {
   }
 }
 
+class $ProfilesTable extends Profiles
+    with TableInfo<$ProfilesTable, ProfileRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 64,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('local'),
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _nicknameMeta = const VerificationMeta(
+    'nickname',
+  );
+  @override
+  late final GeneratedColumn<String> nickname = GeneratedColumn<String>(
+    'nickname',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _birthDateMeta = const VerificationMeta(
+    'birthDate',
+  );
+  @override
+  late final GeneratedColumn<String> birthDate = GeneratedColumn<String>(
+    'birth_date',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 10,
+      maxTextLength: 10,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currentWeightKgMeta = const VerificationMeta(
+    'currentWeightKg',
+  );
+  @override
+  late final GeneratedColumn<double> currentWeightKg = GeneratedColumn<double>(
+    'current_weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _biologicalInputMeta = const VerificationMeta(
+    'biologicalInput',
+  );
+  @override
+  late final GeneratedColumn<String> biologicalInput = GeneratedColumn<String>(
+    'biological_input',
+    aliasedName,
+    true,
+    check: () => biologicalInput.isIn(kBiologicalInputValues),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _activityLevelMeta = const VerificationMeta(
+    'activityLevel',
+  );
+  @override
+  late final GeneratedColumn<String> activityLevel = GeneratedColumn<String>(
+    'activity_level',
+    aliasedName,
+    true,
+    check: () => activityLevel.isIn(kActivityLevelValues),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 24,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _onboardingCompleteMeta =
+      const VerificationMeta('onboardingComplete');
+  @override
+  late final GeneratedColumn<bool> onboardingComplete = GeneratedColumn<bool>(
+    'onboarding_complete',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("onboarding_complete" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    nickname,
+    birthDate,
+    heightCm,
+    currentWeightKg,
+    biologicalInput,
+    activityLevel,
+    onboardingComplete,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProfileRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('nickname')) {
+      context.handle(
+        _nicknameMeta,
+        nickname.isAcceptableOrUnknown(data['nickname']!, _nicknameMeta),
+      );
+    }
+    if (data.containsKey('birth_date')) {
+      context.handle(
+        _birthDateMeta,
+        birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('current_weight_kg')) {
+      context.handle(
+        _currentWeightKgMeta,
+        currentWeightKg.isAcceptableOrUnknown(
+          data['current_weight_kg']!,
+          _currentWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('biological_input')) {
+      context.handle(
+        _biologicalInputMeta,
+        biologicalInput.isAcceptableOrUnknown(
+          data['biological_input']!,
+          _biologicalInputMeta,
+        ),
+      );
+    }
+    if (data.containsKey('activity_level')) {
+      context.handle(
+        _activityLevelMeta,
+        activityLevel.isAcceptableOrUnknown(
+          data['activity_level']!,
+          _activityLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('onboarding_complete')) {
+      context.handle(
+        _onboardingCompleteMeta,
+        onboardingComplete.isAcceptableOrUnknown(
+          data['onboarding_complete']!,
+          _onboardingCompleteMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProfileRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProfileRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      nickname: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nickname'],
+      ),
+      birthDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}birth_date'],
+      ),
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+      currentWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}current_weight_kg'],
+      ),
+      biologicalInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}biological_input'],
+      ),
+      activityLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}activity_level'],
+      ),
+      onboardingComplete: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}onboarding_complete'],
+      )!,
+    );
+  }
+
+  @override
+  $ProfilesTable createAlias(String alias) {
+    return $ProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class ProfileRow extends DataClass implements Insertable<ProfileRow> {
+  /// Pengenal unik global yang dibuat aplikasi, bukan nomor urut basis data.
+  final String id;
+
+  /// Waktu pembuatan (UTC). Tidak pernah berubah setelah record dibuat.
+  final DateTime createdAt;
+
+  /// Waktu pembaruan terakhir (UTC).
+  final DateTime updatedAt;
+
+  /// Penanda terhapus (UTC). `null` berarti record aktif.
+  final DateTime? deletedAt;
+
+  /// Keadaan sinkronisasi. Selalu [kSyncStatusLocal] di MVP 1.
+  final String syncStatus;
+
+  /// Nomor revisi; bertambah satu setiap kali record berubah.
+  final int revision;
+  final String? nickname;
+
+  /// `YYYY-MM-DD`, selaras dengan `LocalDate.iso` (konvensi change 001/004).
+  final String? birthDate;
+  final double? heightCm;
+  final double? currentWeightKg;
+  final String? biologicalInput;
+  final String? activityLevel;
+  final bool onboardingComplete;
+  const ProfileRow({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.syncStatus,
+    required this.revision,
+    this.nickname,
+    this.birthDate,
+    this.heightCm,
+    this.currentWeightKg,
+    this.biologicalInput,
+    this.activityLevel,
+    required this.onboardingComplete,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    map['revision'] = Variable<int>(revision);
+    if (!nullToAbsent || nickname != null) {
+      map['nickname'] = Variable<String>(nickname);
+    }
+    if (!nullToAbsent || birthDate != null) {
+      map['birth_date'] = Variable<String>(birthDate);
+    }
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    if (!nullToAbsent || currentWeightKg != null) {
+      map['current_weight_kg'] = Variable<double>(currentWeightKg);
+    }
+    if (!nullToAbsent || biologicalInput != null) {
+      map['biological_input'] = Variable<String>(biologicalInput);
+    }
+    if (!nullToAbsent || activityLevel != null) {
+      map['activity_level'] = Variable<String>(activityLevel);
+    }
+    map['onboarding_complete'] = Variable<bool>(onboardingComplete);
+    return map;
+  }
+
+  ProfilesCompanion toCompanion(bool nullToAbsent) {
+    return ProfilesCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+      revision: Value(revision),
+      nickname: nickname == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nickname),
+      birthDate: birthDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(birthDate),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+      currentWeightKg: currentWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentWeightKg),
+      biologicalInput: biologicalInput == null && nullToAbsent
+          ? const Value.absent()
+          : Value(biologicalInput),
+      activityLevel: activityLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(activityLevel),
+      onboardingComplete: Value(onboardingComplete),
+    );
+  }
+
+  factory ProfileRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProfileRow(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+      revision: serializer.fromJson<int>(json['revision']),
+      nickname: serializer.fromJson<String?>(json['nickname']),
+      birthDate: serializer.fromJson<String?>(json['birthDate']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+      currentWeightKg: serializer.fromJson<double?>(json['currentWeightKg']),
+      biologicalInput: serializer.fromJson<String?>(json['biologicalInput']),
+      activityLevel: serializer.fromJson<String?>(json['activityLevel']),
+      onboardingComplete: serializer.fromJson<bool>(json['onboardingComplete']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+      'revision': serializer.toJson<int>(revision),
+      'nickname': serializer.toJson<String?>(nickname),
+      'birthDate': serializer.toJson<String?>(birthDate),
+      'heightCm': serializer.toJson<double?>(heightCm),
+      'currentWeightKg': serializer.toJson<double?>(currentWeightKg),
+      'biologicalInput': serializer.toJson<String?>(biologicalInput),
+      'activityLevel': serializer.toJson<String?>(activityLevel),
+      'onboardingComplete': serializer.toJson<bool>(onboardingComplete),
+    };
+  }
+
+  ProfileRow copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    String? syncStatus,
+    int? revision,
+    Value<String?> nickname = const Value.absent(),
+    Value<String?> birthDate = const Value.absent(),
+    Value<double?> heightCm = const Value.absent(),
+    Value<double?> currentWeightKg = const Value.absent(),
+    Value<String?> biologicalInput = const Value.absent(),
+    Value<String?> activityLevel = const Value.absent(),
+    bool? onboardingComplete,
+  }) => ProfileRow(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+    revision: revision ?? this.revision,
+    nickname: nickname.present ? nickname.value : this.nickname,
+    birthDate: birthDate.present ? birthDate.value : this.birthDate,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+    currentWeightKg: currentWeightKg.present
+        ? currentWeightKg.value
+        : this.currentWeightKg,
+    biologicalInput: biologicalInput.present
+        ? biologicalInput.value
+        : this.biologicalInput,
+    activityLevel: activityLevel.present
+        ? activityLevel.value
+        : this.activityLevel,
+    onboardingComplete: onboardingComplete ?? this.onboardingComplete,
+  );
+  ProfileRow copyWithCompanion(ProfilesCompanion data) {
+    return ProfileRow(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      nickname: data.nickname.present ? data.nickname.value : this.nickname,
+      birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      currentWeightKg: data.currentWeightKg.present
+          ? data.currentWeightKg.value
+          : this.currentWeightKg,
+      biologicalInput: data.biologicalInput.present
+          ? data.biologicalInput.value
+          : this.biologicalInput,
+      activityLevel: data.activityLevel.present
+          ? data.activityLevel.value
+          : this.activityLevel,
+      onboardingComplete: data.onboardingComplete.present
+          ? data.onboardingComplete.value
+          : this.onboardingComplete,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfileRow(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('nickname: $nickname, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('currentWeightKg: $currentWeightKg, ')
+          ..write('biologicalInput: $biologicalInput, ')
+          ..write('activityLevel: $activityLevel, ')
+          ..write('onboardingComplete: $onboardingComplete')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    nickname,
+    birthDate,
+    heightCm,
+    currentWeightKg,
+    biologicalInput,
+    activityLevel,
+    onboardingComplete,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProfileRow &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus &&
+          other.revision == this.revision &&
+          other.nickname == this.nickname &&
+          other.birthDate == this.birthDate &&
+          other.heightCm == this.heightCm &&
+          other.currentWeightKg == this.currentWeightKg &&
+          other.biologicalInput == this.biologicalInput &&
+          other.activityLevel == this.activityLevel &&
+          other.onboardingComplete == this.onboardingComplete);
+}
+
+class ProfilesCompanion extends UpdateCompanion<ProfileRow> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> revision;
+  final Value<String?> nickname;
+  final Value<String?> birthDate;
+  final Value<double?> heightCm;
+  final Value<double?> currentWeightKg;
+  final Value<String?> biologicalInput;
+  final Value<String?> activityLevel;
+  final Value<bool> onboardingComplete;
+  final Value<int> rowid;
+  const ProfilesCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.nickname = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.currentWeightKg = const Value.absent(),
+    this.biologicalInput = const Value.absent(),
+    this.activityLevel = const Value.absent(),
+    this.onboardingComplete = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProfilesCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.nickname = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.currentWeightKg = const Value.absent(),
+    this.biologicalInput = const Value.absent(),
+    this.activityLevel = const Value.absent(),
+    this.onboardingComplete = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProfileRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? revision,
+    Expression<String>? nickname,
+    Expression<String>? birthDate,
+    Expression<double>? heightCm,
+    Expression<double>? currentWeightKg,
+    Expression<String>? biologicalInput,
+    Expression<String>? activityLevel,
+    Expression<bool>? onboardingComplete,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (revision != null) 'revision': revision,
+      if (nickname != null) 'nickname': nickname,
+      if (birthDate != null) 'birth_date': birthDate,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (currentWeightKg != null) 'current_weight_kg': currentWeightKg,
+      if (biologicalInput != null) 'biological_input': biologicalInput,
+      if (activityLevel != null) 'activity_level': activityLevel,
+      if (onboardingComplete != null) 'onboarding_complete': onboardingComplete,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProfilesCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<String>? syncStatus,
+    Value<int>? revision,
+    Value<String?>? nickname,
+    Value<String?>? birthDate,
+    Value<double?>? heightCm,
+    Value<double?>? currentWeightKg,
+    Value<String?>? biologicalInput,
+    Value<String?>? activityLevel,
+    Value<bool>? onboardingComplete,
+    Value<int>? rowid,
+  }) {
+    return ProfilesCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      revision: revision ?? this.revision,
+      nickname: nickname ?? this.nickname,
+      birthDate: birthDate ?? this.birthDate,
+      heightCm: heightCm ?? this.heightCm,
+      currentWeightKg: currentWeightKg ?? this.currentWeightKg,
+      biologicalInput: biologicalInput ?? this.biologicalInput,
+      activityLevel: activityLevel ?? this.activityLevel,
+      onboardingComplete: onboardingComplete ?? this.onboardingComplete,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (nickname.present) {
+      map['nickname'] = Variable<String>(nickname.value);
+    }
+    if (birthDate.present) {
+      map['birth_date'] = Variable<String>(birthDate.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    if (currentWeightKg.present) {
+      map['current_weight_kg'] = Variable<double>(currentWeightKg.value);
+    }
+    if (biologicalInput.present) {
+      map['biological_input'] = Variable<String>(biologicalInput.value);
+    }
+    if (activityLevel.present) {
+      map['activity_level'] = Variable<String>(activityLevel.value);
+    }
+    if (onboardingComplete.present) {
+      map['onboarding_complete'] = Variable<bool>(onboardingComplete.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('nickname: $nickname, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('currentWeightKg: $currentWeightKg, ')
+          ..write('biologicalInput: $biologicalInput, ')
+          ..write('activityLevel: $activityLevel, ')
+          ..write('onboardingComplete: $onboardingComplete, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $UserProgramsTable extends UserPrograms
     with TableInfo<$UserProgramsTable, UserProgramRow> {
   @override
@@ -2260,6 +3082,9 @@ class $UserProgramsTable extends UserPrograms
     ),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id) ON DELETE RESTRICT',
+    ),
   );
   static const VerificationMeta _programIdMeta = const VerificationMeta(
     'programId',
@@ -5810,6 +6635,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $HarnessRecordNotesTable(this);
   late final $UiPreferencesTable uiPreferences = $UiPreferencesTable(this);
   late final $ProgramsTable programs = $ProgramsTable(this);
+  late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $UserProgramsTable userPrograms = $UserProgramsTable(this);
   late final $ProgramProgressTable programProgress = $ProgramProgressTable(
     this,
@@ -5824,6 +6650,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     harnessRecordNotes,
     uiPreferences,
     programs,
+    profiles,
     userPrograms,
     programProgress,
     programEvents,
@@ -7224,6 +8051,468 @@ typedef $$ProgramsTableProcessedTableManager =
       Program,
       PrefetchHooks Function({bool userProgramsRefs})
     >;
+typedef $$ProfilesTableCreateCompanionBuilder =
+    ProfilesCompanion Function({
+      required String id,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      Value<String?> nickname,
+      Value<String?> birthDate,
+      Value<double?> heightCm,
+      Value<double?> currentWeightKg,
+      Value<String?> biologicalInput,
+      Value<String?> activityLevel,
+      Value<bool> onboardingComplete,
+      Value<int> rowid,
+    });
+typedef $$ProfilesTableUpdateCompanionBuilder =
+    ProfilesCompanion Function({
+      Value<String> id,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      Value<String?> nickname,
+      Value<String?> birthDate,
+      Value<double?> heightCm,
+      Value<double?> currentWeightKg,
+      Value<String?> biologicalInput,
+      Value<String?> activityLevel,
+      Value<bool> onboardingComplete,
+      Value<int> rowid,
+    });
+
+final class $$ProfilesTableReferences
+    extends BaseReferences<_$AppDatabase, $ProfilesTable, ProfileRow> {
+  $$ProfilesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$UserProgramsTable, List<UserProgramRow>>
+  _userProgramsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.userPrograms,
+    aliasName: 'profiles__id__user_programs__profile_id',
+  );
+
+  $$UserProgramsTableProcessedTableManager get userProgramsRefs {
+    final manager = $$UserProgramsTableTableManager(
+      $_db,
+      $_db.userPrograms,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_userProgramsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ProfilesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProfilesTable> {
+  $$ProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nickname => $composableBuilder(
+    column: $table.nickname,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get currentWeightKg => $composableBuilder(
+    column: $table.currentWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get biologicalInput => $composableBuilder(
+    column: $table.biologicalInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get activityLevel => $composableBuilder(
+    column: $table.activityLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get onboardingComplete => $composableBuilder(
+    column: $table.onboardingComplete,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> userProgramsRefs(
+    Expression<bool> Function($$UserProgramsTableFilterComposer f) f,
+  ) {
+    final $$UserProgramsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.userPrograms,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserProgramsTableFilterComposer(
+            $db: $db,
+            $table: $db.userPrograms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ProfilesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProfilesTable> {
+  $$ProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nickname => $composableBuilder(
+    column: $table.nickname,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get currentWeightKg => $composableBuilder(
+    column: $table.currentWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get biologicalInput => $composableBuilder(
+    column: $table.biologicalInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get activityLevel => $composableBuilder(
+    column: $table.activityLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get onboardingComplete => $composableBuilder(
+    column: $table.onboardingComplete,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProfilesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProfilesTable> {
+  $$ProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<String> get nickname =>
+      $composableBuilder(column: $table.nickname, builder: (column) => column);
+
+  GeneratedColumn<String> get birthDate =>
+      $composableBuilder(column: $table.birthDate, builder: (column) => column);
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get currentWeightKg => $composableBuilder(
+    column: $table.currentWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get biologicalInput => $composableBuilder(
+    column: $table.biologicalInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get activityLevel => $composableBuilder(
+    column: $table.activityLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get onboardingComplete => $composableBuilder(
+    column: $table.onboardingComplete,
+    builder: (column) => column,
+  );
+
+  Expression<T> userProgramsRefs<T extends Object>(
+    Expression<T> Function($$UserProgramsTableAnnotationComposer a) f,
+  ) {
+    final $$UserProgramsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.userPrograms,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserProgramsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.userPrograms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProfilesTable,
+          ProfileRow,
+          $$ProfilesTableFilterComposer,
+          $$ProfilesTableOrderingComposer,
+          $$ProfilesTableAnnotationComposer,
+          $$ProfilesTableCreateCompanionBuilder,
+          $$ProfilesTableUpdateCompanionBuilder,
+          (ProfileRow, $$ProfilesTableReferences),
+          ProfileRow,
+          PrefetchHooks Function({bool userProgramsRefs})
+        > {
+  $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProfilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProfilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProfilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String?> nickname = const Value.absent(),
+                Value<String?> birthDate = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> currentWeightKg = const Value.absent(),
+                Value<String?> biologicalInput = const Value.absent(),
+                Value<String?> activityLevel = const Value.absent(),
+                Value<bool> onboardingComplete = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProfilesCompanion(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                nickname: nickname,
+                birthDate: birthDate,
+                heightCm: heightCm,
+                currentWeightKg: currentWeightKg,
+                biologicalInput: biologicalInput,
+                activityLevel: activityLevel,
+                onboardingComplete: onboardingComplete,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String?> nickname = const Value.absent(),
+                Value<String?> birthDate = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> currentWeightKg = const Value.absent(),
+                Value<String?> biologicalInput = const Value.absent(),
+                Value<String?> activityLevel = const Value.absent(),
+                Value<bool> onboardingComplete = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProfilesCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                nickname: nickname,
+                birthDate: birthDate,
+                heightCm: heightCm,
+                currentWeightKg: currentWeightKg,
+                biologicalInput: biologicalInput,
+                activityLevel: activityLevel,
+                onboardingComplete: onboardingComplete,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ProfilesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({userProgramsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (userProgramsRefs) db.userPrograms],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (userProgramsRefs)
+                    await $_getPrefetchedData<
+                      ProfileRow,
+                      $ProfilesTable,
+                      UserProgramRow
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ProfilesTableReferences
+                          ._userProgramsRefsTable(db),
+                      managerFromTypedResult: (p0) => $$ProfilesTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).userProgramsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.profileId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProfilesTable,
+      ProfileRow,
+      $$ProfilesTableFilterComposer,
+      $$ProfilesTableOrderingComposer,
+      $$ProfilesTableAnnotationComposer,
+      $$ProfilesTableCreateCompanionBuilder,
+      $$ProfilesTableUpdateCompanionBuilder,
+      (ProfileRow, $$ProfilesTableReferences),
+      ProfileRow,
+      PrefetchHooks Function({bool userProgramsRefs})
+    >;
 typedef $$UserProgramsTableCreateCompanionBuilder =
     UserProgramsCompanion Function({
       required String id,
@@ -7290,6 +8579,23 @@ typedef $$UserProgramsTableUpdateCompanionBuilder =
 final class $$UserProgramsTableReferences
     extends BaseReferences<_$AppDatabase, $UserProgramsTable, UserProgramRow> {
   $$UserProgramsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('user_programs__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<String>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static $ProgramsTable _programIdTable(_$AppDatabase db) =>
       db.programs.createAlias('user_programs__program_id__programs__id');
@@ -7383,11 +8689,6 @@ class $$UserProgramsTableFilterComposer
 
   ColumnFilters<int> get revision => $composableBuilder(
     column: $table.revision,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get profileId => $composableBuilder(
-    column: $table.profileId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7485,6 +8786,29 @@ class $$UserProgramsTableFilterComposer
     column: $table.supersededByUserProgramId,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   $$ProgramsTableFilterComposer get programId {
     final $$ProgramsTableFilterComposer composer = $composerBuilder(
@@ -7599,11 +8923,6 @@ class $$UserProgramsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get profileId => $composableBuilder(
-    column: $table.profileId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
@@ -7699,6 +9018,29 @@ class $$UserProgramsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$ProgramsTableOrderingComposer get programId {
     final $$ProgramsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -7751,9 +9093,6 @@ class $$UserProgramsTableAnnotationComposer
 
   GeneratedColumn<int> get revision =>
       $composableBuilder(column: $table.revision, builder: (column) => column);
-
-  GeneratedColumn<String> get profileId =>
-      $composableBuilder(column: $table.profileId, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
@@ -7841,6 +9180,29 @@ class $$UserProgramsTableAnnotationComposer
     column: $table.supersededByUserProgramId,
     builder: (column) => column,
   );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   $$ProgramsTableAnnotationComposer get programId {
     final $$ProgramsTableAnnotationComposer composer = $composerBuilder(
@@ -7930,6 +9292,7 @@ class $$UserProgramsTableTableManager
           (UserProgramRow, $$UserProgramsTableReferences),
           UserProgramRow,
           PrefetchHooks Function({
+            bool profileId,
             bool programId,
             bool programProgressRefs,
             bool programEventsRefs,
@@ -8076,6 +9439,7 @@ class $$UserProgramsTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                profileId = false,
                 programId = false,
                 programProgressRefs = false,
                 programEventsRefs = false,
@@ -8102,6 +9466,21 @@ class $$UserProgramsTableTableManager
                           dynamic
                         >
                       >(state) {
+                        if (profileId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.profileId,
+                                    referencedTable:
+                                        $$UserProgramsTableReferences
+                                            ._profileIdTable(db),
+                                    referencedColumn:
+                                        $$UserProgramsTableReferences
+                                            ._profileIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
                         if (programId) {
                           state =
                               state.withJoin(
@@ -8185,6 +9564,7 @@ typedef $$UserProgramsTableProcessedTableManager =
       (UserProgramRow, $$UserProgramsTableReferences),
       UserProgramRow,
       PrefetchHooks Function({
+        bool profileId,
         bool programId,
         bool programProgressRefs,
         bool programEventsRefs,
@@ -9329,6 +10709,8 @@ class $AppDatabaseManager {
       $$UiPreferencesTableTableManager(_db, _db.uiPreferences);
   $$ProgramsTableTableManager get programs =>
       $$ProgramsTableTableManager(_db, _db.programs);
+  $$ProfilesTableTableManager get profiles =>
+      $$ProfilesTableTableManager(_db, _db.profiles);
   $$UserProgramsTableTableManager get userPrograms =>
       $$UserProgramsTableTableManager(_db, _db.userPrograms);
   $$ProgramProgressTableTableManager get programProgress =>

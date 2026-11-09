@@ -12,6 +12,7 @@ import 'package:mealora/database/migrations/program_catalog_verification.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 
 import 'legacy_v1_database.dart' as legacy;
+import 'legacy_v2_database.dart' as legacy2;
 import 'test_database.dart';
 
 /// Harness migrasi, termasuk migrasi versi 1 → 2 (change 004, tasks
@@ -258,6 +259,136 @@ void main() {
     });
   });
 
+  group('fixture: migrasi versi 2 ke 3 (change 005)', () {
+    test('basis data versi 2 berisi data program bermigrasi ke versi 3 dengan '
+        'sehat, dan data tak terkait (harness, katalog) tetap ada', () async {
+      final file = databaseFile();
+
+      final v2 = legacy2.LegacyV2Database(NativeDatabase(file));
+      await _insertLegacyV2ProgramRow(v2, profileId: 'orphan-profile-1');
+      await _insertLegacyHarnessRecordV2(
+        v2,
+        id: 'legacy-v2-harness',
+        label: 'Sebelum migrasi ke v3',
+        amount: 2,
+      );
+      await v2.customStatement('PRAGMA user_version = 2');
+      await v2.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final harnessDao = HarnessRecordDao(
+        upgraded,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await harnessDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Sebelum migrasi ke v3');
+
+      final catalogRows = await upgraded.select(upgraded.programs).get();
+      expect(
+        catalogRows,
+        isNotEmpty,
+        reason:
+            'baris katalog program (bukan user_programs) tidak '
+            'tersentuh migrasi',
+      );
+    });
+
+    test('basis data versi 2 berisi program tanpa profil: baris yatim '
+        'dihapus, tidak ada profil yang dibuat otomatis, dan pemeriksaan '
+        'foreign key bersih (task 2.7, design.md Open Questions)', () async {
+      final file = databaseFile();
+
+      final v2 = legacy2.LegacyV2Database(NativeDatabase(file));
+      await _insertLegacyV2ProgramRow(v2, profileId: 'orphan-profile-2');
+      await v2.customStatement('PRAGMA user_version = 2');
+      await v2.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect(check.foreignKeyViolations, 0);
+
+      final profileRows = await upgraded.select(upgraded.profiles).get();
+      expect(
+        profileRows,
+        isEmpty,
+        reason: 'migrasi tidak pernah membuat profil otomatis (Design D8)',
+      );
+
+      final userProgramRows = await upgraded
+          .select(upgraded.userPrograms)
+          .get();
+      expect(
+        userProgramRows,
+        isEmpty,
+        reason: 'baris program yatim (tanpa profil) dihapus saat migrasi',
+      );
+
+      final eventRows = await upgraded.select(upgraded.programEvents).get();
+      final progressRows = await upgraded
+          .select(upgraded.programProgress)
+          .get();
+      expect(eventRows, isEmpty);
+      expect(progressRows, isEmpty);
+    });
+
+    test('migrasi versi 2 ke 3 yang terputus di tengah tidak merusak data dan '
+        'percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v2 = legacy2.LegacyV2Database(NativeDatabase(file));
+      await _insertLegacyV2ProgramRow(v2, profileId: 'orphan-profile-3');
+      await v2.customStatement('PRAGMA user_version = 2');
+      await v2.close();
+
+      // Simulasi migrasi v2→v3 yang terhenti: tabel profil mulai dibuat
+      // di dalam transaksi, lalu prosesnya berhenti sebelum selesai.
+      final interrupted = legacy2.LegacyV2Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE profiles_wip (id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'profiles_wip'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+  });
+
   group('kegagalan inisialisasi penyimpanan', () {
     test('dilaporkan sebagai kegagalan bertipe, bukan exception', () async {
       final result = await openLocalStorage(
@@ -331,6 +462,101 @@ Future<void> _insertLegacyHarnessRecord(
           amount: amount,
           localDate: '2026-11-08',
           timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu baris harness langsung lewat `LegacyV2Database` —
+/// `HarnessRecordDao` terikat ke tipe `AppDatabase`.
+Future<void> _insertLegacyHarnessRecordV2(
+  legacy2.LegacyV2Database db, {
+  required String id,
+  required String label,
+  required double amount,
+}) {
+  return db
+      .into(db.harnessRecords)
+      .insert(
+        legacy2.HarnessRecordsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          label: label,
+          amount: amount,
+          localDate: '2026-11-08',
+          timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu baris katalog, satu `user_programs`, satu
+/// `program_events`, dan satu `program_progress` pada basis data v2 beku —
+/// `profileId` sengaja tidak menunjuk ke profil mana pun, karena tabel
+/// `profiles` belum ada pada versi 2 (fixture task 2.6/2.7).
+Future<void> _insertLegacyV2ProgramRow(
+  legacy2.LegacyV2Database db, {
+  required String profileId,
+}) async {
+  const programId = 'program-weight-loss';
+  await db
+      .into(db.programs)
+      .insertOnConflictUpdate(
+        legacy2.ProgramsCompanion.insert(
+          id: programId,
+          code: 'weight_loss',
+          name: 'Turun Berat',
+          description: 'Program turun berat.',
+          requiresWeightTarget: true,
+          sortOrder: 0,
+          definitionVersion: 1,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+        ),
+      );
+
+  const userProgramId = 'legacy-v2-user-program';
+  await db
+      .into(db.userProgramsV2)
+      .insert(
+        legacy2.UserProgramsV2Companion.insert(
+          id: userProgramId,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          profileId: profileId,
+          programId: programId,
+          status: 'active',
+          startedAt: Value<DateTime?>(testInstant),
+          inputSnapshotJson: '{}',
+          calculatorVersion: 'msj-1.0.0',
+          policyVersion: 'np-1.0.0',
+        ),
+      );
+
+  await db
+      .into(db.programEventsV2)
+      .insert(
+        legacy2.ProgramEventsV2Companion.insert(
+          id: 'legacy-v2-event',
+          createdAt: testInstant,
+          userProgramId: userProgramId,
+          eventType: 'activated',
+          occurredAt: testInstant,
+          toStatus: const Value<String?>('active'),
+        ),
+      );
+
+  await db
+      .into(db.programProgressV2)
+      .insert(
+        legacy2.ProgramProgressV2Companion.insert(
+          id: 'legacy-v2-progress',
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          userProgramId: userProgramId,
+          recordedLocalDate: '2026-11-08',
+          recordedAt: testInstant,
+          activeDayNumber: 1,
+          calculationVersion: 'msj-1.0.0',
         ),
       );
 }

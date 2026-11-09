@@ -3,14 +3,14 @@ import 'package:mealora/app/theme/color_tokens.dart';
 
 /// Token tipografi Mealora.
 ///
-/// Keluarga dan ukuran diambil dari `mealora-plans/docs/mealora.pen`:
-/// Inter untuk seluruh antarmuka, Manrope hanya untuk wordmark.
+/// Keluarga dan ukuran diambil dari `mealora-plans/docs/mealora-v2.pen`:
+/// Plus Jakarta Sans untuk seluruh antarmuka, termasuk wordmark.
 ///
-/// Kedua berkas font adalah font variabel, sehingga berat dipilih lewat
+/// Berkas font adalah font variabel, sehingga berat dipilih lewat
 /// [FontVariation] pada sumbu wght — bukan hanya [FontWeight].
 abstract final class MealoraTypography {
-  static const String fontFamily = 'Inter';
-  static const String wordmarkFontFamily = 'Manrope';
+  static const String fontFamily = 'Plus Jakarta Sans';
+  static const String wordmarkFontFamily = fontFamily;
 
   static const double regular = 400;
   static const double medium = 500;
@@ -18,25 +18,26 @@ abstract final class MealoraTypography {
   static const double bold = 700;
   static const double extraBold = 800;
 
-  /// Angka besar yang menjadi fokus layar (mis. kalori terkonsumsi).
+  /// Angka besar yang menjadi fokus layar (mis. kalori terkonsumsi, berat
+  /// tersisa).
   static TextStyle get display =>
-      _inter(size: 50, weight: bold, color: MealoraColors.ink, height: 1.05);
+      _jakarta(size: 30, weight: bold, color: MealoraColors.ink, height: 1.1);
 
-  /// Judul layar.
+  /// Judul layar (mis. onboarding, tinjau target).
   static TextStyle get title =>
-      _inter(size: 31, weight: bold, color: MealoraColors.ink, height: 1.2);
+      _jakarta(size: 27, weight: bold, color: MealoraColors.ink, height: 1.2);
 
   /// Judul bagian besar.
   static TextStyle get headline =>
-      _inter(size: 21, weight: bold, color: MealoraColors.ink, height: 1.25);
+      _jakarta(size: 24, weight: bold, color: MealoraColors.ink, height: 1.2);
 
-  /// Judul bagian.
+  /// Judul bagian (mis. "Makanan hari ini").
   static TextStyle get sectionTitle =>
-      _inter(size: 19, weight: bold, color: MealoraColors.ink, height: 1.3);
+      _jakarta(size: 19, weight: bold, color: MealoraColors.ink, height: 1.3);
 
   /// Teks pengantar di bawah judul.
-  static TextStyle get subtitle => _inter(
-    size: 16,
+  static TextStyle get subtitle => _jakarta(
+    size: 13,
     weight: regular,
     color: MealoraColors.muted,
     height: 1.4,
@@ -44,55 +45,76 @@ abstract final class MealoraTypography {
 
   /// Teks isi.
   static TextStyle get body =>
-      _inter(size: 15, weight: regular, color: MealoraColors.ink, height: 1.45);
+      _jakarta(size: 15, weight: regular, color: MealoraColors.ink, height: 1.45);
 
   /// Teks isi sekunder.
-  static TextStyle get bodyMuted => _inter(
+  static TextStyle get bodyMuted => _jakarta(
     size: 15,
     weight: regular,
     color: MealoraColors.muted,
     height: 1.45,
   );
 
-  /// Teks isi kecil.
-  static TextStyle get bodySmall => _inter(
+  /// Teks isi kecil (catatan, keterangan tambahan).
+  static TextStyle get bodySmall => _jakarta(
     size: 13,
     weight: regular,
     color: MealoraColors.muted,
     height: 1.4,
   );
 
-  /// Label kolom isian dan baris data.
+  /// Nilai isian yang ditekankan (mis. nilai kolom formulir, nama baris
+  /// daftar) — "Value" 15/600 di dokumen desain.
+  static TextStyle get bodyEmphasis =>
+      _jakarta(size: 15, weight: semiBold, color: MealoraColors.ink, height: 1.3);
+
+  /// Label kapsul kaca (mis. "Program aktif") — 13/600 di dokumen desain.
+  static TextStyle get chipLabel =>
+      _jakarta(size: 13, weight: semiBold, color: MealoraColors.ink);
+
+  /// Label kolom isian dan keterangan kecil di atas sebuah nilai.
   static TextStyle get label =>
-      _inter(size: 12, weight: medium, color: MealoraColors.ink, height: 1.3);
+      _jakarta(size: 11, weight: regular, color: MealoraColors.muted, height: 1.3);
 
   /// Keterangan kecil, catatan kaki, dan janji privasi.
-  static TextStyle get caption => _inter(
+  static TextStyle get caption => _jakarta(
     size: 11,
     weight: regular,
     color: MealoraColors.muted,
     height: 1.35,
   );
 
-  /// Label tombol primer.
-  static TextStyle get button =>
-      _inter(size: 15, weight: bold, color: MealoraColors.onPrimary);
-
-  /// Label tujuan navigasi.
-  static TextStyle get navigationLabel =>
-      _inter(size: 11, weight: medium, color: MealoraColors.muted, height: 1.2);
-
-  /// Wordmark Mealora.
-  static TextStyle get wordmark => const TextStyle(
-    fontFamily: wordmarkFontFamily,
-    fontSize: 43,
-    letterSpacing: -2,
-    color: MealoraColors.ink,
-    fontWeight: FontWeight.w800,
-    fontVariations: <FontVariation>[FontVariation('wght', extraBold)],
+  /// Label konteks huruf tebal kecil (mis. "Langkah 2 dari 6", "Program
+  /// aktif") — "Step / context" / "Eyebrow" 10 bold di dokumen desain.
+  static TextStyle get eyebrow => _jakarta(
+    size: 10,
+    weight: bold,
+    color: MealoraColors.primary,
+    height: 1.2,
+    letterSpacing: 0.4,
   );
 
-  static TextStyle _inter({
+  /// Label tombol primer.
+  static TextStyle get button =>
+      _jakarta(size: 16, weight: bold, color: MealoraColors.onPrimary);
+
+  /// Label tujuan navigasi.
+  static TextStyle get navigationLabel => _jakarta(
+    size: 10,
+    weight: semiBold,
+    color: MealoraColors.muted,
+    height: 1.2,
+  );
+
+  /// Wordmark Mealora.
+  static TextStyle get wordmark => _jakarta(
+    size: 43,
+    weight: extraBold,
+    color: MealoraColors.onPrimary,
+    letterSpacing: -1,
+  );
+
+  static TextStyle _jakarta({
     required double size,
     required double weight,
     required Color color,

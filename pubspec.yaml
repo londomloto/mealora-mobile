@@ -48,9 +48,6 @@ flutter:
   fonts:
     # Font variabel (sumbu wght). Berat dipilih lewat FontVariation di berkas
     # token tipografi — lihat lib/app/theme/.
-    - family: Inter
+    - family: Plus Jakarta Sans
       fonts:
-        - asset: assets/fonts/Inter.ttf
-    - family: Manrope
-      fonts:
-        - asset: assets/fonts/Manrope.ttf
+        - asset: assets/fonts/PlusJakartaSans.ttf

@@ -55,13 +55,13 @@ class FloatingNavigation extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: MealoraColors.navigationSurface,
-                  borderRadius: BorderRadius.circular(MealoraRadius.pill),
-                  border: Border.all(color: MealoraColors.line),
-                  boxShadow: <BoxShadow>[
+                  borderRadius: BorderRadius.circular(MealoraRadius.navigation),
+                  border: Border.all(color: MealoraColors.glassBorder),
+                  boxShadow: const <BoxShadow>[
                     BoxShadow(
-                      color: MealoraColors.shadow.withValues(alpha: 0.13),
-                      offset: const Offset(0, 8),
-                      blurRadius: 24,
+                      color: MealoraColors.shadowGlass,
+                      offset: Offset(0, 14),
+                      blurRadius: 34,
                     ),
                   ],
                 ),
@@ -126,17 +126,21 @@ class _RecordButton extends StatelessWidget {
         width: MealoraTouch.raisedAction,
         height: MealoraTouch.raisedAction,
         decoration: BoxDecoration(
-          color: MealoraColors.primary,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: MealoraColors.onPrimary,
-            width: MealoraSpacing.xxs,
+          gradient: const LinearGradient(
+            begin: Alignment(-0.6, -1),
+            end: Alignment(0.6, 1),
+            colors: MealoraColors.ctaGradient,
           ),
-          boxShadow: <BoxShadow>[
+          borderRadius: BorderRadius.circular(MealoraRadius.cardLarge),
+          border: Border.all(
+            color: MealoraColors.glassBorder,
+            width: MealoraSpacing.xxs / 2,
+          ),
+          boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: MealoraColors.shadow.withValues(alpha: 0.25),
-              offset: const Offset(0, 6),
-              blurRadius: 16,
+              color: MealoraColors.shadowButton,
+              offset: Offset(0, 10),
+              blurRadius: 22,
             ),
           ],
         ),
@@ -144,7 +148,7 @@ class _RecordButton extends StatelessWidget {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: onTap,
-            customBorder: const CircleBorder(),
+            borderRadius: BorderRadius.circular(MealoraRadius.cardLarge),
             child: const Icon(
               Icons.add_rounded,
               size: MealoraIconSize.raisedAction,
@@ -185,7 +189,7 @@ class _NavigationSlot extends StatelessWidget {
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(MealoraRadius.pill),
+        borderRadius: BorderRadius.circular(MealoraRadius.chip),
         child: Container(
           constraints: const BoxConstraints(minHeight: MealoraTouch.minTarget),
           padding: const EdgeInsets.symmetric(
@@ -193,8 +197,8 @@ class _NavigationSlot extends StatelessWidget {
             horizontal: MealoraSpacing.xxs,
           ),
           decoration: BoxDecoration(
-            color: isSelected ? MealoraColors.softGreen : null,
-            borderRadius: BorderRadius.circular(MealoraRadius.pill),
+            color: isSelected ? MealoraColors.primarySelectedTint : null,
+            borderRadius: BorderRadius.circular(MealoraRadius.chip),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -212,15 +216,10 @@ class _NavigationSlot extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: MealoraTypography.navigationLabel.copyWith(
-                  color: isSelected ? MealoraColors.ink : MealoraColors.muted,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontVariations: <FontVariation>[
-                    FontVariation(
-                      'wght',
-                      isSelected
-                          ? MealoraTypography.bold
-                          : MealoraTypography.regular,
-                    ),
+                  color: foreground,
+                  fontWeight: FontWeight.w600,
+                  fontVariations: const <FontVariation>[
+                    FontVariation('wght', MealoraTypography.semiBold),
                   ],
                 ),
               ),

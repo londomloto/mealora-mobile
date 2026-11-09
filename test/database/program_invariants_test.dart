@@ -12,7 +12,23 @@ import 'test_database.dart';
 void main() {
   late AppDatabase db;
 
-  setUp(() => db = createTestDatabase());
+  setUp(() async {
+    db = createTestDatabase();
+    // Foreign key sungguhan ke `profiles` (Design D8, change 005): setiap
+    // `profileId` dipakai di baris uji ini harus menunjuk ke profil yang
+    // benar-benar ada.
+    for (final id in <String>['profile-1', 'profile-2']) {
+      await db
+          .into(db.profiles)
+          .insert(
+            ProfilesCompanion.insert(
+              id: id,
+              createdAt: testInstant,
+              updatedAt: testInstant,
+            ),
+          );
+    }
+  });
   tearDown(() => db.close());
 
   UserProgramsCompanion row({

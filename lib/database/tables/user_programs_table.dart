@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:mealora/database/tables/profiles_table.dart';
 import 'package:mealora/database/tables/programs_table.dart';
 import 'package:mealora/database/tables/user_record_columns.dart';
 
@@ -16,18 +17,19 @@ const List<String> kUserProgramStatuses = <String>[
 /// Pendaftaran seorang pengguna pada sebuah program (assessment
 /// `user_programs`, change 004).
 ///
-/// `profileId` SENGAJA bukan foreign key ke tabel `profiles` — tabel itu
-/// belum ada di repo ini (baru dibuat change 005, yang menyatakan dirinya
-/// bergantung pada change ini). Lihat design.md Design D12: keutuhan
-/// rujukan ditegakkan kode sampai change 005 menambah FK constraint
-/// sungguhan lewat migrasi lanjutan.
+/// `profileId` adalah foreign key sungguhan ke tabel `profiles` (Design D8,
+/// change 005) — sampai change 005, kolom ini hanya pengenal tanpa tabel
+/// tujuan (lihat catatan migrasi versi 2 ke 3 di `app_database.dart`), dan
+/// keutuhan rujukan ditegakkan kode saja.
 ///
 /// Nama kelas baris diberi akhiran `Row` secara eksplisit — nama bawaan
 /// Drift untuk tabel ini (`UserProgram`) bentrok dengan kelas domain
 /// `UserProgram` (change 003).
 @DataClassName('UserProgramRow')
 class UserPrograms extends Table with UserRecordColumns {
-  TextColumn get profileId => text().withLength(min: 1, max: 64)();
+  TextColumn get profileId => text()
+      .withLength(min: 1, max: 64)
+      .references(Profiles, #id, onDelete: KeyAction.restrict)();
 
   TextColumn get programId =>
       text().references(Programs, #id, onDelete: KeyAction.restrict)();

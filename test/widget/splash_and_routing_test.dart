@@ -6,9 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mealora/app/app.dart';
 import 'package:mealora/app/providers.dart';
 import 'package:mealora/app/router.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/ids/sequential_id_generator.dart';
 import 'package:mealora/core/providers.dart';
+import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/database/app_database.dart';
+import 'package:mealora/domain/nutrition/activity_level.dart';
+import 'package:mealora/domain/nutrition/biological_input.dart';
+import 'package:mealora/domain/profile/user_profile.dart';
+import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/shell/app_shell.dart';
 import 'package:mealora/features/splash/splash_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -39,6 +45,7 @@ void main() {
       await useDesignViewport(tester);
       final database = createWidgetTestDatabase();
       addTearDown(database.close);
+      await _seedCompleteProfile(database);
 
       await tester.pumpWidget(_bootstrapApp(databaseFactory: () => database));
 
@@ -77,6 +84,7 @@ void main() {
       await useDesignViewport(tester);
       final database = createWidgetTestDatabase();
       addTearDown(database.close);
+      await _seedCompleteProfile(database);
 
       await tester.pumpWidget(_bootstrapApp(databaseFactory: () => database));
       await tester.pumpAndSettle();
@@ -115,7 +123,30 @@ Widget _bootstrapApp({required AppDatabase Function() databaseFactory}) {
       clockProvider.overrideWithValue(createWidgetTestClock()),
       idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
       databaseFactoryProvider.overrideWithValue(databaseFactory),
+      profileRepositoryAppOverride,
+      programRepositoryAppOverride,
     ],
     child: const MealoraApp(),
+  );
+}
+
+/// Profil lengkap sehingga gerbang onboarding (change 005,
+/// `isOnboardingCompleteProvider`) mendarat di `AppShell` — uji ini
+/// menguji peluncuran dan navigasi ruang utama, bukan alur onboarding.
+Future<void> _seedCompleteProfile(AppDatabase database) {
+  final repository = DriftProfileRepository(
+    database,
+    clock: createWidgetTestClock(),
+  );
+  return repository.upsert(
+    UserProfile(
+      id: 'widget-test-profile',
+      birthDate: const LocalDate(1997, 5, 20),
+      height: Length.cmValue(165, field: 'h').valueOrNull,
+      currentWeight: Mass.kgValue(68.4, field: 'w').valueOrNull,
+      biologicalInput: BiologicalInput.female,
+      activityLevel: ActivityLevel.moderatelyActive,
+      isOnboardingComplete: true,
+    ),
   );
 }

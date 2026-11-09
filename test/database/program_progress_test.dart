@@ -30,6 +30,15 @@ void main() {
     );
     userProgramId = 'up-1';
     await db
+        .into(db.profiles)
+        .insert(
+          ProfilesCompanion.insert(
+            id: 'profile-1',
+            createdAt: testInstant,
+            updatedAt: testInstant,
+          ),
+        );
+    await db
         .into(db.userPrograms)
         .insert(
           UserProgramsCompanion.insert(

@@ -27,7 +27,7 @@ abstract final class MealoraTheme {
       onSurfaceVariant: MealoraColors.muted,
       outline: MealoraColors.line,
       outlineVariant: MealoraColors.track,
-      shadow: MealoraColors.shadow,
+      shadow: MealoraColors.shadowGlass,
     );
 
     return ThemeData(
@@ -66,7 +66,7 @@ abstract final class MealoraTheme {
           backgroundColor: MealoraColors.primary,
           foregroundColor: MealoraColors.onPrimary,
           textStyle: MealoraTypography.button,
-          minimumSize: const Size.fromHeight(56),
+          minimumSize: const Size.fromHeight(58),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(MealoraRadius.button),
           ),

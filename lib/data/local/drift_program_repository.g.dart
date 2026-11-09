@@ -4,6 +4,7 @@ part of 'drift_program_repository.dart';
 
 // ignore_for_file: type=lint
 mixin _$DriftProgramRepositoryMixin on DatabaseAccessor<AppDatabase> {
+  $ProfilesTable get profiles => attachedDatabase.profiles;
   $ProgramsTable get programs => attachedDatabase.programs;
   $UserProgramsTable get userPrograms => attachedDatabase.userPrograms;
   $ProgramEventsTable get programEvents => attachedDatabase.programEvents;
@@ -15,6 +16,8 @@ mixin _$DriftProgramRepositoryMixin on DatabaseAccessor<AppDatabase> {
 class DriftProgramRepositoryManager {
   final _$DriftProgramRepositoryMixin _db;
   DriftProgramRepositoryManager(this._db);
+  $$ProfilesTableTableManager get profiles =>
+      $$ProfilesTableTableManager(_db.attachedDatabase, _db.profiles);
   $$ProgramsTableTableManager get programs =>
       $$ProgramsTableTableManager(_db.attachedDatabase, _db.programs);
   $$UserProgramsTableTableManager get userPrograms =>

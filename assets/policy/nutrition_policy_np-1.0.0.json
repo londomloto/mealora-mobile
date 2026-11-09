@@ -3,7 +3,7 @@
   "energy_equation_version": "msj-1.0.0",
   "source_document": "mealora-plans/docs/nutrition-policy-v1.md",
   "technical_review_document": "mealora-plans/docs/nutrition-policy-v1-technical-review.md",
-  "note": "Kebijakan ini berlaku tanpa gerbang persetujuan berlisensi untuk Mealora MVP 1 (aplikasi lokal, pemakaian perorangan). Lihat openspec/changes/002-nutrition-policy-v1/design.md, keputusan D13.",
+  "note": "Kebijakan ini final untuk Mealora MVP 1 (aplikasi lokal, pemakaian perorangan). Lihat openspec/changes/002-nutrition-policy-v1/design.md, keputusan D13.",
   "outcomes": [
     "approved",
     "needs_user_correction",

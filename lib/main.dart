@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mealora/app/app.dart';
+import 'package:mealora/app/providers.dart';
 import 'package:mealora/core/clock/system_clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/core/ids/uuid_id_generator.dart';
@@ -19,6 +20,8 @@ Future<void> main() async {
       overrides: <Override>[
         clockProvider.overrideWithValue(SystemClock(timeZoneId: timeZoneId)),
         idGeneratorProvider.overrideWithValue(const UuidIdGenerator()),
+        profileRepositoryAppOverride,
+        programRepositoryAppOverride,
       ],
       child: const MealoraApp(),
     ),
