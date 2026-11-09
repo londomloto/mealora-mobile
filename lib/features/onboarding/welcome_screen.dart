@@ -138,17 +138,18 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
                                   children: <Widget>[
                                     _HeroPromiseRow(
                                       icon: Icons.edit_note_outlined,
-                                      title: text.onboardingWelcomePromiseLogTitle,
-                                      detail:
-                                          text.onboardingWelcomePromiseLogDetail,
+                                      title:
+                                          text.onboardingWelcomePromiseLogTitle,
+                                      detail: text
+                                          .onboardingWelcomePromiseLogDetail,
                                     ),
                                     const SizedBox(height: MealoraSpacing.sm),
                                     _HeroPromiseRow(
                                       icon: Icons.track_changes_outlined,
-                                      title:
-                                          text.onboardingWelcomePromiseFairTitle,
-                                      detail:
-                                          text.onboardingWelcomePromiseFairDetail,
+                                      title: text
+                                          .onboardingWelcomePromiseFairTitle,
+                                      detail: text
+                                          .onboardingWelcomePromiseFairDetail,
                                     ),
                                     const SizedBox(height: MealoraSpacing.sm),
                                     _HeroPromiseRow(

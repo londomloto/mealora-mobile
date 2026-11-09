@@ -111,9 +111,7 @@ class _ActiveProgramToday extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: MealoraColors.glassOnHero,
-                        borderRadius: BorderRadius.circular(
-                          MealoraRadius.chip,
-                        ),
+                        borderRadius: BorderRadius.circular(MealoraRadius.chip),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

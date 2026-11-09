@@ -75,7 +75,7 @@ void main() {
     expect(find.text('Belum ada riwayat'), findsOneWidget);
 
     await openSpace(tester, 'Profil');
-    expect(find.text('Belum ada profil'), findsOneWidget);
+    expect(find.text('Ubah profil'), findsOneWidget);
 
     await openSpace(tester, 'Hari ini');
     expect(find.text('Belum ada catatan hari ini'), findsOneWidget);

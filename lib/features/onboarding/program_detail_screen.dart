@@ -95,7 +95,8 @@ class OnboardingProgramDetailScreen extends ConsumerWidget {
             ),
             child: Column(
               children: <Widget>[
-                for (final (index, code) in kHabitFocusCodes.indexed) ...<Widget>[
+                for (final (index, code)
+                    in kHabitFocusCodes.indexed) ...<Widget>[
                   if (index > 0) const Divider(height: 1),
                   _FocusToggleRow(
                     label: _habitFocusLabel(text, code),
@@ -170,7 +171,9 @@ class _FocusToggleRow extends StatelessWidget {
                 selected
                     ? Icons.check_box_rounded
                     : Icons.check_box_outline_blank_rounded,
-                color: selected ? MealoraColors.primaryBright : MealoraColors.affordance,
+                color: selected
+                    ? MealoraColors.primaryBright
+                    : MealoraColors.affordance,
               ),
               const SizedBox(width: MealoraSpacing.sm),
               Expanded(

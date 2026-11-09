@@ -44,8 +44,12 @@ abstract final class MealoraTypography {
   );
 
   /// Teks isi.
-  static TextStyle get body =>
-      _jakarta(size: 15, weight: regular, color: MealoraColors.ink, height: 1.45);
+  static TextStyle get body => _jakarta(
+    size: 15,
+    weight: regular,
+    color: MealoraColors.ink,
+    height: 1.45,
+  );
 
   /// Teks isi sekunder.
   static TextStyle get bodyMuted => _jakarta(
@@ -65,16 +69,24 @@ abstract final class MealoraTypography {
 
   /// Nilai isian yang ditekankan (mis. nilai kolom formulir, nama baris
   /// daftar) — "Value" 15/600 di dokumen desain.
-  static TextStyle get bodyEmphasis =>
-      _jakarta(size: 15, weight: semiBold, color: MealoraColors.ink, height: 1.3);
+  static TextStyle get bodyEmphasis => _jakarta(
+    size: 15,
+    weight: semiBold,
+    color: MealoraColors.ink,
+    height: 1.3,
+  );
 
   /// Label kapsul kaca (mis. "Program aktif") — 13/600 di dokumen desain.
   static TextStyle get chipLabel =>
       _jakarta(size: 13, weight: semiBold, color: MealoraColors.ink);
 
   /// Label kolom isian dan keterangan kecil di atas sebuah nilai.
-  static TextStyle get label =>
-      _jakarta(size: 11, weight: regular, color: MealoraColors.muted, height: 1.3);
+  static TextStyle get label => _jakarta(
+    size: 11,
+    weight: regular,
+    color: MealoraColors.muted,
+    height: 1.3,
+  );
 
   /// Keterangan kecil, catatan kaki, dan janji privasi.
   static TextStyle get caption => _jakarta(

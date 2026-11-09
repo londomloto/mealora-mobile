@@ -71,9 +71,7 @@ class OnboardingScaffold extends StatelessWidget {
                                     MealoraRadius.pill,
                                   ),
                                   child: const Padding(
-                                    padding: EdgeInsets.all(
-                                      MealoraSpacing.xxs,
-                                    ),
+                                    padding: EdgeInsets.all(MealoraSpacing.xxs),
                                     child: Icon(
                                       Icons.arrow_back,
                                       color: MealoraColors.ink,

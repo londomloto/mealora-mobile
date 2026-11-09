@@ -90,10 +90,7 @@ class _OnboardingReviewScreenState
           disclaimer: text.reviewTargetDisclaimer,
         ),
         const SizedBox(height: MealoraSpacing.xl),
-        Text(
-          text.reviewBasisHeading,
-          style: MealoraTypography.sectionTitle,
-        ),
+        Text(text.reviewBasisHeading, style: MealoraTypography.sectionTitle),
         const SizedBox(height: MealoraSpacing.sm),
         MealoraCard(
           child: Column(
@@ -133,10 +130,7 @@ class _OnboardingReviewScreenState
           style: MealoraTypography.caption,
         ),
         const SizedBox(height: MealoraSpacing.lg),
-        Text(
-          text.reviewNoActiveProgramNote,
-          style: MealoraTypography.caption,
-        ),
+        Text(text.reviewNoActiveProgramNote, style: MealoraTypography.caption),
       ],
     );
   }
@@ -155,10 +149,7 @@ class _OnboardingReviewScreenState
           ? null
           : () => setState(() => _showingChangedState = false),
       children: <Widget>[
-        Text(
-          text.reviewChangedHeading,
-          style: MealoraTypography.sectionTitle,
-        ),
+        Text(text.reviewChangedHeading, style: MealoraTypography.sectionTitle),
         const SizedBox(height: MealoraSpacing.sm),
         MealoraCard(
           child: _BasisRow(
@@ -187,10 +178,7 @@ class _OnboardingReviewScreenState
           body: text.reviewChangedNoteDetail,
         ),
         const SizedBox(height: MealoraSpacing.lg),
-        Text(
-          text.reviewChangedConfirmation,
-          style: MealoraTypography.caption,
-        ),
+        Text(text.reviewChangedConfirmation, style: MealoraTypography.caption),
       ],
     );
   }

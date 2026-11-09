@@ -106,13 +106,6 @@ class AppTextId extends AppText {
       'Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.';
 
   @override
-  String get profileEmptyTitle => 'Belum ada profil';
-
-  @override
-  String get profileEmptyBody =>
-      'Di sini nanti muncul profil lokalmu, satuan dan bahasa, serta kendali atas data yang tersimpan di perangkat.';
-
-  @override
   String get routeNotFoundTitle => 'Halaman tidak ditemukan';
 
   @override
@@ -700,4 +693,456 @@ class AppTextId extends AppText {
 
   @override
   String get todayConsumedLabel => 'Dikonsumsi';
+
+  @override
+  String get profileIncompleteTitle => 'Lengkapi profil dulu';
+
+  @override
+  String get profileIncompleteBody =>
+      'Beberapa data profil belum lengkap, jadi target program belum bisa dijelaskan di sini.';
+
+  @override
+  String get profileIncompleteAction => 'Lengkapi profil';
+
+  @override
+  String get pausedExplanationTitle => 'Catat makanan seperti biasa';
+
+  @override
+  String get pausedExplanationBody =>
+      'Buku harian dan berat badan tetap tersedia saat program dijeda.';
+
+  @override
+  String get programControlsHeading => 'Kendali program';
+
+  @override
+  String get programControlsPausedHeading => 'Apa yang ingin kamu lakukan?';
+
+  @override
+  String get programResumeAction => 'Lanjutkan program';
+
+  @override
+  String get programChangeAction => 'Ganti';
+
+  @override
+  String get programCompleteAction => 'Selesaikan program';
+
+  @override
+  String get programPauseAction => 'Jeda';
+
+  @override
+  String get programHistoryAction => 'Riwayat';
+
+  @override
+  String get programPausedEyebrow => 'PROGRAM DIJEDA';
+
+  @override
+  String get programActiveEyebrow => 'PROGRAM AKTIF';
+
+  @override
+  String get programPausedStatus => 'Dijeda';
+
+  @override
+  String get programActiveStatus => 'Berjalan';
+
+  @override
+  String get pausedDaysNotCountedExplanation =>
+      'Hari jeda tidak dihitung sebagai hari aktif.';
+
+  @override
+  String pausedSinceLabel(String date) {
+    return 'Dijeda sejak $date';
+  }
+
+  @override
+  String get programTargetLabel => 'Target harian · perkiraan';
+
+  @override
+  String get programHowCalculatedAction => 'Bagaimana dihitung';
+
+  @override
+  String programLastCalculatedLabel(String date) {
+    return 'Dihitung terakhir $date';
+  }
+
+  @override
+  String get programLatestWeightLabel => 'Berat terbaru';
+
+  @override
+  String get programNoWeightRecordedYet => 'Belum ada catatan berat';
+
+  @override
+  String get programConsistencyHeading => 'Kebiasaan minggu ini';
+
+  @override
+  String get programConsistencySubheading =>
+      'Catatan makan, bukan nilai dirimu';
+
+  @override
+  String programConsistencyFooter(int count) {
+    return '$count dari 7 hari tercatat';
+  }
+
+  @override
+  String get programConsistencyDayCompleteSemantics =>
+      'Hari ini, pencatatan lengkap';
+
+  @override
+  String get programConsistencyDayPartialSemantics =>
+      'Hari ini, pencatatan belum lengkap';
+
+  @override
+  String get programConsistencyDayNoDataSemantics =>
+      'Hari ini, belum ada catatan';
+
+  @override
+  String get programWeightProgressUnknownTitle => 'Kemajuan belum diketahui';
+
+  @override
+  String get programWeightProgressUnknownBody =>
+      'Pemantauan berat badan menyusul pada tahap berikutnya — belum ada angka kemajuan untuk ditampilkan di sini.';
+
+  @override
+  String get howCalculatedBackSemantics => 'Kembali';
+
+  @override
+  String get howCalculatedContextLabel => 'PROGRAM SAYA · BAGAIMANA DIHITUNG';
+
+  @override
+  String get howCalculatedTitle => 'Bagaimana target dihitung';
+
+  @override
+  String howCalculatedSubtitle(String date) {
+    return 'Dihitung terakhir $date';
+  }
+
+  @override
+  String get howCalculatedTargetEyebrow => 'TARGET YANG BERLAKU · PERKIRAAN';
+
+  @override
+  String get howCalculatedTargetCaption =>
+      'Perkiraan dari rumus; berubah hanya saat revisi disetujui.';
+
+  @override
+  String get howCalculatedInputsHeading => 'Masukan yang dipakai';
+
+  @override
+  String get howCalculatedHeightLabel => 'Tinggi badan';
+
+  @override
+  String get howCalculatedWeightLabel => 'Berat saat dihitung';
+
+  @override
+  String get howCalculatedLastCalculatedLabel => 'Tanggal perhitungan terakhir';
+
+  @override
+  String get howCalculatedAssumptionsHeading => 'Asumsi';
+
+  @override
+  String get howCalculatedActivityFactorLabel => 'Faktor aktivitas';
+
+  @override
+  String get howCalculatedRoundingLabel => 'Pembulatan';
+
+  @override
+  String get howCalculatedRoundingValue => 'Ke kelipatan 10 kkal terdekat';
+
+  @override
+  String get howCalculatedWarningsHeading => 'Peringatan';
+
+  @override
+  String get howCalculatedWarningFloorTitle => 'Batas bawah energi diterapkan';
+
+  @override
+  String get howCalculatedWarningPaceCapTitle =>
+      'Laju perubahan berat dibatasi';
+
+  @override
+  String get howCalculatedWarningCarbTitle =>
+      'Proporsi karbohidrat disesuaikan';
+
+  @override
+  String get howCalculatedReadOnlyNote =>
+      'Nilai di layar ini dibaca dari target yang tersimpan, bukan dihitung ulang.';
+
+  @override
+  String get completeContextLabel => 'PROGRAM SAYA';
+
+  @override
+  String get completeTitle => 'Selesaikan program?';
+
+  @override
+  String get completeSubtitle => 'Keputusan ini tidak menghapus perjalananmu.';
+
+  @override
+  String get completeProgramEyebrow => 'PROGRAM AKTIF';
+
+  @override
+  String get completeReasonHeading => 'Alasan selesai';
+
+  @override
+  String get completeReasonPlaceholder => 'Pilih alasan';
+
+  @override
+  String get completeSnapshotTitle => 'Ringkasan akhir disimpan';
+
+  @override
+  String get completeSnapshotBody =>
+      'Hari aktif dan catatan yang tersedia diarsipkan tanpa mengubah log makan.';
+
+  @override
+  String get completeFinalityNote =>
+      'Program yang selesai tidak dapat dilanjutkan. Kamu bisa memulai program baru.';
+
+  @override
+  String get completeCancelAction => 'Batal, tetap di program ini';
+
+  @override
+  String get completeConfirmAction => 'Ya, selesaikan program';
+
+  @override
+  String get completeReasonGoalReached => 'Saya sudah mencapai tujuan';
+
+  @override
+  String get completeReasonSwitchingProgram =>
+      'Saya ingin mencoba program lain';
+
+  @override
+  String get completeReasonTakingABreak => 'Saya ingin berhenti sementara';
+
+  @override
+  String get completeReasonOther => 'Alasan lain';
+
+  @override
+  String get historyProgramContextLabel => 'PROGRAM SAYA';
+
+  @override
+  String get historyProgramTitle => 'Riwayat program';
+
+  @override
+  String get historyProgramSubtitle => 'Target lama tetap dapat dijelaskan.';
+
+  @override
+  String get historyProgramErrorTitle => 'Riwayat tidak bisa dimuat';
+
+  @override
+  String get historyProgramErrorBody =>
+      'Terjadi kendala saat membaca riwayat program. Catatanmu tidak berubah.';
+
+  @override
+  String get historyProgramEmptyTitle => 'Belum ada riwayat';
+
+  @override
+  String get historyProgramEmptyBody =>
+      'Program yang pernah kamu jalani akan muncul di sini.';
+
+  @override
+  String get historyProgramNoteTitle => 'Tidak ada catatan yang hilang';
+
+  @override
+  String get historyProgramNoteBody =>
+      'Riwayat program tidak mengubah catatan makanan dan berat yang pernah kamu simpan.';
+
+  @override
+  String get historyProgramEntryExtra =>
+      'Lihat target, input, dan alasan perubahan';
+
+  @override
+  String historyProgramRangeRunning(String start) {
+    return 'Aktif · sejak $start';
+  }
+
+  @override
+  String historyProgramRangeEnded(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get historyProgramStateDraft => 'Draf';
+
+  @override
+  String get historyProgramStateActive => 'Aktif';
+
+  @override
+  String get historyProgramStatePaused => 'Dijeda';
+
+  @override
+  String get historyProgramStateCompleted => 'Selesai';
+
+  @override
+  String get historyProgramStateChanged => 'Diganti';
+
+  @override
+  String get historyProgramStateCancelled => 'Dibatalkan';
+
+  @override
+  String get historyDetailContextLabel => 'RIWAYAT';
+
+  @override
+  String get historyDetailTargetEyebrow => 'TARGET YANG DISETUJUI SAAT ITU';
+
+  @override
+  String get historyDetailTargetCaption =>
+      'Perkiraan · tidak berubah karena target baru.';
+
+  @override
+  String get historyDetailFactsHeading => 'Rincian program';
+
+  @override
+  String get historyDetailStatusLabel => 'Status';
+
+  @override
+  String get historyDetailStartingWeightLabel => 'Berat awal';
+
+  @override
+  String get historyDetailLatestWeightLabel => 'Berat terbaru';
+
+  @override
+  String get historyDetailNoDataOnLastDay => 'Belum ada data di hari terakhir';
+
+  @override
+  String get historyDetailTargetWeightLabel => 'Target berat';
+
+  @override
+  String get historyDetailTargetWeightNotRequired => 'Tidak diwajibkan';
+
+  @override
+  String get historyDetailEndReasonLabel => 'Alasan selesai';
+
+  @override
+  String get historyDetailEndReasonChanged => 'Diganti dengan program baru';
+
+  @override
+  String get historyDetailEndReasonNotEnded => 'Belum berakhir';
+
+  @override
+  String get historyDetailEndReasonUnknown => 'Tidak tercatat';
+
+  @override
+  String get historyDetailNote =>
+      'Input, target, dan versi asli disimpan untuk penjelasan riwayat.';
+
+  @override
+  String get revisionComparisonHeading => 'Dibandingkan dengan target sekarang';
+
+  @override
+  String get revisionComparisonCurrentLabel => 'Target sekarang';
+
+  @override
+  String get revisionComparisonNewLabel => 'Target baru';
+
+  @override
+  String get revisionCancelNoteChange => 'Batal? Program aktif tidak berubah.';
+
+  @override
+  String get revisionCancelNoteProfile =>
+      'Belum disetujui? Target yang berjalan tetap berlaku.';
+
+  @override
+  String get revisionFailedMessage =>
+      'Perubahan belum bisa disimpan. Programmu yang berjalan tidak berubah.';
+
+  @override
+  String get revisionRejectedContextLabel => 'STATUS · TARGET TIDAK DIBUAT';
+
+  @override
+  String get revisionRejectedTitle => 'Target tidak dibuat';
+
+  @override
+  String get revisionRejectedNoChangeNote =>
+      'Program dan target yang berjalan tidak berubah.';
+
+  @override
+  String get changeContextLabel => 'GANTI PROGRAM';
+
+  @override
+  String get changeTitle => 'Sebelum kamu berganti';
+
+  @override
+  String get changeSubtitle => 'Program saat ini akan dipindahkan ke riwayat.';
+
+  @override
+  String get changeCurrentProgramEyebrow => 'PROGRAM SEKARANG';
+
+  @override
+  String get changeReplacementEyebrow => 'PROGRAM BARU · PRATINJAU';
+
+  @override
+  String get changeReplacementDescription =>
+      'Nilai dan asumsi target ditinjau sebelum disetujui.';
+
+  @override
+  String get changeHistoryNoteTitle => 'Riwayatmu tetap utuh';
+
+  @override
+  String get changeHistoryNoteBody =>
+      'Catatan makanan, berat, dan target lama tidak dihapus atau ditulis ulang.';
+
+  @override
+  String get changeCancelFootnote => 'Batal? Program aktif tidak berubah.';
+
+  @override
+  String get changeReviewAction => 'Tinjau target pengganti';
+
+  @override
+  String get changePickReplacementTitle => 'Pilih program pengganti';
+
+  @override
+  String get changePickReplacementSubtitle =>
+      'Kamu bisa menggantinya lagi nanti.';
+
+  @override
+  String get changeHabitFocusHeading => 'Fokus kebiasaan';
+
+  @override
+  String get changeReviewReplacementAction => 'Tinjau target pengganti';
+
+  @override
+  String get editProfileContextLabel => 'PROFIL';
+
+  @override
+  String get editProfileTitle => 'Ubah data profil';
+
+  @override
+  String get editProfileSubtitle =>
+      'Perubahan tidak menulis ulang target lama.';
+
+  @override
+  String get editProfileHeightLabel => 'Tinggi badan';
+
+  @override
+  String get editProfileWeightLabel => 'Berat saat ini';
+
+  @override
+  String get editProfileActivityLabel => 'Aktivitas';
+
+  @override
+  String get editProfileUnitsLabel => 'Satuan';
+
+  @override
+  String get editProfileUnitsValue => 'Metrik · kg, cm';
+
+  @override
+  String get editProfileReviewNoteTitle => 'Target perlu ditinjau ulang';
+
+  @override
+  String get editProfileReviewNoteBody =>
+      'Profil baru tidak langsung mengubah target aktif. Tinjau perkiraan baru dan setujui revisinya.';
+
+  @override
+  String get editProfileReviewAction => 'Tinjau target baru';
+
+  @override
+  String get profileSettingsHeading => 'Akun & program';
+
+  @override
+  String get profileEditAction => 'Ubah profil';
+
+  @override
+  String get profileUnitsLanguageAction => 'Satuan & bahasa';
+
+  @override
+  String get profilePrivacyAction => 'Privasi & data lokal';
+
+  @override
+  String get profileAboutAction => 'Tentang Mealora';
 }

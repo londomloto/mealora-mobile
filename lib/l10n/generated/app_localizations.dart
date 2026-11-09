@@ -261,18 +261,6 @@ abstract class AppText {
   /// **'Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.'**
   String get historyEmptyBody;
 
-  /// No description provided for @profileEmptyTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Belum ada profil'**
-  String get profileEmptyTitle;
-
-  /// No description provided for @profileEmptyBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Di sini nanti muncul profil lokalmu, satuan dan bahasa, serta kendali atas data yang tersimpan di perangkat.'**
-  String get profileEmptyBody;
-
   /// No description provided for @routeNotFoundTitle.
   ///
   /// In id, this message translates to:
@@ -1274,6 +1262,828 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Dikonsumsi'**
   String get todayConsumedLabel;
+
+  /// No description provided for @profileIncompleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi profil dulu'**
+  String get profileIncompleteTitle;
+
+  /// No description provided for @profileIncompleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Beberapa data profil belum lengkap, jadi target program belum bisa dijelaskan di sini.'**
+  String get profileIncompleteBody;
+
+  /// No description provided for @profileIncompleteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi profil'**
+  String get profileIncompleteAction;
+
+  /// No description provided for @pausedExplanationTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat makanan seperti biasa'**
+  String get pausedExplanationTitle;
+
+  /// No description provided for @pausedExplanationBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Buku harian dan berat badan tetap tersedia saat program dijeda.'**
+  String get pausedExplanationBody;
+
+  /// No description provided for @programControlsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Kendali program'**
+  String get programControlsHeading;
+
+  /// No description provided for @programControlsPausedHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang ingin kamu lakukan?'**
+  String get programControlsPausedHeading;
+
+  /// No description provided for @programResumeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan program'**
+  String get programResumeAction;
+
+  /// No description provided for @programChangeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti'**
+  String get programChangeAction;
+
+  /// No description provided for @programCompleteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesaikan program'**
+  String get programCompleteAction;
+
+  /// No description provided for @programPauseAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Jeda'**
+  String get programPauseAction;
+
+  /// No description provided for @programHistoryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat'**
+  String get programHistoryAction;
+
+  /// No description provided for @programPausedEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM DIJEDA'**
+  String get programPausedEyebrow;
+
+  /// No description provided for @programActiveEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM AKTIF'**
+  String get programActiveEyebrow;
+
+  /// No description provided for @programPausedStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Dijeda'**
+  String get programPausedStatus;
+
+  /// No description provided for @programActiveStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Berjalan'**
+  String get programActiveStatus;
+
+  /// No description provided for @pausedDaysNotCountedExplanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari jeda tidak dihitung sebagai hari aktif.'**
+  String get pausedDaysNotCountedExplanation;
+
+  /// Keterangan tanggal mulai jeda pada ruang Program.
+  ///
+  /// In id, this message translates to:
+  /// **'Dijeda sejak {date}'**
+  String pausedSinceLabel(String date);
+
+  /// No description provided for @programTargetLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target harian · perkiraan'**
+  String get programTargetLabel;
+
+  /// No description provided for @programHowCalculatedAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagaimana dihitung'**
+  String get programHowCalculatedAction;
+
+  /// Tanggal perhitungan terakhir target yang berlaku.
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung terakhir {date}'**
+  String programLastCalculatedLabel(String date);
+
+  /// No description provided for @programLatestWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat terbaru'**
+  String get programLatestWeightLabel;
+
+  /// No description provided for @programNoWeightRecordedYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan berat'**
+  String get programNoWeightRecordedYet;
+
+  /// No description provided for @programConsistencyHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan minggu ini'**
+  String get programConsistencyHeading;
+
+  /// No description provided for @programConsistencySubheading.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan makan, bukan nilai dirimu'**
+  String get programConsistencySubheading;
+
+  /// Jumlah hari dalam 7 hari terakhir yang punya catatan makan.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} dari 7 hari tercatat'**
+  String programConsistencyFooter(int count);
+
+  /// No description provided for @programConsistencyDayCompleteSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini, pencatatan lengkap'**
+  String get programConsistencyDayCompleteSemantics;
+
+  /// No description provided for @programConsistencyDayPartialSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini, pencatatan belum lengkap'**
+  String get programConsistencyDayPartialSemantics;
+
+  /// No description provided for @programConsistencyDayNoDataSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini, belum ada catatan'**
+  String get programConsistencyDayNoDataSemantics;
+
+  /// No description provided for @programWeightProgressUnknownTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kemajuan belum diketahui'**
+  String get programWeightProgressUnknownTitle;
+
+  /// No description provided for @programWeightProgressUnknownBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemantauan berat badan menyusul pada tahap berikutnya — belum ada angka kemajuan untuk ditampilkan di sini.'**
+  String get programWeightProgressUnknownBody;
+
+  /// No description provided for @howCalculatedBackSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get howCalculatedBackSemantics;
+
+  /// No description provided for @howCalculatedContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM SAYA · BAGAIMANA DIHITUNG'**
+  String get howCalculatedContextLabel;
+
+  /// No description provided for @howCalculatedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagaimana target dihitung'**
+  String get howCalculatedTitle;
+
+  /// Subjudul layar Bagaimana Dihitung dengan tanggal perhitungan terakhir.
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung terakhir {date}'**
+  String howCalculatedSubtitle(String date);
+
+  /// No description provided for @howCalculatedTargetEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'TARGET YANG BERLAKU · PERKIRAAN'**
+  String get howCalculatedTargetEyebrow;
+
+  /// No description provided for @howCalculatedTargetCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan dari rumus; berubah hanya saat revisi disetujui.'**
+  String get howCalculatedTargetCaption;
+
+  /// No description provided for @howCalculatedInputsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukan yang dipakai'**
+  String get howCalculatedInputsHeading;
+
+  /// No description provided for @howCalculatedHeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinggi badan'**
+  String get howCalculatedHeightLabel;
+
+  /// No description provided for @howCalculatedWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat saat dihitung'**
+  String get howCalculatedWeightLabel;
+
+  /// No description provided for @howCalculatedLastCalculatedLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal perhitungan terakhir'**
+  String get howCalculatedLastCalculatedLabel;
+
+  /// No description provided for @howCalculatedAssumptionsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Asumsi'**
+  String get howCalculatedAssumptionsHeading;
+
+  /// No description provided for @howCalculatedActivityFactorLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Faktor aktivitas'**
+  String get howCalculatedActivityFactorLabel;
+
+  /// No description provided for @howCalculatedRoundingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pembulatan'**
+  String get howCalculatedRoundingLabel;
+
+  /// No description provided for @howCalculatedRoundingValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Ke kelipatan 10 kkal terdekat'**
+  String get howCalculatedRoundingValue;
+
+  /// No description provided for @howCalculatedWarningsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Peringatan'**
+  String get howCalculatedWarningsHeading;
+
+  /// No description provided for @howCalculatedWarningFloorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas bawah energi diterapkan'**
+  String get howCalculatedWarningFloorTitle;
+
+  /// No description provided for @howCalculatedWarningPaceCapTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laju perubahan berat dibatasi'**
+  String get howCalculatedWarningPaceCapTitle;
+
+  /// No description provided for @howCalculatedWarningCarbTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Proporsi karbohidrat disesuaikan'**
+  String get howCalculatedWarningCarbTitle;
+
+  /// No description provided for @howCalculatedReadOnlyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai di layar ini dibaca dari target yang tersimpan, bukan dihitung ulang.'**
+  String get howCalculatedReadOnlyNote;
+
+  /// No description provided for @completeContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM SAYA'**
+  String get completeContextLabel;
+
+  /// No description provided for @completeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesaikan program?'**
+  String get completeTitle;
+
+  /// No description provided for @completeSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Keputusan ini tidak menghapus perjalananmu.'**
+  String get completeSubtitle;
+
+  /// No description provided for @completeProgramEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM AKTIF'**
+  String get completeProgramEyebrow;
+
+  /// No description provided for @completeReasonHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan selesai'**
+  String get completeReasonHeading;
+
+  /// No description provided for @completeReasonPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih alasan'**
+  String get completeReasonPlaceholder;
+
+  /// No description provided for @completeSnapshotTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan akhir disimpan'**
+  String get completeSnapshotTitle;
+
+  /// No description provided for @completeSnapshotBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari aktif dan catatan yang tersedia diarsipkan tanpa mengubah log makan.'**
+  String get completeSnapshotBody;
+
+  /// No description provided for @completeFinalityNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Program yang selesai tidak dapat dilanjutkan. Kamu bisa memulai program baru.'**
+  String get completeFinalityNote;
+
+  /// No description provided for @completeCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal, tetap di program ini'**
+  String get completeCancelAction;
+
+  /// No description provided for @completeConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya, selesaikan program'**
+  String get completeConfirmAction;
+
+  /// No description provided for @completeReasonGoalReached.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya sudah mencapai tujuan'**
+  String get completeReasonGoalReached;
+
+  /// No description provided for @completeReasonSwitchingProgram.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya ingin mencoba program lain'**
+  String get completeReasonSwitchingProgram;
+
+  /// No description provided for @completeReasonTakingABreak.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya ingin berhenti sementara'**
+  String get completeReasonTakingABreak;
+
+  /// No description provided for @completeReasonOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan lain'**
+  String get completeReasonOther;
+
+  /// No description provided for @historyProgramContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM SAYA'**
+  String get historyProgramContextLabel;
+
+  /// No description provided for @historyProgramTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat program'**
+  String get historyProgramTitle;
+
+  /// No description provided for @historyProgramSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Target lama tetap dapat dijelaskan.'**
+  String get historyProgramSubtitle;
+
+  /// No description provided for @historyProgramErrorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat tidak bisa dimuat'**
+  String get historyProgramErrorTitle;
+
+  /// No description provided for @historyProgramErrorBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kendala saat membaca riwayat program. Catatanmu tidak berubah.'**
+  String get historyProgramErrorBody;
+
+  /// No description provided for @historyProgramEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada riwayat'**
+  String get historyProgramEmptyTitle;
+
+  /// No description provided for @historyProgramEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Program yang pernah kamu jalani akan muncul di sini.'**
+  String get historyProgramEmptyBody;
+
+  /// No description provided for @historyProgramNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada catatan yang hilang'**
+  String get historyProgramNoteTitle;
+
+  /// No description provided for @historyProgramNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat program tidak mengubah catatan makanan dan berat yang pernah kamu simpan.'**
+  String get historyProgramNoteBody;
+
+  /// No description provided for @historyProgramEntryExtra.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat target, input, dan alasan perubahan'**
+  String get historyProgramEntryExtra;
+
+  /// Rentang tanggal entri riwayat yang masih berjalan.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif · sejak {start}'**
+  String historyProgramRangeRunning(String start);
+
+  /// Rentang tanggal entri riwayat yang sudah berakhir.
+  ///
+  /// In id, this message translates to:
+  /// **'{start} – {end}'**
+  String historyProgramRangeEnded(String start, String end);
+
+  /// No description provided for @historyProgramStateDraft.
+  ///
+  /// In id, this message translates to:
+  /// **'Draf'**
+  String get historyProgramStateDraft;
+
+  /// No description provided for @historyProgramStateActive.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif'**
+  String get historyProgramStateActive;
+
+  /// No description provided for @historyProgramStatePaused.
+  ///
+  /// In id, this message translates to:
+  /// **'Dijeda'**
+  String get historyProgramStatePaused;
+
+  /// No description provided for @historyProgramStateCompleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get historyProgramStateCompleted;
+
+  /// No description provided for @historyProgramStateChanged.
+  ///
+  /// In id, this message translates to:
+  /// **'Diganti'**
+  String get historyProgramStateChanged;
+
+  /// No description provided for @historyProgramStateCancelled.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get historyProgramStateCancelled;
+
+  /// No description provided for @historyDetailContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'RIWAYAT'**
+  String get historyDetailContextLabel;
+
+  /// No description provided for @historyDetailTargetEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'TARGET YANG DISETUJUI SAAT ITU'**
+  String get historyDetailTargetEyebrow;
+
+  /// No description provided for @historyDetailTargetCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan · tidak berubah karena target baru.'**
+  String get historyDetailTargetCaption;
+
+  /// No description provided for @historyDetailFactsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Rincian program'**
+  String get historyDetailFactsHeading;
+
+  /// No description provided for @historyDetailStatusLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get historyDetailStatusLabel;
+
+  /// No description provided for @historyDetailStartingWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat awal'**
+  String get historyDetailStartingWeightLabel;
+
+  /// No description provided for @historyDetailLatestWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat terbaru'**
+  String get historyDetailLatestWeightLabel;
+
+  /// No description provided for @historyDetailNoDataOnLastDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data di hari terakhir'**
+  String get historyDetailNoDataOnLastDay;
+
+  /// No description provided for @historyDetailTargetWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target berat'**
+  String get historyDetailTargetWeightLabel;
+
+  /// No description provided for @historyDetailTargetWeightNotRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak diwajibkan'**
+  String get historyDetailTargetWeightNotRequired;
+
+  /// No description provided for @historyDetailEndReasonLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan selesai'**
+  String get historyDetailEndReasonLabel;
+
+  /// No description provided for @historyDetailEndReasonChanged.
+  ///
+  /// In id, this message translates to:
+  /// **'Diganti dengan program baru'**
+  String get historyDetailEndReasonChanged;
+
+  /// No description provided for @historyDetailEndReasonNotEnded.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum berakhir'**
+  String get historyDetailEndReasonNotEnded;
+
+  /// No description provided for @historyDetailEndReasonUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak tercatat'**
+  String get historyDetailEndReasonUnknown;
+
+  /// No description provided for @historyDetailNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Input, target, dan versi asli disimpan untuk penjelasan riwayat.'**
+  String get historyDetailNote;
+
+  /// No description provided for @revisionComparisonHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibandingkan dengan target sekarang'**
+  String get revisionComparisonHeading;
+
+  /// No description provided for @revisionComparisonCurrentLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target sekarang'**
+  String get revisionComparisonCurrentLabel;
+
+  /// No description provided for @revisionComparisonNewLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target baru'**
+  String get revisionComparisonNewLabel;
+
+  /// No description provided for @revisionCancelNoteChange.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal? Program aktif tidak berubah.'**
+  String get revisionCancelNoteChange;
+
+  /// No description provided for @revisionCancelNoteProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum disetujui? Target yang berjalan tetap berlaku.'**
+  String get revisionCancelNoteProfile;
+
+  /// No description provided for @revisionFailedMessage.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan belum bisa disimpan. Programmu yang berjalan tidak berubah.'**
+  String get revisionFailedMessage;
+
+  /// No description provided for @revisionRejectedContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'STATUS · TARGET TIDAK DIBUAT'**
+  String get revisionRejectedContextLabel;
+
+  /// No description provided for @revisionRejectedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Target tidak dibuat'**
+  String get revisionRejectedTitle;
+
+  /// No description provided for @revisionRejectedNoChangeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Program dan target yang berjalan tidak berubah.'**
+  String get revisionRejectedNoChangeNote;
+
+  /// No description provided for @changeContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'GANTI PROGRAM'**
+  String get changeContextLabel;
+
+  /// No description provided for @changeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebelum kamu berganti'**
+  String get changeTitle;
+
+  /// No description provided for @changeSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Program saat ini akan dipindahkan ke riwayat.'**
+  String get changeSubtitle;
+
+  /// No description provided for @changeCurrentProgramEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM SEKARANG'**
+  String get changeCurrentProgramEyebrow;
+
+  /// No description provided for @changeReplacementEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'PROGRAM BARU · PRATINJAU'**
+  String get changeReplacementEyebrow;
+
+  /// No description provided for @changeReplacementDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai dan asumsi target ditinjau sebelum disetujui.'**
+  String get changeReplacementDescription;
+
+  /// No description provided for @changeHistoryNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayatmu tetap utuh'**
+  String get changeHistoryNoteTitle;
+
+  /// No description provided for @changeHistoryNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan makanan, berat, dan target lama tidak dihapus atau ditulis ulang.'**
+  String get changeHistoryNoteBody;
+
+  /// No description provided for @changeCancelFootnote.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal? Program aktif tidak berubah.'**
+  String get changeCancelFootnote;
+
+  /// No description provided for @changeReviewAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau target pengganti'**
+  String get changeReviewAction;
+
+  /// No description provided for @changePickReplacementTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih program pengganti'**
+  String get changePickReplacementTitle;
+
+  /// No description provided for @changePickReplacementSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu bisa menggantinya lagi nanti.'**
+  String get changePickReplacementSubtitle;
+
+  /// No description provided for @changeHabitFocusHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Fokus kebiasaan'**
+  String get changeHabitFocusHeading;
+
+  /// No description provided for @changeReviewReplacementAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau target pengganti'**
+  String get changeReviewReplacementAction;
+
+  /// No description provided for @editProfileContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROFIL'**
+  String get editProfileContextLabel;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah data profil'**
+  String get editProfileTitle;
+
+  /// No description provided for @editProfileSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan tidak menulis ulang target lama.'**
+  String get editProfileSubtitle;
+
+  /// No description provided for @editProfileHeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinggi badan'**
+  String get editProfileHeightLabel;
+
+  /// No description provided for @editProfileWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat saat ini'**
+  String get editProfileWeightLabel;
+
+  /// No description provided for @editProfileActivityLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas'**
+  String get editProfileActivityLabel;
+
+  /// No description provided for @editProfileUnitsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Satuan'**
+  String get editProfileUnitsLabel;
+
+  /// No description provided for @editProfileUnitsValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Metrik · kg, cm'**
+  String get editProfileUnitsValue;
+
+  /// No description provided for @editProfileReviewNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Target perlu ditinjau ulang'**
+  String get editProfileReviewNoteTitle;
+
+  /// No description provided for @editProfileReviewNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil baru tidak langsung mengubah target aktif. Tinjau perkiraan baru dan setujui revisinya.'**
+  String get editProfileReviewNoteBody;
+
+  /// No description provided for @editProfileReviewAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau target baru'**
+  String get editProfileReviewAction;
+
+  /// No description provided for @profileSettingsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Akun & program'**
+  String get profileSettingsHeading;
+
+  /// No description provided for @profileEditAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah profil'**
+  String get profileEditAction;
+
+  /// No description provided for @profileUnitsLanguageAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Satuan & bahasa'**
+  String get profileUnitsLanguageAction;
+
+  /// No description provided for @profilePrivacyAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Privasi & data lokal'**
+  String get profilePrivacyAction;
+
+  /// No description provided for @profileAboutAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang Mealora'**
+  String get profileAboutAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

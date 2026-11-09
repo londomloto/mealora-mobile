@@ -47,7 +47,9 @@ class OnboardingChoiceCard extends StatelessWidget {
             color: selected ? MealoraColors.glassSoft : MealoraColors.glassCard,
             borderRadius: BorderRadius.circular(MealoraRadius.card),
             border: Border.all(
-              color: selected ? MealoraColors.primary : MealoraColors.glassBorder,
+              color: selected
+                  ? MealoraColors.primary
+                  : MealoraColors.glassBorder,
               width: selected ? 2 : 1,
             ),
           ),
@@ -60,7 +62,11 @@ class OnboardingChoiceCard extends StatelessWidget {
                   color: leadingBackground,
                   borderRadius: BorderRadius.circular(MealoraRadius.iconField),
                 ),
-                child: Icon(leading, color: leadingForeground, size: MealoraIconSize.action),
+                child: Icon(
+                  leading,
+                  color: leadingForeground,
+                  size: MealoraIconSize.action,
+                ),
               ),
               const SizedBox(width: MealoraSpacing.sm),
               Expanded(
@@ -78,7 +84,9 @@ class OnboardingChoiceCard extends StatelessWidget {
               const SizedBox(width: MealoraSpacing.sm),
               Icon(
                 selected ? Icons.check_circle : Icons.circle_outlined,
-                color: selected ? MealoraColors.primary : MealoraColors.affordance,
+                color: selected
+                    ? MealoraColors.primary
+                    : MealoraColors.affordance,
               ),
             ],
           ),
