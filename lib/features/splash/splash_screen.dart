@@ -60,47 +60,50 @@ class SplashScreen extends StatelessWidget {
               ),
             ),
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(MealoraSpacing.screenGutter),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Spacer(),
-                    _SymbolTile(semanticsLabel: text.splashLogoSemantics),
-                    const SizedBox(height: MealoraSpacing.xxl),
-                    Text(
-                      text.appName.toLowerCase(),
-                      style: MealoraTypography.wordmark,
-                    ),
-                    const SizedBox(height: MealoraSpacing.xs),
-                    Text(
-                      text.appTagline,
-                      textAlign: TextAlign.center,
-                      style: MealoraTypography.body.copyWith(
-                        color: MealoraColors.onPrimaryMuted,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    children: <Widget>[
+                      Positioned(
+                        top: constraints.maxHeight * (296 / 844),
+                        left: MealoraSpacing.screenGutter,
+                        right: MealoraSpacing.screenGutter,
+                        child: Column(
+                          children: <Widget>[
+                            _SymbolTile(
+                              semanticsLabel: text.splashLogoSemantics,
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              text.appName.toLowerCase(),
+                              style: MealoraTypography.wordmark,
+                            ),
+                            const SizedBox(height: MealoraSpacing.xxs),
+                            Text(
+                              text.appTagline,
+                              textAlign: TextAlign.center,
+                              style: MealoraTypography.body.copyWith(
+                                color: MealoraColors.onPrimaryMuted,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Semantics(
-                      label: text.splashLoadingSemantics,
-                      liveRegion: true,
-                      child: const SizedBox(
-                        width: 94,
-                        height: 5,
-                        child: _LoadingTrack(),
+                      Positioned(
+                        left: MealoraSpacing.screenGutter,
+                        right: MealoraSpacing.screenGutter,
+                        bottom: constraints.maxHeight * (49 / 844),
+                        child: Text(
+                          text.splashPrivacyPromise,
+                          textAlign: TextAlign.center,
+                          style: MealoraTypography.caption.copyWith(
+                            color: MealoraColors.onPrimaryFaint,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: MealoraSpacing.xl),
-                    Text(
-                      text.splashPrivacyPromise,
-                      textAlign: TextAlign.center,
-                      style: MealoraTypography.caption.copyWith(
-                        color: MealoraColors.onPrimaryFaint,
-                      ),
-                    ),
-                    const SizedBox(height: MealoraSpacing.lg),
-                  ],
-                ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -127,7 +130,7 @@ class _SymbolTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(MealoraRadius.splashTile),
           boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: MealoraColors.shadowGlass,
+              color: MealoraColors.shadowWelcomeButton,
               offset: Offset(0, 18),
               blurRadius: 40,
             ),
@@ -136,27 +139,11 @@ class _SymbolTile extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(MealoraRadius.splashTile),
           child: Image.asset(
-            'assets/brand/mealora-symbol.png',
+            'assets/brand/mealora-app-icon-1024.png',
             fit: BoxFit.contain,
             excludeFromSemantics: true,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _LoadingTrack extends StatelessWidget {
-  const _LoadingTrack();
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(MealoraRadius.track),
-      child: const LinearProgressIndicator(
-        backgroundColor: MealoraColors.glassOnHero,
-        color: MealoraColors.onPrimary,
-        minHeight: 5,
       ),
     );
   }

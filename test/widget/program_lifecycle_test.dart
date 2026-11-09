@@ -568,11 +568,11 @@ void main() {
         await tester.pumpWidget(
           UncontrolledProviderScope(
             container: container,
-            child: MaterialApp(
+            child: const MaterialApp(
               localizationsDelegates: AppText.localizationsDelegates,
               supportedLocales: AppText.supportedLocales,
-              locale: const Locale('id'),
-              home: const ProgramScreen(),
+              locale: Locale('id'),
+              home: ProgramScreen(),
             ),
           ),
         );
@@ -660,7 +660,7 @@ void main() {
         await tapVisible(tester, find.text('Tinjau target pengganti'));
 
         // Pilih program pengganti apa pun lalu lanjutkan.
-        await tapVisible(tester, find.text('Pertahankan Berat'));
+        await tapVisible(tester, find.text('Pertahankan'));
         await tapVisible(tester, find.text('Tinjau target pengganti'));
         await tester.pumpAndSettle();
 
@@ -730,6 +730,11 @@ void main() {
         expect(find.byType(HowCalculatedScreen), findsOneWidget);
         await tapVisible(tester, find.byIcon(Icons.arrow_back).first);
 
+        // Jeda dulu — "Selesaikan program" hanya ada di daftar kendali
+        // keadaan dijeda (task 2.6), bukan di baris tiga tombol aktif.
+        await tapVisible(tester, find.text('Jeda'));
+        expect(tester.takeException(), isNull);
+
         // Selesaikan program (sampai pemilihan alasan, dibatalkan).
         await tapVisible(tester, find.text('Selesaikan program'));
         expect(tester.takeException(), isNull);
@@ -740,33 +745,48 @@ void main() {
         expect(tester.takeException(), isNull);
         await tapVisible(tester, find.text('Batal, tetap di program ini'));
 
-        // Ganti program (sampai pratinjau pengganti).
+        // Ganti program (sampai pratinjau pengganti) — kendali keadaan
+        // dijeda juga berlabel "Ganti" (`text.programChangeAction`), sama
+        // dengan tombol keadaan aktif.
         await tapVisible(tester, find.text('Ganti'));
         expect(tester.takeException(), isNull);
         expect(find.byType(ProgramChangePreviewScreen), findsOneWidget);
         await tapVisible(tester, find.text('Tinjau target pengganti'));
         expect(tester.takeException(), isNull);
-        await tapVisible(tester, find.text('Pertahankan Berat'));
+        await tapVisible(tester, find.text('Pertahankan'));
         expect(tester.takeException(), isNull);
         await tapVisible(tester, find.text('Tinjau target pengganti'));
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
         expect(find.byType(ProgramRevisionReviewScreen), findsOneWidget);
-
-        // Ubah profil (lewat ruang Profil).
-        await tester.tap(
-          find.descendant(
-            of: find.byType(FloatingNavigation),
-            matching: find.text('Profil'),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull);
-        await tapVisible(tester, find.text('Ubah profil'));
-        expect(tester.takeException(), isNull);
-        expect(find.byType(EditProfileScreen), findsOneWidget);
       },
     );
+
+    testWidgets('ubah profil tetap terbaca pada skala 2x', (tester) async {
+      await useDesignViewport(tester);
+      final database = createWidgetTestDatabase();
+      addTearDown(database.close);
+      await bootstrapWithActiveProgram(tester, database: database);
+
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      // Ruang Profil berada di navigator akar (di atas `AppShell`) — beda
+      // dari `ProgramChangePreviewScreen`/`ProgramRevisionReviewScreen` di
+      // uji sebelumnya yang di-push di atasnya dan membuat
+      // `FloatingNavigation` offstage; di sini masih onstage sejak awal.
+      await tester.tap(
+        find.descendant(
+          of: find.byType(FloatingNavigation),
+          matching: find.text('Profil'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tapVisible(tester, find.text('Ubah profil'));
+      expect(tester.takeException(), isNull);
+      expect(find.byType(EditProfileScreen), findsOneWidget);
+    });
   });
 
   group('Label pembaca layar (task 9.2)', () {
@@ -787,7 +807,15 @@ void main() {
         expect(find.bySemanticsLabel('Berjalan'), findsOneWidget);
         expect(find.bySemanticsLabel('Jeda'), findsOneWidget);
         expect(find.bySemanticsLabel('Ganti'), findsOneWidget);
-        expect(find.bySemanticsLabel('Riwayat'), findsOneWidget);
+        // "Riwayat" juga dipakai sebagai label tab navigasi bawah (ruang
+        // lain, change 001/004) — dibatasi ke dalam `ProgramScreen` saja.
+        expect(
+          find.descendant(
+            of: find.byType(ProgramScreen),
+            matching: find.bySemanticsLabel('Riwayat'),
+          ),
+          findsOneWidget,
+        );
         expect(find.bySemanticsLabel('Bagaimana dihitung'), findsOneWidget);
 
         // Entri riwayat (keadaan aktif masih punya kendali "Riwayat"
@@ -810,7 +838,7 @@ void main() {
         await tapVisible(tester, find.text('Jeda'));
         expect(find.bySemanticsLabel('Dijeda'), findsOneWidget);
         expect(find.bySemanticsLabel('Lanjutkan program'), findsOneWidget);
-        expect(find.bySemanticsLabel('Ganti program'), findsOneWidget);
+        expect(find.bySemanticsLabel('Ganti'), findsOneWidget);
         expect(find.bySemanticsLabel('Selesaikan program'), findsOneWidget);
         semantics.dispose();
       },

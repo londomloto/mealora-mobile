@@ -220,10 +220,15 @@ class ProgramControlTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // `excludeSemantics` (task 9.2): tanpa ini, `Text` di dalam
+    // `MealoraIconRow` ikut menyumbang label semantiknya sendiri, hasilnya
+    // label gabungan yang menduplikasi teks (mis. "Jeda\nJeda") — bukan
+    // sekadar kosmetik, itu berarti pembaca layar membacakannya dua kali.
     return Semantics(
       button: true,
       enabled: enabled,
       label: semanticsLabel ?? (detail == null ? label : '$label. $detail'),
+      excludeSemantics: true,
       child: InkWell(
         onTap: enabled ? onTap : null,
         borderRadius: BorderRadius.circular(MealoraRadius.card),
@@ -291,15 +296,25 @@ class ProgramActionButton extends StatelessWidget {
       child: Semantics(
         button: true,
         label: label,
+        // Task 9.2 — lihat catatan di `ProgramControlTile`: cegah `Text`
+        // label di bawah menduplikasi label semantik ini.
+        excludeSemantics: true,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(MealoraRadius.card),
+          borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: MealoraSpacing.md),
             decoration: BoxDecoration(
               color: MealoraColors.glassCard,
-              borderRadius: BorderRadius.circular(MealoraRadius.card),
+              borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
               border: Border.all(color: MealoraColors.glassBorder),
+              boxShadow: const <BoxShadow>[
+                BoxShadow(
+                  color: MealoraColors.shadowGlass,
+                  offset: Offset(0, 14),
+                  blurRadius: 34,
+                ),
+              ],
             ),
             child: Column(
               children: <Widget>[

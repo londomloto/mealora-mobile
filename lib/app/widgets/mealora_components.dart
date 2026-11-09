@@ -8,6 +8,108 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
+/// Indikator pilihan lingkaran yang digambar langsung agar konsisten pada
+/// web dan tidak bergantung pada ketersediaan glyph font ikon.
+class MealoraCircleCheck extends StatelessWidget {
+  const MealoraCircleCheck({required this.selected, this.size = 22, super.key});
+
+  final bool selected;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: size,
+      child: CustomPaint(painter: _CircleCheckPainter(selected: selected)),
+    );
+  }
+}
+
+/// Checkbox persegi untuk pilihan yang dapat aktif lebih dari satu.
+class MealoraSquareCheck extends StatelessWidget {
+  const MealoraSquareCheck({required this.selected, this.size = 20, super.key});
+
+  final bool selected;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: size,
+      child: CustomPaint(painter: _SquareCheckPainter(selected: selected)),
+    );
+  }
+}
+
+class _CircleCheckPainter extends CustomPainter {
+  const _CircleCheckPainter({required this.selected});
+
+  final bool selected;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final color = selected
+        ? MealoraColors.primary
+        : MealoraColors.selectionIdle;
+    final stroke = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final center = Offset(size.width / 2, size.height / 2);
+    canvas.drawCircle(center, (size.shortestSide - 2) / 2, stroke);
+    if (selected) {
+      final check = Path()
+        ..moveTo(size.width * 0.28, size.height * 0.52)
+        ..lineTo(size.width * 0.44, size.height * 0.68)
+        ..lineTo(size.width * 0.74, size.height * 0.34);
+      canvas.drawPath(check, stroke);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_CircleCheckPainter oldDelegate) =>
+      oldDelegate.selected != selected;
+}
+
+class _SquareCheckPainter extends CustomPainter {
+  const _SquareCheckPainter({required this.selected});
+
+  final bool selected;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final color = selected
+        ? MealoraColors.primary
+        : MealoraColors.selectionIdle;
+    final stroke = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Offset.zero & size,
+        Radius.circular(size.shortestSide * 0.18),
+      ).deflate(1),
+      stroke,
+    );
+    if (selected) {
+      final check = Path()
+        ..moveTo(size.width * 0.25, size.height * 0.52)
+        ..lineTo(size.width * 0.43, size.height * 0.69)
+        ..lineTo(size.width * 0.76, size.height * 0.32);
+      canvas.drawPath(check, stroke);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SquareCheckPainter oldDelegate) =>
+      oldDelegate.selected != selected;
+}
+
 /// Latar dekoratif tiga "blob" blur (lime, mint, biru) di belakang layar
 /// alur onboarding — sesuai pola yang berulang identik di setiap layar
 /// langkah di `mealora-v2.pen` (`08`–`12b`, `25`, `26`, `36`).
@@ -121,8 +223,8 @@ class MealoraPrimaryButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: enabled
             ? const LinearGradient(
-                begin: Alignment(-0.6, -1),
-                end: Alignment(0.6, 1),
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
                 colors: MealoraColors.ctaGradient,
               )
             : null,
@@ -130,6 +232,11 @@ class MealoraPrimaryButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(MealoraRadius.button),
         boxShadow: enabled
             ? const <BoxShadow>[
+                BoxShadow(
+                  color: MealoraColors.shadowButtonCore,
+                  offset: Offset(0, 5),
+                  blurRadius: 12,
+                ),
                 BoxShadow(
                   color: MealoraColors.shadowButton,
                   offset: Offset(0, 10),
@@ -548,6 +655,7 @@ class MealoraNoteCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(MealoraRadius.chip),
+        border: Border.all(color: MealoraColors.glassBorder),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

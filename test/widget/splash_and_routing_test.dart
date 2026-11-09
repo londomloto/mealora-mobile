@@ -31,7 +31,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('mealora'), findsOneWidget);
-      expect(find.text('catat makanan sehatmu'), findsOneWidget);
+      expect(find.text('Diary makanan harianmu'), findsOneWidget);
       expect(
         find.text('Pribadi di perangkatmu · siap digunakan offline'),
         findsOneWidget,

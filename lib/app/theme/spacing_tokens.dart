@@ -19,11 +19,14 @@ abstract final class MealoraSpacing {
 /// Radius sudut.
 abstract final class MealoraRadius {
   static const double track = 4;
+  static const double compactIconField = 12;
   static const double iconField = 14;
   static const double chip = 18;
   static const double button = 20;
+  static const double choiceCard = 22;
   static const double card = 24;
   static const double cardLarge = 26;
+  static const double welcomeCard = 28;
   static const double sheet = 32;
 
   /// Ubin simbol pada splash.
@@ -34,6 +37,9 @@ abstract final class MealoraRadius {
 
   /// Radius dok navigasi (tidak sepenuhnya kapsul — 30 px tetap).
   static const double navigation = 30;
+
+  /// Ubin ikon pada kartu pilihan onboarding.
+  static const double choiceIcon = 16;
 }
 
 /// Ukuran ikon.

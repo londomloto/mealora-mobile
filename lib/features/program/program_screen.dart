@@ -397,6 +397,9 @@ class _ProgramHero extends StatelessWidget {
             child: Semantics(
               button: true,
               label: text.programHowCalculatedAction,
+              // Task 9.2 — cegah `Text` di bawah menduplikasi label ini
+              // (lihat catatan yang sama di `ProgramControlTile`).
+              excludeSemantics: true,
               child: InkWell(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(

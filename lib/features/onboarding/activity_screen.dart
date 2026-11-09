@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
-import 'package:mealora/app/theme/typography_tokens.dart';
+import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/domain/nutrition/activity_level.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
@@ -87,22 +87,13 @@ class _OnboardingActivityScreenState
           onTap: () => setState(() => _selected = ActivityLevel.veryActive),
         ),
         const SizedBox(height: MealoraSpacing.lg),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Icon(
-              Icons.info_outline,
-              size: MealoraIconSize.action,
-              color: MealoraColors.muted,
-            ),
-            const SizedBox(width: MealoraSpacing.xs),
-            Expanded(
-              child: Text(
-                text.onboardingActivityNote,
-                style: MealoraTypography.bodySmall,
-              ),
-            ),
-          ],
+        ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 76),
+          child: MealoraNoteCard(
+            icon: Icons.info_outline,
+            body: text.onboardingActivityNote,
+            foreground: MealoraColors.primaryDeep,
+          ),
         ),
       ],
     );

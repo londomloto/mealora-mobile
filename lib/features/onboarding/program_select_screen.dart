@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
-import 'package:mealora/app/theme/typography_tokens.dart';
+import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
@@ -57,6 +57,7 @@ class OnboardingProgramSelectScreen extends ConsumerWidget {
           leading: icon,
           leadingBackground: background,
           leadingForeground: foreground,
+          minHeight: 78,
           selected: selected == code,
           onTap: () => notifier.selectProgram(code),
         ),
@@ -98,22 +99,14 @@ class OnboardingProgramSelectScreen extends ConsumerWidget {
           text.onboardingProgramMaintenanceDescription,
         ),
         const SizedBox(height: MealoraSpacing.sm),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Icon(
-              Icons.info_outline,
-              size: MealoraIconSize.action,
-              color: MealoraColors.muted,
-            ),
-            const SizedBox(width: MealoraSpacing.xs),
-            Expanded(
-              child: Text(
-                text.onboardingProgramTerms,
-                style: MealoraTypography.bodySmall,
-              ),
-            ),
-          ],
+        ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 70),
+          child: MealoraNoteCard(
+            icon: Icons.info_outline,
+            body: text.onboardingProgramTerms,
+            background: MealoraColors.noteWarning,
+            foreground: MealoraColors.accent,
+          ),
         ),
       ],
     );

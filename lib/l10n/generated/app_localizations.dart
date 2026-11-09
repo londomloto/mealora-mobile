@@ -102,7 +102,7 @@ abstract class AppText {
   /// Tagline pada splash.
   ///
   /// In id, this message translates to:
-  /// **'catat makanan sehatmu'**
+  /// **'Diary makanan harianmu'**
   String get appTagline;
 
   /// Janji penyimpanan lokal pada splash.

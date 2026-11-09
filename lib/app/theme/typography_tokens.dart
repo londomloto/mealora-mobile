@@ -23,6 +23,20 @@ abstract final class MealoraTypography {
   static TextStyle get display =>
       _jakarta(size: 30, weight: bold, color: MealoraColors.ink, height: 1.1);
 
+  /// Angka dan unit pada kartu estimasi target onboarding.
+  static TextStyle get targetValue => _jakarta(
+    size: 48,
+    weight: bold,
+    color: MealoraColors.onPrimary,
+    height: 1,
+  );
+  static TextStyle get targetUnit => _jakarta(
+    size: 14,
+    weight: regular,
+    color: MealoraColors.onPrimaryMuted,
+    height: 1.3,
+  );
+
   /// Judul layar (mis. onboarding, tinjau target).
   static TextStyle get title =>
       _jakarta(size: 27, weight: bold, color: MealoraColors.ink, height: 1.2);
@@ -34,6 +48,20 @@ abstract final class MealoraTypography {
   /// Judul bagian (mis. "Makanan hari ini").
   static TextStyle get sectionTitle =>
       _jakarta(size: 19, weight: bold, color: MealoraColors.ink, height: 1.3);
+
+  /// Heading ringkas pada daftar review (16/bold di dokumen desain).
+  static TextStyle get compactSectionTitle =>
+      _jakarta(size: 16, weight: bold, color: MealoraColors.ink, height: 1.3);
+
+  /// Pasangan label/nilai pada baris dasar perkiraan.
+  static TextStyle get reviewLabel => _jakarta(
+    size: 12,
+    weight: regular,
+    color: MealoraColors.muted,
+    height: 1.35,
+  );
+  static TextStyle get reviewValue =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.ink, height: 1.35);
 
   /// Teks pengantar di bawah judul.
   static TextStyle get subtitle => _jakarta(
@@ -84,6 +112,14 @@ abstract final class MealoraTypography {
   static TextStyle get label => _jakarta(
     size: 11,
     weight: regular,
+    color: MealoraColors.muted,
+    height: 1.3,
+  );
+
+  /// Label di atas field ringkas pada target berat.
+  static TextStyle get compactFieldLabel => _jakarta(
+    size: 12,
+    weight: semiBold,
     color: MealoraColors.muted,
     height: 1.3,
   );

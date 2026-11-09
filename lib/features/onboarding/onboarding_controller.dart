@@ -234,6 +234,28 @@ class OnboardingController extends AsyncNotifier<OnboardingDraft> {
     );
   }
 
+  /// Menambah atau menghapus satu fokus kebiasaan. Nilai tetap disimpan pada
+  /// kolom string lama sebagai daftar berurutan yang dipisahkan `|`, sehingga
+  /// data lama dengan satu fokus tetap kompatibel tanpa migrasi database.
+  void toggleHabitFocus(String habitFocus) {
+    final draft = state.valueOrNull;
+    if (draft == null) {
+      return;
+    }
+    final selected = <String>{
+      ...?draft.habitFocus?.split('|').where((value) => value.isNotEmpty),
+    };
+    if (!selected.add(habitFocus)) {
+      selected.remove(habitFocus);
+    }
+    state = AsyncValue<OnboardingDraft>.data(
+      draft.copyWith(
+        habitFocus: selected.isEmpty ? null : selected.join('|'),
+        clearHabitFocus: selected.isEmpty,
+      ),
+    );
+  }
+
   /// Menyimpan pengakuan bahwa target dan data makanan adalah perkiraan
   /// (`11`, task 4.8, FRS 3.3.6).
   void setEstimateAcknowledged(bool acknowledged) {

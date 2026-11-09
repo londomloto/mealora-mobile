@@ -4,7 +4,7 @@
   "appName": "Mealora",
   "@appName": { "description": "Nama produk." },
 
-  "appTagline": "catat makanan sehatmu",
+  "appTagline": "Diary makanan harianmu",
   "@appTagline": { "description": "Tagline pada splash." },
 
   "splashPrivacyPromise": "Pribadi di perangkatmu · siap digunakan offline",

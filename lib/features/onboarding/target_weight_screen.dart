@@ -95,32 +95,39 @@ class _OnboardingTargetWeightScreenState
         const SizedBox(height: MealoraSpacing.lg),
         Text(
           text.onboardingStartingWeightLabel,
-          style: MealoraTypography.label,
+          style: MealoraTypography.compactFieldLabel,
         ),
         const SizedBox(height: MealoraSpacing.xs),
-        MealoraCard(
-          padding: const EdgeInsets.symmetric(
-            horizontal: MealoraSpacing.md,
-            vertical: MealoraSpacing.sm,
-          ),
-          child: Text(
-            draft.currentWeight == null
-                ? '—'
-                : text.valueWithUnit(
-                    IdFormat.decimal(draft.currentWeight!.kg),
-                    text.unitKilogram,
-                  ),
-            style: MealoraTypography.bodyEmphasis,
-          ),
+        _WeightFieldCard(
+          icon: Icons.monitor_weight_outlined,
+          value: draft.currentWeight == null
+              ? '—'
+              : text.valueWithUnit(
+                  IdFormat.decimal(draft.currentWeight!.kg),
+                  text.unitKilogram,
+                ),
         ),
         const SizedBox(height: MealoraSpacing.lg),
-        MealoraField(
-          label: text.onboardingGoalWeightLabel,
-          hint: text.onboardingGoalWeightHint,
-          controller: _targetWeightController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          errorText: _targetWeightError,
+        Text(
+          text.onboardingGoalWeightLabel,
+          style: MealoraTypography.compactFieldLabel,
         ),
+        const SizedBox(height: MealoraSpacing.xs),
+        _WeightFieldCard(
+          icon: Icons.track_changes_outlined,
+          controller: _targetWeightController,
+          hint: text.onboardingGoalWeightHint,
+          suffix: text.unitKilogram,
+        ),
+        if (_targetWeightError != null) ...<Widget>[
+          const SizedBox(height: MealoraSpacing.xxs),
+          Text(
+            _targetWeightError!,
+            style: MealoraTypography.caption.copyWith(
+              color: MealoraColors.danger,
+            ),
+          ),
+        ],
         const SizedBox(height: MealoraSpacing.lg),
         MealoraDateField(
           label: text.onboardingTargetDateLabel,
@@ -169,5 +176,84 @@ class _OnboardingTargetWeightScreenState
     if (result.isErr) {
       setState(() => _targetWeightError = result.failureOrNull!.detail);
     }
+  }
+}
+
+class _WeightFieldCard extends StatelessWidget {
+  const _WeightFieldCard({
+    required this.icon,
+    this.value,
+    this.controller,
+    this.hint,
+    this.suffix,
+  }) : assert(value != null || controller != null);
+
+  final IconData icon;
+  final String? value;
+  final TextEditingController? controller;
+  final String? hint;
+  final String? suffix;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minHeight: 56),
+      padding: const EdgeInsets.symmetric(horizontal: MealoraSpacing.md),
+      decoration: BoxDecoration(
+        color: MealoraColors.glassCard,
+        borderRadius: BorderRadius.circular(MealoraRadius.button),
+        border: Border.all(color: MealoraColors.glassBorder),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowGlass,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: MealoraColors.iconField,
+              borderRadius: BorderRadius.circular(
+                MealoraRadius.compactIconField,
+              ),
+            ),
+            child: Icon(icon, size: 18, color: MealoraColors.primaryDeep),
+          ),
+          const SizedBox(width: MealoraSpacing.sm),
+          Expanded(
+            child: controller == null
+                ? Text(value!, style: MealoraTypography.bodyEmphasis)
+                : TextField(
+                    controller: controller,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    style: MealoraTypography.bodyEmphasis,
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      suffixText: suffix,
+                      isDense: true,
+                      filled: false,
+                      contentPadding: EdgeInsets.zero,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                    ),
+                  ),
+          ),
+          const SizedBox(width: MealoraSpacing.xs),
+          const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 18,
+            color: MealoraColors.affordance,
+          ),
+        ],
+      ),
+    );
   }
 }

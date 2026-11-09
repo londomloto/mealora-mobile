@@ -12,7 +12,7 @@ class AppTextId extends AppText {
   String get appName => 'Mealora';
 
   @override
-  String get appTagline => 'catat makanan sehatmu';
+  String get appTagline => 'Diary makanan harianmu';
 
   @override
   String get splashPrivacyPromise =>

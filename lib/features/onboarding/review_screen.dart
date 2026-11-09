@@ -90,9 +90,16 @@ class _OnboardingReviewScreenState
           disclaimer: text.reviewTargetDisclaimer,
         ),
         const SizedBox(height: MealoraSpacing.xl),
-        Text(text.reviewBasisHeading, style: MealoraTypography.sectionTitle),
+        Text(
+          text.reviewBasisHeading,
+          style: MealoraTypography.compactSectionTitle,
+        ),
         const SizedBox(height: MealoraSpacing.sm),
         MealoraCard(
+          padding: const EdgeInsets.symmetric(
+            horizontal: MealoraSpacing.md,
+            vertical: MealoraSpacing.xs,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -100,12 +107,12 @@ class _OnboardingReviewScreenState
                 label: text.reviewBasisProfileLabel,
                 value: text.reviewBasisProfileValue,
               ),
-              const SizedBox(height: MealoraSpacing.sm),
+              const Divider(height: 1),
               _BasisRow(
                 label: text.reviewBasisActivityLabel,
                 value: _activityLabel(text, draft.activityLevel!),
               ),
-              const SizedBox(height: MealoraSpacing.sm),
+              const Divider(height: 1),
               _BasisRow(
                 label: text.reviewBasisEquationLabel,
                 value: 'Mifflin–St Jeor · ${proposal.calculatorVersion}',
@@ -116,18 +123,12 @@ class _OnboardingReviewScreenState
         const SizedBox(height: MealoraSpacing.xl),
         MealoraNoteCard(
           icon: Icons.shield_outlined,
-          background: MealoraColors.accent.withValues(alpha: 0.14),
+          background: MealoraColors.noteWarning,
           foreground: MealoraColors.accent,
           title: text.reviewVersionHeading,
-          body: text.reviewVersionDetail,
-        ),
-        const SizedBox(height: MealoraSpacing.xs),
-        Text(
-          text.reviewVersionLine(
-            proposal.calculatorVersion,
-            proposal.policyVersion,
-          ),
-          style: MealoraTypography.caption,
+          body:
+              '${text.reviewVersionDetail}\n'
+              '${text.reviewVersionLine(proposal.calculatorVersion, proposal.policyVersion)}',
         ),
         const SizedBox(height: MealoraSpacing.lg),
         Text(text.reviewNoActiveProgramNote, style: MealoraTypography.caption),
@@ -172,7 +173,7 @@ class _OnboardingReviewScreenState
         const SizedBox(height: MealoraSpacing.xl),
         MealoraNoteCard(
           icon: Icons.refresh,
-          background: MealoraColors.info.withValues(alpha: 0.12),
+          background: MealoraColors.noteInfo,
           foreground: MealoraColors.info,
           title: text.reviewChangedNoteHeading,
           body: text.reviewChangedNoteDetail,
@@ -242,7 +243,8 @@ class _TargetCard extends StatelessWidget {
     final text = AppText.of(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(MealoraSpacing.lg),
+      constraints: const BoxConstraints(minHeight: 172),
+      padding: const EdgeInsets.all(MealoraSpacing.md),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment(0.34, -0.94),
@@ -250,56 +252,59 @@ class _TargetCard extends StatelessWidget {
           colors: MealoraColors.heroGradient,
           stops: MealoraColors.heroGradientStops,
         ),
-        borderRadius: BorderRadius.circular(MealoraRadius.cardLarge),
+        borderRadius: BorderRadius.circular(MealoraRadius.welcomeCard),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowHero,
+            offset: Offset(0, 16),
+            blurRadius: 36,
+          ),
+        ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
             label,
-            style: MealoraTypography.label.copyWith(
-              color: MealoraColors.onPrimary,
+            textAlign: TextAlign.center,
+            style: MealoraTypography.eyebrow.copyWith(
+              color: MealoraColors.onPrimaryEyebrow,
+              letterSpacing: 1.3,
             ),
           ),
-          const SizedBox(height: MealoraSpacing.sm),
+          const SizedBox(height: 2),
           if (proposal.showsEnergyTarget && proposal.energyTarget != null)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: <Widget>[
-                Flexible(
-                  child: Text(
-                    IdFormat.integer(proposal.energyTarget!.kcal),
-                    style: MealoraTypography.display.copyWith(
-                      color: MealoraColors.onPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: MealoraSpacing.xs),
-                Text(
-                  text.unitKilocalorie,
-                  style: MealoraTypography.body.copyWith(
-                    color: MealoraColors.onPrimaryMuted,
-                  ),
-                ),
-              ],
+            Text(
+              IdFormat.integer(proposal.energyTarget!.kcal),
+              textAlign: TextAlign.center,
+              style: MealoraTypography.targetValue,
             )
           else
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: MealoraSpacing.sm),
+              padding: const EdgeInsets.symmetric(vertical: MealoraSpacing.xs),
               child: Text(
                 noEnergyTargetNote,
+                textAlign: TextAlign.center,
                 style: MealoraTypography.body.copyWith(
                   color: MealoraColors.onPrimary,
                 ),
               ),
             ),
-          const SizedBox(height: MealoraSpacing.sm),
+          if (proposal.showsEnergyTarget && proposal.energyTarget != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              '${text.unitKilocalorie} / hari',
+              textAlign: TextAlign.center,
+              style: MealoraTypography.targetUnit,
+            ),
+          ],
+          const SizedBox(height: 2),
           Text(
             disclaimer,
+            textAlign: TextAlign.center,
             style: MealoraTypography.caption.copyWith(
-              color: MealoraColors.onPrimaryMuted,
+              color: MealoraColors.onPrimaryFaint,
             ),
           ),
         ],
@@ -316,18 +321,21 @@ class _BasisRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(child: Text(label, style: MealoraTypography.bodySmall)),
-        Flexible(
-          child: Text(
-            value,
-            style: MealoraTypography.body,
-            textAlign: TextAlign.end,
-            overflow: TextOverflow.ellipsis,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 44),
+      child: Row(
+        children: <Widget>[
+          Expanded(child: Text(label, style: MealoraTypography.reviewLabel)),
+          Flexible(
+            child: Text(
+              value,
+              style: MealoraTypography.reviewValue,
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

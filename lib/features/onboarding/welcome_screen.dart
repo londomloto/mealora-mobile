@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
@@ -88,7 +90,10 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
                                   decoration: BoxDecoration(
                                     color: MealoraColors.glassOnHero,
                                     borderRadius: BorderRadius.circular(
-                                      MealoraRadius.iconField,
+                                      MealoraRadius.choiceCard,
+                                    ),
+                                    border: Border.all(
+                                      color: MealoraColors.welcomeIconBorder,
                                     ),
                                   ),
                                   child: const Icon(
@@ -124,42 +129,60 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              Container(
-                                padding: const EdgeInsets.all(
-                                  MealoraSpacing.lg,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  MealoraRadius.welcomeCard,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: MealoraColors.glassOnHero,
-                                  borderRadius: BorderRadius.circular(
-                                    MealoraRadius.cardLarge,
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 18,
+                                    sigmaY: 18,
                                   ),
-                                ),
-                                child: Column(
-                                  children: <Widget>[
-                                    _HeroPromiseRow(
-                                      icon: Icons.edit_note_outlined,
-                                      title:
-                                          text.onboardingWelcomePromiseLogTitle,
-                                      detail: text
-                                          .onboardingWelcomePromiseLogDetail,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(
+                                      MealoraSpacing.lg,
                                     ),
-                                    const SizedBox(height: MealoraSpacing.sm),
-                                    _HeroPromiseRow(
-                                      icon: Icons.track_changes_outlined,
-                                      title: text
-                                          .onboardingWelcomePromiseFairTitle,
-                                      detail: text
-                                          .onboardingWelcomePromiseFairDetail,
+                                    decoration: BoxDecoration(
+                                      color: MealoraColors.welcomeCard,
+                                      borderRadius: BorderRadius.circular(
+                                        MealoraRadius.welcomeCard,
+                                      ),
+                                      border: Border.all(
+                                        color: MealoraColors.welcomeCardBorder,
+                                      ),
                                     ),
-                                    const SizedBox(height: MealoraSpacing.sm),
-                                    _HeroPromiseRow(
-                                      icon: Icons.shield_outlined,
-                                      title: text
-                                          .onboardingWelcomePromisePrivacyTitle,
-                                      detail: text
-                                          .onboardingWelcomePromisePrivacyDetail,
+                                    child: Column(
+                                      children: <Widget>[
+                                        _HeroPromiseRow(
+                                          icon: Icons.edit_note_outlined,
+                                          title: text
+                                              .onboardingWelcomePromiseLogTitle,
+                                          detail: text
+                                              .onboardingWelcomePromiseLogDetail,
+                                        ),
+                                        const SizedBox(
+                                          height: MealoraSpacing.sm,
+                                        ),
+                                        _HeroPromiseRow(
+                                          icon: Icons.track_changes_outlined,
+                                          title: text
+                                              .onboardingWelcomePromiseFairTitle,
+                                          detail: text
+                                              .onboardingWelcomePromiseFairDetail,
+                                        ),
+                                        const SizedBox(
+                                          height: MealoraSpacing.sm,
+                                        ),
+                                        _HeroPromiseRow(
+                                          icon: Icons.shield_outlined,
+                                          title: text
+                                              .onboardingWelcomePromisePrivacyTitle,
+                                          detail: text
+                                              .onboardingWelcomePromisePrivacyDetail,
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: MealoraSpacing.lg),
@@ -253,35 +276,50 @@ class _HeroWhiteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: onPressed,
-      style: FilledButton.styleFrom(
-        backgroundColor: MealoraColors.surface,
-        foregroundColor: MealoraColors.primary,
-        textStyle: MealoraTypography.button,
-        minimumSize: const Size.fromHeight(58),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(MealoraRadius.button),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Flexible(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: MealoraColors.primary),
-            ),
-          ),
-          const SizedBox(width: MealoraSpacing.xs),
-          const Icon(
-            Icons.arrow_forward,
-            size: MealoraIconSize.action,
-            color: MealoraColors.primary,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: MealoraColors.surface,
+        borderRadius: BorderRadius.circular(MealoraRadius.button),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowWelcomeButton,
+            offset: Offset(0, 12),
+            blurRadius: 28,
           ),
         ],
+      ),
+      child: FilledButton(
+        onPressed: onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: MealoraColors.transparent,
+          foregroundColor: MealoraColors.primaryDeep,
+          shadowColor: MealoraColors.transparent,
+          elevation: 0,
+          textStyle: MealoraTypography.button,
+          minimumSize: const Size.fromHeight(58),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(MealoraRadius.button),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: MealoraColors.primaryDeep),
+              ),
+            ),
+            const SizedBox(width: MealoraSpacing.xs),
+            const Icon(
+              Icons.arrow_forward,
+              size: MealoraIconSize.action,
+              color: MealoraColors.primaryDeep,
+            ),
+          ],
+        ),
       ),
     );
   }

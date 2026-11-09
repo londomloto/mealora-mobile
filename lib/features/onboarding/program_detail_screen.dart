@@ -100,8 +100,9 @@ class OnboardingProgramDetailScreen extends ConsumerWidget {
                   if (index > 0) const Divider(height: 1),
                   _FocusToggleRow(
                     label: _habitFocusLabel(text, code),
-                    selected: draft.habitFocus == code,
-                    onTap: () => notifier.saveHabitFocus(code),
+                    selected:
+                        draft.habitFocus?.split('|').contains(code) ?? false,
+                    onTap: () => notifier.toggleHabitFocus(code),
                   ),
                 ],
               ],
@@ -129,7 +130,21 @@ class _SelectedProgramBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MealoraCard(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(MealoraSpacing.lg),
+      decoration: BoxDecoration(
+        color: MealoraColors.glassCard,
+        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        border: Border.all(color: MealoraColors.primary, width: 2),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowGlass,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
+      ),
       child: MealoraIconRow(
         icon: Icons.restaurant_outlined,
         iconBackground: MealoraColors.softGreen,
@@ -163,27 +178,15 @@ class _FocusToggleRow extends StatelessWidget {
       label: label,
       child: InkWell(
         onTap: onTap,
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(MealoraColors.transparent),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: MealoraSpacing.sm),
           child: Row(
             children: <Widget>[
-              Icon(
-                selected
-                    ? Icons.check_box_rounded
-                    : Icons.check_box_outline_blank_rounded,
-                color: selected
-                    ? MealoraColors.primaryBright
-                    : MealoraColors.affordance,
-              ),
+              MealoraSquareCheck(selected: selected, size: 20),
               const SizedBox(width: MealoraSpacing.sm),
-              Expanded(
-                child: Text(
-                  label,
-                  style: selected
-                      ? MealoraTypography.bodyEmphasis
-                      : MealoraTypography.body,
-                ),
-              ),
+              Expanded(child: Text(label, style: MealoraTypography.body)),
             ],
           ),
         ),
@@ -210,27 +213,22 @@ class _AcknowledgementToggle extends StatelessWidget {
       label: text.onboardingAcknowledgeText,
       child: InkWell(
         onTap: () => onChanged(!acknowledged),
-        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(MealoraColors.transparent),
+        borderRadius: BorderRadius.circular(MealoraRadius.chip),
         child: Container(
           padding: const EdgeInsets.all(MealoraSpacing.md),
           decoration: BoxDecoration(
             color: acknowledged
-                ? MealoraColors.softGreen
-                : MealoraColors.surface,
-            borderRadius: BorderRadius.circular(MealoraRadius.card),
-            border: Border.all(
-              color: acknowledged ? MealoraColors.primary : MealoraColors.line,
-            ),
+                ? MealoraColors.noteSuccess
+                : MealoraColors.glassSoft,
+            borderRadius: BorderRadius.circular(MealoraRadius.chip),
+            border: Border.all(color: MealoraColors.glassBorder),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(
-                acknowledged ? Icons.check_box : Icons.check_box_outline_blank,
-                color: acknowledged
-                    ? MealoraColors.primary
-                    : MealoraColors.muted,
-              ),
+              MealoraCircleCheck(selected: acknowledged, size: 20),
               const SizedBox(width: MealoraSpacing.sm),
               Expanded(
                 child: Text(

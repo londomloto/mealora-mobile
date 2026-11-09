@@ -51,6 +51,9 @@ abstract final class MealoraColors {
   /// Teks sekunder (tanggal, label) di atas hero gradien gelap.
   static const Color onPrimaryMuted = Color(0xFFDFF3E6);
 
+  /// Eyebrow terang pada kartu hero target.
+  static const Color onPrimaryEyebrow = Color(0xFFCFF3DD);
+
   /// Teks tersier (footnote) di atas hero gradien gelap.
   static const Color onPrimaryFaint = Color(0xFFC9EEDB);
 
@@ -102,6 +105,9 @@ abstract final class MealoraColors {
   /// Ikon afordansi netral (chevron, panah kecil) di atas permukaan kaca.
   static const Color affordance = Color(0xFF9FB3A6);
 
+  /// Lingkaran pilihan yang belum aktif pada kartu onboarding.
+  static const Color selectionIdle = Color(0xFFB9CDBF);
+
   /// Permukaan kaca untuk kartu utama (putih 65% di atas [background]).
   static const Color glassCard = Color(0xA6FFFFFF);
 
@@ -111,8 +117,21 @@ abstract final class MealoraColors {
   /// Permukaan kaca sedang (kapsul statistik ringkas — putih 72%).
   static const Color glassSoft = Color(0xB8FFFFFF);
 
+  /// Permukaan kaca untuk kartu pilihan aktif (putih 82%).
+  static const Color glassSelected = Color(0xD1FFFFFF);
+
+  /// Permukaan note bertint sesuai varian di dokumen desain.
+  static const Color noteWarning = Color(0xCCFFF8E8);
+  static const Color noteSuccess = Color(0xCCDDF4E6);
+  static const Color noteInfo = Color(0xCCEEF1FF);
+
   /// Permukaan kaca pudar di atas hero gelap (chip aktif — putih 18%).
   static const Color glassOnHero = Color(0x2EFFFFFF);
+
+  /// Permukaan dan tepi kaca khusus layar sambutan di atas hero gelap.
+  static const Color welcomeCard = Color(0x24FFFFFF);
+  static const Color welcomeCardBorder = Color(0x52FFFFFF);
+  static const Color welcomeIconBorder = Color(0x66FFFFFF);
 
   /// Isian ubin ikon pudar di atas hero gelap (putih 20%).
   static const Color glassOnHeroStrong = Color(0x33FFFFFF);
@@ -128,6 +147,15 @@ abstract final class MealoraColors {
 
   /// Warna dasar bayangan tombol CTA (hijau 28% opak).
   static const Color shadowButton = Color(0x470C8B55);
+
+  /// Bayangan inti tombol CTA untuk memberi kedalaman tepat di bawah tombol.
+  static const Color shadowButtonCore = Color(0x330C8B55);
+
+  /// Bayangan kartu hero target.
+  static const Color shadowHero = Color(0x400C8B55);
+
+  /// Bayangan tombol putih pada layar sambutan.
+  static const Color shadowWelcomeButton = Color(0x4D05271A);
 
   /// Gradien tombol CTA dan FAB · Catat (135°, hijau terang → hijau tua).
   static const List<Color> ctaGradient = <Color>[

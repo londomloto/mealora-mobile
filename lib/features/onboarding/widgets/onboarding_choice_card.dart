@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
+import 'package:mealora/app/widgets/mealora_components.dart';
 
 /// Kartu pilihan tunggal yang dapat dipilih (tingkat aktivitas `09`,
 /// program `10`, masukan biologis `08`, fokus kebiasaan `11`).
@@ -20,6 +21,7 @@ class OnboardingChoiceCard extends StatelessWidget {
     this.leading = Icons.eco_outlined,
     this.leadingBackground = MealoraColors.softGreen,
     this.leadingForeground = MealoraColors.primary,
+    this.minHeight = 80,
     super.key,
   });
 
@@ -28,6 +30,7 @@ class OnboardingChoiceCard extends StatelessWidget {
   final IconData leading;
   final Color leadingBackground;
   final Color leadingForeground;
+  final double minHeight;
   final bool selected;
   final VoidCallback onTap;
 
@@ -39,19 +42,30 @@ class OnboardingChoiceCard extends StatelessWidget {
       label: detail == null ? title : '$title. $detail',
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(MealoraColors.transparent),
+        borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
         child: Container(
           width: double.infinity,
+          constraints: BoxConstraints(minHeight: minHeight),
           padding: const EdgeInsets.all(MealoraSpacing.md),
           decoration: BoxDecoration(
-            color: selected ? MealoraColors.glassSoft : MealoraColors.glassCard,
-            borderRadius: BorderRadius.circular(MealoraRadius.card),
+            color: selected
+                ? MealoraColors.glassSelected
+                : MealoraColors.glassCard,
+            borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
             border: Border.all(
               color: selected
                   ? MealoraColors.primary
                   : MealoraColors.glassBorder,
-              width: selected ? 2 : 1,
             ),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: MealoraColors.shadowGlass,
+                offset: Offset(0, 14),
+                blurRadius: 34,
+              ),
+            ],
           ),
           child: Row(
             children: <Widget>[
@@ -60,7 +74,7 @@ class OnboardingChoiceCard extends StatelessWidget {
                 height: 44,
                 decoration: BoxDecoration(
                   color: leadingBackground,
-                  borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+                  borderRadius: BorderRadius.circular(MealoraRadius.choiceIcon),
                 ),
                 child: Icon(
                   leading,
@@ -82,12 +96,7 @@ class OnboardingChoiceCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: MealoraSpacing.sm),
-              Icon(
-                selected ? Icons.check_circle : Icons.circle_outlined,
-                color: selected
-                    ? MealoraColors.primary
-                    : MealoraColors.affordance,
-              ),
+              MealoraCircleCheck(selected: selected),
             ],
           ),
         ),

@@ -231,7 +231,7 @@ void main() {
           findsOneWidget,
         );
         expect(
-          find.text('Kalkulator msj-1.0.0 · Kebijakan np-1.0.0'),
+          find.textContaining('Kalkulator msj-1.0.0 · Kebijakan np-1.0.0'),
           findsOneWidget,
         );
 
