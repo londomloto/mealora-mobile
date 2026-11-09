@@ -159,6 +159,18 @@ abstract class AppText {
   /// **'Program'**
   String get navProgram;
 
+  /// No description provided for @programPageTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Program saya'**
+  String get programPageTitle;
+
+  /// No description provided for @programPageSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang untuk bertumbuh, pelan-pelan'**
+  String get programPageSubtitle;
+
   /// No description provided for @navHistory.
   ///
   /// In id, this message translates to:
@@ -207,6 +219,18 @@ abstract class AppText {
   /// **'Ringkasan energi dan makronutrienmu hari ini.'**
   String get todaySubtitle;
 
+  /// No description provided for @todayGreeting.
+  ///
+  /// In id, this message translates to:
+  /// **'Hai, {name}!'**
+  String todayGreeting(String name);
+
+  /// No description provided for @todayDefaultName.
+  ///
+  /// In id, this message translates to:
+  /// **'Teman'**
+  String get todayDefaultName;
+
   /// No description provided for @programSubtitle.
   ///
   /// In id, this message translates to:
@@ -219,11 +243,83 @@ abstract class AppText {
   /// **'Catatan harianmu pada tanggal-tanggal sebelumnya.'**
   String get historySubtitle;
 
+  /// No description provided for @historyContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'RIWAYAT'**
+  String get historyContextLabel;
+
+  /// No description provided for @historyTodayContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'HARI INI'**
+  String get historyTodayContextLabel;
+
+  /// No description provided for @historyDiaryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buku harian'**
+  String get historyDiaryTitle;
+
+  /// No description provided for @historyLocalNote.
+  ///
+  /// In id, this message translates to:
+  /// **'catatan di perangkat'**
+  String get historyLocalNote;
+
+  /// No description provided for @historyRecordedTodayLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TERCATAT HARI INI'**
+  String get historyRecordedTodayLabel;
+
+  /// No description provided for @historyOpenCalendarLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka kalender riwayat'**
+  String get historyOpenCalendarLabel;
+
+  /// No description provided for @historyPageTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat perjalananmu'**
+  String get historyPageTitle;
+
+  /// No description provided for @historyPageSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan harian, tanpa hari yang ‘gagal’.'**
+  String get historyPageSubtitle;
+
   /// No description provided for @profileSubtitle.
   ///
   /// In id, this message translates to:
   /// **'Profil lokal, satuan, dan kendali atas datamu.'**
   String get profileSubtitle;
+
+  /// No description provided for @profileContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROFIL'**
+  String get profileContextLabel;
+
+  /// No description provided for @profilePageTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hai, {name}'**
+  String profilePageTitle(String name);
+
+  /// No description provided for @profilePageSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan untuk perjalananmu.'**
+  String get profilePageSubtitle;
+
+  /// No description provided for @profileLocalDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil lokal · tanpa akun'**
+  String get profileLocalDetail;
 
   /// No description provided for @todayEmptyTitle.
   ///
@@ -1244,6 +1340,12 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Program aktif: {program}'**
   String todayProgramChipSemantics(String program);
+
+  /// No description provided for @todayProgramActiveLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Program aktif'**
+  String get todayProgramActiveLabel;
 
   /// No description provided for @todayDailyTargetLabel.
   ///

@@ -283,12 +283,16 @@ class ProgramActionButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.iconColor = MealoraColors.primary,
+    this.iconBackground = MealoraColors.softGreen,
     super.key,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Color iconColor;
+  final Color iconBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -318,10 +322,20 @@ class ProgramActionButton extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Icon(
-                  icon,
-                  color: MealoraColors.primary,
-                  size: MealoraIconSize.alert,
+                Container(
+                  width: MealoraTouch.minTarget,
+                  height: MealoraTouch.minTarget,
+                  decoration: BoxDecoration(
+                    color: iconBackground,
+                    borderRadius: BorderRadius.circular(
+                      MealoraRadius.compactIconField,
+                    ),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: iconColor,
+                    size: MealoraIconSize.alert,
+                  ),
                 ),
                 const SizedBox(height: MealoraSpacing.xxs),
                 Text(

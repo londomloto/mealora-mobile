@@ -30,6 +30,8 @@
 
   "navToday": "Hari ini",
   "navProgram": "Program",
+  "programPageTitle": "Program saya",
+  "programPageSubtitle": "Ruang untuk bertumbuh, pelan-pelan",
   "navHistory": "Riwayat",
   "navProfile": "Profil",
 
@@ -55,9 +57,25 @@
   "@emptyStateBadge": { "description": "Penanda keadaan kosong, dipakai bersama ikon agar tidak bergantung warna saja." },
 
   "todaySubtitle": "Ringkasan energi dan makronutrienmu hari ini.",
+  "todayGreeting": "Hai, {name}!",
+  "@todayGreeting": {"placeholders": {"name": {"type": "String"}}},
+  "todayDefaultName": "Teman",
   "programSubtitle": "Program yang sedang kamu jalani beserta targetnya.",
   "historySubtitle": "Catatan harianmu pada tanggal-tanggal sebelumnya.",
+  "historyContextLabel": "RIWAYAT",
+  "historyTodayContextLabel": "HARI INI",
+  "historyDiaryTitle": "Buku harian",
+  "historyLocalNote": "catatan di perangkat",
+  "historyRecordedTodayLabel": "TERCATAT HARI INI",
+  "historyOpenCalendarLabel": "Buka kalender riwayat",
+  "historyPageTitle": "Lihat perjalananmu",
+  "historyPageSubtitle": "Catatan harian, tanpa hari yang ‘gagal’.",
   "profileSubtitle": "Profil lokal, satuan, dan kendali atas datamu.",
+  "profileContextLabel": "PROFIL",
+  "profilePageTitle": "Hai, {name}",
+  "@profilePageTitle": {"placeholders": {"name": {"type": "String"}}},
+  "profilePageSubtitle": "Pengaturan untuk perjalananmu.",
+  "profileLocalDetail": "Profil lokal · tanpa akun",
 
   "todayEmptyTitle": "Belum ada catatan hari ini",
   "todayEmptyBody": "Di sini nanti muncul energi dan makronutrien yang sudah kamu catat hari ini, dikelompokkan per waktu makan. Pencatatan makanan masuk pada tahap berikutnya.",
@@ -291,6 +309,7 @@
   "noProgramAction": "Pilih program",
 
   "todayProgramChipSemantics": "Program aktif: {program}",
+  "todayProgramActiveLabel": "Program aktif",
   "@todayProgramChipSemantics": {
     "description": "Label pembaca layar untuk chip program aktif di ruang Hari ini.",
     "placeholders": { "program": { "type": "String" } }

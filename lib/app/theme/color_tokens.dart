@@ -125,6 +125,9 @@ abstract final class MealoraColors {
   static const Color noteSuccess = Color(0xCCDDF4E6);
   static const Color noteInfo = Color(0xCCEEF1FF);
 
+  /// Tint koral lembut untuk ikon aksi Riwayat pada ruang Program.
+  static const Color historyActionTint = Color(0xFFFFECE8);
+
   /// Permukaan kaca pudar di atas hero gelap (chip aktif — putih 18%).
   static const Color glassOnHero = Color(0x2EFFFFFF);
 
@@ -142,6 +145,15 @@ abstract final class MealoraColors {
   /// Permukaan navigasi kapsul mengambang — sama dengan [glassCard].
   static const Color navigationSurface = glassCard;
 
+  /// Lapisan transisi di belakang dock: konten tetap tampak lalu melebur ke
+  /// latar aplikasi sebelum mencapai area aman bawah.
+  static const Color navigationScrimTransparent = Color(0x00F2F7F3);
+  static const Color navigationScrimSoft = Color(0xB8F2F7F3);
+
+  /// Bayangan dock lebih ringan daripada bayangan kartu biasa agar tidak
+  /// membentuk pita gelap pada scrim transparan.
+  static const Color shadowNavigation = Color(0x120B3A28);
+
   /// Warna dasar bayangan permukaan kaca (hijau-tinta 10% opak).
   static const Color shadowGlass = Color(0x1A0B3A28);
 
@@ -150,6 +162,9 @@ abstract final class MealoraColors {
 
   /// Bayangan inti tombol CTA untuk memberi kedalaman tepat di bawah tombol.
   static const Color shadowButtonCore = Color(0x330C8B55);
+
+  /// Bayangan FAB Catat pada navigasi bawah.
+  static const Color shadowFab = Color(0x590C8B55);
 
   /// Bayangan kartu hero target.
   static const Color shadowHero = Color(0x400C8B55);

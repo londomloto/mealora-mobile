@@ -6,6 +6,7 @@ import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
+import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show
@@ -94,6 +95,13 @@ final FutureProvider<bool> isOnboardingCompleteProvider = FutureProvider<bool>((
   final profile = await repository.current();
   return profile?.isOnboardingComplete ?? false;
 });
+
+/// Profil lokal untuk sapaan dan identitas pada ruang utama.
+final FutureProvider<UserProfile?> currentProfileProvider =
+    FutureProvider<UserProfile?>((ref) async {
+      ref.watch(onboardingRefreshSignalProvider);
+      return ref.watch(profileRepositoryProvider).current();
+    });
 
 /// Program aktif atau dijeda milik profil ini, atau `null` bila belum ada
 /// (task 7.1; keadaan "belum ada program", `36`).

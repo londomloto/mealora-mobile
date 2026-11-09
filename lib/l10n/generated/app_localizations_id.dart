@@ -44,6 +44,12 @@ class AppTextId extends AppText {
   String get navProgram => 'Program';
 
   @override
+  String get programPageTitle => 'Program saya';
+
+  @override
+  String get programPageSubtitle => 'Ruang untuk bertumbuh, pelan-pelan';
+
+  @override
   String get navHistory => 'Riwayat';
 
   @override
@@ -73,6 +79,14 @@ class AppTextId extends AppText {
   String get todaySubtitle => 'Ringkasan energi dan makronutrienmu hari ini.';
 
   @override
+  String todayGreeting(String name) {
+    return 'Hai, $name!';
+  }
+
+  @override
+  String get todayDefaultName => 'Teman';
+
+  @override
   String get programSubtitle =>
       'Program yang sedang kamu jalani beserta targetnya.';
 
@@ -81,8 +95,46 @@ class AppTextId extends AppText {
       'Catatan harianmu pada tanggal-tanggal sebelumnya.';
 
   @override
+  String get historyContextLabel => 'RIWAYAT';
+
+  @override
+  String get historyTodayContextLabel => 'HARI INI';
+
+  @override
+  String get historyDiaryTitle => 'Buku harian';
+
+  @override
+  String get historyLocalNote => 'catatan di perangkat';
+
+  @override
+  String get historyRecordedTodayLabel => 'TERCATAT HARI INI';
+
+  @override
+  String get historyOpenCalendarLabel => 'Buka kalender riwayat';
+
+  @override
+  String get historyPageTitle => 'Lihat perjalananmu';
+
+  @override
+  String get historyPageSubtitle => 'Catatan harian, tanpa hari yang ‘gagal’.';
+
+  @override
   String get profileSubtitle =>
       'Profil lokal, satuan, dan kendali atas datamu.';
+
+  @override
+  String get profileContextLabel => 'PROFIL';
+
+  @override
+  String profilePageTitle(String name) {
+    return 'Hai, $name';
+  }
+
+  @override
+  String get profilePageSubtitle => 'Pengaturan untuk perjalananmu.';
+
+  @override
+  String get profileLocalDetail => 'Profil lokal · tanpa akun';
 
   @override
   String get todayEmptyTitle => 'Belum ada catatan hari ini';
@@ -684,6 +736,9 @@ class AppTextId extends AppText {
   String todayProgramChipSemantics(String program) {
     return 'Program aktif: $program';
   }
+
+  @override
+  String get todayProgramActiveLabel => 'Program aktif';
 
   @override
   String get todayDailyTargetLabel => 'Target energi hari ini';

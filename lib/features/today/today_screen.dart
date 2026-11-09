@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/providers.dart';
@@ -5,18 +7,15 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
+import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/shell/app_shell.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
-/// Ruang "Hari ini".
-///
-/// Task 7.1: begitu ada program aktif, menampilkan chip program dan target
-/// energi harian menggantikan keadaan kosong change 001. Task 7.2:
-/// konsumsi tetap "belum diketahui", bukan nol, karena pencatatan makanan
-/// belum tersedia pada pengiriman ini (Design D10).
+/// Ruang 01 · Hari ini.
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
@@ -24,164 +23,232 @@ class TodayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final text = AppText.of(context);
     final activeProgram = ref.watch(activeProgramProvider);
+    final profile = ref.watch(currentProfileProvider).valueOrNull;
+    final today = ref.watch(clockProvider).today();
+    final name = profile?.nickname?.trim().isNotEmpty == true
+        ? profile!.nickname!.trim()
+        : text.todayDefaultName;
 
     return activeProgram.when(
       loading: () => const SizedBox.shrink(),
-      error: (error, stackTrace) => MealoraSpacePage(
-        title: text.navToday,
-        subtitle: text.todaySubtitle,
-        child: MealoraEmptyState(
-          title: text.todayEmptyTitle,
-          body: text.todayEmptyBody,
-          icon: Icons.restaurant_menu_outlined,
-        ),
-      ),
+      error: (_, _) => _empty(text),
       data: (program) => program == null
-          ? MealoraSpacePage(
-              title: text.navToday,
-              subtitle: text.todaySubtitle,
-              child: MealoraEmptyState(
-                title: text.todayEmptyTitle,
-                body: text.todayEmptyBody,
-                icon: Icons.restaurant_menu_outlined,
-              ),
-            )
-          : _ActiveProgramToday(text: text, program: program),
+          ? _empty(text)
+          : _ActiveToday(
+              text: text,
+              program: program,
+              name: name,
+              today: today,
+            ),
     );
   }
+
+  Widget _empty(AppText text) => MealoraSpacePage(
+    title: text.navToday,
+    subtitle: text.todaySubtitle,
+    child: MealoraEmptyState(
+      title: text.todayEmptyTitle,
+      body: text.todayEmptyBody,
+      icon: Icons.restaurant_menu_outlined,
+    ),
+  );
 }
 
-/// Hero bergradien di puncak "Hari ini" — sapaan, tanggal, dan chip program
-/// aktif di atas permukaan kaca gelap, sesuai "Hero field" di `01 · Hari
-/// ini` (`mealora-v2.pen`).
-class _ActiveProgramToday extends StatelessWidget {
-  const _ActiveProgramToday({required this.text, required this.program});
-
+class _ActiveToday extends StatelessWidget {
+  const _ActiveToday({
+    required this.text,
+    required this.program,
+    required this.name,
+    required this.today,
+  });
   final AppText text;
   final UserProgram program;
+  final String name;
+  final LocalDate today;
 
   @override
   Widget build(BuildContext context) {
     final proposal = program.proposal;
-    final name = _programName(text, program.programCode);
-
-    return Column(
-      children: <Widget>[
-        DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(0.34, -0.94),
-              end: Alignment(-0.34, 0.94),
-              colors: MealoraColors.heroGradient,
-              stops: MealoraColors.heroGradientStops,
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                MealoraSpacing.screenGutter,
-                MealoraSpacing.lg,
-                MealoraSpacing.screenGutter,
-                MealoraSpacing.xxl,
+    final programName = _programName(text, program.programCode);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(
+        bottom: MealoraSpacing.navigationContentClearance,
+      ),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            height: 268,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: MealoraColors.heroGradient,
+                stops: <double>[0, 0.55, 1],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    text.navToday,
-                    style: MealoraTypography.display.copyWith(
-                      color: MealoraColors.onPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: MealoraSpacing.xxs),
-                  Text(
-                    text.todaySubtitle,
-                    style: MealoraTypography.body.copyWith(
-                      color: MealoraColors.onPrimaryMuted,
-                    ),
-                  ),
-                  const SizedBox(height: MealoraSpacing.md),
-                  Semantics(
-                    label: text.todayProgramChipSemantics(name),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: MealoraSpacing.md,
-                        vertical: MealoraSpacing.sm,
-                      ),
-                      decoration: BoxDecoration(
-                        color: MealoraColors.glassOnHero,
-                        borderRadius: BorderRadius.circular(MealoraRadius.chip),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(MealoraRadius.programHeroBottom),
+                bottomRight: Radius.circular(MealoraRadius.programHeroBottom),
+              ),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              children: <Widget>[
+                const Positioned.fill(
+                  child: CustomPaint(painter: _TodayHeroGlowPainter()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          const Icon(
-                            Icons.eco_outlined,
-                            size: MealoraIconSize.inline,
-                            color: MealoraColors.onPrimary,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  text.todayGreeting(name),
+                                  style: MealoraTypography.title.copyWith(
+                                    color: MealoraColors.onPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: MealoraSpacing.xxs),
+                                Text(
+                                  IdFormat.longDate(today),
+                                  style: MealoraTypography.subtitle.copyWith(
+                                    color: MealoraColors.onPrimaryMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: MealoraSpacing.xxs),
-                          Text(
-                            name,
-                            style: MealoraTypography.chipLabel.copyWith(
-                              color: MealoraColors.onPrimary,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              MealoraRadius.iconField,
+                            ),
+                            child: Image.asset(
+                              'assets/brand/mealora-app-icon-1024.png',
+                              width: 40,
+                              height: 40,
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: MealoraSpacing.lg),
+                      Semantics(
+                        label: text.todayProgramChipSemantics(programName),
+                        child: Container(
+                          height: 52,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: MealoraColors.glassOnHero,
+                            borderRadius: BorderRadius.circular(
+                              MealoraRadius.chip,
+                            ),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  color: MealoraColors.glassOnHeroStrong,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.energy_savings_leaf_outlined,
+                                  size: 16,
+                                  color: MealoraColors.onPrimaryMuted,
+                                ),
+                              ),
+                              const SizedBox(width: MealoraSpacing.sm),
+                              Expanded(
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      text.todayProgramActiveLabel,
+                                      style: MealoraTypography.chipLabel
+                                          .copyWith(
+                                            color: MealoraColors.onPrimary,
+                                          ),
+                                    ),
+                                    Text(
+                                      ' · ',
+                                      style: MealoraTypography.chipLabel
+                                          .copyWith(
+                                            color: MealoraColors.onPrimary,
+                                          ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        programName,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: MealoraTypography.chipLabel
+                                            .copyWith(
+                                              color: MealoraColors.onPrimary,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: MealoraColors.onPrimaryMuted,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(
-              MealoraSpacing.screenGutter,
-              MealoraSpacing.lg,
-              MealoraSpacing.screenGutter,
-              MealoraSpacing.xxl,
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(22, 232, 22, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 MealoraCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: <Widget>[
-                      Text(
-                        text.todayDailyTargetLabel,
-                        style: MealoraTypography.label,
+                      _UnknownCalorieRing(
+                        label: text.todayConsumedUnknown,
+                        target:
+                            proposal.showsEnergyTarget &&
+                                proposal.energyTarget != null
+                            ? '${IdFormat.integer(proposal.energyTarget!.kcal)} ${text.unitKilocalorie}'
+                            : text.reviewNoEnergyTargetNote,
                       ),
-                      const SizedBox(height: MealoraSpacing.xs),
-                      if (proposal.showsEnergyTarget &&
-                          proposal.energyTarget != null)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
+                      const SizedBox(width: MealoraSpacing.lg),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                IdFormat.integer(proposal.energyTarget!.kcal),
-                                style: MealoraTypography.display,
-                                overflow: TextOverflow.ellipsis,
+                            Text(
+                              text.todayDailyTargetLabel.toUpperCase(),
+                              style: MealoraTypography.eyebrow.copyWith(
+                                color: MealoraColors.primaryDeep,
                               ),
                             ),
-                            const SizedBox(width: MealoraSpacing.xs),
+                            const SizedBox(height: MealoraSpacing.sm),
                             Text(
-                              text.unitKilocalorie,
-                              style: MealoraTypography.body,
+                              proposal.showsEnergyTarget &&
+                                      proposal.energyTarget != null
+                                  ? '${IdFormat.integer(proposal.energyTarget!.kcal)} ${text.unitKilocalorie}'
+                                  : text.reviewNoEnergyTargetNote,
+                              style: MealoraTypography.headline.copyWith(
+                                color: MealoraColors.primaryDeep,
+                              ),
                             ),
                           ],
-                        )
-                      else
-                        Text(
-                          text.reviewNoEnergyTargetNote,
-                          style: MealoraTypography.body,
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -197,16 +264,23 @@ class _ActiveProgramToday extends StatelessWidget {
                       ),
                       Text(
                         text.todayConsumedUnknown,
-                        style: MealoraTypography.body,
+                        style: MealoraTypography.bodyEmphasis,
                       ),
                     ],
                   ),
                 ),
+                const SizedBox(height: MealoraSpacing.lg),
+                Text(
+                  text.todayEmptyTitle,
+                  style: MealoraTypography.sectionTitle,
+                ),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(text.todayEmptyBody, style: MealoraTypography.bodySmall),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -216,4 +290,86 @@ class _ActiveProgramToday extends StatelessWidget {
     ProgramCode.weightGain => text.onboardingProgramWeightGainName,
     ProgramCode.maintenance => text.onboardingProgramMaintenanceName,
   };
+}
+
+class _UnknownCalorieRing extends StatelessWidget {
+  const _UnknownCalorieRing({required this.label, required this.target});
+
+  final String label;
+  final String target;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 128,
+      height: 128,
+      child: CustomPaint(
+        painter: const _EmptyRingPainter(),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: MealoraTypography.caption,
+              ),
+              const SizedBox(height: MealoraSpacing.xxs),
+              Text(
+                target,
+                textAlign: TextAlign.center,
+                style: MealoraTypography.caption.copyWith(
+                  color: MealoraColors.muted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyRingPainter extends CustomPainter {
+  const _EmptyRingPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawCircle(
+      size.center(Offset.zero),
+      size.shortestSide / 2 - 8,
+      Paint()
+        ..color = MealoraColors.track
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 12,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_EmptyRingPainter oldDelegate) => false;
+}
+
+class _TodayHeroGlowPainter extends CustomPainter {
+  const _TodayHeroGlowPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = size.width / 390;
+    canvas.drawCircle(
+      Offset(355 * scale, 55 * scale),
+      125 * scale,
+      Paint()
+        ..color = MealoraColors.lime.withValues(alpha: 0.36)
+        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 60 * scale),
+    );
+    canvas.drawOval(
+      Rect.fromLTWH(-70 * scale, 90 * scale, 230 * scale, 200 * scale),
+      Paint()
+        ..color = MealoraColors.accent.withValues(alpha: 0.25)
+        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 70 * scale),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_TodayHeroGlowPainter oldDelegate) => false;
 }

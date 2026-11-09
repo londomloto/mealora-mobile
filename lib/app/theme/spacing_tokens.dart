@@ -7,6 +7,7 @@ abstract final class MealoraSpacing {
   static const double xxs = 4;
   static const double xs = 8;
   static const double sm = 12;
+  static const double inlineGap = 14;
   static const double md = 16;
   static const double lg = 22;
   static const double xl = 28;
@@ -14,6 +15,21 @@ abstract final class MealoraSpacing {
 
   /// Jarak tepi layar ke konten.
   static const double screenGutter = 22;
+
+  /// Geometri spesifik frame `05 · Program saya` pada kanvas 390 px.
+  static const double programHeroGutter = 24;
+  static const double programContentGutter = 29;
+
+  /// Geometri navigation dock pada kanvas acuan 390×844.
+  static const double navigationGutter = 20;
+  static const double navigationHeight = 72;
+  static const double navigationInset = 10;
+  static const double navigationSlotHeight = 52;
+  static const double navigationBlendHeight = 28;
+
+  /// Ruang gulir agar konten terakhir dapat naik sepenuhnya di atas dock
+  /// ketika [Scaffold.extendBody] aktif.
+  static const double navigationContentClearance = 144;
 }
 
 /// Radius sudut.
@@ -28,6 +44,7 @@ abstract final class MealoraRadius {
   static const double cardLarge = 26;
   static const double welcomeCard = 28;
   static const double sheet = 32;
+  static const double programHeroBottom = 38;
 
   /// Ubin simbol pada splash.
   static const double splashTile = 38;

@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/providers.dart';
@@ -195,86 +197,105 @@ class _RunningProgramView extends ConsumerWidget {
         program.startedAt.day,
       ),
     );
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final headerHeight = (214 + (textScale - 1).clamp(0, 1) * 220).toDouble();
 
-    return MealoraSpacePage(
-      title: text.navProgram,
-      subtitle: text.programSubtitle,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(
+        bottom: MealoraSpacing.navigationContentClearance,
+      ),
+      child: Stack(
         children: <Widget>[
-          _ProgramHero(program: program, lastCalculated: lastCalculated),
-          const SizedBox(height: MealoraSpacing.lg),
-          if (_isPaused) ...<Widget>[
-            MealoraNoteCard(
-              icon: Icons.pause_circle_outline,
-              title: text.pausedExplanationTitle,
-              body: text.pausedExplanationBody,
+          _ProgramHeader(height: headerHeight),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              MealoraSpacing.programContentGutter,
+              headerHeight - MealoraTouch.minTarget,
+              MealoraSpacing.programContentGutter,
+              0,
             ),
-            const SizedBox(height: MealoraSpacing.lg),
-          ],
-          progressAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (error, stackTrace) => const SizedBox.shrink(),
-            data: (snapshots) => program.proposal.showsWeightProgressPercent
-                ? const WeightProgressPlaceholderCard()
-                : WeeklyConsistencyCard(snapshots: snapshots, today: today),
-          ),
-          const SizedBox(height: MealoraSpacing.lg),
-          progressAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (error, stackTrace) => const SizedBox.shrink(),
-            data: (snapshots) => _LatestWeightTile(snapshots: snapshots),
-          ),
-          const SizedBox(height: MealoraSpacing.lg),
-          Text(
-            _isPaused
-                ? text.programControlsPausedHeading
-                : text.programControlsHeading,
-            style: MealoraTypography.label,
-          ),
-          const SizedBox(height: MealoraSpacing.sm),
-          if (_isPaused)
-            ProgramControlList(
-              tiles: <ProgramControlTile>[
-                ProgramControlTile(
-                  icon: Icons.play_circle_outline,
-                  label: text.programResumeAction,
-                  onTap: () => _resume(context, ref),
-                ),
-                ProgramControlTile(
-                  icon: Icons.swap_horiz,
-                  label: text.programChangeAction,
-                  onTap: () => _openChange(context),
-                ),
-                ProgramControlTile(
-                  icon: Icons.flag_outlined,
-                  label: text.programCompleteAction,
-                  onTap: () => _openComplete(context),
-                ),
-              ],
-            )
-          else
-            Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ProgramActionButton(
-                  icon: Icons.pause_circle_outline,
-                  label: text.programPauseAction,
-                  onTap: () => _pause(context, ref),
+                _ProgramHero(program: program, lastCalculated: lastCalculated),
+                const SizedBox(height: MealoraSpacing.sm),
+                if (_isPaused) ...<Widget>[
+                  MealoraNoteCard(
+                    icon: Icons.pause_circle_outline,
+                    title: text.pausedExplanationTitle,
+                    body: text.pausedExplanationBody,
+                  ),
+                  const SizedBox(height: MealoraSpacing.lg),
+                ],
+                progressAsync.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (error, stackTrace) => const SizedBox.shrink(),
+                  data: (snapshots) =>
+                      program.proposal.showsWeightProgressPercent
+                      ? const WeightProgressPlaceholderCard()
+                      : WeeklyConsistencyCard(
+                          snapshots: snapshots,
+                          today: today,
+                        ),
                 ),
-                const SizedBox(width: MealoraSpacing.sm),
-                ProgramActionButton(
-                  icon: Icons.swap_horiz,
-                  label: text.programChangeAction,
-                  onTap: () => _openChange(context),
+                const SizedBox(height: MealoraSpacing.sm),
+                progressAsync.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (error, stackTrace) => const SizedBox.shrink(),
+                  data: (snapshots) => _LatestWeightTile(snapshots: snapshots),
                 ),
-                const SizedBox(width: MealoraSpacing.sm),
-                ProgramActionButton(
-                  icon: Icons.history,
-                  label: text.programHistoryAction,
-                  onTap: () => _openHistory(context),
-                ),
+                const SizedBox(height: MealoraSpacing.sm),
+                if (_isPaused)
+                  ProgramControlList(
+                    tiles: <ProgramControlTile>[
+                      ProgramControlTile(
+                        icon: Icons.play_circle_outline,
+                        label: text.programResumeAction,
+                        onTap: () => _resume(context, ref),
+                      ),
+                      ProgramControlTile(
+                        icon: Icons.swap_horiz,
+                        label: text.programChangeAction,
+                        onTap: () => _openChange(context),
+                      ),
+                      ProgramControlTile(
+                        icon: Icons.flag_outlined,
+                        label: text.programCompleteAction,
+                        onTap: () => _openComplete(context),
+                      ),
+                    ],
+                  )
+                else
+                  Row(
+                    children: <Widget>[
+                      ProgramActionButton(
+                        icon: Icons.pause_rounded,
+                        label: text.programPauseAction,
+                        iconColor: MealoraColors.accent,
+                        iconBackground: MealoraColors.noteWarning,
+                        onTap: () => _pause(context, ref),
+                      ),
+                      const SizedBox(width: MealoraSpacing.sm),
+                      ProgramActionButton(
+                        icon: Icons.swap_horiz_rounded,
+                        label: text.programChangeAction,
+                        iconColor: MealoraColors.primaryBright,
+                        iconBackground: MealoraColors.noteSuccess,
+                        onTap: () => _openChange(context),
+                      ),
+                      const SizedBox(width: MealoraSpacing.sm),
+                      ProgramActionButton(
+                        icon: Icons.history_rounded,
+                        label: text.programHistoryAction,
+                        iconColor: MealoraColors.peach,
+                        iconBackground: MealoraColors.historyActionTint,
+                        onTap: () => _openHistory(context),
+                      ),
+                    ],
+                  ),
               ],
             ),
+          ),
         ],
       ),
     );
@@ -317,6 +338,119 @@ class _RunningProgramView extends ConsumerWidget {
   }
 }
 
+/// Header hijau penuh pada `05 · Program saya`.
+///
+/// Header sengaja bukan [MealoraSpacePage]: layar acuan memakai bidang hero
+/// edge-to-edge dan kartu program yang menumpuk di atas batas bawahnya.
+class _ProgramHeader extends StatelessWidget {
+  const _ProgramHeader({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    return Container(
+      width: double.infinity,
+      height: height,
+      padding: const EdgeInsets.fromLTRB(
+        MealoraSpacing.programHeroGutter,
+        MealoraSpacing.xl,
+        MealoraSpacing.programHeroGutter,
+        0,
+      ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          // Pemetaan visual rotasi 200° Pen ke koordinat Flutter: sisi kiri
+          // atas gelap, lalu semakin terang ke kanan bawah.
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: MealoraColors.heroGradient,
+          stops: MealoraColors.heroGradientStops,
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(MealoraRadius.programHeroBottom),
+          bottomRight: Radius.circular(MealoraRadius.programHeroBottom),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: <Widget>[
+          const Positioned.fill(
+            child: CustomPaint(painter: _ProgramHeroGlowPainter()),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      text.programPageTitle,
+                      style: MealoraTypography.title.copyWith(
+                        color: MealoraColors.onPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: MealoraSpacing.xxs),
+                    Text(
+                      text.programPageSubtitle,
+                      style: MealoraTypography.subtitle.copyWith(
+                        color: MealoraColors.onPrimaryMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: MealoraSpacing.md),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+                child: Image.asset(
+                  'assets/brand/mealora-app-icon-1024.png',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.contain,
+                  excludeFromSemantics: true,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Melukis blob Screen 05 langsung ke canvas hero.
+///
+/// Berbeda dari widget [ImageFiltered], blur ini tidak memiliki bounding box
+/// persegi yang dapat muncul sebagai garis pada Flutter Web.
+class _ProgramHeroGlowPainter extends CustomPainter {
+  const _ProgramHeroGlowPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = size.width / 390;
+
+    canvas.drawCircle(
+      Offset(355 * scale, 55 * scale),
+      125 * scale,
+      Paint()
+        ..color = MealoraColors.lime.withValues(alpha: 0.36)
+        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 60 * scale),
+    );
+    canvas.drawOval(
+      Rect.fromLTWH(-70 * scale, 90 * scale, 230 * scale, 200 * scale),
+      Paint()
+        ..color = MealoraColors.accent.withValues(alpha: 0.25)
+        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 70 * scale),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ProgramHeroGlowPainter oldDelegate) => false;
+}
+
 class _ProgramHero extends StatelessWidget {
   const _ProgramHero({required this.program, required this.lastCalculated});
 
@@ -336,6 +470,26 @@ class _ProgramHero extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: MealoraColors.noteSuccess,
+                  borderRadius: BorderRadius.circular(
+                    MealoraRadius.compactIconField,
+                  ),
+                ),
+                child: Icon(
+                  _isPaused
+                      ? Icons.pause_rounded
+                      : Icons.energy_savings_leaf_outlined,
+                  color: _isPaused
+                      ? MealoraColors.accent
+                      : MealoraColors.primary,
+                  size: MealoraIconSize.alert,
+                ),
+              ),
+              const SizedBox(width: MealoraSpacing.sm),
               Expanded(
                 child: Text(
                   _isPaused
@@ -344,19 +498,25 @@ class _ProgramHero extends StatelessWidget {
                   style: MealoraTypography.eyebrow,
                 ),
               ),
-              ProgramStatusChip(
-                label: _isPaused
-                    ? text.programPausedStatus
-                    : text.programActiveStatus,
-                icon: _isPaused
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline,
-                background: _isPaused
-                    ? MealoraColors.accent.withValues(alpha: 0.16)
-                    : MealoraColors.softGreen,
-                foreground: _isPaused
-                    ? MealoraColors.accent
-                    : MealoraColors.primary,
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerRight,
+                  child: ProgramStatusChip(
+                    label: _isPaused
+                        ? text.programPausedStatus
+                        : text.programActiveStatus,
+                    icon: _isPaused
+                        ? Icons.pause_circle_outline
+                        : Icons.play_circle_outline,
+                    background: _isPaused
+                        ? MealoraColors.accent.withValues(alpha: 0.16)
+                        : MealoraColors.softGreen,
+                    foreground: _isPaused
+                        ? MealoraColors.accent
+                        : MealoraColors.primary,
+                  ),
+                ),
               ),
             ],
           ),
@@ -382,52 +542,45 @@ class _ProgramHero extends StatelessWidget {
               style: MealoraTypography.bodySmall,
             ),
           ],
-          const Divider(height: MealoraSpacing.xl, color: MealoraColors.line),
-          Text(text.programTargetLabel, style: MealoraTypography.label),
-          const SizedBox(height: MealoraSpacing.xxs),
-          Text(
-            proposal.showsEnergyTarget && proposal.energyTarget != null
-                ? '${IdFormat.integer(proposal.energyTarget!.kcal)} ${text.unitKilocalorie}'
-                : text.reviewNoEnergyTargetNote,
-            style: MealoraTypography.bodyEmphasis,
-          ),
-          const SizedBox(height: MealoraSpacing.sm),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Semantics(
-              button: true,
-              label: text.programHowCalculatedAction,
-              // Task 9.2 — cegah `Text` di bawah menduplikasi label ini
-              // (lihat catatan yang sama di `ProgramControlTile`).
-              excludeSemantics: true,
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => HowCalculatedScreen(program: program),
-                  ),
+          const Divider(height: MealoraSpacing.lg, color: MealoraColors.line),
+          Semantics(
+            button: true,
+            label: text.programHowCalculatedAction,
+            excludeSemantics: true,
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => HowCalculatedScreen(program: program),
                 ),
-                borderRadius: BorderRadius.circular(MealoraRadius.pill),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: MealoraSpacing.xs,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Flexible(
-                        child: Text(
-                          text.programHowCalculatedAction,
-                          style: MealoraTypography.bodySmall.copyWith(
-                            color: MealoraColors.primary,
-                          ),
-                        ),
-                      ),
-                      const Icon(
-                        Icons.chevron_right,
+              ),
+              borderRadius: BorderRadius.circular(MealoraRadius.chip),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: MealoraSpacing.xs,
+                ),
+                child: Flex(
+                  direction: MediaQuery.textScalerOf(context).scale(1) > 1.3
+                      ? Axis.vertical
+                      : Axis.horizontal,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    if (MediaQuery.textScalerOf(context).scale(1) <= 1.3)
+                      Expanded(child: _TargetLabel(text: text))
+                    else
+                      _TargetLabel(text: text),
+                    if (MediaQuery.textScalerOf(context).scale(1) > 1.3)
+                      const SizedBox(height: MealoraSpacing.sm),
+                    Text(
+                      proposal.showsEnergyTarget &&
+                              proposal.energyTarget != null
+                          ? '${IdFormat.integer(proposal.energyTarget!.kcal)} ${text.unitKilocalorie}'
+                          : text.reviewNoEnergyTargetNote,
+                      style: MealoraTypography.sectionTitle.copyWith(
                         color: MealoraColors.primary,
                       ),
-                    ],
-                  ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -453,6 +606,29 @@ class _ProgramHero extends StatelessWidget {
   }
 }
 
+class _TargetLabel extends StatelessWidget {
+  const _TargetLabel({required this.text});
+
+  final AppText text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(text.programTargetLabel, style: MealoraTypography.caption),
+        const SizedBox(height: MealoraSpacing.xxs),
+        Text(
+          text.programHowCalculatedAction,
+          style: MealoraTypography.caption.copyWith(
+            color: MealoraColors.primary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _LatestWeightTile extends StatelessWidget {
   const _LatestWeightTile({required this.snapshots});
 
@@ -463,13 +639,49 @@ class _LatestWeightTile extends StatelessWidget {
     final text = AppText.of(context);
     final latest = latestWeightSnapshot(snapshots);
     return MealoraCard(
-      child: MealoraIconRow(
-        icon: Icons.monitor_weight_outlined,
-        title: text.programLatestWeightLabel,
-        detail: latest == null
-            ? text.programNoWeightRecordedYet
-            : '${IdFormat.decimal(latest.weightKg!)} kg · '
-                  '${IdFormat.shortDate(latest.recordedLocalDate)}',
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: MealoraTouch.minTarget,
+            height: MealoraTouch.minTarget,
+            decoration: BoxDecoration(
+              color: MealoraColors.noteInfo,
+              borderRadius: BorderRadius.circular(
+                MealoraRadius.compactIconField,
+              ),
+            ),
+            child: const Icon(
+              Icons.monitor_weight_outlined,
+              color: MealoraColors.info,
+            ),
+          ),
+          const SizedBox(width: MealoraSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  text.programLatestWeightLabel,
+                  style: MealoraTypography.bodySmall,
+                ),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(
+                  latest == null
+                      ? text.programNoWeightRecordedYet
+                      : '${IdFormat.decimal(latest.weightKg!)} kg',
+                  style: latest == null
+                      ? MealoraTypography.bodySmall
+                      : MealoraTypography.sectionTitle,
+                ),
+              ],
+            ),
+          ),
+          if (latest != null)
+            Text(
+              IdFormat.shortDate(latest.recordedLocalDate),
+              style: MealoraTypography.caption,
+            ),
+        ],
       ),
     );
   }

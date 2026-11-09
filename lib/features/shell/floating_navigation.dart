@@ -36,55 +36,81 @@ class FloatingNavigation extends StatelessWidget {
     final leading = MealoraDestination.values.take(2);
     final trailing = MealoraDestination.values.skip(2);
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          MealoraSpacing.lg,
-          0,
-          MealoraSpacing.lg,
-          MealoraSpacing.md,
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            MealoraColors.navigationScrimTransparent,
+            MealoraColors.navigationScrimSoft,
+            MealoraColors.background,
+          ],
+          stops: <double>[0, 0.48, 1],
         ),
-        child: Stack(
-          alignment: Alignment.topCenter,
-          clipBehavior: Clip.none,
-          children: <Widget>[
-            Padding(
-              // Memberi ruang bagi bagian tombol Catat yang menyembul ke atas.
-              padding: const EdgeInsets.only(top: MealoraSpacing.lg),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: MealoraColors.navigationSurface,
-                  borderRadius: BorderRadius.circular(MealoraRadius.navigation),
-                  border: Border.all(color: MealoraColors.glassBorder),
-                  boxShadow: const <BoxShadow>[
-                    BoxShadow(
-                      color: MealoraColors.shadowGlass,
-                      offset: Offset(0, 14),
-                      blurRadius: 34,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: MealoraSpacing.navigationBlendHeight,
+        ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              MealoraSpacing.navigationGutter,
+              0,
+              MealoraSpacing.navigationGutter,
+              MealoraSpacing.md,
+            ),
+            child: Stack(
+              alignment: Alignment.topCenter,
+              clipBehavior: Clip.none,
+              children: <Widget>[
+                Padding(
+                  // Memberi ruang bagi bagian tombol Catat yang menyembul ke atas.
+                  padding: const EdgeInsets.only(top: MealoraSpacing.inlineGap),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: MealoraColors.navigationSurface,
+                      borderRadius: BorderRadius.circular(
+                        MealoraRadius.navigation,
+                      ),
+                      border: Border.all(color: MealoraColors.glassBorder),
+                      boxShadow: const <BoxShadow>[
+                        BoxShadow(
+                          color: MealoraColors.shadowNavigation,
+                          offset: Offset(0, 8),
+                          blurRadius: 24,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(MealoraSpacing.xxs),
-                  child: Row(
-                    children: <Widget>[
-                      for (final destination in leading)
-                        Expanded(child: _slot(text, destination)),
-                      // Celah tempat tombol Catat duduk.
-                      const SizedBox(width: MealoraTouch.raisedAction),
-                      for (final destination in trailing)
-                        Expanded(child: _slot(text, destination)),
-                    ],
+                    child: SizedBox(
+                      height: MealoraSpacing.navigationHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: MealoraSpacing.navigationInset,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            for (final destination in leading)
+                              Expanded(child: _slot(text, destination)),
+                            // Celah tempat tombol Catat duduk.
+                            const SizedBox(width: MealoraTouch.raisedAction),
+                            for (final destination in trailing)
+                              Expanded(child: _slot(text, destination)),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                _RecordButton(
+                  semanticsLabel: text.navRecordSemantics,
+                  onTap: onRecord,
+                ),
+              ],
             ),
-            _RecordButton(
-              semanticsLabel: text.navRecordSemantics,
-              onTap: onRecord,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -127,18 +153,18 @@ class _RecordButton extends StatelessWidget {
         height: MealoraTouch.raisedAction,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            begin: Alignment(-0.6, -1),
-            end: Alignment(0.6, 1),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: MealoraColors.ctaGradient,
           ),
-          borderRadius: BorderRadius.circular(MealoraRadius.cardLarge),
+          borderRadius: BorderRadius.circular(MealoraRadius.card),
           border: Border.all(
-            color: MealoraColors.glassBorder,
+            color: MealoraColors.glassStrong,
             width: MealoraSpacing.xxs / 2,
           ),
           boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: MealoraColors.shadowButton,
+              color: MealoraColors.shadowFab,
               offset: Offset(0, 10),
               blurRadius: 22,
             ),
@@ -148,7 +174,7 @@ class _RecordButton extends StatelessWidget {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(MealoraRadius.cardLarge),
+            borderRadius: BorderRadius.circular(MealoraRadius.card),
             child: const Icon(
               Icons.add_rounded,
               size: MealoraIconSize.raisedAction,
@@ -189,13 +215,12 @@ class _NavigationSlot extends StatelessWidget {
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(MealoraColors.transparent),
         borderRadius: BorderRadius.circular(MealoraRadius.chip),
         child: Container(
-          constraints: const BoxConstraints(minHeight: MealoraTouch.minTarget),
-          padding: const EdgeInsets.symmetric(
-            vertical: MealoraSpacing.xs,
-            horizontal: MealoraSpacing.xxs,
-          ),
+          height: MealoraSpacing.navigationSlotHeight,
+          padding: const EdgeInsets.symmetric(horizontal: MealoraSpacing.xxs),
           decoration: BoxDecoration(
             color: isSelected ? MealoraColors.primarySelectedTint : null,
             borderRadius: BorderRadius.circular(MealoraRadius.chip),
@@ -209,7 +234,7 @@ class _NavigationSlot extends StatelessWidget {
                 size: MealoraIconSize.navigation,
                 color: foreground,
               ),
-              const SizedBox(height: MealoraSpacing.xxs / 2),
+              const SizedBox(height: MealoraSpacing.xxs),
               Text(
                 label,
                 maxLines: 1,

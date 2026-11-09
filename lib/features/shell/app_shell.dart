@@ -29,6 +29,7 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: MealoraColors.background,
+      extendBody: true,
       body: SafeArea(
         bottom: false,
         child: switch (selected) {
@@ -85,7 +86,7 @@ class MealoraSpacePage extends StatelessWidget {
         MealoraSpacing.screenGutter,
         MealoraSpacing.xl,
         MealoraSpacing.screenGutter,
-        MealoraSpacing.xxl,
+        MealoraSpacing.navigationContentClearance,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
