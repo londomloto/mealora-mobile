@@ -2151,6 +2151,18 @@ abstract class AppText {
   /// **'Profil baru tidak langsung mengubah target aktif. Tinjau perkiraan baru dan setujui revisinya.'**
   String get editProfileReviewNoteBody;
 
+  /// No description provided for @editProfileDialogCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get editProfileDialogCancelAction;
+
+  /// No description provided for @editProfileDialogSaveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get editProfileDialogSaveAction;
+
   /// No description provided for @editProfileReviewAction.
   ///
   /// In id, this message translates to:

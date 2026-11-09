@@ -52,6 +52,27 @@ class ProgramScreen extends ConsumerWidget {
     final text = AppText.of(context);
     final activeProgram = ref.watch(activeProgramProvider);
 
+    // Scaffold sendiri (bukan cuma mengandalkan Scaffold AppShell) supaya
+    // layar ini tetap punya ancestor Material saat dibuka langsung lewat
+    // `MaterialPageRoute` dari menu Profil ("Program saya"), bukan hanya
+    // lewat tab navigasi bawah. Scaffold bersarang aman di Flutter; `top:
+    // false` menjaga header hero tetap edge-to-edge seperti rancangan.
+    return Scaffold(
+      backgroundColor: MealoraColors.background,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: _buildBody(context, ref, text, activeProgram),
+      ),
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    AppText text,
+    AsyncValue<UserProgram?> activeProgram,
+  ) {
     return activeProgram.when(
       loading: () => MealoraSpacePage(
         title: text.navProgram,

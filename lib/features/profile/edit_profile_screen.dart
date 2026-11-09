@@ -188,7 +188,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(text.completeCancelAction),
+              child: Text(text.editProfileDialogCancelAction),
             ),
             TextButton(
               onPressed: () {
@@ -204,7 +204,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 }
                 Navigator.of(dialogContext).pop(true);
               },
-              child: Text(text.reviewApproveAction),
+              child: Text(text.editProfileDialogSaveAction),
             ),
           ],
         ),
@@ -244,7 +244,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(text.completeCancelAction),
+              child: Text(text.editProfileDialogCancelAction),
             ),
             TextButton(
               onPressed: () {
@@ -260,7 +260,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 }
                 Navigator.of(dialogContext).pop(true);
               },
-              child: Text(text.reviewApproveAction),
+              child: Text(text.editProfileDialogSaveAction),
             ),
           ],
         ),

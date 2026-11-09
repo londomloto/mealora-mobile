@@ -29,7 +29,6 @@ class FactRow extends StatelessWidget {
                   value,
                   style: MealoraTypography.bodyEmphasis,
                   textAlign: TextAlign.end,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

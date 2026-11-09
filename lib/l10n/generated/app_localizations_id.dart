@@ -1184,6 +1184,12 @@ class AppTextId extends AppText {
       'Profil baru tidak langsung mengubah target aktif. Tinjau perkiraan baru dan setujui revisinya.';
 
   @override
+  String get editProfileDialogCancelAction => 'Batal';
+
+  @override
+  String get editProfileDialogSaveAction => 'Simpan';
+
+  @override
   String get editProfileReviewAction => 'Tinjau target baru';
 
   @override

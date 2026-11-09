@@ -482,6 +482,8 @@
   "editProfileUnitsValue": "Metrik · kg, cm",
   "editProfileReviewNoteTitle": "Target perlu ditinjau ulang",
   "editProfileReviewNoteBody": "Profil baru tidak langsung mengubah target aktif. Tinjau perkiraan baru dan setujui revisinya.",
+  "editProfileDialogCancelAction": "Batal",
+  "editProfileDialogSaveAction": "Simpan",
   "editProfileReviewAction": "Tinjau target baru",
 
   "profileSettingsHeading": "Akun & program",
