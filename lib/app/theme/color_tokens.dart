@@ -128,6 +128,47 @@ abstract final class MealoraColors {
   /// Tint koral lembut untuk ikon aksi Riwayat pada ruang Program.
   static const Color historyActionTint = Color(0xFFFFECE8);
 
+  /// Latar ubin ikon beraksen kuning/amber (mis. jalur pencarian pada lembar
+  /// tambah makanan, nilai energi/karbohidrat pada kisi nutrisi — change
+  /// 007).
+  static const Color iconFieldAmber = Color(0xFFFFF4DA);
+
+  /// Latar ubin ikon beraksen biru (mis. jalur suara pada lembar tambah
+  /// makanan, ikon waktu makan malam — change 007).
+  static const Color iconFieldBlue = Color(0xFFE6EBFF);
+
+  /// Latar ubin ikon beraksen hijau pekat (opak, berbeda dari [softGreen] —
+  /// mis. jalur foto pada lembar tambah makanan, tombol tambah hasil
+  /// pencarian — change 007).
+  static const Color iconFieldGreen = Color(0xFFDDF4E6);
+
+  /// Latar ubin ikon beraksen koral (mis. jalur barcode pada lembar tambah
+  /// makanan, nilai lemak pada kisi nutrisi — change 007).
+  static const Color iconFieldCoral = Color(0xFFFFE9E2);
+
+  /// Teks aksen amber pekat untuk nilai pada kisi nutrisi makanan sendiri
+  /// (energi, karbohidrat — change 007).
+  static const Color amberText = Color(0xFFA96B00);
+
+  /// Teks aksen koral pekat untuk nilai lemak pada kisi nutrisi dan label
+  /// tindakan hapus (change 007).
+  static const Color coralText = Color(0xFFB4452B);
+
+  /// Permukaan lembar modal (mis. lembar tambah makanan) — putih hampir
+  /// pekat di atas latar aplikasi (change 007).
+  static const Color sheetSurface = Color(0xF0F4FAF5);
+
+  /// Scrim layar `02 · Tambah makanan` — hijau tinta 50% di atas layar yang
+  /// diburamkan 6 px.
+  static const Color modalScrim = Color(0x8007321F);
+
+  /// Bayangan ke atas pada lembar modal (`0 -10 40`, hijau tinta 20%).
+  static const Color shadowSheet = Color(0x3306281A);
+
+  /// Permukaan dan bayangan card pilihan pada lembar `02 · Tambah makanan`.
+  static const Color sheetOptionSurface = Color(0xC7FFFFFF);
+  static const Color shadowSheetOption = Color(0x140B3A28);
+
   /// Permukaan kaca pudar di atas hero gelap (chip aktif — putih 18%).
   static const Color glassOnHero = Color(0x2EFFFFFF);
 

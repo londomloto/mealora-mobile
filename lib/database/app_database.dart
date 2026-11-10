@@ -1,10 +1,17 @@
 import 'package:drift/drift.dart';
 import 'package:mealora/database/connection/mealora_connection.dart';
+import 'package:mealora/database/migrations/food_diary_indexes.dart';
 import 'package:mealora/database/migrations/program_indexes.dart';
 import 'package:mealora/database/migrations/program_invariant_trigger.dart';
 import 'package:mealora/database/migrations/user_record_triggers.dart';
+import 'package:mealora/database/seeds/food_catalog_seed.dart';
 import 'package:mealora/database/seeds/program_catalog_seed.dart';
+import 'package:mealora/database/tables/food_servings_table.dart';
+import 'package:mealora/database/tables/foods_table.dart';
 import 'package:mealora/database/tables/harness_records.dart';
+import 'package:mealora/database/tables/meal_entries_table.dart';
+import 'package:mealora/database/tables/meal_entry_items_table.dart';
+import 'package:mealora/database/tables/nutrition_values_table.dart';
 import 'package:mealora/database/tables/profiles_table.dart';
 import 'package:mealora/database/tables/program_events_table.dart';
 import 'package:mealora/database/tables/program_progress_table.dart';
@@ -19,7 +26,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 3;
+const int kSchemaVersion = 4;
 
 @DriftDatabase(
   tables: <Type>[
@@ -31,6 +38,11 @@ const int kSchemaVersion = 3;
     ProgramProgress,
     ProgramEvents,
     Profiles,
+    Foods,
+    FoodServings,
+    NutritionValues,
+    MealEntries,
+    MealEntryItems,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -48,6 +60,8 @@ class AppDatabase extends _$AppDatabase {
       await createProgramIndexes(this);
       await createProgramInvariantTrigger(this);
       await seedProgramCatalog(this);
+      await createFoodDiaryIndexes(this);
+      await seedFoodCatalog(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -128,6 +142,19 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
           await createProgramIndexes(this);
           await createProgramInvariantTrigger(this);
         }
+      }
+      if (from < 4) {
+        // Versi 3 → 4 (change 007): tabel makanan, takaran saji, nilai
+        // gizi, catatan makan, dan butir catatan, beserta indeks dan seed
+        // katalog bawaan. Tidak menyentuh data versi 3 (Migration Plan
+        // design.md item 4).
+        await m.createTable(foods);
+        await m.createTable(foodServings);
+        await m.createTable(nutritionValues);
+        await m.createTable(mealEntries);
+        await m.createTable(mealEntryItems);
+        await createFoodDiaryIndexes(this);
+        await seedFoodCatalog(this);
       }
     },
     beforeOpen: (details) async {

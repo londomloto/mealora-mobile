@@ -24,16 +24,23 @@ Clock createWidgetTestClock() => FixedClock(
 AppDatabase createWidgetTestDatabase() => AppDatabase(NativeDatabase.memory());
 
 /// Membungkus [child] dengan tema, lokalisasi, dan penyedia Mealora.
+///
+/// [overrides] menambah penyedia lain di atas yang baku (clock, id
+/// generator, dan basis data bila [database] diberikan) — mis.
+/// `profileRepositoryAppOverride`/`diaryRepositoryAppOverride` untuk uji
+/// yang benar-benar membaca/menulis lewat repositori Drift (change 007).
 Widget wrapForTest(
   Widget child, {
   AppDatabase? database,
   double textScale = 1,
+  List<Override> overrides = const <Override>[],
 }) {
   return ProviderScope(
     overrides: <Override>[
       clockProvider.overrideWithValue(createWidgetTestClock()),
       idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
       if (database != null) appDatabaseProvider.overrideWithValue(database),
+      ...overrides,
     ],
     child: MaterialApp(
       theme: MealoraTheme.light(),

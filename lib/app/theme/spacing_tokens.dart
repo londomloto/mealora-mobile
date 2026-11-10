@@ -20,6 +20,12 @@ abstract final class MealoraSpacing {
   static const double programHeroGutter = 24;
   static const double programContentGutter = 29;
 
+  /// Geometri hero bersama tab utama (Hari ini, Program, Riwayat). Nilai
+  /// 244 adalah tinggi desain 268 px setelah status bar 24 px ditangani
+  /// SafeArea; kartu pertama menumpuk 36 px di atas batas bawahnya.
+  static const double mainHeroHeight = 244;
+  static const double mainHeroOverlap = 36;
+
   /// Geometri navigation dock pada kanvas acuan 390×844.
   static const double navigationGutter = 20;
   static const double navigationHeight = 72;
@@ -57,6 +63,9 @@ abstract final class MealoraRadius {
 
   /// Ubin ikon pada kartu pilihan onboarding.
   static const double choiceIcon = 16;
+
+  /// Pegangan tarik lembar modal (mis. lembar tambah makanan — change 007).
+  static const double sheetHandle = 3;
 }
 
 /// Ukuran ikon.

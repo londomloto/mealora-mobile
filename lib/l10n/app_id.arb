@@ -77,8 +77,21 @@
   "profilePageSubtitle": "Pengaturan untuk perjalananmu.",
   "profileLocalDetail": "Profil lokal · tanpa akun",
 
-  "todayEmptyTitle": "Belum ada catatan hari ini",
-  "todayEmptyBody": "Di sini nanti muncul energi dan makronutrien yang sudah kamu catat hari ini, dikelompokkan per waktu makan. Pencatatan makanan masuk pada tahap berikutnya.",
+  "todayEmptyTitle": "Hari ini belum tercatat",
+  "todayEmptyBody": "Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.",
+  "todayNoProgramTargetNote": "Belum ada program aktif, jadi belum ada target pembanding.",
+  "todayExcessOverTarget": "{kcal} kkal lebih dari perkiraan",
+  "@todayExcessOverTarget": {
+    "description": "Pernyataan netral saat konsumsi melampaui target (D11) — bukan peringatan.",
+    "placeholders": { "kcal": { "type": "String" } }
+  },
+  "todayMealNotLogged": "Belum dicatat",
+  "todayLogFoodAction": "Catat makanan",
+  "todayMealsHeading": "Makanan hari ini",
+  "todayMealsCountFormat": "{count} waktu makan tercatat",
+  "@todayMealsCountFormat": {
+    "placeholders": { "count": { "type": "int" } }
+  },
 
   "programEmptyTitle": "Belum ada program",
   "programEmptyBody": "Di sini nanti muncul program yang sedang kamu jalani beserta target hariannya dan perkembanganmu. Pemilihan program masuk pada tahap berikutnya.",
@@ -317,6 +330,13 @@
   "todayDailyTargetLabel": "Target energi hari ini",
   "todayConsumedUnknown": "Belum diketahui",
   "todayConsumedLabel": "Dikonsumsi",
+  "todayEstimateLabel": "Perkiraan hari ini",
+  "todayRemainingLabel": "Sisa perkiraan",
+  "todayLoggedLabel": "Tercatat",
+  "todayActivityLabel": "Aktivitas",
+  "todayActivityLight": "ringan",
+  "todayActivityModerate": "sedang",
+  "todayActivityHigh": "tinggi",
 
   "profileIncompleteTitle": "Lengkapi profil dulu",
   "profileIncompleteBody": "Beberapa data profil belum lengkap, jadi target program belum bisa dijelaskan di sini.",
@@ -490,5 +510,138 @@
   "profileEditAction": "Ubah profil",
   "profileUnitsLanguageAction": "Satuan & bahasa",
   "profilePrivacyAction": "Privasi & data lokal",
-  "profileAboutAction": "Tentang Mealora"
+  "profileAboutAction": "Tentang Mealora",
+
+  "mealTimeBreakfast": "Sarapan",
+  "mealTimeLunch": "Makan siang",
+  "mealTimeSnack": "Camilan",
+  "mealTimeDinner": "Makan malam",
+
+  "nutrientEnergy": "Energi",
+  "nutrientProtein": "Protein",
+  "nutrientCarbohydrate": "Karbohidrat",
+  "nutrientFat": "Lemak",
+  "macroMacrosShort": "P {protein} · K {carb} · L {fat}",
+  "@macroMacrosShort": {
+    "description": "Ringkasan tiga makro pada kartu perkiraan.",
+    "placeholders": {
+      "protein": { "type": "String" },
+      "carb": { "type": "String" },
+      "fat": { "type": "String" }
+    }
+  },
+  "nutrientValueUnknown": "–",
+
+  "addFoodSheetTitle": "Catat makanan",
+  "addFoodSheetSubtitle": "Pilih cara yang paling nyaman untukmu",
+  "addFoodSearchTitle": "Cari / input manual",
+  "addFoodSearchDescription": "Selalu bisa, bahkan tanpa internet",
+  "addFoodVoiceTitle": "Catat dengan suara",
+  "addFoodVoiceDescription": "Sebutkan saja yang kamu makan",
+  "addFoodPhotoTitle": "Foto makanan",
+  "addFoodPhotoDescription": "Dapatkan saran dari fotomu",
+  "addFoodBarcodeTitle": "Scan barcode",
+  "addFoodBarcodeDescription": "Cari produk kemasan dengan cepat",
+  "addFoodPrivacyLine1": "Foto hanya diunggah dengan izinmu.",
+  "addFoodPrivacyLine2": "Suara & input manual jalan tanpa internet.",
+  "addFoodPathUnavailable": "Jalur ini belum tersedia. Pakai pencarian atau buat makanan sendiri dulu, ya.",
+
+  "foodSearchContextLabel": "CATAT MAKANAN",
+  "foodSearchTitle": "Cari makanan",
+  "foodSearchSubtitle": "Katalog lokal · tersedia tanpa internet",
+  "foodSearchHint": "Cari nama makanan…",
+  "foodSearchClearSemantics": "Hapus pencarian",
+  "foodSearchRecentHeading": "Terakhir dicatat",
+  "foodSearchResultsHeading": "Hasil \"{query}\"",
+  "@foodSearchResultsHeading": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+  "foodSearchNoResultsTitle": "Tidak ada hasil",
+  "foodSearchNoResultsBody": "Makanan ini belum ada di katalog. Kamu bisa membuatnya sendiri.",
+  "foodSearchCreateLink": "Tidak ada?  + Buat makanan sendiri",
+  "foodSearchFavoritesLabel": "Favorit",
+  "foodSearchFavoritesUnavailable": "Favorit belum tersedia pada versi ini.",
+  "foodSearchCatalogDataLabel": "data katalog",
+  "foodSearchCustomDataLabel": "buatan sendiri",
+  "foodSearchApproxPerServing": "± {kcal} / {serving}",
+  "@foodSearchApproxPerServing": {
+    "placeholders": {
+      "kcal": { "type": "String" },
+      "serving": { "type": "String" }
+    }
+  },
+
+  "servingDetailContextLabel": "TAMBAH KE BUKU HARIAN",
+  "servingDetailSubtitle": "Pilih sajian, jumlah, dan waktu makan.",
+  "servingDetailSourceCatalog": "Katalog lokal",
+  "servingDetailSourceCustom": "Buatan sendiri",
+  "servingDetailServingLabel": "Sajian",
+  "servingDetailQuantityLabel": "Jumlah sajian",
+  "servingDetailMealTimeLabel": "Waktu makan",
+  "servingDetailEstimateLabel": "PERKIRAAN",
+  "servingDetailAddAction": "Tambahkan ke {mealTime}",
+  "@servingDetailAddAction": {
+    "placeholders": { "mealTime": { "type": "String" } }
+  },
+  "servingPickerTitle": "Pilih sajian",
+  "mealTimePickerTitle": "Pilih waktu makan",
+  "quantityDecreaseSemantics": "Kurangi jumlah",
+  "quantityIncreaseSemantics": "Tambah jumlah",
+
+  "customFoodContextLabel": "KATALOG PRIBADI",
+  "customFoodTitle": "Buat makanan",
+  "customFoodSubtitle": "Masukkan nilai dari sumber yang kamu percaya.",
+  "customFoodNameLabel": "Nama makanan",
+  "customFoodNameHint": "mis. Tumis buncis rumahan",
+  "customFoodServingLabel": "Ukuran sajian",
+  "customFoodServingHint": "mis. 1 porsi · 180 g",
+  "customFoodNutritionHeading": "Nutrisi per sajian",
+  "customFoodNote": "Periksa nilai dan satuannya. Angka yang belum diketahui jangan diisi nol.",
+  "customFoodSaveAction": "Simpan makanan",
+  "customFoodNameRequiredError": "Nama makanan tidak boleh kosong.",
+  "customFoodServingRequiredError": "Ukuran sajian tidak boleh kosong.",
+  "customFoodNegativeValueError": "Nilai gizi tidak boleh negatif.",
+
+  "diaryEyebrowToday": "HARI INI",
+  "diaryTitle": "Buku harian",
+  "diaryLocalNote": "catatan di perangkat",
+  "diaryRecordedTodayLabel": "TERCATAT HARI INI",
+  "diaryTargetLabel": "Target perkiraan {kcal} kkal",
+  "@diaryTargetLabel": {
+    "placeholders": { "kcal": { "type": "String" } }
+  },
+  "diaryTargetPercentCaption": "target",
+  "diaryPreviousDaySemantics": "Hari sebelumnya",
+  "diaryNextDaySemantics": "Hari berikutnya",
+  "diaryUnknownHeading": "Belum tercatat",
+  "diaryUnknownBody": "Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.",
+  "diaryUnknownConsumptionLabel": "Konsumsi",
+  "diaryUnknownConsumptionValue": "Belum diketahui",
+  "diaryUnknownMacrosNote": "Protein, karbo, lemak · belum diketahui",
+  "diaryEntryMenuSemantics": "Opsi catatan {food}",
+  "@diaryEntryMenuSemantics": {
+    "placeholders": { "food": { "type": "String" } }
+  },
+
+  "editEntryContextFormat": "{mealTime} · {date}",
+  "@editEntryContextFormat": {
+    "placeholders": {
+      "mealTime": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "editEntryTitle": "Ubah catatan",
+  "editEntrySubtitle": "Perubahan hanya berlaku untuk catatan ini.",
+  "editEntrySnapshotDetail": "Sajian saat dicatat · {serving}",
+  "@editEntrySnapshotDetail": {
+    "placeholders": { "serving": { "type": "String" } }
+  },
+  "editEntryQuantityLabel": "Jumlah yang dimakan",
+  "editEntryUpdatedEstimateLabel": "Perkiraan setelah diubah",
+  "editEntryDeleteAction": "Hapus catatan ini",
+  "editEntrySaveAction": "Simpan perubahan",
+  "editEntryDeleteConfirmTitle": "Hapus catatan ini?",
+  "editEntryDeleteConfirmBody": "Catatan ini akan hilang dari buku harian dan ringkasan harian akan menyesuaikan.",
+  "editEntryDeleteConfirmAction": "Hapus",
+  "editEntryDeleteCancelAction": "Batal"
 }

@@ -1,4 +1,4 @@
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show BlurStyle, ImageFilter, MaskFilter;
 
 import 'package:flutter/material.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
@@ -7,6 +7,70 @@ import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
+
+/// Bidang hero bersama untuk tiga tab utama. Menyatukan tinggi, gradien,
+/// radius, dan glow agar perpindahan Hari ini ↔ Program ↔ Riwayat tidak
+/// terasa meloncat.
+class MealoraMainHero extends StatelessWidget {
+  const MealoraMainHero({required this.height, required this.child, super.key});
+
+  final double height;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: height,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: MealoraColors.heroGradient,
+          stops: MealoraColors.heroGradientStops,
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(MealoraRadius.programHeroBottom),
+          bottomRight: Radius.circular(MealoraRadius.programHeroBottom),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: <Widget>[
+          const Positioned.fill(
+            child: CustomPaint(painter: _MealoraMainHeroGlowPainter()),
+          ),
+          Positioned.fill(child: child),
+        ],
+      ),
+    );
+  }
+}
+
+class _MealoraMainHeroGlowPainter extends CustomPainter {
+  const _MealoraMainHeroGlowPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = size.width / 390;
+    canvas.drawCircle(
+      Offset(355 * scale, 55 * scale),
+      125 * scale,
+      Paint()
+        ..color = MealoraColors.lime.withValues(alpha: 0.36)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 60 * scale),
+    );
+    canvas.drawOval(
+      Rect.fromLTWH(-70 * scale, 90 * scale, 230 * scale, 200 * scale),
+      Paint()
+        ..color = MealoraColors.accent.withValues(alpha: 0.25)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 70 * scale),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_MealoraMainHeroGlowPainter oldDelegate) => false;
+}
 
 /// Indikator pilihan lingkaran yang digambar langsung agar konsisten pada
 /// web dan tidak bergantung pada ketersediaan glyph font ikon.
@@ -124,38 +188,41 @@ class MealoraBlobBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        const Positioned(
-          left: 230,
-          top: -120,
-          child: MealoraBlurBlob(
-            color: MealoraColors.lime,
-            opacity: 0.3,
-            size: 300,
+    return SizedBox.expand(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          const Positioned(
+            left: 230,
+            top: -120,
+            child: MealoraBlurBlob(
+              color: MealoraColors.lime,
+              opacity: 0.3,
+              size: 300,
+            ),
           ),
-        ),
-        const Positioned(
-          left: -130,
-          top: 420,
-          child: MealoraBlurBlob(
-            color: MealoraColors.mint,
-            opacity: 0.2,
-            size: 300,
+          const Positioned(
+            left: -130,
+            top: 420,
+            child: MealoraBlurBlob(
+              color: MealoraColors.mint,
+              opacity: 0.2,
+              size: 300,
+            ),
           ),
-        ),
-        const Positioned(
-          left: 180,
-          top: 640,
-          child: MealoraBlurBlob(
-            color: MealoraColors.info,
-            opacity: 0.14,
-            width: 320,
-            height: 300,
+          const Positioned(
+            left: 180,
+            top: 640,
+            child: MealoraBlurBlob(
+              color: MealoraColors.info,
+              opacity: 0.14,
+              width: 320,
+              height: 300,
+            ),
           ),
-        ),
-        child,
-      ],
+          Positioned.fill(child: child),
+        ],
+      ),
     );
   }
 }
@@ -334,21 +401,19 @@ class MealoraCard extends StatelessWidget {
   const MealoraCard({
     required this.child,
     this.padding = const EdgeInsets.all(MealoraSpacing.lg),
+    this.radius = MealoraRadius.card,
     super.key,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: padding,
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: MealoraColors.glassCard,
-        borderRadius: BorderRadius.circular(MealoraRadius.card),
-        border: Border.all(color: MealoraColors.glassBorder),
+        borderRadius: BorderRadius.circular(radius),
         boxShadow: const <BoxShadow>[
           BoxShadow(
             color: MealoraColors.shadowGlass,
@@ -357,7 +422,22 @@ class MealoraCard extends StatelessWidget {
           ),
         ],
       ),
-      child: child,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            width: double.infinity,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: MealoraColors.glassCard,
+              borderRadius: BorderRadius.circular(radius),
+              border: Border.all(color: MealoraColors.glassBorder),
+            ),
+            child: child,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -638,6 +718,7 @@ class MealoraNoteCard extends StatelessWidget {
     this.title,
     this.background = MealoraColors.glassSoft,
     this.foreground = MealoraColors.primary,
+    this.borderColor = MealoraColors.glassBorder,
     super.key,
   });
 
@@ -646,6 +727,7 @@ class MealoraNoteCard extends StatelessWidget {
   final String body;
   final Color background;
   final Color foreground;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -655,7 +737,7 @@ class MealoraNoteCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(MealoraRadius.chip),
-        border: Border.all(color: MealoraColors.glassBorder),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

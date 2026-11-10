@@ -324,14 +324,50 @@ abstract class AppText {
   /// No description provided for @todayEmptyTitle.
   ///
   /// In id, this message translates to:
-  /// **'Belum ada catatan hari ini'**
+  /// **'Hari ini belum tercatat'**
   String get todayEmptyTitle;
 
   /// No description provided for @todayEmptyBody.
   ///
   /// In id, this message translates to:
-  /// **'Di sini nanti muncul energi dan makronutrien yang sudah kamu catat hari ini, dikelompokkan per waktu makan. Pencatatan makanan masuk pada tahap berikutnya.'**
+  /// **'Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.'**
   String get todayEmptyBody;
+
+  /// No description provided for @todayNoProgramTargetNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada program aktif, jadi belum ada target pembanding.'**
+  String get todayNoProgramTargetNote;
+
+  /// Pernyataan netral saat konsumsi melampaui target (D11) — bukan peringatan.
+  ///
+  /// In id, this message translates to:
+  /// **'{kcal} kkal lebih dari perkiraan'**
+  String todayExcessOverTarget(String kcal);
+
+  /// No description provided for @todayMealNotLogged.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dicatat'**
+  String get todayMealNotLogged;
+
+  /// No description provided for @todayLogFoodAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat makanan'**
+  String get todayLogFoodAction;
+
+  /// No description provided for @todayMealsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Makanan hari ini'**
+  String get todayMealsHeading;
+
+  /// No description provided for @todayMealsCountFormat.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} waktu makan tercatat'**
+  String todayMealsCountFormat(int count);
 
   /// No description provided for @programEmptyTitle.
   ///
@@ -1365,6 +1401,48 @@ abstract class AppText {
   /// **'Dikonsumsi'**
   String get todayConsumedLabel;
 
+  /// No description provided for @todayEstimateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan hari ini'**
+  String get todayEstimateLabel;
+
+  /// No description provided for @todayRemainingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa perkiraan'**
+  String get todayRemainingLabel;
+
+  /// No description provided for @todayLoggedLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tercatat'**
+  String get todayLoggedLabel;
+
+  /// No description provided for @todayActivityLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas'**
+  String get todayActivityLabel;
+
+  /// No description provided for @todayActivityLight.
+  ///
+  /// In id, this message translates to:
+  /// **'ringan'**
+  String get todayActivityLight;
+
+  /// No description provided for @todayActivityModerate.
+  ///
+  /// In id, this message translates to:
+  /// **'sedang'**
+  String get todayActivityModerate;
+
+  /// No description provided for @todayActivityHigh.
+  ///
+  /// In id, this message translates to:
+  /// **'tinggi'**
+  String get todayActivityHigh;
+
   /// No description provided for @profileIncompleteTitle.
   ///
   /// In id, this message translates to:
@@ -2198,6 +2276,546 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Tentang Mealora'**
   String get profileAboutAction;
+
+  /// No description provided for @mealTimeBreakfast.
+  ///
+  /// In id, this message translates to:
+  /// **'Sarapan'**
+  String get mealTimeBreakfast;
+
+  /// No description provided for @mealTimeLunch.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan siang'**
+  String get mealTimeLunch;
+
+  /// No description provided for @mealTimeSnack.
+  ///
+  /// In id, this message translates to:
+  /// **'Camilan'**
+  String get mealTimeSnack;
+
+  /// No description provided for @mealTimeDinner.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan malam'**
+  String get mealTimeDinner;
+
+  /// No description provided for @nutrientEnergy.
+  ///
+  /// In id, this message translates to:
+  /// **'Energi'**
+  String get nutrientEnergy;
+
+  /// No description provided for @nutrientProtein.
+  ///
+  /// In id, this message translates to:
+  /// **'Protein'**
+  String get nutrientProtein;
+
+  /// No description provided for @nutrientCarbohydrate.
+  ///
+  /// In id, this message translates to:
+  /// **'Karbohidrat'**
+  String get nutrientCarbohydrate;
+
+  /// No description provided for @nutrientFat.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemak'**
+  String get nutrientFat;
+
+  /// Ringkasan tiga makro pada kartu perkiraan.
+  ///
+  /// In id, this message translates to:
+  /// **'P {protein} · K {carb} · L {fat}'**
+  String macroMacrosShort(String protein, String carb, String fat);
+
+  /// No description provided for @nutrientValueUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'–'**
+  String get nutrientValueUnknown;
+
+  /// No description provided for @addFoodSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat makanan'**
+  String get addFoodSheetTitle;
+
+  /// No description provided for @addFoodSheetSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih cara yang paling nyaman untukmu'**
+  String get addFoodSheetSubtitle;
+
+  /// No description provided for @addFoodSearchTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari / input manual'**
+  String get addFoodSearchTitle;
+
+  /// No description provided for @addFoodSearchDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Selalu bisa, bahkan tanpa internet'**
+  String get addFoodSearchDescription;
+
+  /// No description provided for @addFoodVoiceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat dengan suara'**
+  String get addFoodVoiceTitle;
+
+  /// No description provided for @addFoodVoiceDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutkan saja yang kamu makan'**
+  String get addFoodVoiceDescription;
+
+  /// No description provided for @addFoodPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto makanan'**
+  String get addFoodPhotoTitle;
+
+  /// No description provided for @addFoodPhotoDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Dapatkan saran dari fotomu'**
+  String get addFoodPhotoDescription;
+
+  /// No description provided for @addFoodBarcodeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Scan barcode'**
+  String get addFoodBarcodeTitle;
+
+  /// No description provided for @addFoodBarcodeDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari produk kemasan dengan cepat'**
+  String get addFoodBarcodeDescription;
+
+  /// No description provided for @addFoodPrivacyLine1.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto hanya diunggah dengan izinmu.'**
+  String get addFoodPrivacyLine1;
+
+  /// No description provided for @addFoodPrivacyLine2.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara & input manual jalan tanpa internet.'**
+  String get addFoodPrivacyLine2;
+
+  /// No description provided for @addFoodPathUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Jalur ini belum tersedia. Pakai pencarian atau buat makanan sendiri dulu, ya.'**
+  String get addFoodPathUnavailable;
+
+  /// No description provided for @foodSearchContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'CATAT MAKANAN'**
+  String get foodSearchContextLabel;
+
+  /// No description provided for @foodSearchTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari makanan'**
+  String get foodSearchTitle;
+
+  /// No description provided for @foodSearchSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Katalog lokal · tersedia tanpa internet'**
+  String get foodSearchSubtitle;
+
+  /// No description provided for @foodSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama makanan…'**
+  String get foodSearchHint;
+
+  /// No description provided for @foodSearchClearSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pencarian'**
+  String get foodSearchClearSemantics;
+
+  /// No description provided for @foodSearchRecentHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Terakhir dicatat'**
+  String get foodSearchRecentHeading;
+
+  /// No description provided for @foodSearchResultsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil \"{query}\"'**
+  String foodSearchResultsHeading(String query);
+
+  /// No description provided for @foodSearchNoResultsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada hasil'**
+  String get foodSearchNoResultsTitle;
+
+  /// No description provided for @foodSearchNoResultsBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Makanan ini belum ada di katalog. Kamu bisa membuatnya sendiri.'**
+  String get foodSearchNoResultsBody;
+
+  /// No description provided for @foodSearchCreateLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada?  + Buat makanan sendiri'**
+  String get foodSearchCreateLink;
+
+  /// No description provided for @foodSearchFavoritesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit'**
+  String get foodSearchFavoritesLabel;
+
+  /// No description provided for @foodSearchFavoritesUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit belum tersedia pada versi ini.'**
+  String get foodSearchFavoritesUnavailable;
+
+  /// No description provided for @foodSearchCatalogDataLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'data katalog'**
+  String get foodSearchCatalogDataLabel;
+
+  /// No description provided for @foodSearchCustomDataLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'buatan sendiri'**
+  String get foodSearchCustomDataLabel;
+
+  /// No description provided for @foodSearchApproxPerServing.
+  ///
+  /// In id, this message translates to:
+  /// **'± {kcal} / {serving}'**
+  String foodSearchApproxPerServing(String kcal, String serving);
+
+  /// No description provided for @servingDetailContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TAMBAH KE BUKU HARIAN'**
+  String get servingDetailContextLabel;
+
+  /// No description provided for @servingDetailSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih sajian, jumlah, dan waktu makan.'**
+  String get servingDetailSubtitle;
+
+  /// No description provided for @servingDetailSourceCatalog.
+  ///
+  /// In id, this message translates to:
+  /// **'Katalog lokal'**
+  String get servingDetailSourceCatalog;
+
+  /// No description provided for @servingDetailSourceCustom.
+  ///
+  /// In id, this message translates to:
+  /// **'Buatan sendiri'**
+  String get servingDetailSourceCustom;
+
+  /// No description provided for @servingDetailServingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sajian'**
+  String get servingDetailServingLabel;
+
+  /// No description provided for @servingDetailQuantityLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah sajian'**
+  String get servingDetailQuantityLabel;
+
+  /// No description provided for @servingDetailMealTimeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu makan'**
+  String get servingDetailMealTimeLabel;
+
+  /// No description provided for @servingDetailEstimateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PERKIRAAN'**
+  String get servingDetailEstimateLabel;
+
+  /// No description provided for @servingDetailAddAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan ke {mealTime}'**
+  String servingDetailAddAction(String mealTime);
+
+  /// No description provided for @servingPickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih sajian'**
+  String get servingPickerTitle;
+
+  /// No description provided for @mealTimePickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih waktu makan'**
+  String get mealTimePickerTitle;
+
+  /// No description provided for @quantityDecreaseSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Kurangi jumlah'**
+  String get quantityDecreaseSemantics;
+
+  /// No description provided for @quantityIncreaseSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah jumlah'**
+  String get quantityIncreaseSemantics;
+
+  /// No description provided for @customFoodContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'KATALOG PRIBADI'**
+  String get customFoodContextLabel;
+
+  /// No description provided for @customFoodTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat makanan'**
+  String get customFoodTitle;
+
+  /// No description provided for @customFoodSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan nilai dari sumber yang kamu percaya.'**
+  String get customFoodSubtitle;
+
+  /// No description provided for @customFoodNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama makanan'**
+  String get customFoodNameLabel;
+
+  /// No description provided for @customFoodNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Tumis buncis rumahan'**
+  String get customFoodNameHint;
+
+  /// No description provided for @customFoodServingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran sajian'**
+  String get customFoodServingLabel;
+
+  /// No description provided for @customFoodServingHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. 1 porsi · 180 g'**
+  String get customFoodServingHint;
+
+  /// No description provided for @customFoodNutritionHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Nutrisi per sajian'**
+  String get customFoodNutritionHeading;
+
+  /// No description provided for @customFoodNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa nilai dan satuannya. Angka yang belum diketahui jangan diisi nol.'**
+  String get customFoodNote;
+
+  /// No description provided for @customFoodSaveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan makanan'**
+  String get customFoodSaveAction;
+
+  /// No description provided for @customFoodNameRequiredError.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama makanan tidak boleh kosong.'**
+  String get customFoodNameRequiredError;
+
+  /// No description provided for @customFoodServingRequiredError.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran sajian tidak boleh kosong.'**
+  String get customFoodServingRequiredError;
+
+  /// No description provided for @customFoodNegativeValueError.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai gizi tidak boleh negatif.'**
+  String get customFoodNegativeValueError;
+
+  /// No description provided for @diaryEyebrowToday.
+  ///
+  /// In id, this message translates to:
+  /// **'HARI INI'**
+  String get diaryEyebrowToday;
+
+  /// No description provided for @diaryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buku harian'**
+  String get diaryTitle;
+
+  /// No description provided for @diaryLocalNote.
+  ///
+  /// In id, this message translates to:
+  /// **'catatan di perangkat'**
+  String get diaryLocalNote;
+
+  /// No description provided for @diaryRecordedTodayLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TERCATAT HARI INI'**
+  String get diaryRecordedTodayLabel;
+
+  /// No description provided for @diaryTargetLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target perkiraan {kcal} kkal'**
+  String diaryTargetLabel(String kcal);
+
+  /// No description provided for @diaryTargetPercentCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'target'**
+  String get diaryTargetPercentCaption;
+
+  /// No description provided for @diaryPreviousDaySemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari sebelumnya'**
+  String get diaryPreviousDaySemantics;
+
+  /// No description provided for @diaryNextDaySemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari berikutnya'**
+  String get diaryNextDaySemantics;
+
+  /// No description provided for @diaryUnknownHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum tercatat'**
+  String get diaryUnknownHeading;
+
+  /// No description provided for @diaryUnknownBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.'**
+  String get diaryUnknownBody;
+
+  /// No description provided for @diaryUnknownConsumptionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Konsumsi'**
+  String get diaryUnknownConsumptionLabel;
+
+  /// No description provided for @diaryUnknownConsumptionValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum diketahui'**
+  String get diaryUnknownConsumptionValue;
+
+  /// No description provided for @diaryUnknownMacrosNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Protein, karbo, lemak · belum diketahui'**
+  String get diaryUnknownMacrosNote;
+
+  /// No description provided for @diaryEntryMenuSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsi catatan {food}'**
+  String diaryEntryMenuSemantics(String food);
+
+  /// No description provided for @editEntryContextFormat.
+  ///
+  /// In id, this message translates to:
+  /// **'{mealTime} · {date}'**
+  String editEntryContextFormat(String mealTime, String date);
+
+  /// No description provided for @editEntryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah catatan'**
+  String get editEntryTitle;
+
+  /// No description provided for @editEntrySubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan hanya berlaku untuk catatan ini.'**
+  String get editEntrySubtitle;
+
+  /// No description provided for @editEntrySnapshotDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Sajian saat dicatat · {serving}'**
+  String editEntrySnapshotDetail(String serving);
+
+  /// No description provided for @editEntryQuantityLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah yang dimakan'**
+  String get editEntryQuantityLabel;
+
+  /// No description provided for @editEntryUpdatedEstimateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan setelah diubah'**
+  String get editEntryUpdatedEstimateLabel;
+
+  /// No description provided for @editEntryDeleteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus catatan ini'**
+  String get editEntryDeleteAction;
+
+  /// No description provided for @editEntrySaveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan perubahan'**
+  String get editEntrySaveAction;
+
+  /// No description provided for @editEntryDeleteConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus catatan ini?'**
+  String get editEntryDeleteConfirmTitle;
+
+  /// No description provided for @editEntryDeleteConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan ini akan hilang dari buku harian dan ringkasan harian akan menyesuaikan.'**
+  String get editEntryDeleteConfirmBody;
+
+  /// No description provided for @editEntryDeleteConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get editEntryDeleteConfirmAction;
+
+  /// No description provided for @editEntryDeleteCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get editEntryDeleteCancelAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

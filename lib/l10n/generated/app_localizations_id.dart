@@ -137,11 +137,34 @@ class AppTextId extends AppText {
   String get profileLocalDetail => 'Profil lokal · tanpa akun';
 
   @override
-  String get todayEmptyTitle => 'Belum ada catatan hari ini';
+  String get todayEmptyTitle => 'Hari ini belum tercatat';
 
   @override
   String get todayEmptyBody =>
-      'Di sini nanti muncul energi dan makronutrien yang sudah kamu catat hari ini, dikelompokkan per waktu makan. Pencatatan makanan masuk pada tahap berikutnya.';
+      'Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.';
+
+  @override
+  String get todayNoProgramTargetNote =>
+      'Belum ada program aktif, jadi belum ada target pembanding.';
+
+  @override
+  String todayExcessOverTarget(String kcal) {
+    return '$kcal kkal lebih dari perkiraan';
+  }
+
+  @override
+  String get todayMealNotLogged => 'Belum dicatat';
+
+  @override
+  String get todayLogFoodAction => 'Catat makanan';
+
+  @override
+  String get todayMealsHeading => 'Makanan hari ini';
+
+  @override
+  String todayMealsCountFormat(int count) {
+    return '$count waktu makan tercatat';
+  }
 
   @override
   String get programEmptyTitle => 'Belum ada program';
@@ -750,6 +773,27 @@ class AppTextId extends AppText {
   String get todayConsumedLabel => 'Dikonsumsi';
 
   @override
+  String get todayEstimateLabel => 'Perkiraan hari ini';
+
+  @override
+  String get todayRemainingLabel => 'Sisa perkiraan';
+
+  @override
+  String get todayLoggedLabel => 'Tercatat';
+
+  @override
+  String get todayActivityLabel => 'Aktivitas';
+
+  @override
+  String get todayActivityLight => 'ringan';
+
+  @override
+  String get todayActivityModerate => 'sedang';
+
+  @override
+  String get todayActivityHigh => 'tinggi';
+
+  @override
   String get profileIncompleteTitle => 'Lengkapi profil dulu';
 
   @override
@@ -1206,4 +1250,300 @@ class AppTextId extends AppText {
 
   @override
   String get profileAboutAction => 'Tentang Mealora';
+
+  @override
+  String get mealTimeBreakfast => 'Sarapan';
+
+  @override
+  String get mealTimeLunch => 'Makan siang';
+
+  @override
+  String get mealTimeSnack => 'Camilan';
+
+  @override
+  String get mealTimeDinner => 'Makan malam';
+
+  @override
+  String get nutrientEnergy => 'Energi';
+
+  @override
+  String get nutrientProtein => 'Protein';
+
+  @override
+  String get nutrientCarbohydrate => 'Karbohidrat';
+
+  @override
+  String get nutrientFat => 'Lemak';
+
+  @override
+  String macroMacrosShort(String protein, String carb, String fat) {
+    return 'P $protein · K $carb · L $fat';
+  }
+
+  @override
+  String get nutrientValueUnknown => '–';
+
+  @override
+  String get addFoodSheetTitle => 'Catat makanan';
+
+  @override
+  String get addFoodSheetSubtitle => 'Pilih cara yang paling nyaman untukmu';
+
+  @override
+  String get addFoodSearchTitle => 'Cari / input manual';
+
+  @override
+  String get addFoodSearchDescription => 'Selalu bisa, bahkan tanpa internet';
+
+  @override
+  String get addFoodVoiceTitle => 'Catat dengan suara';
+
+  @override
+  String get addFoodVoiceDescription => 'Sebutkan saja yang kamu makan';
+
+  @override
+  String get addFoodPhotoTitle => 'Foto makanan';
+
+  @override
+  String get addFoodPhotoDescription => 'Dapatkan saran dari fotomu';
+
+  @override
+  String get addFoodBarcodeTitle => 'Scan barcode';
+
+  @override
+  String get addFoodBarcodeDescription => 'Cari produk kemasan dengan cepat';
+
+  @override
+  String get addFoodPrivacyLine1 => 'Foto hanya diunggah dengan izinmu.';
+
+  @override
+  String get addFoodPrivacyLine2 =>
+      'Suara & input manual jalan tanpa internet.';
+
+  @override
+  String get addFoodPathUnavailable =>
+      'Jalur ini belum tersedia. Pakai pencarian atau buat makanan sendiri dulu, ya.';
+
+  @override
+  String get foodSearchContextLabel => 'CATAT MAKANAN';
+
+  @override
+  String get foodSearchTitle => 'Cari makanan';
+
+  @override
+  String get foodSearchSubtitle => 'Katalog lokal · tersedia tanpa internet';
+
+  @override
+  String get foodSearchHint => 'Cari nama makanan…';
+
+  @override
+  String get foodSearchClearSemantics => 'Hapus pencarian';
+
+  @override
+  String get foodSearchRecentHeading => 'Terakhir dicatat';
+
+  @override
+  String foodSearchResultsHeading(String query) {
+    return 'Hasil \"$query\"';
+  }
+
+  @override
+  String get foodSearchNoResultsTitle => 'Tidak ada hasil';
+
+  @override
+  String get foodSearchNoResultsBody =>
+      'Makanan ini belum ada di katalog. Kamu bisa membuatnya sendiri.';
+
+  @override
+  String get foodSearchCreateLink => 'Tidak ada?  + Buat makanan sendiri';
+
+  @override
+  String get foodSearchFavoritesLabel => 'Favorit';
+
+  @override
+  String get foodSearchFavoritesUnavailable =>
+      'Favorit belum tersedia pada versi ini.';
+
+  @override
+  String get foodSearchCatalogDataLabel => 'data katalog';
+
+  @override
+  String get foodSearchCustomDataLabel => 'buatan sendiri';
+
+  @override
+  String foodSearchApproxPerServing(String kcal, String serving) {
+    return '± $kcal / $serving';
+  }
+
+  @override
+  String get servingDetailContextLabel => 'TAMBAH KE BUKU HARIAN';
+
+  @override
+  String get servingDetailSubtitle => 'Pilih sajian, jumlah, dan waktu makan.';
+
+  @override
+  String get servingDetailSourceCatalog => 'Katalog lokal';
+
+  @override
+  String get servingDetailSourceCustom => 'Buatan sendiri';
+
+  @override
+  String get servingDetailServingLabel => 'Sajian';
+
+  @override
+  String get servingDetailQuantityLabel => 'Jumlah sajian';
+
+  @override
+  String get servingDetailMealTimeLabel => 'Waktu makan';
+
+  @override
+  String get servingDetailEstimateLabel => 'PERKIRAAN';
+
+  @override
+  String servingDetailAddAction(String mealTime) {
+    return 'Tambahkan ke $mealTime';
+  }
+
+  @override
+  String get servingPickerTitle => 'Pilih sajian';
+
+  @override
+  String get mealTimePickerTitle => 'Pilih waktu makan';
+
+  @override
+  String get quantityDecreaseSemantics => 'Kurangi jumlah';
+
+  @override
+  String get quantityIncreaseSemantics => 'Tambah jumlah';
+
+  @override
+  String get customFoodContextLabel => 'KATALOG PRIBADI';
+
+  @override
+  String get customFoodTitle => 'Buat makanan';
+
+  @override
+  String get customFoodSubtitle =>
+      'Masukkan nilai dari sumber yang kamu percaya.';
+
+  @override
+  String get customFoodNameLabel => 'Nama makanan';
+
+  @override
+  String get customFoodNameHint => 'mis. Tumis buncis rumahan';
+
+  @override
+  String get customFoodServingLabel => 'Ukuran sajian';
+
+  @override
+  String get customFoodServingHint => 'mis. 1 porsi · 180 g';
+
+  @override
+  String get customFoodNutritionHeading => 'Nutrisi per sajian';
+
+  @override
+  String get customFoodNote =>
+      'Periksa nilai dan satuannya. Angka yang belum diketahui jangan diisi nol.';
+
+  @override
+  String get customFoodSaveAction => 'Simpan makanan';
+
+  @override
+  String get customFoodNameRequiredError => 'Nama makanan tidak boleh kosong.';
+
+  @override
+  String get customFoodServingRequiredError =>
+      'Ukuran sajian tidak boleh kosong.';
+
+  @override
+  String get customFoodNegativeValueError => 'Nilai gizi tidak boleh negatif.';
+
+  @override
+  String get diaryEyebrowToday => 'HARI INI';
+
+  @override
+  String get diaryTitle => 'Buku harian';
+
+  @override
+  String get diaryLocalNote => 'catatan di perangkat';
+
+  @override
+  String get diaryRecordedTodayLabel => 'TERCATAT HARI INI';
+
+  @override
+  String diaryTargetLabel(String kcal) {
+    return 'Target perkiraan $kcal kkal';
+  }
+
+  @override
+  String get diaryTargetPercentCaption => 'target';
+
+  @override
+  String get diaryPreviousDaySemantics => 'Hari sebelumnya';
+
+  @override
+  String get diaryNextDaySemantics => 'Hari berikutnya';
+
+  @override
+  String get diaryUnknownHeading => 'Belum tercatat';
+
+  @override
+  String get diaryUnknownBody =>
+      'Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.';
+
+  @override
+  String get diaryUnknownConsumptionLabel => 'Konsumsi';
+
+  @override
+  String get diaryUnknownConsumptionValue => 'Belum diketahui';
+
+  @override
+  String get diaryUnknownMacrosNote =>
+      'Protein, karbo, lemak · belum diketahui';
+
+  @override
+  String diaryEntryMenuSemantics(String food) {
+    return 'Opsi catatan $food';
+  }
+
+  @override
+  String editEntryContextFormat(String mealTime, String date) {
+    return '$mealTime · $date';
+  }
+
+  @override
+  String get editEntryTitle => 'Ubah catatan';
+
+  @override
+  String get editEntrySubtitle => 'Perubahan hanya berlaku untuk catatan ini.';
+
+  @override
+  String editEntrySnapshotDetail(String serving) {
+    return 'Sajian saat dicatat · $serving';
+  }
+
+  @override
+  String get editEntryQuantityLabel => 'Jumlah yang dimakan';
+
+  @override
+  String get editEntryUpdatedEstimateLabel => 'Perkiraan setelah diubah';
+
+  @override
+  String get editEntryDeleteAction => 'Hapus catatan ini';
+
+  @override
+  String get editEntrySaveAction => 'Simpan perubahan';
+
+  @override
+  String get editEntryDeleteConfirmTitle => 'Hapus catatan ini?';
+
+  @override
+  String get editEntryDeleteConfirmBody =>
+      'Catatan ini akan hilang dari buku harian dan ringkasan harian akan menyesuaikan.';
+
+  @override
+  String get editEntryDeleteConfirmAction => 'Hapus';
+
+  @override
+  String get editEntryDeleteCancelAction => 'Batal';
 }

@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/providers.dart';
@@ -219,7 +217,9 @@ class _RunningProgramView extends ConsumerWidget {
       ),
     );
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final headerHeight = (214 + (textScale - 1).clamp(0, 1) * 220).toDouble();
+    final headerHeight =
+        (MealoraSpacing.mainHeroHeight + (textScale - 1).clamp(0, 1) * 220)
+            .toDouble();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(
@@ -231,7 +231,7 @@ class _RunningProgramView extends ConsumerWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(
               MealoraSpacing.programContentGutter,
-              headerHeight - MealoraTouch.minTarget,
+              headerHeight - MealoraSpacing.mainHeroOverlap,
               MealoraSpacing.programContentGutter,
               0,
             ),
@@ -371,72 +371,51 @@ class _ProgramHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    return Container(
-      width: double.infinity,
+    return MealoraMainHero(
       height: height,
-      padding: const EdgeInsets.fromLTRB(
-        MealoraSpacing.programHeroGutter,
-        MealoraSpacing.xl,
-        MealoraSpacing.programHeroGutter,
-        0,
-      ),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          // Pemetaan visual rotasi 200° Pen ke koordinat Flutter: sisi kiri
-          // atas gelap, lalu semakin terang ke kanan bawah.
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: MealoraColors.heroGradient,
-          stops: MealoraColors.heroGradientStops,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          MealoraSpacing.programHeroGutter,
+          MealoraSpacing.xl,
+          MealoraSpacing.programHeroGutter,
+          0,
         ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(MealoraRadius.programHeroBottom),
-          bottomRight: Radius.circular(MealoraRadius.programHeroBottom),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    text.programPageTitle,
+                    style: MealoraTypography.title.copyWith(
+                      color: MealoraColors.onPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: MealoraSpacing.xxs),
+                  Text(
+                    text.programPageSubtitle,
+                    style: MealoraTypography.subtitle.copyWith(
+                      color: MealoraColors.onPrimaryMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: MealoraSpacing.md),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+              child: Image.asset(
+                'assets/brand/mealora-app-icon-1024.png',
+                width: 40,
+                height: 40,
+                fit: BoxFit.contain,
+                excludeFromSemantics: true,
+              ),
+            ),
+          ],
         ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: <Widget>[
-          const Positioned.fill(
-            child: CustomPaint(painter: _ProgramHeroGlowPainter()),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      text.programPageTitle,
-                      style: MealoraTypography.title.copyWith(
-                        color: MealoraColors.onPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: MealoraSpacing.xxs),
-                    Text(
-                      text.programPageSubtitle,
-                      style: MealoraTypography.subtitle.copyWith(
-                        color: MealoraColors.onPrimaryMuted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: MealoraSpacing.md),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(MealoraRadius.iconField),
-                child: Image.asset(
-                  'assets/brand/mealora-app-icon-1024.png',
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.contain,
-                  excludeFromSemantics: true,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -446,32 +425,6 @@ class _ProgramHeader extends StatelessWidget {
 ///
 /// Berbeda dari widget [ImageFiltered], blur ini tidak memiliki bounding box
 /// persegi yang dapat muncul sebagai garis pada Flutter Web.
-class _ProgramHeroGlowPainter extends CustomPainter {
-  const _ProgramHeroGlowPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final scale = size.width / 390;
-
-    canvas.drawCircle(
-      Offset(355 * scale, 55 * scale),
-      125 * scale,
-      Paint()
-        ..color = MealoraColors.lime.withValues(alpha: 0.36)
-        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 60 * scale),
-    );
-    canvas.drawOval(
-      Rect.fromLTWH(-70 * scale, 90 * scale, 230 * scale, 200 * scale),
-      Paint()
-        ..color = MealoraColors.accent.withValues(alpha: 0.25)
-        ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 70 * scale),
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ProgramHeroGlowPainter oldDelegate) => false;
-}
-
 class _ProgramHero extends StatelessWidget {
   const _ProgramHero({required this.program, required this.lastCalculated});
 

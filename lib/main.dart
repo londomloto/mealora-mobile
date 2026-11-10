@@ -22,6 +22,8 @@ Future<void> main() async {
         idGeneratorProvider.overrideWithValue(const UuidIdGenerator()),
         profileRepositoryAppOverride,
         programRepositoryAppOverride,
+        foodRepositoryAppOverride,
+        diaryRepositoryAppOverride,
       ],
       child: const MealoraApp(),
     ),

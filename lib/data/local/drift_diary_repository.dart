@@ -1,0 +1,370 @@
+import 'package:drift/drift.dart';
+import 'package:mealora/core/clock/clock.dart';
+import 'package:mealora/core/errors/result.dart';
+import 'package:mealora/core/ids/id_generator.dart';
+import 'package:mealora/core/validation/value_rules.dart';
+import 'package:mealora/data/local/drift_program_repository.dart';
+import 'package:mealora/data/local/program_progress_snapshot.dart';
+import 'package:mealora/data/local/user_record_support.dart';
+import 'package:mealora/database/app_database.dart';
+import 'package:mealora/database/tables/meal_entries_table.dart';
+import 'package:mealora/database/tables/meal_entry_items_table.dart';
+import 'package:mealora/domain/diary/daily_nutrition_total.dart';
+import 'package:mealora/domain/diary/diary_repository.dart';
+import 'package:mealora/domain/diary/meal_entry.dart';
+import 'package:mealora/domain/food/food.dart';
+import 'package:mealora/domain/food/meal_time.dart';
+import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/serving_size.dart';
+import 'package:mealora/domain/program/pause_interval.dart';
+import 'package:mealora/domain/program/user_program.dart';
+import 'package:mealora/domain/shared/units.dart';
+
+part 'drift_diary_repository.g.dart';
+
+/// Implementasi `DiaryRepository` (change 007) memakai DAO Drift.
+///
+/// Menyambung ke [DriftProgramRepository] secara langsung (bukan lewat
+/// `ProgramRepository` domain) untuk memicu pembangunan ulang potret
+/// kemajuan (Design D8) — pola yang sama dengan `program_progress_snapshot`
+/// (change 004): potret adalah detail lapisan data, bukan konsep domain.
+@DriftAccessor(tables: <Type>[MealEntries, MealEntryItems])
+class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
+    with _$DriftDiaryRepositoryMixin
+    implements DiaryRepository {
+  DriftDiaryRepository(
+    super.db, {
+    required Clock clock,
+    required IdGenerator ids,
+    required DriftProgramRepository programRepository,
+  }) : _clock = clock,
+       _ids = ids,
+       _programRepository = programRepository;
+
+  final Clock _clock;
+  final IdGenerator _ids;
+  final DriftProgramRepository _programRepository;
+
+  @override
+  Future<List<MealEntry>> entriesForDate(
+    String profileId,
+    LocalDate date,
+  ) async {
+    final query =
+        select(mealEntries).join([
+            innerJoin(
+              mealEntryItems,
+              mealEntryItems.mealEntryId.equalsExp(mealEntries.id),
+            ),
+          ])
+          ..where(
+            mealEntries.profileId.equals(profileId) &
+                mealEntries.localDate.equals(date.iso) &
+                UserRecords.active(mealEntries.deletedAt) &
+                UserRecords.active(mealEntryItems.deletedAt),
+          )
+          ..orderBy([OrderingTerm.desc(mealEntries.createdAt)]);
+
+    final rows = await query.get();
+    return rows
+        .map(
+          (row) => _toDomain(
+            row.readTable(mealEntries),
+            row.readTable(mealEntryItems),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Future<DailyNutritionTotal> dailyTotal(
+    String profileId,
+    LocalDate date,
+  ) async {
+    final entries = await entriesForDate(profileId, date);
+    if (entries.isEmpty) {
+      return DailyNutritionTotal.empty;
+    }
+    final loggedMealTimes = entries.map((e) => e.mealTime).toSet();
+    return DailyNutritionTotal(
+      nutrition: NutritionProfile.sumAll(entries.map((e) => e.totalNutrition)),
+      loggedMealsCount: loggedMealTimes.length,
+    );
+  }
+
+  @override
+  Future<Result<MealEntry>> addEntry({
+    required String profileId,
+    required LocalDate date,
+    required MealTime mealTime,
+    required Food food,
+    required ServingSize serving,
+    required double quantity,
+  }) async {
+    final validQuantity = ValueRules.positiveAmount(
+      quantity,
+      field: 'quantity',
+    );
+    if (validQuantity is Err<double>) {
+      return Err<MealEntry>(validQuantity.failureOrNull!);
+    }
+
+    final now = _clock.nowUtc();
+    final entryId = _ids.next();
+    final itemId = _ids.next();
+
+    await transaction(() async {
+      await into(mealEntries).insert(
+        MealEntriesCompanion.insert(
+          id: entryId,
+          createdAt: now,
+          updatedAt: now,
+          profileId: profileId,
+          localDate: date.iso,
+          mealTime: mealTime.stableCode,
+        ),
+      );
+      await into(mealEntryItems).insert(
+        MealEntryItemsCompanion.insert(
+          id: itemId,
+          createdAt: now,
+          updatedAt: now,
+          mealEntryId: entryId,
+          foodId: food.id,
+          servingId: serving.id,
+          quantity: quantity,
+          foodNameSnapshot: food.name,
+          servingLabelSnapshot: serving.label,
+          energyKcalSnapshot: Value<double?>(serving.nutrition.energy?.kcal),
+          proteinGSnapshot: Value<double?>(serving.nutrition.proteinG),
+          carbohydrateGSnapshot: Value<double?>(
+            serving.nutrition.carbohydrateG,
+          ),
+          fatGSnapshot: Value<double?>(serving.nutrition.fatG),
+        ),
+      );
+    });
+
+    await _rebuildProgressFor(profileId, date);
+
+    final entryRow = await (select(
+      mealEntries,
+    )..where((t) => t.id.equals(entryId))).getSingle();
+    final itemRow = await (select(
+      mealEntryItems,
+    )..where((t) => t.id.equals(itemId))).getSingle();
+    return Ok<MealEntry>(_toDomain(entryRow, itemRow));
+  }
+
+  @override
+  Future<Result<MealEntry>> updateEntry({
+    required String entryId,
+    required ServingSize serving,
+    required double quantity,
+    required MealTime mealTime,
+  }) async {
+    final validQuantity = ValueRules.positiveAmount(
+      quantity,
+      field: 'quantity',
+    );
+    if (validQuantity is Err<double>) {
+      return Err<MealEntry>(validQuantity.failureOrNull!);
+    }
+
+    final entryRow = await (select(
+      mealEntries,
+    )..where((t) => t.id.equals(entryId))).getSingle();
+    final itemRow = await (select(
+      mealEntryItems,
+    )..where((t) => t.mealEntryId.equals(entryId))).getSingle();
+
+    final now = _clock.nowUtc();
+    final servingChanged = itemRow.servingId != serving.id;
+
+    await transaction(() async {
+      await (update(mealEntries)..where((t) => t.id.equals(entryId))).write(
+        MealEntriesCompanion(
+          mealTime: Value<String>(mealTime.stableCode),
+          updatedAt: Value<DateTime>(now),
+          revision: Value<int>(entryRow.revision + 1),
+        ),
+      );
+      await (update(
+        mealEntryItems,
+      )..where((t) => t.id.equals(itemRow.id))).write(
+        MealEntryItemsCompanion(
+          servingId: Value<String>(serving.id),
+          quantity: Value<double>(quantity),
+          servingLabelSnapshot: Value<String>(serving.label),
+          energyKcalSnapshot: servingChanged
+              ? Value<double?>(serving.nutrition.energy?.kcal)
+              : const Value<double?>.absent(),
+          proteinGSnapshot: servingChanged
+              ? Value<double?>(serving.nutrition.proteinG)
+              : const Value<double?>.absent(),
+          carbohydrateGSnapshot: servingChanged
+              ? Value<double?>(serving.nutrition.carbohydrateG)
+              : const Value<double?>.absent(),
+          fatGSnapshot: servingChanged
+              ? Value<double?>(serving.nutrition.fatG)
+              : const Value<double?>.absent(),
+          updatedAt: Value<DateTime>(now),
+          revision: Value<int>(itemRow.revision + 1),
+        ),
+      );
+    });
+
+    await _rebuildProgressFor(
+      entryRow.profileId,
+      LocalDate.parse(entryRow.localDate),
+    );
+
+    final updatedEntry = await (select(
+      mealEntries,
+    )..where((t) => t.id.equals(entryId))).getSingle();
+    final updatedItem = await (select(
+      mealEntryItems,
+    )..where((t) => t.id.equals(itemRow.id))).getSingle();
+    return Ok<MealEntry>(_toDomain(updatedEntry, updatedItem));
+  }
+
+  @override
+  Future<void> deleteEntry(String entryId) async {
+    final entryRow = await (select(
+      mealEntries,
+    )..where((t) => t.id.equals(entryId))).getSingle();
+    final now = _clock.nowUtc();
+
+    await transaction(() async {
+      await (update(mealEntries)..where((t) => t.id.equals(entryId))).write(
+        MealEntriesCompanion(
+          deletedAt: Value<DateTime?>(now),
+          updatedAt: Value<DateTime>(now),
+          revision: Value<int>(entryRow.revision + 1),
+        ),
+      );
+      final itemRows = await (select(
+        mealEntryItems,
+      )..where((t) => t.mealEntryId.equals(entryId))).get();
+      for (final item in itemRows) {
+        await (update(
+          mealEntryItems,
+        )..where((t) => t.id.equals(item.id))).write(
+          MealEntryItemsCompanion(
+            deletedAt: Value<DateTime?>(now),
+            updatedAt: Value<DateTime>(now),
+            revision: Value<int>(item.revision + 1),
+          ),
+        );
+      }
+    });
+
+    await _rebuildProgressFor(
+      entryRow.profileId,
+      LocalDate.parse(entryRow.localDate),
+    );
+  }
+
+  MealEntry _toDomain(MealEntryRow entry, MealEntryItemRow item) => MealEntry(
+    id: entry.id,
+    profileId: entry.profileId,
+    localDate: LocalDate.parse(entry.localDate),
+    mealTime: MealTime.fromStableCode(entry.mealTime),
+    foodId: item.foodId,
+    servingId: item.servingId,
+    foodNameSnapshot: item.foodNameSnapshot,
+    servingLabelSnapshot: item.servingLabelSnapshot,
+    quantity: item.quantity,
+    nutritionPerServing: NutritionProfile(
+      energy: item.energyKcalSnapshot == null
+          ? null
+          : Energy.kcalValue(
+              item.energyKcalSnapshot!,
+              field: 'energyKcalSnapshot',
+            ).valueOrNull,
+      proteinG: item.proteinGSnapshot,
+      carbohydrateG: item.carbohydrateGSnapshot,
+      fatG: item.fatGSnapshot,
+    ),
+    createdAt: entry.createdAt,
+  );
+
+  /// Memicu pembangunan ulang potret kemajuan program untuk [date] (Design
+  /// D8, task 5.3/5.4) — idempoten, aman dipanggil pada setiap perubahan
+  /// catatan termasuk pemindahan waktu makan pada tanggal yang sama.
+  ///
+  /// Tidak melakukan apa pun bila tidak ada program yang berjalan — sesuai
+  /// spec daily-dashboard: ringkasan hari tetap tampil dari buku harian
+  /// langsung, bukan dari potret, ketika tidak ada program.
+  Future<void> _rebuildProgressFor(String profileId, LocalDate date) async {
+    final program = await _programRepository.findRunning(profileId);
+    if (program == null) {
+      return;
+    }
+
+    final total = await dailyTotal(profileId, date);
+    final activeDayNumber = _activeDayNumberOn(program, date);
+    final energyTarget = program.proposal.energyTarget;
+    final consumedEnergyKcal = total.nutrition.energy?.kcal;
+
+    await _programRepository.rebuildProgressForDate(
+      userProgramId: program.id,
+      localDate: date,
+      input: ProgramProgressInput(
+        recordedAt: _clock.nowUtc(),
+        loggedMealsCount: total.loggedMealsCount,
+        diaryComplete: total.loggedMealsCount >= MealTime.values.length,
+        activeDayNumber: activeDayNumber,
+        calculationVersion: program.proposal.calculatorVersion,
+        consumedEnergyKcal: consumedEnergyKcal,
+        energyAdherenceRatio: energyTarget == null || consumedEnergyKcal == null
+            ? null
+            : consumedEnergyKcal / energyTarget.kcal,
+        proteinG: total.nutrition.proteinG,
+        carbohydrateG: total.nutrition.carbohydrateG,
+        fatG: total.nutrition.fatG,
+      ),
+    );
+  }
+
+  /// Hari aktif ke berapa [date] sejak [program] dimulai: menghitung hari
+  /// kalender lokal dari tanggal mulai sampai [date] (inklusif), mengurangi
+  /// hari yang berada dalam rentang jeda mana pun (spec daily-dashboard,
+  /// "Hari dalam rentang jeda SHALL TIDAK menambah hitungan hari aktif").
+  int _activeDayNumberOn(UserProgram program, LocalDate date) {
+    final startDate = _clock.localDateOf(program.startedAt);
+    if (date.compareTo(startDate) < 0) {
+      return 1;
+    }
+    var activeDays = 0;
+    var cursor = startDate;
+    while (cursor.compareTo(date) <= 0) {
+      if (!_isPaused(program.pauseIntervals, cursor)) {
+        activeDays += 1;
+      }
+      cursor = _nextDay(cursor);
+    }
+    return activeDays < 1 ? 1 : activeDays;
+  }
+
+  bool _isPaused(List<PauseInterval> intervals, LocalDate day) {
+    for (final interval in intervals) {
+      final start = _clock.localDateOf(interval.startedAt);
+      final end = interval.endedAt == null
+          ? null
+          : _clock.localDateOf(interval.endedAt!);
+      if (day.compareTo(start) < 0) {
+        continue;
+      }
+      if (end == null || day.compareTo(end) <= 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  LocalDate _nextDay(LocalDate date) {
+    final next = DateTime(date.year, date.month, date.day + 1);
+    return LocalDate(next.year, next.month, next.day);
+  }
+}

@@ -4,6 +4,7 @@ import 'package:mealora/app/providers.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
+import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/history/history_screen.dart';
 import 'package:mealora/features/profile/profile_screen.dart';
 import 'package:mealora/features/program/program_screen.dart';
@@ -43,24 +44,9 @@ class AppShell extends ConsumerWidget {
         selected: selected,
         onSelected: (destination) =>
             ref.read(selectedDestinationProvider.notifier).select(destination),
-        onRecord: () => _announceRecordUnavailable(context),
+        onRecord: () => showAddFoodSheet(context),
       ),
     );
-  }
-
-  /// Pencatatan makanan dibangun pada change berikutnya. Sampai saat itu,
-  /// tombol Catat menjelaskan keadaannya alih-alih diam atau membuka layar
-  /// kosong.
-  void _announceRecordUnavailable(BuildContext context) {
-    final text = AppText.of(context);
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(text.recordUnavailable),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
   }
 }
 

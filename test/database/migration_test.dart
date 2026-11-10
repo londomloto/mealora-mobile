@@ -7,12 +7,14 @@ import 'package:mealora/core/errors/failure.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/data/local/harness_record_dao.dart';
 import 'package:mealora/database/app_database.dart';
+import 'package:mealora/database/migrations/food_catalog_verification.dart';
 import 'package:mealora/database/migrations/migration_verification.dart';
 import 'package:mealora/database/migrations/program_catalog_verification.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 
 import 'legacy_v1_database.dart' as legacy;
 import 'legacy_v2_database.dart' as legacy2;
+import 'legacy_v3_database.dart' as legacy3;
 import 'test_database.dart';
 
 /// Harness migrasi, termasuk migrasi versi 1 → 2 (change 004, tasks
@@ -389,6 +391,131 @@ void main() {
     });
   });
 
+  group('fixture: migrasi versi 3 ke 4 (change 007)', () {
+    test('basis data versi 3 berisi profil dan data harness bermigrasi ke '
+        'versi 4 dengan sehat, katalog makanan terseed, dan data lama '
+        'tidak tersentuh', () async {
+      final file = databaseFile();
+
+      final v3 = legacy3.LegacyV3Database(NativeDatabase(file));
+      await _insertLegacyV3Profile(v3, id: 'profile-v3');
+      await _insertLegacyHarnessRecordV3(
+        v3,
+        id: 'legacy-v3-harness',
+        label: 'Sebelum migrasi ke v4',
+        amount: 4,
+      );
+      await v3.customStatement('PRAGMA user_version = 3');
+      await v3.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final catalogCheck = await verifyFoodCatalog(upgraded);
+      expect(catalogCheck.isHealthy, isTrue, reason: catalogCheck.toString());
+      expect(catalogCheck.builtInFoodCount, greaterThan(0));
+
+      final harnessDao = HarnessRecordDao(
+        upgraded,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await harnessDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Sebelum migrasi ke v4');
+
+      final profiles = await upgraded.select(upgraded.profiles).get();
+      expect(profiles, hasLength(1));
+      expect(profiles.single.id, 'profile-v3');
+    });
+
+    test('migrasi versi 3 ke 4 yang terputus di tengah tidak merusak data dan '
+        'percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v3 = legacy3.LegacyV3Database(NativeDatabase(file));
+      await _insertLegacyHarnessRecordV3(
+        v3,
+        id: 'legacy-v3-harness-2',
+        label: 'Harus selamat lintas migrasi v4',
+        amount: 1,
+      );
+      await v3.customStatement('PRAGMA user_version = 3');
+      await v3.close();
+
+      // Simulasi migrasi v3→v4 yang terhenti: tabel makanan mulai dibuat
+      // di dalam transaksi, lalu prosesnya berhenti sebelum selesai.
+      final interrupted = legacy3.LegacyV3Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE foods_wip (id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect((await verifyFoodCatalog(retry)).isHealthy, isTrue);
+
+      final retryDao = HarnessRecordDao(
+        retry,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await retryDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Harus selamat lintas migrasi v4');
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'foods_wip'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+
+    test(
+      'menjalankan ulang migrasi/seed (buka ulang) tetap idempoten',
+      () async {
+        final file = databaseFile();
+
+        final v3 = legacy3.LegacyV3Database(NativeDatabase(file));
+        await v3.customStatement('PRAGMA user_version = 3');
+        await v3.close();
+
+        final first = createTestDatabase(executor: NativeDatabase(file));
+        final foodsFirst = await first.select(first.foods).get();
+        await first.close();
+
+        final second = createTestDatabase(executor: NativeDatabase(file));
+        addTearDown(second.close);
+        final foodsSecond = await second.select(second.foods).get();
+
+        expect(
+          foodsSecond.map((f) => f.id).toSet(),
+          foodsFirst.map((f) => f.id).toSet(),
+        );
+      },
+    );
+  });
+
   group('kegagalan inisialisasi penyimpanan', () {
     test('dilaporkan sebagai kegagalan bertipe, bukan exception', () async {
       final result = await openLocalStorage(
@@ -485,6 +612,46 @@ Future<void> _insertLegacyHarnessRecordV2(
           amount: amount,
           localDate: '2026-11-08',
           timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu baris harness langsung lewat `LegacyV3Database`.
+Future<void> _insertLegacyHarnessRecordV3(
+  legacy3.LegacyV3Database db, {
+  required String id,
+  required String label,
+  required double amount,
+}) {
+  return db
+      .into(db.harnessRecords)
+      .insert(
+        legacy3.HarnessRecordsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          label: label,
+          amount: amount,
+          localDate: '2026-11-08',
+          timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu profil langsung lewat `LegacyV3Database` (task 2.10 —
+/// migrasi versi 3 ke 4 SHALL mempertahankan seluruh data versi 3).
+Future<void> _insertLegacyV3Profile(
+  legacy3.LegacyV3Database db, {
+  required String id,
+}) {
+  return db
+      .into(db.profiles)
+      .insert(
+        legacy3.ProfilesCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          onboardingComplete: const Value<bool>(true),
         ),
       );
 }

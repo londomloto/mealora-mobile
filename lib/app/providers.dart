@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/providers.dart';
+import 'package:mealora/data/local/drift_diary_repository.dart';
+import 'package:mealora/data/local/drift_food_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
@@ -8,6 +10,7 @@ import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
+import 'package:mealora/features/diary/diary_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show
         onboardingRefreshSignalProvider,
@@ -76,6 +79,35 @@ final Override programRepositoryAppOverride = programRepositoryProvider
         ref.watch(appDatabaseProvider),
         clock: ref.watch(clockProvider),
         ids: ref.watch(idGeneratorProvider),
+      ),
+    );
+
+/// Menimpa `foodRepositoryProvider` (features/diary, change 007) dengan
+/// implementasi Drift sungguhan.
+final Override foodRepositoryAppOverride = foodRepositoryProvider.overrideWith(
+  (ref) => DriftFoodRepository(
+    ref.watch(appDatabaseProvider),
+    ids: ref.watch(idGeneratorProvider),
+    clock: ref.watch(clockProvider),
+  ),
+);
+
+/// Menimpa `diaryRepositoryProvider` (features/diary, change 007) dengan
+/// implementasi Drift sungguhan — bergantung langsung pada
+/// `DriftProgramRepository` untuk memicu pembangunan ulang potret kemajuan
+/// (Design D8), dibangun sebagai instance terpisah di atas basis data yang
+/// sama (aman: keduanya `DatabaseAccessor` tanpa keadaan di memori).
+final Override diaryRepositoryAppOverride = diaryRepositoryProvider
+    .overrideWith(
+      (ref) => DriftDiaryRepository(
+        ref.watch(appDatabaseProvider),
+        clock: ref.watch(clockProvider),
+        ids: ref.watch(idGeneratorProvider),
+        programRepository: DriftProgramRepository(
+          ref.watch(appDatabaseProvider),
+          clock: ref.watch(clockProvider),
+          ids: ref.watch(idGeneratorProvider),
+        ),
       ),
     );
 
