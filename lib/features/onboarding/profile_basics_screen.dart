@@ -262,11 +262,11 @@ class _ProfileFormCard extends StatelessWidget {
           _ActionProfileRow(
             icon: Icons.balance_outlined,
             label: text.onboardingBiologicalInputLabel,
-            value: biologicalInput == BiologicalInput.female
-                ? text.onboardingBiologicalInputFemale
-                : biologicalInput == BiologicalInput.male
-                ? text.onboardingBiologicalInputMale
-                : text.onboardingBiologicalInputFemale,
+            value: switch (biologicalInput) {
+              BiologicalInput.female => text.onboardingBiologicalInputFemale,
+              BiologicalInput.male => text.onboardingBiologicalInputMale,
+              null => text.onboardingBiologicalInputHint,
+            },
             onTap: () => _pickBiologicalInput(context),
           ),
         ],

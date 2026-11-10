@@ -587,80 +587,106 @@ class _HistoryCalendarScreenState extends ConsumerState<HistoryCalendarScreen> {
     return Scaffold(
       backgroundColor: MealoraColors.background,
       body: MealoraBlobBackdrop(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            MealoraSpacing.programHeroGutter,
-            MealoraSpacing.xl,
-            MealoraSpacing.programHeroGutter,
-            MealoraSpacing.navigationContentClearance,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                text.historyContextLabel,
-                style: MealoraTypography.eyebrow.copyWith(
-                  color: MealoraColors.primaryDeep,
-                ),
-              ),
-              const SizedBox(height: MealoraSpacing.xxs),
-              Text(text.historyPageTitle, style: MealoraTypography.title),
-              const SizedBox(height: MealoraSpacing.xxs),
-              Text(text.historyPageSubtitle, style: MealoraTypography.subtitle),
-              const SizedBox(height: MealoraSpacing.lg),
-              _CalendarCard(
-                month: displayedMonth,
-                selected: selectedDate,
-                today: today,
-                onPreviousMonth: () =>
-                    setState(() => _displayedMonth = displayedMonth.shift(-1)),
-                onNextMonth: () =>
-                    setState(() => _displayedMonth = displayedMonth.shift(1)),
-                onSelectDate: (date) => setState(() {
-                  _selectedDate = date;
-                  _displayedMonth = HistoryMonth.of(date);
-                }),
-              ),
-              const SizedBox(height: MealoraSpacing.lg),
-              Text(
-                DateFormat('d MMM · EEEE', 'id_ID').format(selectedDateTime),
-                style: MealoraTypography.sectionTitle,
-              ),
-              const SizedBox(height: MealoraSpacing.sm),
-              weightOnDate.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, _) => const SizedBox.shrink(),
-                data: (record) => record == null
-                    ? const SizedBox.shrink()
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: MealoraSpacing.sm,
-                        ),
-                        child: MealoraCard(
-                          child: MealoraIconRow(
-                            icon: Icons.monitor_weight_outlined,
-                            iconBackground: MealoraColors.noteInfo,
-                            iconForeground: MealoraColors.info,
-                            title: '${IdFormat.decimal(record.weightKg)} kg',
-                            detail: text.historyWeightRecordedLabel,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              MealoraSpacing.programHeroGutter,
+              MealoraSpacing.md,
+              MealoraSpacing.programHeroGutter,
+              MealoraSpacing.navigationContentClearance,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Semantics(
+                      button: true,
+                      label: text.onboardingBackSemantics,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(MealoraSpacing.xxs),
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: MealoraColors.ink,
                           ),
                         ),
                       ),
-              ),
-              dailyTotal.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, _) => const SizedBox.shrink(),
-                data: (total) => total.hasAnyEntries
-                    ? _DiaryBody(
-                        total: total,
-                        entries: entries.valueOrNull ?? const <MealEntry>[],
-                        energyTargetKcal: energyTarget?.kcal,
-                        text: text,
-                        eyebrowLabel: text.historyEnergyRecordedLabel,
-                      )
-                    : _UnknownDiaryBody(text: text, date: selectedDate),
-              ),
-            ],
+                    ),
+                    Expanded(
+                      child: Text(
+                        text.historyContextLabel,
+                        style: MealoraTypography.eyebrow.copyWith(
+                          color: MealoraColors.primaryDeep,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(text.historyPageTitle, style: MealoraTypography.title),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(
+                  text.historyPageSubtitle,
+                  style: MealoraTypography.subtitle,
+                ),
+                const SizedBox(height: MealoraSpacing.lg),
+                _CalendarCard(
+                  month: displayedMonth,
+                  selected: selectedDate,
+                  today: today,
+                  onPreviousMonth: () => setState(
+                    () => _displayedMonth = displayedMonth.shift(-1),
+                  ),
+                  onNextMonth: () =>
+                      setState(() => _displayedMonth = displayedMonth.shift(1)),
+                  onSelectDate: (date) => setState(() {
+                    _selectedDate = date;
+                    _displayedMonth = HistoryMonth.of(date);
+                  }),
+                ),
+                const SizedBox(height: MealoraSpacing.lg),
+                Text(
+                  DateFormat('d MMM · EEEE', 'id_ID').format(selectedDateTime),
+                  style: MealoraTypography.sectionTitle,
+                ),
+                const SizedBox(height: MealoraSpacing.sm),
+                weightOnDate.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
+                  data: (record) => record == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: MealoraSpacing.sm,
+                          ),
+                          child: MealoraCard(
+                            child: MealoraIconRow(
+                              icon: Icons.monitor_weight_outlined,
+                              iconBackground: MealoraColors.noteInfo,
+                              iconForeground: MealoraColors.info,
+                              title: '${IdFormat.decimal(record.weightKg)} kg',
+                              detail: text.historyWeightRecordedLabel,
+                            ),
+                          ),
+                        ),
+                ),
+                dailyTotal.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
+                  data: (total) => total.hasAnyEntries
+                      ? _DiaryBody(
+                          total: total,
+                          entries: entries.valueOrNull ?? const <MealEntry>[],
+                          energyTargetKcal: energyTarget?.kcal,
+                          text: text,
+                          eyebrowLabel: text.historyEnergyRecordedLabel,
+                        )
+                      : _UnknownDiaryBody(text: text, date: selectedDate),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -35,6 +35,11 @@ abstract final class IdFormat {
     'd MMM y',
     kAppLocale,
   ).format(DateTime(date.year, date.month, date.day));
+
+  /// Jam dalam zona waktu perangkat, mis. `14:32` — [value] boleh berupa
+  /// instan UTC maupun lokal, selalu dikonversi ke lokal sebelum diformat.
+  static String time(DateTime value) =>
+      DateFormat('HH:mm', kAppLocale).format(value.toLocal());
 }
 
 /// Satuan metrik yang dipakai Mealora.

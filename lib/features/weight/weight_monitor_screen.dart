@@ -6,7 +6,6 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/format/id_formatters.dart';
-import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/domain/weight/weight_record.dart';
 import 'package:mealora/features/weight/add_weight_screen.dart';
@@ -18,7 +17,7 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// `31 · Pantau berat` (change 008, design D1–D3).
 ///
 /// Berat terbaru, perbandingan terhadap berat awal program bila berlaku,
-/// tren empat minggu terakhir dengan celah yang terlihat (design D2), dan
+/// tren tujuh hari terakhir dengan celah yang terlihat (design D2), dan
 /// daftar catatan terakhir yang bisa disunting/dihapus (task 4.8).
 class WeightMonitorScreen extends ConsumerWidget {
   const WeightMonitorScreen({super.key});
@@ -99,7 +98,6 @@ class _WeightMonitorContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = AppText.of(context);
-    final today = ref.watch(clockProvider).today();
     final latest = records.last;
     final activeProgram = ref.watch(activeProgramProvider).valueOrNull;
     final recent = records.reversed.toList(growable: false);
@@ -118,23 +116,50 @@ class _WeightMonitorContent extends ConsumerWidget {
           const SizedBox(height: MealoraSpacing.lg),
           _WeightHeroCard(latest: latest, activeProgram: activeProgram),
           const SizedBox(height: MealoraSpacing.lg),
-          Text(text.weightTrendHeading, style: MealoraTypography.sectionTitle),
-          const SizedBox(height: MealoraSpacing.xxs),
-          if (records.length < 2)
+          if (records.length < 2) ...<Widget>[
+            Text(
+              text.weightTrendHeading,
+              style: MealoraTypography.sectionTitle,
+            ),
+            const SizedBox(height: MealoraSpacing.xxs),
             Text(
               text.weightTrendSingleRecordNote,
               style: MealoraTypography.bodySmall,
-            )
-          else ...<Widget>[
-            Text(
-              text.weightTrendSubheading,
-              style: MealoraTypography.bodySmall,
             ),
-            const SizedBox(height: MealoraSpacing.md),
+          ] else
             MealoraCard(
-              child: WeightTrendChart(records: records, today: today),
+              radius: MealoraRadius.cardLarge,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          text.weightTrendHeading,
+                          style: MealoraTypography.sectionTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: MealoraSpacing.xs),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 160),
+                        child: Text(
+                          text.weightTrendSubheading,
+                          style: MealoraTypography.bodySmall,
+                          textAlign: TextAlign.end,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: MealoraSpacing.md),
+                  WeightTrendChart(records: records),
+                ],
+              ),
             ),
-          ],
           const SizedBox(height: MealoraSpacing.lg),
           Text(
             text.weightRecentRecordsHeading,
@@ -279,12 +304,14 @@ class _WeightEntryRow extends ConsumerWidget {
     return Semantics(
       label: text.weightEntrySemantics(
         IdFormat.shortDate(record.localDate),
+        IdFormat.time(record.recordedAt),
         IdFormat.decimal(record.weightKg),
       ),
       child: MealoraIconRow(
         icon: Icons.monitor_weight_outlined,
         title: '${IdFormat.decimal(record.weightKg)} kg',
-        detail: IdFormat.shortDate(record.localDate),
+        detail:
+            '${IdFormat.shortDate(record.localDate)} · ${IdFormat.time(record.recordedAt)}',
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

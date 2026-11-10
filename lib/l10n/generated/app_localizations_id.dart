@@ -321,6 +321,9 @@ class AppTextId extends AppText {
       'Digunakan hanya untuk persamaan estimasi energi, bukan identitas gender.';
 
   @override
+  String get onboardingBiologicalInputHint => 'Pilih salah satu';
+
+  @override
   String get onboardingBiologicalInputFemale => 'Perempuan';
 
   @override
@@ -921,23 +924,18 @@ class AppTextId extends AppText {
   }
 
   @override
-  String get programConsistencyDayCompleteSemantics =>
-      'Hari ini, pencatatan lengkap';
+  String programConsistencyDaySegmentSemantics(
+    String date,
+    int filled,
+    int total,
+  ) {
+    return '$date, $filled dari $total waktu makan tercatat';
+  }
 
   @override
-  String get programConsistencyDayPartialSemantics =>
-      'Hari ini, pencatatan belum lengkap';
-
-  @override
-  String get programConsistencyDayNoDataSemantics =>
-      'Hari ini, belum ada catatan';
-
-  @override
-  String get programWeightProgressUnknownTitle => 'Kemajuan belum diketahui';
-
-  @override
-  String get programWeightProgressUnknownBody =>
-      'Pemantauan berat badan menyusul pada tahap berikutnya — belum ada angka kemajuan untuk ditampilkan di sini.';
+  String programConsistencyDayEmptySemantics(String date) {
+    return '$date, belum ada catatan';
+  }
 
   @override
   String get howCalculatedBackSemantics => 'Kembali';
@@ -1669,11 +1667,14 @@ class AppTextId extends AppText {
   String get weightTrendHeading => 'Tren berat';
 
   @override
-  String get weightTrendSubheading => '4 minggu terakhir';
+  String get weightTrendSubheading => '7 catatan terakhir';
 
   @override
   String get weightTrendSingleRecordNote =>
       'Baru satu catatan — tren belum dapat ditampilkan.';
+
+  @override
+  String get weightTrendEmptySlotSemantics => 'Belum ada catatan';
 
   @override
   String get weightRecentRecordsHeading => 'Catatan terakhir';
@@ -1692,8 +1693,8 @@ class AppTextId extends AppText {
   String get weightAddActionSemantics => 'Tambah catatan berat';
 
   @override
-  String weightEntrySemantics(String date, String weight) {
-    return '$date, $weight kilogram';
+  String weightEntrySemantics(String date, String time, String weight) {
+    return '$date pukul $time, $weight kilogram';
   }
 
   @override

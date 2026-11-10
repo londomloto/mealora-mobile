@@ -16,9 +16,10 @@ abstract final class MealoraSpacing {
   /// Jarak tepi layar ke konten.
   static const double screenGutter = 22;
 
-  /// Geometri spesifik frame `05 · Program saya` pada kanvas 390 px.
+  /// Geometri spesifik frame `05 · Program saya` pada kanvas 390 px — teks
+  /// judul hero diindentasi 24 px, berbeda dari kartu kontennya yang
+  /// memakai [screenGutter] (22 px) seperti layar `01`/`16`.
   static const double programHeroGutter = 24;
-  static const double programContentGutter = 29;
 
   /// Geometri hero bersama tab utama (Hari ini, Program, Riwayat). Nilai
   /// 244 adalah tinggi desain 268 px setelah status bar 24 px ditangani

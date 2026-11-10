@@ -237,9 +237,9 @@ class _RunningProgramView extends ConsumerWidget {
           _ProgramHeader(height: headerHeight),
           Padding(
             padding: EdgeInsets.fromLTRB(
-              MealoraSpacing.programContentGutter,
+              MealoraSpacing.screenGutter,
               headerHeight - MealoraSpacing.mainHeroOverlap,
-              MealoraSpacing.programContentGutter,
+              MealoraSpacing.screenGutter,
               0,
             ),
             child: Column(
@@ -259,12 +259,7 @@ class _RunningProgramView extends ConsumerWidget {
                   loading: () => const SizedBox.shrink(),
                   error: (error, stackTrace) => const SizedBox.shrink(),
                   data: (snapshots) =>
-                      program.proposal.showsWeightProgressPercent
-                      ? const WeightProgressPlaceholderCard()
-                      : WeeklyConsistencyCard(
-                          snapshots: snapshots,
-                          today: today,
-                        ),
+                      WeeklyConsistencyCard(snapshots: snapshots, today: today),
                 ),
                 const SizedBox(height: MealoraSpacing.sm),
                 progressAsync.when(
@@ -394,9 +389,13 @@ class _ProgramHeader extends StatelessWidget {
     return MealoraMainHero(
       height: height,
       child: Padding(
+        // 44 px, selaras judul hero `01 · Hari ini` (today_screen.dart) —
+        // rancangan menempatkan judul kedua layar pada y yang sama (66 px
+        // dari atas hero), bukan kebetulan; beda nilai sebelumnya (28 px)
+        // membuat judul "melompat" saat berpindah tab.
         padding: const EdgeInsets.fromLTRB(
           MealoraSpacing.programHeroGutter,
-          MealoraSpacing.xl,
+          44,
           MealoraSpacing.programHeroGutter,
           0,
         ),

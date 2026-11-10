@@ -72,6 +72,22 @@ abstract final class MealoraColors {
   /// Biru aksen (kategori/ilustrasi, jarang dipakai untuk teks).
   static const Color info = Color(0xFF6E8BFF);
 
+  /// Gradien batang tren berat (`31`, atas ke bawah): biru aksen → hijau
+  /// terang, dipakai pada jalur kapsul yang punya catatan.
+  static const List<Color> weightTrendGradient = <Color>[info, primaryBright];
+
+  /// Hijau pekat kedua yang menjadi titik akhir gradien ruas kebiasaan
+  /// minggu ini (`05`) — berbeda dari [primary] dan [primaryBright],
+  /// diambil langsung dari rancangan.
+  static const Color consistencyDeep = Color(0xFF0E8B57);
+
+  /// Gradien ruas kebiasaan minggu ini (`05`, atas ke bawah): hijau muda
+  /// terang → hijau pekat.
+  static const List<Color> consistencyGradient = <Color>[
+    primaryLight,
+    consistencyDeep,
+  ];
+
   /// Warna teks utama (tinta).
   static const Color ink = Color(0xFF10291E);
 

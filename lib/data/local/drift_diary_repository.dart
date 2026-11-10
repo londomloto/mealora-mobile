@@ -336,6 +336,21 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
     final energyTarget = program.proposal.energyTarget;
     final consumedEnergyKcal = total.nutrition.energy?.kcal;
     final weightKg = await _weightForDate(profileId, date);
+    final startWeightKg = program.inputSnapshot.currentWeight.kg;
+    final targetWeightKg = program.inputSnapshot.specific.targetWeight?.kg;
+    final weightChangeKg = weightKg == null ? null : weightKg - startWeightKg;
+    // Hanya bermakna untuk program dengan berat tujuan (Turun/Naik Berat) —
+    // tetap null untuk Pertahankan dan Makan Sehat (tidak ada tujuan untuk
+    // dibandingkan), bukan nilai yang dikarang.
+    final targetProgressRatio =
+        weightKg == null ||
+            targetWeightKg == null ||
+            targetWeightKg == startWeightKg
+        ? null
+        : ((weightKg - startWeightKg) / (targetWeightKg - startWeightKg)).clamp(
+            0.0,
+            1.0,
+          );
 
     await _programRepository.rebuildProgressForDate(
       userProgramId: program.id,
@@ -347,6 +362,8 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
         activeDayNumber: activeDayNumber,
         calculationVersion: program.proposal.calculatorVersion,
         weightKg: weightKg,
+        weightChangeKg: weightChangeKg,
+        targetProgressRatio: targetProgressRatio,
         consumedEnergyKcal: consumedEnergyKcal,
         energyAdherenceRatio: energyTarget == null || consumedEnergyKcal == null
             ? null

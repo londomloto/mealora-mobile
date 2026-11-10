@@ -7,11 +7,14 @@ import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show onboardingRefreshSignalProvider;
 import 'package:mealora/features/weight/weight_controller.dart';
 
-/// Rentang tren berat: empat minggu terakhir, tetap (design.md Open
-/// Questions, change 008) — mencakup hari ini.
-const int kWeightTrendWindowDays = 28;
+/// Rentang pengambilan "Catatan terakhir": lebih panjang daripada jendela
+/// tren grafik, supaya daftar riwayat tidak ikut terpotong ketika jendela
+/// grafik dipersempit (design.md Open Questions, change 008) — mencakup
+/// hari ini. `kWeightTrendWindowDays` di `weight_trend_chart.dart` mengambil
+/// irisan lebih sempit dari hasil yang sama untuk digambar.
+const int kWeightRecentRecordsWindowDays = 28;
 
-/// Catatan berat milik profil ini pada [kWeightTrendWindowDays] hari
+/// Catatan berat milik profil ini pada [kWeightRecentRecordsWindowDays] hari
 /// terakhir, terlama lebih dulu — dipakai baik untuk tren maupun daftar
 /// catatan terakhir (task 2.3), dan untuk `WeightMonitorScreen` (`31`).
 final FutureProvider<List<WeightRecord>> recentWeightRecordsProvider =
@@ -24,7 +27,7 @@ final FutureProvider<List<WeightRecord>> recentWeightRecordsProvider =
       }
       final clock = ref.watch(clockProvider);
       final today = clock.today();
-      final from = _minusDays(today, kWeightTrendWindowDays - 1);
+      final from = _minusDays(today, kWeightRecentRecordsWindowDays - 1);
       return ref
           .watch(weightRepositoryProvider)
           .recordsInRange(profile.id, from: from, to: today);

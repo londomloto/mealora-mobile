@@ -165,6 +165,7 @@
   "onboardingWeightHint": "mis. 68,4",
   "onboardingBiologicalInputLabel": "Input untuk persamaan energi",
   "onboardingBiologicalInputDisclosure": "Digunakan hanya untuk persamaan estimasi energi, bukan identitas gender.",
+  "onboardingBiologicalInputHint": "Pilih salah satu",
   "onboardingBiologicalInputFemale": "Perempuan",
   "onboardingBiologicalInputMale": "Laki-laki",
   "onboardingContinueAction": "Lanjutkan",
@@ -395,11 +396,21 @@
     "description": "Jumlah hari dalam 7 hari terakhir yang punya catatan makan.",
     "placeholders": { "count": { "type": "int" } }
   },
-  "programConsistencyDayCompleteSemantics": "Hari ini, pencatatan lengkap",
-  "programConsistencyDayPartialSemantics": "Hari ini, pencatatan belum lengkap",
-  "programConsistencyDayNoDataSemantics": "Hari ini, belum ada catatan",
-  "programWeightProgressUnknownTitle": "Kemajuan belum diketahui",
-  "programWeightProgressUnknownBody": "Pemantauan berat badan menyusul pada tahap berikutnya — belum ada angka kemajuan untuk ditampilkan di sini.",
+  "programConsistencyDaySegmentSemantics": "{date}, {filled} dari {total} waktu makan tercatat",
+  "@programConsistencyDaySegmentSemantics": {
+    "description": "Label pembaca layar satu batang kebiasaan harian — {filled} bisa 0 sampai {total}.",
+    "placeholders": {
+      "date": { "type": "String" },
+      "filled": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "programConsistencyDayEmptySemantics": "{date}, belum ada catatan",
+  "@programConsistencyDayEmptySemantics": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "howCalculatedBackSemantics": "Kembali",
   "howCalculatedContextLabel": "PROGRAM SAYA · BAGAIMANA DIHITUNG",
@@ -703,17 +714,19 @@
   "weightDirectionUp": "kenaikan",
   "weightDirectionFlat": "tidak berubah",
   "weightTrendHeading": "Tren berat",
-  "weightTrendSubheading": "4 minggu terakhir",
+  "weightTrendSubheading": "7 catatan terakhir",
   "weightTrendSingleRecordNote": "Baru satu catatan — tren belum dapat ditampilkan.",
+  "weightTrendEmptySlotSemantics": "Belum ada catatan",
   "weightRecentRecordsHeading": "Catatan terakhir",
   "weightEmptyTitle": "Belum ada catatan berat",
   "weightEmptyBody": "Catat berat badanmu kapan saja. Hanya tersimpan di perangkat ini.",
   "weightEmptyAction": "Tambah berat",
   "weightAddActionSemantics": "Tambah catatan berat",
-  "weightEntrySemantics": "{date}, {weight} kilogram",
+  "weightEntrySemantics": "{date} pukul {time}, {weight} kilogram",
   "@weightEntrySemantics": {
     "placeholders": {
       "date": { "type": "String" },
+      "time": { "type": "String" },
       "weight": { "type": "String" }
     }
   },

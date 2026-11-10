@@ -4,20 +4,24 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/clock/clock.dart';
+import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/data/local/program_progress_snapshot.dart';
+import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
-enum _DayState { complete, loggedIncomplete, noData }
-
-/// "Kebiasaan minggu ini" (`05`) — kemajuan Makan Sehat SHALL berupa
-/// kelengkapan pencatatan, SHALL TIDAK berupa persentase kemajuan berat
-/// (spec program-management, "Program Makan Sehat").
+/// "Kebiasaan minggu ini" (`05`) — kemajuan seluruh program SHALL berupa
+/// kelengkapan pencatatan, SHALL TIDAK berupa persentase kemajuan berat;
+/// pemantauan berat punya layarnya sendiri (`31`, change 008), diakses
+/// lewat kartu "Catatan berat" (spec program-management, "Program Makan
+/// Sehat" — kini berlaku seragam untuk semua program).
 ///
-/// Hari tanpa potret tersimpan ditandai berbeda dari hari yang tercatat
-/// tapi belum lengkap — keduanya SHALL TIDAK tampak sebagai nol (Design
-/// D6, task 2.4): batang hanya terisi pada hari yang benar-benar lengkap,
-/// dan setiap batang punya label pembaca layar sendiri yang menyebut
-/// keadaannya apa adanya.
+/// Setiap batang terbagi menjadi empat ruas (`MealTime.values.length`,
+/// satu per waktu makan), terisi dari bawah sebanyak jumlah waktu makan yang
+/// tercatat hari itu — bukan dua keadaan kasar (lengkap/sebagian) yang
+/// tampak sama persis untuk 1 dan 3 dari 4 waktu makan. Hari tanpa potret
+/// tersimpan ditandai dengan garis tepi, bukan nol ruas tanpa keterangan
+/// (Design D6, task 2.4); setiap batang punya label pembaca layar sendiri
+/// yang menyebut tanggal dan jumlah ruas terisi apa adanya.
 class WeeklyConsistencyCard extends StatelessWidget {
   const WeeklyConsistencyCard({
     required this.snapshots,
@@ -78,7 +82,8 @@ class WeeklyConsistencyCard extends StatelessWidget {
               for (var i = 0; i < 7; i++)
                 _DayBar(
                   letter: _dayLetters[i],
-                  state: _stateFor(byDate[days[i].iso]),
+                  date: days[i],
+                  snapshot: byDate[days[i].iso],
                   text: text,
                 ),
             ],
@@ -92,93 +97,78 @@ class WeeklyConsistencyCard extends StatelessWidget {
       ),
     );
   }
-
-  _DayState _stateFor(ProgramProgressSnapshot? snapshot) {
-    if (snapshot == null) {
-      return _DayState.noData;
-    }
-    return snapshot.diaryComplete
-        ? _DayState.complete
-        : _DayState.loggedIncomplete;
-  }
 }
 
 class _DayBar extends StatelessWidget {
   const _DayBar({
     required this.letter,
-    required this.state,
+    required this.date,
+    required this.snapshot,
     required this.text,
   });
 
   final String letter;
-  final _DayState state;
+  final LocalDate date;
+  final ProgramProgressSnapshot? snapshot;
   final AppText text;
+
+  static const double _trackWidth = 14;
+  static const double _trackHeight = 52;
+  static final int _segmentCount = MealTime.values.length;
 
   @override
   Widget build(BuildContext context) {
-    final semanticsLabel = switch (state) {
-      _DayState.complete => text.programConsistencyDayCompleteSemantics,
-      _DayState.loggedIncomplete => text.programConsistencyDayPartialSemantics,
-      _DayState.noData => text.programConsistencyDayNoDataSemantics,
-    };
+    final filled = (snapshot?.loggedMealsCount ?? 0).clamp(0, _segmentCount);
+    final semanticsLabel = snapshot == null
+        ? text.programConsistencyDayEmptySemantics(IdFormat.longDate(date))
+        : text.programConsistencyDaySegmentSemantics(
+            IdFormat.longDate(date),
+            filled,
+            _segmentCount,
+          );
+    const cornerRadius = _trackWidth / 2;
+    final filledHeight = _trackHeight * filled / _segmentCount;
     return Semantics(
       label: semanticsLabel,
       child: Column(
         children: <Widget>[
-          Container(
-            width: 18,
-            height: 56,
-            decoration: BoxDecoration(
-              color: MealoraColors.track,
-              borderRadius: BorderRadius.circular(MealoraRadius.track),
-              border: state == _DayState.noData
-                  ? Border.all(color: MealoraColors.affordance, width: 1)
-                  : null,
+          SizedBox(
+            width: _trackWidth,
+            height: _trackHeight,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                Container(
+                  width: _trackWidth,
+                  height: _trackHeight,
+                  decoration: BoxDecoration(
+                    color: MealoraColors.track,
+                    borderRadius: BorderRadius.circular(cornerRadius),
+                    border: filled == 0
+                        ? Border.all(color: MealoraColors.affordance, width: 1)
+                        : null,
+                  ),
+                ),
+                if (filled > 0)
+                  Container(
+                    width: _trackWidth,
+                    height: filledHeight,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: MealoraColors.consistencyGradient,
+                      ),
+                      borderRadius: BorderRadius.circular(cornerRadius),
+                    ),
+                  ),
+              ],
             ),
-            alignment: Alignment.bottomCenter,
-            child: state == _DayState.complete
-                ? Container(
-                    width: 18,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: MealoraColors.primaryBright,
-                      borderRadius: BorderRadius.circular(MealoraRadius.track),
-                    ),
-                  )
-                : state == _DayState.loggedIncomplete
-                ? Container(
-                    width: 18,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: MealoraColors.accent,
-                      borderRadius: BorderRadius.circular(MealoraRadius.track),
-                    ),
-                  )
-                : null,
           ),
           const SizedBox(height: MealoraSpacing.xxs),
           Text(letter, style: MealoraTypography.caption),
         ],
       ),
-    );
-  }
-}
-
-/// Kemajuan berbasis berat (Turun Berat/Naik Berat/Pertahankan) — "belum
-/// diketahui" sampai pemantauan berat badan (change berikutnya) menulis
-/// potret berbobot (Non-Goals, design.md). Bentuknya sudah disiapkan di
-/// sini supaya change itu hanya perlu mengisi nilainya, bukan membangun
-/// ulang layarnya (Open Questions, design.md).
-class WeightProgressPlaceholderCard extends StatelessWidget {
-  const WeightProgressPlaceholderCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final text = AppText.of(context);
-    return MealoraNoteCard(
-      icon: Icons.show_chart,
-      title: text.programWeightProgressUnknownTitle,
-      body: text.programWeightProgressUnknownBody,
     );
   }
 }

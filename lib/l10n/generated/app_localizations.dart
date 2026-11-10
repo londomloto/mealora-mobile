@@ -639,6 +639,12 @@ abstract class AppText {
   /// **'Digunakan hanya untuk persamaan estimasi energi, bukan identitas gender.'**
   String get onboardingBiologicalInputDisclosure;
 
+  /// No description provided for @onboardingBiologicalInputHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih salah satu'**
+  String get onboardingBiologicalInputHint;
+
   /// No description provided for @onboardingBiologicalInputFemale.
   ///
   /// In id, this message translates to:
@@ -1665,35 +1671,21 @@ abstract class AppText {
   /// **'{count} dari 7 hari tercatat'**
   String programConsistencyFooter(int count);
 
-  /// No description provided for @programConsistencyDayCompleteSemantics.
+  /// Label pembaca layar satu batang kebiasaan harian — {filled} bisa 0 sampai {total}.
   ///
   /// In id, this message translates to:
-  /// **'Hari ini, pencatatan lengkap'**
-  String get programConsistencyDayCompleteSemantics;
+  /// **'{date}, {filled} dari {total} waktu makan tercatat'**
+  String programConsistencyDaySegmentSemantics(
+    String date,
+    int filled,
+    int total,
+  );
 
-  /// No description provided for @programConsistencyDayPartialSemantics.
+  /// No description provided for @programConsistencyDayEmptySemantics.
   ///
   /// In id, this message translates to:
-  /// **'Hari ini, pencatatan belum lengkap'**
-  String get programConsistencyDayPartialSemantics;
-
-  /// No description provided for @programConsistencyDayNoDataSemantics.
-  ///
-  /// In id, this message translates to:
-  /// **'Hari ini, belum ada catatan'**
-  String get programConsistencyDayNoDataSemantics;
-
-  /// No description provided for @programWeightProgressUnknownTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kemajuan belum diketahui'**
-  String get programWeightProgressUnknownTitle;
-
-  /// No description provided for @programWeightProgressUnknownBody.
-  ///
-  /// In id, this message translates to:
-  /// **'Pemantauan berat badan menyusul pada tahap berikutnya — belum ada angka kemajuan untuk ditampilkan di sini.'**
-  String get programWeightProgressUnknownBody;
+  /// **'{date}, belum ada catatan'**
+  String programConsistencyDayEmptySemantics(String date);
 
   /// No description provided for @howCalculatedBackSemantics.
   ///
@@ -3030,7 +3022,7 @@ abstract class AppText {
   /// No description provided for @weightTrendSubheading.
   ///
   /// In id, this message translates to:
-  /// **'4 minggu terakhir'**
+  /// **'7 catatan terakhir'**
   String get weightTrendSubheading;
 
   /// No description provided for @weightTrendSingleRecordNote.
@@ -3038,6 +3030,12 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Baru satu catatan — tren belum dapat ditampilkan.'**
   String get weightTrendSingleRecordNote;
+
+  /// No description provided for @weightTrendEmptySlotSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan'**
+  String get weightTrendEmptySlotSemantics;
 
   /// No description provided for @weightRecentRecordsHeading.
   ///
@@ -3072,8 +3070,8 @@ abstract class AppText {
   /// No description provided for @weightEntrySemantics.
   ///
   /// In id, this message translates to:
-  /// **'{date}, {weight} kilogram'**
-  String weightEntrySemantics(String date, String weight);
+  /// **'{date} pukul {time}, {weight} kilogram'**
+  String weightEntrySemantics(String date, String time, String weight);
 
   /// No description provided for @weightEditEntryAction.
   ///
