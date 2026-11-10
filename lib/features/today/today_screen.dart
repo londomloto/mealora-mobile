@@ -442,7 +442,7 @@ class _SummaryStatRow extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           decoration: BoxDecoration(
             color: MealoraColors.glassSoft,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MealoraRadius.compactIconField),
           ),
           child: Row(
             children: <Widget>[
@@ -572,10 +572,7 @@ class _MacroColumn extends StatelessWidget {
               valueText,
               maxLines: 1,
               softWrap: false,
-              style: MealoraTypography.headline.copyWith(
-                fontSize: 13,
-                height: 1.2,
-              ),
+              style: MealoraTypography.macroValue,
             ),
           ),
         ),
@@ -730,10 +727,7 @@ class _CalorieRing extends StatelessWidget {
                       : IdFormat.integer(consumedKcal!),
                   textAlign: TextAlign.center,
                   maxLines: 1,
-                  style: MealoraTypography.display.copyWith(
-                    fontSize: 28,
-                    height: 1,
-                  ),
+                  style: MealoraTypography.calorieRingValue,
                 ),
                 if (targetKcal != null) ...<Widget>[
                   const SizedBox(height: MealoraSpacing.xxs),

@@ -24,6 +24,7 @@ Future<void> main() async {
         programRepositoryAppOverride,
         foodRepositoryAppOverride,
         diaryRepositoryAppOverride,
+        weightRepositoryAppOverride,
       ],
       child: const MealoraApp(),
     ),

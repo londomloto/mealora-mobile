@@ -98,6 +98,20 @@
 
   "historyEmptyTitle": "Belum ada riwayat",
   "historyEmptyBody": "Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.",
+  "historyEnergyRecordedLabel": "ENERGI TERCATAT",
+  "historyWeightRecordedLabel": "Berat tercatat tanggal ini",
+  "historyPreviousMonthSemantics": "Bulan sebelumnya",
+  "historyNextMonthSemantics": "Bulan berikutnya",
+  "historyDayHasRecordSemantics": "{date}, ada catatan",
+  "@historyDayHasRecordSemantics": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "historyDayNoRecordSemantics": "{date}, belum ada catatan",
+  "@historyDayNoRecordSemantics": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "historyDaySelectedSuffix": ", terpilih",
+  "historyDayFutureSuffix": ", belum bisa dipilih",
 
   "routeNotFoundTitle": "Halaman tidak ditemukan",
   "routeNotFoundBody": "Alamat yang diminta tidak dikenali Mealora. Kamu bisa kembali ke ruang utama dan melanjutkan dari sana.",
@@ -370,6 +384,9 @@
   },
   "programLatestWeightLabel": "Berat terbaru",
   "programNoWeightRecordedYet": "Belum ada catatan berat",
+  "programTargetReviewTitle": "Tinjau target program",
+  "programTargetReviewBody": "Berat terbaru beda cukup jauh dari yang dipakai menghitung target sekarang. Target lama tetap berlaku sampai kamu meninjau dan menyetujui yang baru.",
+  "programTargetReviewSemantics": "Tinjau target program karena berat terbaru berubah signifikan",
 
   "programConsistencyHeading": "Kebiasaan minggu ini",
   "programConsistencySubheading": "Catatan makan, bukan nilai dirimu",
@@ -643,5 +660,67 @@
   "editEntryDeleteConfirmTitle": "Hapus catatan ini?",
   "editEntryDeleteConfirmBody": "Catatan ini akan hilang dari buku harian dan ringkasan harian akan menyesuaikan.",
   "editEntryDeleteConfirmAction": "Hapus",
-  "editEntryDeleteCancelAction": "Batal"
+  "editEntryDeleteCancelAction": "Batal",
+
+  "weightAddTitle": "Tambah berat",
+  "weightEditTitle": "Ubah catatan berat",
+  "weightAddSubtitle": "Catat kapan pun, berat selalu terpantau.",
+  "weightValueLabel": "Berat badan",
+  "weightUnitKg": "kg",
+  "weightDateLabel": "Tanggal catatan",
+  "weightDateHint": "Pilih tanggal",
+  "weightNoteLabel": "Catatan (opsional)",
+  "weightNoteHint": "Mis. setelah bangun pagi",
+  "weightLocalOnlyNote": "Catatan berat hanya tersimpan di perangkat ini.",
+  "weightSaveAction": "Simpan berat",
+  "weightInvalidNumberError": "Masukkan angka berat yang sah.",
+  "weightOutOfRangeError": "Berat ini di luar rentang yang masuk akal.",
+  "weightFutureDateError": "Tanggal catatan tidak boleh di masa depan.",
+
+  "weightMonitorTitle": "Catatan berat",
+  "weightMonitorSubtitle": "Lihat arah perubahan, bukan nilai mutlak.",
+  "weightMonitorEyebrow": "CATAT BERAT",
+  "weightLatestLabel": "TERBARU · {date}",
+  "@weightLatestLabel": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "weightLatestSemantics": "Berat terbaru {weight} kilogram, tercatat {date}",
+  "@weightLatestSemantics": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "weightVsProgramStart": "Awal program {weight} kg · {direction} {delta} kg",
+  "@weightVsProgramStart": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "direction": { "type": "String" },
+      "delta": { "type": "String" }
+    }
+  },
+  "weightDirectionDown": "penurunan",
+  "weightDirectionUp": "kenaikan",
+  "weightDirectionFlat": "tidak berubah",
+  "weightTrendHeading": "Tren berat",
+  "weightTrendSubheading": "4 minggu terakhir",
+  "weightTrendSingleRecordNote": "Baru satu catatan — tren belum dapat ditampilkan.",
+  "weightRecentRecordsHeading": "Catatan terakhir",
+  "weightEmptyTitle": "Belum ada catatan berat",
+  "weightEmptyBody": "Catat berat badanmu kapan saja. Hanya tersimpan di perangkat ini.",
+  "weightEmptyAction": "Tambah berat",
+  "weightAddActionSemantics": "Tambah catatan berat",
+  "weightEntrySemantics": "{date}, {weight} kilogram",
+  "@weightEntrySemantics": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "weight": { "type": "String" }
+    }
+  },
+  "weightEditEntryAction": "Sunting",
+  "weightDeleteEntryAction": "Hapus",
+  "weightDeleteConfirmTitle": "Hapus catatan berat ini?",
+  "weightDeleteConfirmBody": "Catatan ini akan hilang dari tren dan daftar catatan terakhir.",
+  "weightDeleteConfirmAction": "Hapus",
+  "weightDeleteCancelAction": "Batal"
 }

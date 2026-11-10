@@ -4,6 +4,7 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/recent_food.dart';
 import 'package:mealora/features/diary/custom_food_screen.dart';
@@ -15,7 +16,11 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// `13 · Cari makanan` (task 6.1–6.4): pencarian luring dengan bagian
 /// "terakhir dicatat" dan pintasan Favorit yang ditandai belum tersedia.
 class FoodSearchScreen extends ConsumerStatefulWidget {
-  const FoodSearchScreen({super.key});
+  const FoodSearchScreen({this.date, super.key});
+
+  /// Tanggal yang akan dicatat — `null` berarti hari ini (konvensi
+  /// `logFoodEntry`, change 008 task 5.6).
+  final LocalDate? date;
 
   @override
   ConsumerState<FoodSearchScreen> createState() => _FoodSearchScreenState();
@@ -69,9 +74,9 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                 ),
                 const SizedBox(height: MealoraSpacing.xl),
                 if (_query.isEmpty)
-                  _RecentSection(text: text)
+                  _RecentSection(text: text, date: widget.date)
                 else
-                  _ResultsSection(query: _query, text: text),
+                  _ResultsSection(query: _query, text: text, date: widget.date),
                 const SizedBox(height: MealoraSpacing.lg),
                 Semantics(
                   button: true,
@@ -129,9 +134,11 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
   }
 
   void _openCustomFood(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const CustomFoodScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CustomFoodScreen(date: widget.date),
+      ),
+    );
   }
 
   void _announceFavoritesUnavailable(BuildContext context, AppText text) {
@@ -219,7 +226,9 @@ class _SearchField extends StatelessWidget {
 }
 
 class _RecentSection extends ConsumerWidget {
-  const _RecentSection({required this.text});
+  const _RecentSection({required this.text, this.date});
+
+  final LocalDate? date;
 
   final AppText text;
 
@@ -248,7 +257,7 @@ class _RecentSection extends ConsumerWidget {
                 children: <Widget>[
                   for (var i = 0; i < items.length; i++) ...<Widget>[
                     if (i > 0) const Divider(height: 1),
-                    _RecentRow(item: items[i], text: text),
+                    _RecentRow(item: items[i], text: text, date: date),
                   ],
                 ],
               ),
@@ -261,10 +270,11 @@ class _RecentSection extends ConsumerWidget {
 }
 
 class _RecentRow extends StatelessWidget {
-  const _RecentRow({required this.item, required this.text});
+  const _RecentRow({required this.item, required this.text, this.date});
 
   final RecentFood item;
   final AppText text;
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +288,7 @@ class _RecentRow extends StatelessWidget {
           builder: (_) => ServingDetailScreen(
             food: item.food,
             initialServing: item.lastServing,
+            date: date,
           ),
         ),
       ),
@@ -351,10 +362,11 @@ class _RecentRow extends StatelessWidget {
 }
 
 class _ResultsSection extends ConsumerWidget {
-  const _ResultsSection({required this.query, required this.text});
+  const _ResultsSection({required this.query, required this.text, this.date});
 
   final String query;
   final AppText text;
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -387,7 +399,7 @@ class _ResultsSection extends ConsumerWidget {
                 children: <Widget>[
                   for (var i = 0; i < foods.length; i++) ...<Widget>[
                     if (i > 0) const Divider(height: 1),
-                    _ResultRow(food: foods[i], text: text),
+                    _ResultRow(food: foods[i], text: text, date: date),
                   ],
                 ],
               ),
@@ -400,10 +412,11 @@ class _ResultsSection extends ConsumerWidget {
 }
 
 class _ResultRow extends StatelessWidget {
-  const _ResultRow({required this.food, required this.text});
+  const _ResultRow({required this.food, required this.text, this.date});
 
   final Food food;
   final AppText text;
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context) {
@@ -414,7 +427,7 @@ class _ResultRow extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => ServingDetailScreen(food: food),
+          builder: (_) => ServingDetailScreen(food: food, date: date),
         ),
       ),
       child: SizedBox(

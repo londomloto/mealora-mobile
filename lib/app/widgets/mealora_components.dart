@@ -719,6 +719,8 @@ class MealoraNoteCard extends StatelessWidget {
     this.background = MealoraColors.glassSoft,
     this.foreground = MealoraColors.primary,
     this.borderColor = MealoraColors.glassBorder,
+    this.onTap,
+    this.semanticsLabel,
     super.key,
   });
 
@@ -729,9 +731,19 @@ class MealoraNoteCard extends StatelessWidget {
   final Color foreground;
   final Color borderColor;
 
+  /// Menjadikan kartu ini bisa diketuk (mis. usulan peninjauan target,
+  /// change 008) — menampilkan panah afordansi dan membungkusnya dengan
+  /// `Semantics(button: true)`. `null` berarti kartu murni informatif,
+  /// seperti sebelumnya.
+  final VoidCallback? onTap;
+
+  /// Label pembaca layar saat [onTap] terisi — SHALL diisi bersama [onTap]
+  /// supaya maksud ketukan terumumkan, bukan sekadar menyebut ikon/judul.
+  final String? semanticsLabel;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final card = Container(
       width: double.infinity,
       padding: const EdgeInsets.all(MealoraSpacing.md),
       decoration: BoxDecoration(
@@ -756,7 +768,32 @@ class MealoraNoteCard extends StatelessWidget {
               ],
             ),
           ),
+          if (onTap != null) ...<Widget>[
+            const SizedBox(width: MealoraSpacing.xs),
+            const Icon(
+              Icons.chevron_right,
+              color: MealoraColors.affordance,
+              size: MealoraIconSize.action,
+            ),
+          ],
         ],
+      ),
+    );
+
+    if (onTap == null) {
+      return card;
+    }
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: MealoraColors.transparent,
+        borderRadius: BorderRadius.circular(MealoraRadius.chip),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(MealoraRadius.chip),
+          onTap: onTap,
+          child: card,
+        ),
       ),
     );
   }

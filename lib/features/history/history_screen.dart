@@ -19,6 +19,8 @@ import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/edit_entry_screen.dart';
+import 'package:mealora/features/history/history_providers.dart';
+import 'package:mealora/features/weight/weight_providers.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// Pintu masuk tab Riwayat: `16 · Buku harian hari ini`, dengan keadaan hari
@@ -155,12 +157,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                         'id_ID',
                                       ).format(date),
                                       textAlign: TextAlign.center,
-                                      style: MealoraTypography.headline
-                                          .copyWith(
-                                            color: MealoraColors.onPrimary,
-                                            fontSize: 14,
-                                            height: 1.2,
-                                          ),
+                                      style:
+                                          MealoraTypography.dateNavigatorTitle,
                                     ),
                                   ),
                                 ),
@@ -244,12 +242,20 @@ class _DiaryBody extends StatefulWidget {
     required this.entries,
     required this.energyTargetKcal,
     required this.text,
+    this.eyebrowLabel,
   });
 
   final DailyNutritionTotal total;
   final List<MealEntry> entries;
   final double? energyTargetKcal;
   final AppText text;
+
+  /// Label eyebrow di atas angka energi — `null` memakai
+  /// [AppText.diaryRecordedTodayLabel] (layar hari ini). Ruang Riwayat
+  /// (`18`) mengisi label netral sendiri karena tanggalnya sudah disebut
+  /// di judul tepat di atas kartu ini (task 5.4 — bukan komponen kedua,
+  /// cuma label yang disesuaikan).
+  final String? eyebrowLabel;
 
   @override
   State<_DiaryBody> createState() => _DiaryBodyState();
@@ -280,7 +286,7 @@ class _DiaryBodyState extends State<_DiaryBody> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        text.diaryRecordedTodayLabel,
+                        widget.eyebrowLabel ?? text.diaryRecordedTodayLabel,
                         style: MealoraTypography.eyebrow,
                       ),
                       const SizedBox(height: MealoraSpacing.xs),
@@ -492,9 +498,15 @@ class _MealSection extends StatelessWidget {
 }
 
 class _UnknownDiaryBody extends StatelessWidget {
-  const _UnknownDiaryBody({required this.text});
+  const _UnknownDiaryBody({required this.text, this.date});
 
   final AppText text;
+
+  /// Tanggal yang akan dicatat bila pengguna menekan aksi mencatat — `null`
+  /// berarti hari ini (layar `16`). Ruang Riwayat (`18`, change 008, task
+  /// 5.6) mengisi tanggal yang sedang ditinjau supaya mencatat dari hari
+  /// lampau tidak diam-diam tercatat ke hari ini.
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context) {
@@ -530,100 +542,213 @@ class _UnknownDiaryBody extends StatelessWidget {
         const SizedBox(height: MealoraSpacing.lg),
         MealoraPrimaryButton(
           label: text.todayLogFoodAction,
-          onPressed: () => showAddFoodSheet(context),
+          onPressed: () => showAddFoodSheet(context, date: date),
         ),
       ],
     );
   }
 }
 
-/// Kalender riwayat lanjutan mengikuti `18 · Riwayat harian`.
-class HistoryCalendarScreen extends ConsumerWidget {
+/// Kalender riwayat `18 · Riwayat harian` (change 008, design D7).
+///
+/// Memakai ulang `_DiaryBody`/`_UnknownDiaryBody` persis seperti layar
+/// `16` untuk ringkasan tanggal terpilih (design D6) — tidak ada komponen
+/// ringkasan kedua, cuma sumber tanggalnya yang berbeda.
+class HistoryCalendarScreen extends ConsumerStatefulWidget {
   const HistoryCalendarScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HistoryCalendarScreen> createState() =>
+      _HistoryCalendarScreenState();
+}
+
+class _HistoryCalendarScreenState extends ConsumerState<HistoryCalendarScreen> {
+  HistoryMonth? _displayedMonth;
+  LocalDate? _selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
     final text = AppText.of(context);
     final today = ref.watch(clockProvider).today();
-    final date = DateTime(today.year, today.month, today.day);
+    final selectedDate = _selectedDate ?? today;
+    final displayedMonth = _displayedMonth ?? HistoryMonth.of(today);
+    final selectedDateTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
 
-    return MealoraBlobBackdrop(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          MealoraSpacing.programHeroGutter,
-          MealoraSpacing.xl,
-          MealoraSpacing.programHeroGutter,
-          MealoraSpacing.navigationContentClearance,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              text.historyContextLabel,
-              style: MealoraTypography.eyebrow.copyWith(
-                color: MealoraColors.primaryDeep,
+    final dailyTotal = ref.watch(dailyNutritionTotalProvider(selectedDate));
+    final entries = ref.watch(diaryEntriesProvider(selectedDate));
+    final activeProgram = ref.watch(activeProgramProvider).valueOrNull;
+    final energyTarget = activeProgram?.proposal.energyTarget;
+    final weightOnDate = ref.watch(weightRecordForDateProvider(selectedDate));
+
+    return Scaffold(
+      backgroundColor: MealoraColors.background,
+      body: MealoraBlobBackdrop(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            MealoraSpacing.programHeroGutter,
+            MealoraSpacing.xl,
+            MealoraSpacing.programHeroGutter,
+            MealoraSpacing.navigationContentClearance,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                text.historyContextLabel,
+                style: MealoraTypography.eyebrow.copyWith(
+                  color: MealoraColors.primaryDeep,
+                ),
               ),
-            ),
-            const SizedBox(height: MealoraSpacing.xxs),
-            Text(text.historyPageTitle, style: MealoraTypography.title),
-            const SizedBox(height: MealoraSpacing.xxs),
-            Text(text.historyPageSubtitle, style: MealoraTypography.subtitle),
-            const SizedBox(height: MealoraSpacing.lg),
-            _CalendarCard(selected: date),
-            const SizedBox(height: MealoraSpacing.lg),
-            Text(
-              DateFormat('d MMM · EEEE', 'id_ID').format(date),
-              style: MealoraTypography.sectionTitle,
-            ),
-            const SizedBox(height: MealoraSpacing.sm),
-            MealoraEmptyState(
-              title: text.historyEmptyTitle,
-              body: text.historyEmptyBody,
-              icon: Icons.calendar_today_outlined,
-            ),
-          ],
+              const SizedBox(height: MealoraSpacing.xxs),
+              Text(text.historyPageTitle, style: MealoraTypography.title),
+              const SizedBox(height: MealoraSpacing.xxs),
+              Text(text.historyPageSubtitle, style: MealoraTypography.subtitle),
+              const SizedBox(height: MealoraSpacing.lg),
+              _CalendarCard(
+                month: displayedMonth,
+                selected: selectedDate,
+                today: today,
+                onPreviousMonth: () =>
+                    setState(() => _displayedMonth = displayedMonth.shift(-1)),
+                onNextMonth: () =>
+                    setState(() => _displayedMonth = displayedMonth.shift(1)),
+                onSelectDate: (date) => setState(() {
+                  _selectedDate = date;
+                  _displayedMonth = HistoryMonth.of(date);
+                }),
+              ),
+              const SizedBox(height: MealoraSpacing.lg),
+              Text(
+                DateFormat('d MMM · EEEE', 'id_ID').format(selectedDateTime),
+                style: MealoraTypography.sectionTitle,
+              ),
+              const SizedBox(height: MealoraSpacing.sm),
+              weightOnDate.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
+                data: (record) => record == null
+                    ? const SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: MealoraSpacing.sm,
+                        ),
+                        child: MealoraCard(
+                          child: MealoraIconRow(
+                            icon: Icons.monitor_weight_outlined,
+                            iconBackground: MealoraColors.noteInfo,
+                            iconForeground: MealoraColors.info,
+                            title: '${IdFormat.decimal(record.weightKg)} kg',
+                            detail: text.historyWeightRecordedLabel,
+                          ),
+                        ),
+                      ),
+              ),
+              dailyTotal.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
+                data: (total) => total.hasAnyEntries
+                    ? _DiaryBody(
+                        total: total,
+                        entries: entries.valueOrNull ?? const <MealEntry>[],
+                        energyTargetKcal: energyTarget?.kcal,
+                        text: text,
+                        eyebrowLabel: text.historyEnergyRecordedLabel,
+                      )
+                    : _UnknownDiaryBody(text: text, date: selectedDate),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _CalendarCard extends StatelessWidget {
-  const _CalendarCard({required this.selected});
-  final DateTime selected;
+class _CalendarCard extends ConsumerWidget {
+  const _CalendarCard({
+    required this.month,
+    required this.selected,
+    required this.today,
+    required this.onPreviousMonth,
+    required this.onNextMonth,
+    required this.onSelectDate,
+  });
+
+  final HistoryMonth month;
+  final LocalDate selected;
+  final LocalDate today;
+  final VoidCallback onPreviousMonth;
+  final VoidCallback onNextMonth;
+  final ValueChanged<LocalDate> onSelectDate;
 
   @override
-  Widget build(BuildContext context) {
-    final first = DateTime(selected.year, selected.month);
-    final dayCount = DateTime(selected.year, selected.month + 1, 0).day;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = AppText.of(context);
+    final markersAsync = ref.watch(historyMonthMarkersProvider(month));
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    // Sel kalender tumbuh mengikuti skala teks (task 6.1) — angka tanggal
+    // dan titik penanda SHALL TIDAK terpotong pada skala besar.
+    final cellExtent = (38 + (textScale - 1).clamp(0, 1) * 32).toDouble();
+    final first = DateTime(month.year, month.month);
+    final dayCount = DateTime(month.year, month.month + 1, 0).day;
     final leading = first.weekday - DateTime.monday;
-    final cells = <int?>[
-      ...List<int?>.filled(leading, null),
-      ...List<int>.generate(dayCount, (i) => i + 1),
+    final cells = <LocalDate?>[
+      ...List<LocalDate?>.filled(leading, null),
+      ...List<LocalDate>.generate(
+        dayCount,
+        (i) => LocalDate(month.year, month.month, i + 1),
+      ),
     ];
     while (cells.length % 7 != 0) {
       cells.add(null);
     }
+    final markers = markersAsync.valueOrNull ?? const <String>{};
 
     return MealoraCard(
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(
-                Icons.chevron_left_rounded,
-                color: MealoraColors.muted,
+              Semantics(
+                button: true,
+                label: text.historyPreviousMonthSemantics,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(MealoraRadius.chip),
+                  onTap: onPreviousMonth,
+                  child: const Padding(
+                    padding: EdgeInsets.all(MealoraSpacing.xs),
+                    child: Icon(
+                      Icons.chevron_left_rounded,
+                      color: MealoraColors.muted,
+                    ),
+                  ),
+                ),
               ),
               Expanded(
                 child: Text(
-                  DateFormat('MMMM y', 'id_ID').format(selected),
+                  DateFormat('MMMM y', 'id_ID').format(first),
                   textAlign: TextAlign.center,
                   style: MealoraTypography.bodyEmphasis,
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: MealoraColors.muted,
+              Semantics(
+                button: true,
+                label: text.historyNextMonthSemantics,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(MealoraRadius.chip),
+                  onTap: onNextMonth,
+                  child: const Padding(
+                    padding: EdgeInsets.all(MealoraSpacing.xs),
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      color: MealoraColors.muted,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -652,33 +777,79 @@ class _CalendarCard extends StatelessWidget {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
-              mainAxisExtent: 34,
+              mainAxisExtent: cellExtent,
             ),
             itemCount: cells.length,
             itemBuilder: (context, index) {
-              final day = cells[index];
-              final selectedDay = day == selected.day;
-              return Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: selectedDay
-                      ? MealoraColors.primary
-                      : MealoraColors.transparent,
+              final date = cells[index];
+              if (date == null) {
+                return const SizedBox.shrink();
+              }
+              final isSelected = date == selected;
+              final isFuture = date.compareTo(today) > 0;
+              final hasRecord = markers.contains(date.iso);
+              final dateLabel = IdFormat.shortDate(date);
+              final semanticsLabel =
+                  (hasRecord
+                      ? text.historyDayHasRecordSemantics(dateLabel)
+                      : text.historyDayNoRecordSemantics(dateLabel)) +
+                  (isSelected
+                      ? text.historyDaySelectedSuffix
+                      : isFuture
+                      ? text.historyDayFutureSuffix
+                      : '');
+
+              return Semantics(
+                button: !isFuture,
+                selected: isSelected,
+                label: semanticsLabel,
+                excludeSemantics: true,
+                child: InkWell(
                   borderRadius: BorderRadius.circular(MealoraRadius.chip),
-                ),
-                child: day == null
-                    ? null
-                    : Text(
-                        '$day',
-                        style: MealoraTypography.caption.copyWith(
-                          color: selectedDay
-                              ? MealoraColors.onPrimary
-                              : MealoraColors.muted,
+                  onTap: isFuture ? null : () => onSelectDate(date),
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? MealoraColors.primary
+                          : MealoraColors.transparent,
+                      borderRadius: BorderRadius.circular(MealoraRadius.chip),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '${date.day}',
+                          style: MealoraTypography.caption.copyWith(
+                            color: isSelected
+                                ? MealoraColors.onPrimary
+                                : isFuture
+                                ? MealoraColors.selectionIdle
+                                : MealoraColors.muted,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 2),
+                        SizedBox(
+                          width: 4,
+                          height: 4,
+                          child: hasRecord
+                              ? DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: isSelected
+                                        ? MealoraColors.onPrimary
+                                        : MealoraColors.affordance,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               );
             },
           ),

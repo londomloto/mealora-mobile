@@ -6,6 +6,7 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/errors/failure.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/validation/value_rules.dart';
@@ -20,7 +21,11 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// nilai gizi — nilai belum diketahui dikosongkan, bukan nol (spec
 /// food-catalog, "Pengguna dapat membuat makanan sendiri").
 class CustomFoodScreen extends ConsumerStatefulWidget {
-  const CustomFoodScreen({super.key});
+  const CustomFoodScreen({this.date, super.key});
+
+  /// Tanggal yang akan dicatat begitu takaran dikonfirmasi — `null` berarti
+  /// hari ini (konvensi `logFoodEntry`, change 008 task 5.6).
+  final LocalDate? date;
 
   @override
   ConsumerState<CustomFoodScreen> createState() => _CustomFoodScreenState();
@@ -233,7 +238,9 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
       return;
     }
     await Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => ServingDetailScreen(food: food)),
+      MaterialPageRoute<void>(
+        builder: (_) => ServingDetailScreen(food: food, date: widget.date),
+      ),
     );
   }
 
@@ -367,10 +374,8 @@ class _NutrientField extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        style: MealoraTypography.headline.copyWith(
+                        style: MealoraTypography.nutrientFieldValue.copyWith(
                           color: accent,
-                          fontSize: 19,
-                          height: 1.1,
                         ),
                         decoration: const InputDecoration(
                           filled: false,

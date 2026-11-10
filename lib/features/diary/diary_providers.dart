@@ -74,23 +74,29 @@ final FutureProviderFamily<Food?, String> foodByIdProvider =
 
 /// Menambah satu catatan ke buku harian (task 4.1) dan menaikkan sinyal
 /// pembaruan pada keberhasilan.
+///
+/// [date] `null` berarti hari ini — jalur pencatatan biasa (`02`). Ruang
+/// Riwayat (`18`, change 008, task 5.6) mengisi tanggal yang sedang
+/// ditinjau supaya mencatat makanan dari hari lampau tidak diam-diam
+/// tercatat ke hari ini.
 Future<Result<MealEntry>> logFoodEntry(
   WidgetRef ref, {
   required MealTime mealTime,
   required Food food,
   required ServingSize serving,
   required double quantity,
+  LocalDate? date,
 }) async {
   final profile = await ref.read(profileRepositoryProvider).current();
   if (profile == null) {
     throw StateError('logFoodEntry dipanggil sebelum profil siap.');
   }
-  final today = ref.read(clockProvider).today();
+  final effectiveDate = date ?? ref.read(clockProvider).today();
   final result = await ref
       .read(diaryRepositoryProvider)
       .addEntry(
         profileId: profile.id,
-        date: today,
+        date: effectiveDate,
         mealTime: mealTime,
         food: food,
         serving: serving,

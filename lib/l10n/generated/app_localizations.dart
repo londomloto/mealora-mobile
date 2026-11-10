@@ -393,6 +393,54 @@ abstract class AppText {
   /// **'Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.'**
   String get historyEmptyBody;
 
+  /// No description provided for @historyEnergyRecordedLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'ENERGI TERCATAT'**
+  String get historyEnergyRecordedLabel;
+
+  /// No description provided for @historyWeightRecordedLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat tercatat tanggal ini'**
+  String get historyWeightRecordedLabel;
+
+  /// No description provided for @historyPreviousMonthSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan sebelumnya'**
+  String get historyPreviousMonthSemantics;
+
+  /// No description provided for @historyNextMonthSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan berikutnya'**
+  String get historyNextMonthSemantics;
+
+  /// No description provided for @historyDayHasRecordSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, ada catatan'**
+  String historyDayHasRecordSemantics(String date);
+
+  /// No description provided for @historyDayNoRecordSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, belum ada catatan'**
+  String historyDayNoRecordSemantics(String date);
+
+  /// No description provided for @historyDaySelectedSuffix.
+  ///
+  /// In id, this message translates to:
+  /// **', terpilih'**
+  String get historyDaySelectedSuffix;
+
+  /// No description provided for @historyDayFutureSuffix.
+  ///
+  /// In id, this message translates to:
+  /// **', belum bisa dipilih'**
+  String get historyDayFutureSuffix;
+
   /// No description provided for @routeNotFoundTitle.
   ///
   /// In id, this message translates to:
@@ -1580,6 +1628,24 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Belum ada catatan berat'**
   String get programNoWeightRecordedYet;
+
+  /// No description provided for @programTargetReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau target program'**
+  String get programTargetReviewTitle;
+
+  /// No description provided for @programTargetReviewBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat terbaru beda cukup jauh dari yang dipakai menghitung target sekarang. Target lama tetap berlaku sampai kamu meninjau dan menyetujui yang baru.'**
+  String get programTargetReviewBody;
+
+  /// No description provided for @programTargetReviewSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau target program karena berat terbaru berubah signifikan'**
+  String get programTargetReviewSemantics;
 
   /// No description provided for @programConsistencyHeading.
   ///
@@ -2816,6 +2882,234 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Batal'**
   String get editEntryDeleteCancelAction;
+
+  /// No description provided for @weightAddTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah berat'**
+  String get weightAddTitle;
+
+  /// No description provided for @weightEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah catatan berat'**
+  String get weightEditTitle;
+
+  /// No description provided for @weightAddSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat kapan pun, berat selalu terpantau.'**
+  String get weightAddSubtitle;
+
+  /// No description provided for @weightValueLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat badan'**
+  String get weightValueLabel;
+
+  /// No description provided for @weightUnitKg.
+  ///
+  /// In id, this message translates to:
+  /// **'kg'**
+  String get weightUnitKg;
+
+  /// No description provided for @weightDateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal catatan'**
+  String get weightDateLabel;
+
+  /// No description provided for @weightDateHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tanggal'**
+  String get weightDateHint;
+
+  /// No description provided for @weightNoteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get weightNoteLabel;
+
+  /// No description provided for @weightNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mis. setelah bangun pagi'**
+  String get weightNoteHint;
+
+  /// No description provided for @weightLocalOnlyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan berat hanya tersimpan di perangkat ini.'**
+  String get weightLocalOnlyNote;
+
+  /// No description provided for @weightSaveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan berat'**
+  String get weightSaveAction;
+
+  /// No description provided for @weightInvalidNumberError.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan angka berat yang sah.'**
+  String get weightInvalidNumberError;
+
+  /// No description provided for @weightOutOfRangeError.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat ini di luar rentang yang masuk akal.'**
+  String get weightOutOfRangeError;
+
+  /// No description provided for @weightFutureDateError.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal catatan tidak boleh di masa depan.'**
+  String get weightFutureDateError;
+
+  /// No description provided for @weightMonitorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan berat'**
+  String get weightMonitorTitle;
+
+  /// No description provided for @weightMonitorSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat arah perubahan, bukan nilai mutlak.'**
+  String get weightMonitorSubtitle;
+
+  /// No description provided for @weightMonitorEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'CATAT BERAT'**
+  String get weightMonitorEyebrow;
+
+  /// No description provided for @weightLatestLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TERBARU · {date}'**
+  String weightLatestLabel(String date);
+
+  /// No description provided for @weightLatestSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat terbaru {weight} kilogram, tercatat {date}'**
+  String weightLatestSemantics(String weight, String date);
+
+  /// No description provided for @weightVsProgramStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Awal program {weight} kg · {direction} {delta} kg'**
+  String weightVsProgramStart(String weight, String direction, String delta);
+
+  /// No description provided for @weightDirectionDown.
+  ///
+  /// In id, this message translates to:
+  /// **'penurunan'**
+  String get weightDirectionDown;
+
+  /// No description provided for @weightDirectionUp.
+  ///
+  /// In id, this message translates to:
+  /// **'kenaikan'**
+  String get weightDirectionUp;
+
+  /// No description provided for @weightDirectionFlat.
+  ///
+  /// In id, this message translates to:
+  /// **'tidak berubah'**
+  String get weightDirectionFlat;
+
+  /// No description provided for @weightTrendHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Tren berat'**
+  String get weightTrendHeading;
+
+  /// No description provided for @weightTrendSubheading.
+  ///
+  /// In id, this message translates to:
+  /// **'4 minggu terakhir'**
+  String get weightTrendSubheading;
+
+  /// No description provided for @weightTrendSingleRecordNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Baru satu catatan — tren belum dapat ditampilkan.'**
+  String get weightTrendSingleRecordNote;
+
+  /// No description provided for @weightRecentRecordsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan terakhir'**
+  String get weightRecentRecordsHeading;
+
+  /// No description provided for @weightEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan berat'**
+  String get weightEmptyTitle;
+
+  /// No description provided for @weightEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat berat badanmu kapan saja. Hanya tersimpan di perangkat ini.'**
+  String get weightEmptyBody;
+
+  /// No description provided for @weightEmptyAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah berat'**
+  String get weightEmptyAction;
+
+  /// No description provided for @weightAddActionSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah catatan berat'**
+  String get weightAddActionSemantics;
+
+  /// No description provided for @weightEntrySemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, {weight} kilogram'**
+  String weightEntrySemantics(String date, String weight);
+
+  /// No description provided for @weightEditEntryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting'**
+  String get weightEditEntryAction;
+
+  /// No description provided for @weightDeleteEntryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get weightDeleteEntryAction;
+
+  /// No description provided for @weightDeleteConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus catatan berat ini?'**
+  String get weightDeleteConfirmTitle;
+
+  /// No description provided for @weightDeleteConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan ini akan hilang dari tren dan daftar catatan terakhir.'**
+  String get weightDeleteConfirmBody;
+
+  /// No description provided for @weightDeleteConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get weightDeleteConfirmAction;
+
+  /// No description provided for @weightDeleteCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get weightDeleteCancelAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

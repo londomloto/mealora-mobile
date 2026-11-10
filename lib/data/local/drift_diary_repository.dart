@@ -9,6 +9,7 @@ import 'package:mealora/data/local/user_record_support.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/tables/meal_entries_table.dart';
 import 'package:mealora/database/tables/meal_entry_items_table.dart';
+import 'package:mealora/database/tables/weight_records_table.dart';
 import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/diary_repository.dart';
 import 'package:mealora/domain/diary/meal_entry.dart';
@@ -28,7 +29,7 @@ part 'drift_diary_repository.g.dart';
 /// `ProgramRepository` domain) untuk memicu pembangunan ulang potret
 /// kemajuan (Design D8) — pola yang sama dengan `program_progress_snapshot`
 /// (change 004): potret adalah detail lapisan data, bukan konsep domain.
-@DriftAccessor(tables: <Type>[MealEntries, MealEntryItems])
+@DriftAccessor(tables: <Type>[MealEntries, MealEntryItems, WeightRecords])
 class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
     with _$DriftDiaryRepositoryMixin
     implements DiaryRepository {
@@ -74,6 +75,27 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
           ),
         )
         .toList(growable: false);
+  }
+
+  /// Tanggal lokal (ISO) yang punya setidaknya satu catatan makan pada
+  /// rentang `[from, to]` inklusif — dipakai penandaan kalender Riwayat
+  /// (`18`, change 008, task 5.2), bukan konsep domain (detail penyimpanan,
+  /// Design D9 change 004).
+  Future<Set<String>> datesWithEntries(
+    String profileId, {
+    required LocalDate from,
+    required LocalDate to,
+  }) async {
+    final query = selectOnly(mealEntries, distinct: true)
+      ..addColumns([mealEntries.localDate])
+      ..where(
+        mealEntries.profileId.equals(profileId) &
+            mealEntries.localDate.isBiggerOrEqualValue(from.iso) &
+            mealEntries.localDate.isSmallerOrEqualValue(to.iso) &
+            UserRecords.active(mealEntries.deletedAt),
+      );
+    final rows = await query.get();
+    return rows.map((row) => row.read(mealEntries.localDate)!).toSet();
   }
 
   @override
@@ -145,7 +167,7 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
       );
     });
 
-    await _rebuildProgressFor(profileId, date);
+    await rebuildProgressFor(profileId, date);
 
     final entryRow = await (select(
       mealEntries,
@@ -214,7 +236,7 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
       );
     });
 
-    await _rebuildProgressFor(
+    await rebuildProgressFor(
       entryRow.profileId,
       LocalDate.parse(entryRow.localDate),
     );
@@ -259,7 +281,7 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
       }
     });
 
-    await _rebuildProgressFor(
+    await rebuildProgressFor(
       entryRow.profileId,
       LocalDate.parse(entryRow.localDate),
     );
@@ -290,13 +312,20 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
   );
 
   /// Memicu pembangunan ulang potret kemajuan program untuk [date] (Design
-  /// D8, task 5.3/5.4) — idempoten, aman dipanggil pada setiap perubahan
-  /// catatan termasuk pemindahan waktu makan pada tanggal yang sama.
+  /// D8, task 5.3/5.4; design D5 change 008) — idempoten, aman dipanggil
+  /// pada setiap perubahan catatan makan ATAU catatan berat untuk tanggal
+  /// yang sama (dipanggil juga oleh `DriftWeightRepository`).
+  ///
+  /// Satu-satunya tempat yang menulis potret kemajuan untuk sebuah tanggal
+  /// — membaca ulang buku harian DAN catatan berat setiap kali dipanggil,
+  /// bukan hanya bagian milik pemanggil, supaya penulisan oleh satu sisi
+  /// tidak menimpa nilai sisi lain untuk tanggal yang sama (`rebuildProgressForDate`
+  /// change 004 mengganti seluruh baris, bukan menggabungkan).
   ///
   /// Tidak melakukan apa pun bila tidak ada program yang berjalan — sesuai
   /// spec daily-dashboard: ringkasan hari tetap tampil dari buku harian
   /// langsung, bukan dari potret, ketika tidak ada program.
-  Future<void> _rebuildProgressFor(String profileId, LocalDate date) async {
+  Future<void> rebuildProgressFor(String profileId, LocalDate date) async {
     final program = await _programRepository.findRunning(profileId);
     if (program == null) {
       return;
@@ -306,6 +335,7 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
     final activeDayNumber = _activeDayNumberOn(program, date);
     final energyTarget = program.proposal.energyTarget;
     final consumedEnergyKcal = total.nutrition.energy?.kcal;
+    final weightKg = await _weightForDate(profileId, date);
 
     await _programRepository.rebuildProgressForDate(
       userProgramId: program.id,
@@ -316,6 +346,7 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
         diaryComplete: total.loggedMealsCount >= MealTime.values.length,
         activeDayNumber: activeDayNumber,
         calculationVersion: program.proposal.calculatorVersion,
+        weightKg: weightKg,
         consumedEnergyKcal: consumedEnergyKcal,
         energyAdherenceRatio: energyTarget == null || consumedEnergyKcal == null
             ? null
@@ -325,6 +356,25 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
         fatG: total.nutrition.fatG,
       ),
     );
+  }
+
+  /// Berat yang tercatat untuk [profileId] tepat pada [date], bila ada —
+  /// bukan berat terbaru keseluruhan (change 008, spec weight-tracking).
+  /// Beberapa catatan pada tanggal yang sama memutus seri lewat
+  /// `recordedAt` terbaru, selaras `DriftWeightRepository.latest`.
+  Future<double?> _weightForDate(String profileId, LocalDate date) async {
+    final row =
+        await (select(weightRecords)
+              ..where(
+                (t) =>
+                    t.profileId.equals(profileId) &
+                    t.localDate.equals(date.iso) &
+                    UserRecords.active(t.deletedAt),
+              )
+              ..orderBy([(t) => OrderingTerm.desc(t.recordedAt)])
+              ..limit(1))
+            .getSingleOrNull();
+    return row?.weightKg;
   }
 
   /// Hari aktif ke berapa [date] sejak [program] dimulai: menghitung hari

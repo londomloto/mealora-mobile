@@ -162,6 +162,30 @@ abstract final class MealoraTypography {
     letterSpacing: -1,
   );
 
+  /// Nilai isian pada kolom nutrisi kustom (energi, protein, karbohidrat,
+  /// lemak) — `_NutrientField`, lembar makanan kustom (change 007). Warna
+  /// dasar ditimpa per nutrien oleh pemanggil lewat `copyWith(color: ...)`.
+  static TextStyle get nutrientFieldValue =>
+      _jakarta(size: 19, weight: bold, color: MealoraColors.ink, height: 1.1);
+
+  /// Judul tanggal pada navigator hari di ruang Riwayat (`18 · Riwayat
+  /// harian`) — ditampilkan di atas permukaan hero berwarna.
+  static TextStyle get dateNavigatorTitle => _jakarta(
+    size: 14,
+    weight: bold,
+    color: MealoraColors.onPrimary,
+    height: 1.2,
+  );
+
+  /// Nilai zat gizi makro ringkas (mis. gram protein/karbohidrat/lemak) —
+  /// `_MacroColumn`, ruang Hari ini.
+  static TextStyle get macroValue =>
+      _jakarta(size: 13, weight: bold, color: MealoraColors.ink, height: 1.2);
+
+  /// Nilai besar di dalam cincin kalori — `_CalorieRing`, ruang Hari ini.
+  static TextStyle get calorieRingValue =>
+      _jakarta(size: 28, weight: bold, color: MealoraColors.ink, height: 1);
+
   static TextStyle _jakarta({
     required double size,
     required double weight,

@@ -15,6 +15,7 @@ import 'package:mealora/database/storage_bootstrap.dart';
 import 'legacy_v1_database.dart' as legacy;
 import 'legacy_v2_database.dart' as legacy2;
 import 'legacy_v3_database.dart' as legacy3;
+import 'legacy_v4_database.dart' as legacy4;
 import 'test_database.dart';
 
 /// Harness migrasi, termasuk migrasi versi 1 → 2 (change 004, tasks
@@ -516,6 +517,111 @@ void main() {
     );
   });
 
+  group('fixture: migrasi versi 4 ke 5 (change 008)', () {
+    test('basis data versi 4 berisi profil, makanan, dan program bermigrasi '
+        'ke versi 5 dengan sehat, dan data lama tidak tersentuh', () async {
+      final file = databaseFile();
+
+      final v4 = legacy4.LegacyV4Database(NativeDatabase(file));
+      await _insertLegacyV4Profile(v4, id: 'profile-v4');
+      await _insertLegacyHarnessRecordV4(
+        v4,
+        id: 'legacy-v4-harness',
+        label: 'Sebelum migrasi ke v5',
+        amount: 4,
+      );
+      await v4.customStatement('PRAGMA user_version = 4');
+      await v4.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final weightRows = await upgraded.select(upgraded.weightRecords).get();
+      expect(
+        weightRows,
+        isEmpty,
+        reason: 'tabel catatan berat baru dan kosong pada migrasi',
+      );
+
+      final catalogCheck = await verifyFoodCatalog(upgraded);
+      expect(catalogCheck.isHealthy, isTrue, reason: catalogCheck.toString());
+
+      final harnessDao = HarnessRecordDao(
+        upgraded,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await harnessDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Sebelum migrasi ke v5');
+
+      final profiles = await upgraded.select(upgraded.profiles).get();
+      expect(profiles, hasLength(1));
+      expect(profiles.single.id, 'profile-v4');
+    });
+
+    test('migrasi versi 4 ke 5 yang terputus di tengah tidak merusak data dan '
+        'percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v4 = legacy4.LegacyV4Database(NativeDatabase(file));
+      await _insertLegacyHarnessRecordV4(
+        v4,
+        id: 'legacy-v4-harness-2',
+        label: 'Harus selamat lintas migrasi v5',
+        amount: 1,
+      );
+      await v4.customStatement('PRAGMA user_version = 4');
+      await v4.close();
+
+      // Simulasi migrasi v4→v5 yang terhenti: tabel catatan berat mulai
+      // dibuat di dalam transaksi, lalu prosesnya berhenti sebelum selesai.
+      final interrupted = legacy4.LegacyV4Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE weight_records_wip (id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final retryDao = HarnessRecordDao(
+        retry,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await retryDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Harus selamat lintas migrasi v5');
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'weight_records_wip'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+  });
+
   group('kegagalan inisialisasi penyimpanan', () {
     test('dilaporkan sebagai kegagalan bertipe, bukan exception', () async {
       final result = await openLocalStorage(
@@ -724,6 +830,46 @@ Future<void> _insertLegacyV2ProgramRow(
           recordedAt: testInstant,
           activeDayNumber: 1,
           calculationVersion: 'msj-1.0.0',
+        ),
+      );
+}
+
+/// Menyisipkan satu baris harness langsung lewat `LegacyV4Database`.
+Future<void> _insertLegacyHarnessRecordV4(
+  legacy4.LegacyV4Database db, {
+  required String id,
+  required String label,
+  required double amount,
+}) {
+  return db
+      .into(db.harnessRecords)
+      .insert(
+        legacy4.HarnessRecordsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          label: label,
+          amount: amount,
+          localDate: '2026-11-08',
+          timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu profil langsung lewat `LegacyV4Database` (task 1.6 —
+/// migrasi versi 4 ke 5 SHALL mempertahankan seluruh data versi 4).
+Future<void> _insertLegacyV4Profile(
+  legacy4.LegacyV4Database db, {
+  required String id,
+}) {
+  return db
+      .into(db.profiles)
+      .insert(
+        legacy4.ProfilesCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          onboardingComplete: const Value<bool>(true),
         ),
       );
 }

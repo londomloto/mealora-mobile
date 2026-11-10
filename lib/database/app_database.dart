@@ -4,6 +4,7 @@ import 'package:mealora/database/migrations/food_diary_indexes.dart';
 import 'package:mealora/database/migrations/program_indexes.dart';
 import 'package:mealora/database/migrations/program_invariant_trigger.dart';
 import 'package:mealora/database/migrations/user_record_triggers.dart';
+import 'package:mealora/database/migrations/weight_indexes.dart';
 import 'package:mealora/database/seeds/food_catalog_seed.dart';
 import 'package:mealora/database/seeds/program_catalog_seed.dart';
 import 'package:mealora/database/tables/food_servings_table.dart';
@@ -18,6 +19,7 @@ import 'package:mealora/database/tables/program_progress_table.dart';
 import 'package:mealora/database/tables/programs_table.dart';
 import 'package:mealora/database/tables/ui_preferences.dart';
 import 'package:mealora/database/tables/user_programs_table.dart';
+import 'package:mealora/database/tables/weight_records_table.dart';
 
 part 'app_database.g.dart';
 
@@ -26,7 +28,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 4;
+const int kSchemaVersion = 5;
 
 @DriftDatabase(
   tables: <Type>[
@@ -43,6 +45,7 @@ const int kSchemaVersion = 4;
     NutritionValues,
     MealEntries,
     MealEntryItems,
+    WeightRecords,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -62,6 +65,7 @@ class AppDatabase extends _$AppDatabase {
       await seedProgramCatalog(this);
       await createFoodDiaryIndexes(this);
       await seedFoodCatalog(this);
+      await createWeightIndexes(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -155,6 +159,13 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         await m.createTable(mealEntryItems);
         await createFoodDiaryIndexes(this);
         await seedFoodCatalog(this);
+      }
+      if (from < 5) {
+        // Versi 4 → 5 (change 008): tabel catatan berat beserta indeks
+        // menurut profil dan tanggal lokal. Tidak menyentuh data versi 4
+        // (design.md Migration Plan item 3).
+        await m.createTable(weightRecords);
+        await createWeightIndexes(this);
       }
     },
     beforeOpen: (details) async {

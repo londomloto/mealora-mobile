@@ -4,6 +4,7 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/meal_time.dart';
@@ -22,12 +23,17 @@ class ServingDetailScreen extends ConsumerStatefulWidget {
     required this.food,
     this.initialServing,
     this.initialMealTime = MealTime.lunch,
+    this.date,
     super.key,
   });
 
   final Food food;
   final ServingSize? initialServing;
   final MealTime initialMealTime;
+
+  /// Tanggal yang dicatat — `null` berarti hari ini (konvensi
+  /// `logFoodEntry`, change 008 task 5.6).
+  final LocalDate? date;
 
   @override
   ConsumerState<ServingDetailScreen> createState() =>
@@ -181,6 +187,7 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
       food: widget.food,
       serving: _serving,
       quantity: _quantity,
+      date: widget.date,
     );
     if (!mounted) {
       return;

@@ -5,6 +5,7 @@ import 'package:mealora/data/local/drift_diary_repository.dart';
 import 'package:mealora/data/local/drift_food_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/data/local/drift_program_repository.dart';
+import 'package:mealora/data/local/drift_weight_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
@@ -17,6 +18,7 @@ import 'package:mealora/features/onboarding/onboarding_controller.dart'
         profileRepositoryProvider,
         programRepositoryProvider;
 import 'package:mealora/features/shell/destinations.dart';
+import 'package:mealora/features/weight/weight_controller.dart';
 
 /// Pabrik basis data.
 ///
@@ -107,6 +109,29 @@ final Override diaryRepositoryAppOverride = diaryRepositoryProvider
           ref.watch(appDatabaseProvider),
           clock: ref.watch(clockProvider),
           ids: ref.watch(idGeneratorProvider),
+        ),
+      ),
+    );
+
+/// Menimpa `weightRepositoryProvider` (features/weight, change 008) dengan
+/// implementasi Drift sungguhan — bergantung langsung pada
+/// `DriftDiaryRepository` untuk memicu pembangunan ulang potret kemajuan
+/// bersama (design D5), sama seperti [diaryRepositoryAppOverride].
+final Override weightRepositoryAppOverride = weightRepositoryProvider
+    .overrideWith(
+      (ref) => DriftWeightRepository(
+        ref.watch(appDatabaseProvider),
+        clock: ref.watch(clockProvider),
+        ids: ref.watch(idGeneratorProvider),
+        diaryRepository: DriftDiaryRepository(
+          ref.watch(appDatabaseProvider),
+          clock: ref.watch(clockProvider),
+          ids: ref.watch(idGeneratorProvider),
+          programRepository: DriftProgramRepository(
+            ref.watch(appDatabaseProvider),
+            clock: ref.watch(clockProvider),
+            ids: ref.watch(idGeneratorProvider),
+          ),
         ),
       ),
     );

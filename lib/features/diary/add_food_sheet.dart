@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
+import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/features/diary/food_search_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
@@ -14,21 +15,25 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// gagal (spec daily-dashboard, "Jalur yang belum tersedia") — change ini
 /// hanya membangun katalog/buku harian (proposal.md "Tidak termasuk"); jalur
 /// suara menyusul pada change 012, foto dan barcode pada change terpisah.
-Future<void> showAddFoodSheet(BuildContext context) {
+Future<void> showAddFoodSheet(BuildContext context, {LocalDate? date}) {
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
     barrierColor: MealoraColors.transparent,
     transitionDuration: const Duration(milliseconds: 260),
     pageBuilder: (context, animation, secondaryAnimation) =>
-        _AddFoodOverlay(animation: animation),
+        _AddFoodOverlay(animation: animation, date: date),
   );
 }
 
 class _AddFoodOverlay extends StatelessWidget {
-  const _AddFoodOverlay({required this.animation});
+  const _AddFoodOverlay({required this.animation, this.date});
 
   final Animation<double> animation;
+
+  /// Tanggal yang akan dicatat — `null` berarti hari ini (konvensi
+  /// `logFoodEntry`, change 008 task 5.6).
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,7 @@ class _AddFoodOverlay extends StatelessWidget {
                 begin: const Offset(0, 1),
                 end: Offset.zero,
               ).animate(curved),
-              child: const _AddFoodSheet(),
+              child: _AddFoodSheet(date: date),
             ),
           ),
         ],
@@ -73,7 +78,9 @@ class _AddFoodOverlay extends StatelessWidget {
 }
 
 class _AddFoodSheet extends StatelessWidget {
-  const _AddFoodSheet();
+  const _AddFoodSheet({this.date});
+
+  final LocalDate? date;
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +150,7 @@ class _AddFoodSheet extends StatelessWidget {
                         Navigator.of(context).pop();
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
-                            builder: (_) => const FoodSearchScreen(),
+                            builder: (_) => FoodSearchScreen(date: date),
                           ),
                         );
                       },

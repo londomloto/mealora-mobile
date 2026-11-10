@@ -9,6 +9,7 @@ mixin _$DriftDiaryRepositoryMixin on DatabaseAccessor<AppDatabase> {
   $FoodsTable get foods => attachedDatabase.foods;
   $FoodServingsTable get foodServings => attachedDatabase.foodServings;
   $MealEntryItemsTable get mealEntryItems => attachedDatabase.mealEntryItems;
+  $WeightRecordsTable get weightRecords => attachedDatabase.weightRecords;
   DriftDiaryRepositoryManager get managers => DriftDiaryRepositoryManager(this);
 }
 
@@ -28,4 +29,6 @@ class DriftDiaryRepositoryManager {
         _db.attachedDatabase,
         _db.mealEntryItems,
       );
+  $$WeightRecordsTableTableManager get weightRecords =>
+      $$WeightRecordsTableTableManager(_db.attachedDatabase, _db.weightRecords);
 }

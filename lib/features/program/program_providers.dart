@@ -5,13 +5,21 @@ import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/program_progress_snapshot.dart';
 import 'package:mealora/domain/program/commands/change_program_command.dart';
 import 'package:mealora/domain/program/commands/simple_lifecycle_commands.dart';
+import 'package:mealora/domain/program/nutrition_policy.dart';
+import 'package:mealora/domain/program/program_code.dart';
+import 'package:mealora/domain/program/target_review_check.dart';
 import 'package:mealora/domain/program/user_program.dart';
+import 'package:mealora/domain/shared/units.dart';
+import 'package:mealora/features/diary/diary_controller.dart'
+    show diaryRefreshSignalProvider;
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show
+        nutritionPolicyProvider,
         onboardingRefreshSignalProvider,
         profileRepositoryProvider,
         programEngineProvider,
         programRepositoryProvider;
+import 'package:mealora/features/weight/weight_controller.dart';
 
 /// Menandai perubahan siklus hidup (jeda/lanjutkan/ganti/selesaikan) yang
 /// terjadi di ruang Program (task 5.1, 6.2, 8.2) — menaikkan nilai ini
@@ -99,6 +107,12 @@ programProgressProvider =
       userProgramId,
     ) async {
       ref.watch(programLifecycleRefreshSignalProvider);
+      // Potret kemajuan juga berubah dari catatan makan (change 007) dan
+      // catatan berat (change 008) — tanpa mengawasi kedua sinyal ini,
+      // ruang Program tampak basi sampai ada peristiwa siklus hidup
+      // (jeda/lanjut/ganti) yang me-refresh-nya.
+      ref.watch(diaryRefreshSignalProvider);
+      ref.watch(weightRefreshSignalProvider);
       final repository = ref.watch(programRepositoryProvider);
       if (repository is DriftProgramRepository) {
         return repository.listProgress(userProgramId);
@@ -130,3 +144,46 @@ ProgramProgressSnapshot? latestWeightSnapshot(
   }
   return null;
 }
+
+/// `true` bila ruang Program SHOULD menampilkan usulan peninjauan target
+/// untuk program dengan id tertentu (change 008, design D5, task
+/// 3.2/3.3/3.6).
+///
+/// `false` tanpa menghitung apa pun — bukan sekadar "belum tahu" — ketika:
+/// program bukan Turun Berat/Naik Berat (program lain tidak punya target
+/// berbasis berat untuk ditinjau ulang), kebijakan gizi yang berlaku belum
+/// disetujui (task 3.6), atau belum ada satu pun catatan berat.
+final FutureProviderFamily<bool, String> targetReviewRecommendedProvider =
+    FutureProvider.family<bool, String>((ref, userProgramId) async {
+      ref.watch(weightRefreshSignalProvider);
+      final program = await ref.watch(
+        programByIdProvider(userProgramId).future,
+      );
+      if (program == null ||
+          (program.programCode != ProgramCode.weightLoss &&
+              program.programCode != ProgramCode.weightGain)) {
+        return false;
+      }
+      final policy = ref.watch(nutritionPolicyProvider);
+      if (policy.status != PolicyApprovalStatus.approved) {
+        return false;
+      }
+      final latest = await ref
+          .watch(weightRepositoryProvider)
+          .latest(program.profileId);
+      if (latest == null) {
+        return false;
+      }
+      final latestWeight = Mass.kgValue(
+        latest.weightKg,
+        field: 'latestWeight',
+      ).valueOrNull;
+      if (latestWeight == null) {
+        return false;
+      }
+      return TargetReviewCheck.isRecommended(
+        baselineWeight: program.inputSnapshot.currentWeight,
+        latestWeight: latestWeight,
+        policy: policy,
+      );
+    });

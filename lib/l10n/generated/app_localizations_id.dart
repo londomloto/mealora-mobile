@@ -181,6 +181,34 @@ class AppTextId extends AppText {
       'Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.';
 
   @override
+  String get historyEnergyRecordedLabel => 'ENERGI TERCATAT';
+
+  @override
+  String get historyWeightRecordedLabel => 'Berat tercatat tanggal ini';
+
+  @override
+  String get historyPreviousMonthSemantics => 'Bulan sebelumnya';
+
+  @override
+  String get historyNextMonthSemantics => 'Bulan berikutnya';
+
+  @override
+  String historyDayHasRecordSemantics(String date) {
+    return '$date, ada catatan';
+  }
+
+  @override
+  String historyDayNoRecordSemantics(String date) {
+    return '$date, belum ada catatan';
+  }
+
+  @override
+  String get historyDaySelectedSuffix => ', terpilih';
+
+  @override
+  String get historyDayFutureSuffix => ', belum bisa dipilih';
+
+  @override
   String get routeNotFoundTitle => 'Halaman tidak ditemukan';
 
   @override
@@ -870,6 +898,17 @@ class AppTextId extends AppText {
   String get programNoWeightRecordedYet => 'Belum ada catatan berat';
 
   @override
+  String get programTargetReviewTitle => 'Tinjau target program';
+
+  @override
+  String get programTargetReviewBody =>
+      'Berat terbaru beda cukup jauh dari yang dipakai menghitung target sekarang. Target lama tetap berlaku sampai kamu meninjau dan menyetujui yang baru.';
+
+  @override
+  String get programTargetReviewSemantics =>
+      'Tinjau target program karena berat terbaru berubah signifikan';
+
+  @override
   String get programConsistencyHeading => 'Kebiasaan minggu ini';
 
   @override
@@ -1546,4 +1585,133 @@ class AppTextId extends AppText {
 
   @override
   String get editEntryDeleteCancelAction => 'Batal';
+
+  @override
+  String get weightAddTitle => 'Tambah berat';
+
+  @override
+  String get weightEditTitle => 'Ubah catatan berat';
+
+  @override
+  String get weightAddSubtitle => 'Catat kapan pun, berat selalu terpantau.';
+
+  @override
+  String get weightValueLabel => 'Berat badan';
+
+  @override
+  String get weightUnitKg => 'kg';
+
+  @override
+  String get weightDateLabel => 'Tanggal catatan';
+
+  @override
+  String get weightDateHint => 'Pilih tanggal';
+
+  @override
+  String get weightNoteLabel => 'Catatan (opsional)';
+
+  @override
+  String get weightNoteHint => 'Mis. setelah bangun pagi';
+
+  @override
+  String get weightLocalOnlyNote =>
+      'Catatan berat hanya tersimpan di perangkat ini.';
+
+  @override
+  String get weightSaveAction => 'Simpan berat';
+
+  @override
+  String get weightInvalidNumberError => 'Masukkan angka berat yang sah.';
+
+  @override
+  String get weightOutOfRangeError =>
+      'Berat ini di luar rentang yang masuk akal.';
+
+  @override
+  String get weightFutureDateError =>
+      'Tanggal catatan tidak boleh di masa depan.';
+
+  @override
+  String get weightMonitorTitle => 'Catatan berat';
+
+  @override
+  String get weightMonitorSubtitle =>
+      'Lihat arah perubahan, bukan nilai mutlak.';
+
+  @override
+  String get weightMonitorEyebrow => 'CATAT BERAT';
+
+  @override
+  String weightLatestLabel(String date) {
+    return 'TERBARU · $date';
+  }
+
+  @override
+  String weightLatestSemantics(String weight, String date) {
+    return 'Berat terbaru $weight kilogram, tercatat $date';
+  }
+
+  @override
+  String weightVsProgramStart(String weight, String direction, String delta) {
+    return 'Awal program $weight kg · $direction $delta kg';
+  }
+
+  @override
+  String get weightDirectionDown => 'penurunan';
+
+  @override
+  String get weightDirectionUp => 'kenaikan';
+
+  @override
+  String get weightDirectionFlat => 'tidak berubah';
+
+  @override
+  String get weightTrendHeading => 'Tren berat';
+
+  @override
+  String get weightTrendSubheading => '4 minggu terakhir';
+
+  @override
+  String get weightTrendSingleRecordNote =>
+      'Baru satu catatan — tren belum dapat ditampilkan.';
+
+  @override
+  String get weightRecentRecordsHeading => 'Catatan terakhir';
+
+  @override
+  String get weightEmptyTitle => 'Belum ada catatan berat';
+
+  @override
+  String get weightEmptyBody =>
+      'Catat berat badanmu kapan saja. Hanya tersimpan di perangkat ini.';
+
+  @override
+  String get weightEmptyAction => 'Tambah berat';
+
+  @override
+  String get weightAddActionSemantics => 'Tambah catatan berat';
+
+  @override
+  String weightEntrySemantics(String date, String weight) {
+    return '$date, $weight kilogram';
+  }
+
+  @override
+  String get weightEditEntryAction => 'Sunting';
+
+  @override
+  String get weightDeleteEntryAction => 'Hapus';
+
+  @override
+  String get weightDeleteConfirmTitle => 'Hapus catatan berat ini?';
+
+  @override
+  String get weightDeleteConfirmBody =>
+      'Catatan ini akan hilang dari tren dan daftar catatan terakhir.';
+
+  @override
+  String get weightDeleteConfirmAction => 'Hapus';
+
+  @override
+  String get weightDeleteCancelAction => 'Batal';
 }

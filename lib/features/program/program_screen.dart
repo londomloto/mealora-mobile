@@ -9,8 +9,11 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/data/local/program_progress_snapshot.dart';
+import 'package:mealora/domain/program/program_code.dart';
+import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_state.dart';
 import 'package:mealora/domain/program/user_program.dart';
+import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_flow.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
@@ -22,9 +25,13 @@ import 'package:mealora/features/program/history_screens.dart';
 import 'package:mealora/features/program/how_calculated_screen.dart';
 import 'package:mealora/features/program/program_name.dart';
 import 'package:mealora/features/program/program_providers.dart';
+import 'package:mealora/features/program/program_revision_review_screen.dart';
+import 'package:mealora/features/program/program_revision_service.dart';
 import 'package:mealora/features/program/widgets/program_shared.dart';
 import 'package:mealora/features/program/widgets/progress_section.dart';
 import 'package:mealora/features/shell/app_shell.dart';
+import 'package:mealora/features/weight/weight_controller.dart';
+import 'package:mealora/features/weight/weight_monitor_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// Ruang "Program".
@@ -265,6 +272,19 @@ class _RunningProgramView extends ConsumerWidget {
                   error: (error, stackTrace) => const SizedBox.shrink(),
                   data: (snapshots) => _LatestWeightTile(snapshots: snapshots),
                 ),
+                ref
+                    .watch(targetReviewRecommendedProvider(program.id))
+                    .maybeWhen(
+                      data: (recommended) => recommended
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                top: MealoraSpacing.sm,
+                              ),
+                              child: _TargetReviewBanner(program: program),
+                            )
+                          : const SizedBox.shrink(),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
                 const SizedBox(height: MealoraSpacing.sm),
                 if (_isPaused)
                   ProgramControlList(
@@ -612,6 +632,26 @@ class _LatestWeightTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = AppText.of(context);
     final latest = latestWeightSnapshot(snapshots);
+    return Semantics(
+      button: true,
+      label: text.weightMonitorTitle,
+      child: Material(
+        color: MealoraColors.transparent,
+        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(MealoraRadius.card),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const WeightMonitorScreen(),
+            ),
+          ),
+          child: _buildCard(text, latest),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(AppText text, ProgramProgressSnapshot? latest) {
     return MealoraCard(
       child: Row(
         children: <Widget>[
@@ -650,13 +690,123 @@ class _LatestWeightTile extends StatelessWidget {
               ],
             ),
           ),
-          if (latest != null)
+          if (latest != null) ...<Widget>[
             Text(
               IdFormat.shortDate(latest.recordedLocalDate),
               style: MealoraTypography.caption,
             ),
+            const SizedBox(width: MealoraSpacing.xxs),
+          ],
+          const Icon(
+            Icons.chevron_right,
+            color: MealoraColors.affordance,
+            size: MealoraIconSize.action,
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// Usulan peninjauan target dari berat yang tercatat (change 008, design
+/// D5) — murni dihitung ulang setiap kali ruang Program dibuka
+/// (`targetReviewRecommendedProvider`), tidak ada status "sudah dilihat"
+/// yang tersimpan: begitu berat kembali dalam ambang, usulan ini hilang
+/// sendiri. Mengetuknya membuka layar pratinjau target yang sama persis
+/// dengan jalur "ubah profil" (`34`, `edit_profile_screen.dart`), bedanya
+/// cuma sumber `currentWeight` — dari `WeightRepository.latest()`, bukan
+/// dari kolom profil (design D1: berat tidak lagi hidup di profil).
+class _TargetReviewBanner extends ConsumerWidget {
+  const _TargetReviewBanner({required this.program});
+
+  final UserProgram program;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = AppText.of(context);
+    return MealoraNoteCard(
+      icon: Icons.fact_check_outlined,
+      foreground: MealoraColors.info,
+      background: MealoraColors.noteInfo,
+      title: text.programTargetReviewTitle,
+      body: text.programTargetReviewBody,
+      semanticsLabel: text.programTargetReviewSemantics,
+      onTap: () => _openTargetReview(context, ref),
+    );
+  }
+
+  Future<void> _openTargetReview(BuildContext context, WidgetRef ref) async {
+    final latest = await ref
+        .read(weightRepositoryProvider)
+        .latest(program.profileId);
+    final latestWeight = latest == null
+        ? null
+        : Mass.kgValue(latest.weightKg, field: 'latestWeight').valueOrNull;
+    if (latestWeight == null) {
+      return;
+    }
+
+    final inputs = ProgramProposalInputs(
+      ageYears: program.inputSnapshot.ageYears,
+      biologicalInput: program.inputSnapshot.biologicalInput,
+      height: program.inputSnapshot.height,
+      currentWeight: latestWeight,
+      activity: program.inputSnapshot.activity,
+      screening: program.inputSnapshot.screening,
+      specific: program.inputSnapshot.specific,
+    );
+    final requiresTargetWeight =
+        program.programCode == ProgramCode.weightLoss ||
+        program.programCode == ProgramCode.weightGain;
+
+    final service = ref.read(programRevisionServiceProvider);
+    final outcome = service.preview(
+      programCode: program.programCode,
+      inputs: inputs,
+      requiresTargetWeight: requiresTargetWeight,
+      requiresHabitFocus: false,
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ProgramRevisionReviewScreen(
+          profileId: program.profileId,
+          programCode: program.programCode,
+          previewInputs: inputs,
+          previewOutcome: outcome,
+          requiresTargetWeight: requiresTargetWeight,
+          requiresHabitFocus: false,
+          currentProposal: program.proposal,
+          buildCurrentInputs: () => _rebuildCurrentInputs(ref, inputs),
+        ),
+      ),
+    );
+  }
+
+  Future<ProgramProposalInputs> _rebuildCurrentInputs(
+    WidgetRef ref,
+    ProgramProposalInputs previous,
+  ) async {
+    final latest = await ref
+        .read(weightRepositoryProvider)
+        .latest(program.profileId);
+    final latestWeight = latest == null
+        ? null
+        : Mass.kgValue(latest.weightKg, field: 'latestWeight').valueOrNull;
+    if (latestWeight == null) {
+      return previous;
+    }
+    return ProgramProposalInputs(
+      ageYears: previous.ageYears,
+      biologicalInput: previous.biologicalInput,
+      height: previous.height,
+      currentWeight: latestWeight,
+      activity: previous.activity,
+      screening: previous.screening,
+      specific: previous.specific,
     );
   }
 }
