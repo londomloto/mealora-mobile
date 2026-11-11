@@ -222,19 +222,10 @@ void main() {
     expect(find.text('Cari / input manual'), findsOneWidget);
     expect(find.text('Scan barcode'), findsOneWidget);
 
-    // Jalur yang belum tersedia (suara) tidak membuka layar yang gagal
-    // (task 8.4) — barcode sendiri kini membuka `BarcodeScanScreen`
-    // (change 009), diuji terpisah di `barcode_scan_screen_test.dart`.
-    await tester.tap(find.text('Catat dengan suara'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-    expect(
-      find.text(
-        'Jalur ini belum tersedia. Pakai pencarian atau buat makanan '
-        'sendiri dulu, ya.',
-      ),
-      findsOneWidget,
-    );
+    // Jalur suara (change 012) kini membuka `VoiceRecordScreen`, diuji di
+    // `voice_input_screens_test.dart` dan `add_food_sheet_microphone_test.dart`;
+    // barcode membuka `BarcodeScanScreen` (change 009), diuji di
+    // `barcode_scan_screen_test.dart`.
 
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();

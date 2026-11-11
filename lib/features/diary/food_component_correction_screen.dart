@@ -10,6 +10,8 @@ import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_component_picker_sheet.dart';
+import 'package:mealora/features/diary/voice_input_shared.dart'
+    show voiceUndeterminedLabel;
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `38 · Koreksi komponen foto` (task 5.3-5.6, change 011): daftar lengkap
@@ -22,9 +24,14 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// SHALL TIDAK mencatat apa pun — murni mengubah [PhotoDraft] yang
 /// disimpan ulang pada setiap perubahan (Design D6).
 class FoodComponentCorrectionScreen extends ConsumerStatefulWidget {
-  const FoodComponentCorrectionScreen({required this.draft, super.key});
+  const FoodComponentCorrectionScreen({
+    required this.draft,
+    this.origin = ComponentDraftOrigin.photo,
+    super.key,
+  });
 
   final PhotoDraft draft;
+  final ComponentDraftOrigin origin;
 
   @override
   ConsumerState<FoodComponentCorrectionScreen> createState() =>
@@ -82,7 +89,9 @@ class _FoodComponentCorrectionScreenState
                       ),
                       Expanded(
                         child: Text(
-                          text.foodComponentCorrectionBadge,
+                          widget.origin.isVoice
+                              ? text.voiceComponentCorrectionBadge
+                              : text.foodComponentCorrectionBadge,
                           style: MealoraTypography.eyebrow,
                         ),
                       ),
@@ -209,7 +218,7 @@ class _FoodComponentCorrectionScreenState
   Future<void> _updateDraft(List<PhotoDraftComponent> components) async {
     final updated = _draft.withComponents(components);
     setState(() => _draft = updated);
-    await savePhotoDraft(ref, updated);
+    if (widget.origin.persistsDraft) await savePhotoDraft(ref, updated);
   }
 }
 
@@ -232,6 +241,8 @@ class _ComponentRow extends StatelessWidget {
     final name = component.matchedFoodName ?? component.foodNameGuess;
     final quantityText = component.matchedServingId == null
         ? component.foodNameGuess
+        : component.quantityUndetermined
+        ? voiceUndeterminedLabel(text, component.quantityUnitLabel)
         : '${component.quantity.toStringAsFixed(1).replaceAll('.', ',')}×';
 
     return Semantics(
@@ -291,6 +302,12 @@ class _ComponentRow extends StatelessWidget {
   (Color, String) _status(PhotoDraftComponent c, AppText text) {
     if (c.foodMatchNeedsCheck) {
       return (MealoraColors.danger, text.foodComponentMatchMissing);
+    }
+    if (c.quantityUndetermined) {
+      return (
+        MealoraColors.danger,
+        voiceUndeterminedLabel(text, c.quantityUnitLabel),
+      );
     }
     if (c.cookingMethodNeedsCheck) {
       return (

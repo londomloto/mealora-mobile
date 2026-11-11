@@ -24,7 +24,14 @@ final class PhotoDraftComponent {
     this.matchedFoodName,
     this.quantityUnitLabel,
     this.cookingMethod,
+    this.quantityUndetermined = false,
   });
+
+  /// `true` bila jumlah atau satuan belum ditetapkan pengguna — mis. tidak
+  /// disebut dalam kalimat atau satuannya tidak baku (change 012, design
+  /// D5). [quantity] lalu hanya pengisi tempat: SHALL TIDAK ditampilkan,
+  /// dihitung, maupun dicatat sampai pengguna menetapkannya (task 7.1/7.2).
+  final bool quantityUndetermined;
 
   /// Pengenal stabil DI DALAM draf ini (bukan pengenal buku harian) —
   /// dipakai memetakan koreksi dan penghapusan ke komponen yang benar
@@ -88,6 +95,7 @@ final class PhotoDraftComponent {
     cookingMethod: cookingMethod,
     portionNeedsCheck: false,
     cookingMethodNeedsCheck: cookingMethodNeedsCheck,
+    quantityUndetermined: quantityUndetermined,
   );
 
   PhotoDraftComponent withQuantity(double quantity) => PhotoDraftComponent(
@@ -115,7 +123,28 @@ final class PhotoDraftComponent {
         cookingMethod: cookingMethod,
         portionNeedsCheck: portionNeedsCheck,
         cookingMethodNeedsCheck: false,
+        quantityUndetermined: quantityUndetermined,
       );
+}
+
+/// Asal draf yang ditinjau di layar peninjauan komponen change 011.
+///
+/// Jalur suara (change 012, design D7) memakai ulang layar yang sama;
+/// asalnya hanya mengubah teks penanda dan apakah draf disimpan.
+enum ComponentDraftOrigin {
+  photo,
+
+  /// Kalimat diurai lewat proksi.
+  voice,
+
+  /// Kalimat diurai di perangkat — `diurai tanpa koneksi` (task 5.10).
+  voiceOnDevice;
+
+  bool get isVoice => this != photo;
+
+  /// Hanya draf foto yang disimpan (change 011 D6). Draf suara hidup di
+  /// memori: menutup peninjauan tidak meninggalkan draf maupun catatan.
+  bool get persistsDraft => this == photo;
 }
 
 /// Draf foto makanan (Design D6, change 011) — bertahan melewati kegagalan

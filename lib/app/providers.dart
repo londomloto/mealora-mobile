@@ -11,15 +11,19 @@ import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/drift_weight_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/data/ocr/ocr_nutrition_label_provider.dart';
+import 'package:mealora/data/remote/model_proxy_food_sentence_parser.dart';
 import 'package:mealora/data/remote/openfoodfacts_product_client.dart';
 import 'package:mealora/data/remote/vision_proxy_food_component_provider.dart';
 import 'package:mealora/data/remote/vision_proxy_label_provider.dart';
+import 'package:mealora/data/speech/device_speech_recognizer.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 import 'package:mealora/domain/image_ai_access/fallback_nutrition_label_provider.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
+import 'package:mealora/domain/voice_input/fallback_food_sentence_parser.dart';
+import 'package:mealora/domain/voice_input/rule_based_food_sentence_parser.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show
@@ -337,3 +341,22 @@ class ImageRetentionSetting extends AsyncNotifier<ImageRetentionPreference> {
         .write(UiPreferenceKeys.imageRetention, preference.stableCode);
   }
 }
+
+/// Menimpa `speechRecognizerProvider` (core/providers, change 012) dengan
+/// [DeviceSpeechRecognizer]: pengenalan ucapan di perangkat, tanpa jalur ke
+/// layanan luar (Design D2).
+final Override speechRecognizerAppOverride = speechRecognizerProvider
+    .overrideWithValue(DeviceSpeechRecognizer());
+
+/// Menimpa `foodSentenceParserProvider` (core/providers, change 012):
+/// proksi `/parse-food-text` lebih dulu, lalu pengurai aturan di perangkat
+/// ketika proksi tidak tersedia (Design D14).
+final Override foodSentenceParserAppOverride = foodSentenceParserProvider
+    .overrideWithValue(
+      FallbackFoodSentenceParser(
+        primary: ModelProxyFoodSentenceParser(
+          config: VisionProxyConfig.fromEnvironment,
+        ),
+        fallback: const RuleBasedFoodSentenceParser(),
+      ),
+    );

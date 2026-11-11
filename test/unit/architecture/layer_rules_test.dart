@@ -175,6 +175,7 @@ void main() {
         'lib/data/remote/openfoodfacts_product_client.dart',
         'lib/data/remote/vision_proxy_label_provider.dart',
         'lib/data/remote/vision_proxy_food_component_provider.dart',
+        'lib/data/remote/model_proxy_food_sentence_parser.dart',
       };
 
       final violations = _violations(

@@ -2369,4 +2369,293 @@ class AppTextId extends AppText {
   @override
   String get todayPendingDraftSemantics =>
       'Draf foto makanan menunggu. Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.';
+
+  @override
+  String get voiceRecordContextLabel => 'CATAT DENGAN SUARA';
+
+  @override
+  String get voiceRecordTitle => 'Sebutkan makananmu';
+
+  @override
+  String get voiceRecordSubtitle =>
+      'Satu kalimat cukup. Hasilnya kamu periksa dulu sebelum dicatat.';
+
+  @override
+  String get voiceRecordExampleTitle => 'Contoh ucapan';
+
+  @override
+  String get voiceRecordExampleQuote =>
+      '“Tadi makan nasi 150 gram, ayam bakar satu potong, sama tempe dua.”';
+
+  @override
+  String get voiceRecordExampleHint =>
+      'Sebut jumlahnya kalau ingat. Kalau tidak, nanti kamu isi sendiri.';
+
+  @override
+  String get voiceRecordMicHint => 'Ketuk untuk mulai bicara';
+
+  @override
+  String get voiceScopeTitle => 'Suara hanya untuk mencatat makanan';
+
+  @override
+  String get voiceScopeBody =>
+      'Berat badan, program, dan pengaturan tetap diisi seperti biasa. Rekaman dihapus setelah jadi teks.';
+
+  @override
+  String get voiceTypeInsteadLink => 'Tidak bisa bicara? Ketik kalimatnya saja';
+
+  @override
+  String get voiceRecordStartAction => 'Mulai merekam';
+
+  @override
+  String get voicePermissionExplanation =>
+      'Mealora meminta izin mikrofon hanya untuk mengubah ucapanmu menjadi teks di perangkat ini.';
+
+  @override
+  String get voicePreparing => 'Menyiapkan mikrofon…';
+
+  @override
+  String get voiceListeningContextLabel => 'SEDANG MEREKAM';
+
+  @override
+  String get voiceListeningTitle => 'Mendengarkan…';
+
+  @override
+  String get voiceListeningSubtitle =>
+      'Selesai bicara? Ketuk Selesai. Kamu tetap bisa membatalkan.';
+
+  @override
+  String voiceListeningBadge(String elapsed) {
+    return 'Merekam · $elapsed';
+  }
+
+  @override
+  String get voiceListeningMicActive => 'Mikrofon aktif';
+
+  @override
+  String get voiceListeningSemantics =>
+      'Sedang merekam, mikrofon aktif. Ketuk Selesai untuk berhenti.';
+
+  @override
+  String get voiceListeningPartialLabel => 'TERDENGAR SEJAUH INI';
+
+  @override
+  String get voiceListeningPartialHint =>
+      'Teks masih sementara dan bisa kamu perbaiki nanti.';
+
+  @override
+  String get voiceOnDeviceTitle => 'Suara diproses di perangkat ini';
+
+  @override
+  String get voiceOnDeviceBody => 'Rekamanmu tidak diunggah ke mana pun.';
+
+  @override
+  String get voiceCancelAction => 'Batalkan — tidak ada yang dicatat';
+
+  @override
+  String get voiceStopAction => 'Selesai';
+
+  @override
+  String get voiceEmptyTitle => 'Belum ada yang terdengar';
+
+  @override
+  String get voiceEmptyBody =>
+      'Tidak ada yang dicatat. Coba rekam ulang, atau ketik kalimatnya.';
+
+  @override
+  String get voiceFailedTitle => 'Pengenalan suara terhenti';
+
+  @override
+  String get voiceFailedBody =>
+      'Tidak ada yang dicatat. Coba rekam ulang, atau ketik kalimatnya.';
+
+  @override
+  String get voiceReviewContextLabel => 'PERIKSA TEKS';
+
+  @override
+  String get voiceReviewTitle => 'Sudah benar?';
+
+  @override
+  String get voiceReviewSubtitle =>
+      'Hasil pengenalan bisa keliru. Perbaiki dulu sebelum diurai.';
+
+  @override
+  String get voiceReviewFieldLabel => 'TEKS YANG TERDENGAR';
+
+  @override
+  String get voiceReviewFieldHint => 'Ketuk untuk memperbaiki kata yang salah';
+
+  @override
+  String get voiceRecordingDeletedTitle => 'Rekaman suara sudah dihapus';
+
+  @override
+  String get voiceRecordingDeletedBody => 'Yang tersisa hanya teks di atas.';
+
+  @override
+  String get voiceParseNeedsInternetTitle => 'Mengurai butuh internet';
+
+  @override
+  String get voiceParseNeedsInternetBody =>
+      'Yang dikirim hanya teks ini, bukan rekaman suaramu. Tanpa internet, cari di katalog.';
+
+  @override
+  String get voiceRerecordAction => 'Rekam ulang';
+
+  @override
+  String get voiceCatalogLink => 'Tanpa internet? Cari di katalog';
+
+  @override
+  String get voiceParseAction => 'Urai jadi daftar makanan';
+
+  @override
+  String get voiceUnavailableContextLabel => 'SUARA TIDAK TERSEDIA';
+
+  @override
+  String get voiceUnavailableTitle => 'Mikrofon belum aktif';
+
+  @override
+  String get voiceUnavailableSubtitle =>
+      'Kamu tetap bisa mencatat dengan mengetik kalimatnya.';
+
+  @override
+  String get voicePermissionDeniedTitle => 'Izin mikrofon belum diberikan';
+
+  @override
+  String get voicePermissionDeniedBody =>
+      'Kamu bisa memberi izin lewat pengaturan perangkat, atau ketik kalimatnya di bawah.';
+
+  @override
+  String get voiceNotSupportedTitle => 'Pengenalan suara belum didukung';
+
+  @override
+  String get voiceNotSupportedBody =>
+      'Perangkat ini belum mendukung pengenalan suara bahasa Indonesia di perangkat. Rekaman tidak dikirim ke mana pun.';
+
+  @override
+  String get voiceTypeFieldLabel => 'Ketik kalimatnya';
+
+  @override
+  String get voiceTypeFieldHint =>
+      'nasi 150 gram, ayam bakar satu potong, tempe dua';
+
+  @override
+  String get voiceTypeFieldHelper => 'Sebut jumlahnya bila ingat';
+
+  @override
+  String get voiceTypeScopeTitle => 'Hanya untuk mencatat makanan';
+
+  @override
+  String get voiceTypeScopeBody =>
+      'Kalimat di luar makanan tidak dijalankan. Berat badan dan program tetap diisi di layarnya sendiri.';
+
+  @override
+  String get voiceTypeContextLabel => 'KETIK KALIMAT';
+
+  @override
+  String get voiceTypeTitle => 'Tulis yang kamu makan';
+
+  @override
+  String get voiceTypeSubtitle =>
+      'Satu kalimat cukup. Hasilnya kamu periksa dulu sebelum dicatat.';
+
+  @override
+  String get voiceParseTypedAction => 'Urai kalimat ini';
+
+  @override
+  String get voiceParsingInProgress => 'Mengurai kalimat…';
+
+  @override
+  String get voiceParseUnavailableTitle => 'Kalimat belum bisa diurai';
+
+  @override
+  String get voiceParseUnavailableOffline =>
+      'Tidak ada koneksi. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.';
+
+  @override
+  String get voiceParseUnavailableTimeout =>
+      'Penguraian terlalu lama. Teksmu tetap di sini — coba lagi, atau cari di katalog.';
+
+  @override
+  String get voiceParseUnavailableQuota =>
+      'Layanan penguraian sedang penuh. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.';
+
+  @override
+  String get voiceParseUnavailableRefused =>
+      'Layanan penguraian sedang tidak tersedia. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.';
+
+  @override
+  String get voiceParsedIgnoredPartShort =>
+      'Bagian di luar makanan diabaikan, tidak dijalankan.';
+
+  @override
+  String get voiceScopeRejectedTitle => 'Suara hanya untuk mencatat makanan';
+
+  @override
+  String voiceScopeRejectedBody(String where) {
+    return 'Tidak ada yang dijalankan atau diubah. $where';
+  }
+
+  @override
+  String get voiceScopeWhereWeight => 'Berat badan dicatat di ruang Program.';
+
+  @override
+  String get voiceScopeWhereProgram => 'Program diatur di ruang Program.';
+
+  @override
+  String get voiceScopeWhereProfile =>
+      'Profil dan pengaturan ada di ruang Profil.';
+
+  @override
+  String get voiceScopeWhereDiary =>
+      'Catatan makan diubah atau dihapus dari Hari ini atau Riwayat.';
+
+  @override
+  String get voiceScopeWhereToday => 'Ringkasan kalori ada di Hari ini.';
+
+  @override
+  String get voiceScopeWhereOther =>
+      'Kalimat itu tidak bisa dijalankan dari sini.';
+
+  @override
+  String get voiceReviewComponentsContextLabel => 'TINJAU HASIL SUARA';
+
+  @override
+  String get voiceReviewComponentsTitle => 'Tinjau daftar makanan';
+
+  @override
+  String get voiceReviewBadge => 'Perkiraan dari kalimat · periksa dulu';
+
+  @override
+  String get voiceReviewBadgeNote =>
+      'Nilai gizi dari padanan katalog. Tetapkan jumlah yang belum ditentukan sebelum dicatat.';
+
+  @override
+  String get voiceReviewOnDeviceBadge =>
+      'Diurai tanpa koneksi · periksa lebih teliti';
+
+  @override
+  String get voiceReviewOnDeviceBadgeNote =>
+      'Kalimat diurai di perangkat ini dengan aturan sederhana. Periksa setiap makanan dan jumlahnya.';
+
+  @override
+  String get voiceReviewCancelConfirmBody =>
+      'Belum ada catatan yang dibuat. Daftar dari kalimat ini akan dibuang.';
+
+  @override
+  String get voiceComponentCorrectionBadge => 'DAFTAR DARI KALIMAT';
+
+  @override
+  String get voiceQuantityUndetermined => 'jumlah belum ditentukan';
+
+  @override
+  String voiceQuantityUndeterminedWithUnit(String unit) {
+    return 'jumlah belum ditentukan · disebut \"$unit\"';
+  }
+
+  @override
+  String get voiceParseNothingFoundTitle => 'Tidak ada makanan yang dikenali';
+
+  @override
+  String get voiceParseNothingFoundBody =>
+      'Perbaiki kalimatnya, atau cari makanannya di katalog. Tidak ada yang dicatat.';
 }

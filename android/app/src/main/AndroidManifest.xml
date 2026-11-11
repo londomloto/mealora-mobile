@@ -2,6 +2,9 @@
     <!-- Pemindai barcode (change 009, task 5.2) — diminta hanya saat
          pengguna memilih jalur pemindaian, bukan saat aplikasi dibuka. -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Masukan suara (change 012): mikrofon diminta hanya saat jalur suara
+         dipilih; pengenalan berjalan di perangkat (Design D2/D9). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Pencarian daring OPSIONAL produk kemasan (change 009, task 4.1-4.2)
          — satu-satunya pemakaian jaringan aplikasi; jalur luring tidak
          bergantung padanya (Design D1/D11). -->
@@ -48,6 +51,11 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <!-- Android 11+: layanan pengenalan ucapan sistem harus terlihat
+             agar speech_to_text dapat memakainya (change 012). -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>

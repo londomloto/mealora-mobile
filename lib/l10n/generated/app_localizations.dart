@@ -4256,6 +4256,510 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Draf foto makanan menunggu. Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.'**
   String get todayPendingDraftSemantics;
+
+  /// No description provided for @voiceRecordContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'CATAT DENGAN SUARA'**
+  String get voiceRecordContextLabel;
+
+  /// No description provided for @voiceRecordTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutkan makananmu'**
+  String get voiceRecordTitle;
+
+  /// No description provided for @voiceRecordSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kalimat cukup. Hasilnya kamu periksa dulu sebelum dicatat.'**
+  String get voiceRecordSubtitle;
+
+  /// No description provided for @voiceRecordExampleTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh ucapan'**
+  String get voiceRecordExampleTitle;
+
+  /// No description provided for @voiceRecordExampleQuote.
+  ///
+  /// In id, this message translates to:
+  /// **'“Tadi makan nasi 150 gram, ayam bakar satu potong, sama tempe dua.”'**
+  String get voiceRecordExampleQuote;
+
+  /// No description provided for @voiceRecordExampleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebut jumlahnya kalau ingat. Kalau tidak, nanti kamu isi sendiri.'**
+  String get voiceRecordExampleHint;
+
+  /// No description provided for @voiceRecordMicHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk mulai bicara'**
+  String get voiceRecordMicHint;
+
+  /// No description provided for @voiceScopeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara hanya untuk mencatat makanan'**
+  String get voiceScopeTitle;
+
+  /// No description provided for @voiceScopeBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat badan, program, dan pengaturan tetap diisi seperti biasa. Rekaman dihapus setelah jadi teks.'**
+  String get voiceScopeBody;
+
+  /// No description provided for @voiceTypeInsteadLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa bicara? Ketik kalimatnya saja'**
+  String get voiceTypeInsteadLink;
+
+  /// No description provided for @voiceRecordStartAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai merekam'**
+  String get voiceRecordStartAction;
+
+  /// No description provided for @voicePermissionExplanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora meminta izin mikrofon hanya untuk mengubah ucapanmu menjadi teks di perangkat ini.'**
+  String get voicePermissionExplanation;
+
+  /// No description provided for @voicePreparing.
+  ///
+  /// In id, this message translates to:
+  /// **'Menyiapkan mikrofon…'**
+  String get voicePreparing;
+
+  /// No description provided for @voiceListeningContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'SEDANG MEREKAM'**
+  String get voiceListeningContextLabel;
+
+  /// No description provided for @voiceListeningTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mendengarkan…'**
+  String get voiceListeningTitle;
+
+  /// No description provided for @voiceListeningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai bicara? Ketuk Selesai. Kamu tetap bisa membatalkan.'**
+  String get voiceListeningSubtitle;
+
+  /// No description provided for @voiceListeningBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Merekam · {elapsed}'**
+  String voiceListeningBadge(String elapsed);
+
+  /// No description provided for @voiceListeningMicActive.
+  ///
+  /// In id, this message translates to:
+  /// **'Mikrofon aktif'**
+  String get voiceListeningMicActive;
+
+  /// No description provided for @voiceListeningSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang merekam, mikrofon aktif. Ketuk Selesai untuk berhenti.'**
+  String get voiceListeningSemantics;
+
+  /// No description provided for @voiceListeningPartialLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TERDENGAR SEJAUH INI'**
+  String get voiceListeningPartialLabel;
+
+  /// No description provided for @voiceListeningPartialHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks masih sementara dan bisa kamu perbaiki nanti.'**
+  String get voiceListeningPartialHint;
+
+  /// No description provided for @voiceOnDeviceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara diproses di perangkat ini'**
+  String get voiceOnDeviceTitle;
+
+  /// No description provided for @voiceOnDeviceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekamanmu tidak diunggah ke mana pun.'**
+  String get voiceOnDeviceBody;
+
+  /// No description provided for @voiceCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan — tidak ada yang dicatat'**
+  String get voiceCancelAction;
+
+  /// No description provided for @voiceStopAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get voiceStopAction;
+
+  /// No description provided for @voiceEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada yang terdengar'**
+  String get voiceEmptyTitle;
+
+  /// No description provided for @voiceEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada yang dicatat. Coba rekam ulang, atau ketik kalimatnya.'**
+  String get voiceEmptyBody;
+
+  /// No description provided for @voiceFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengenalan suara terhenti'**
+  String get voiceFailedTitle;
+
+  /// No description provided for @voiceFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada yang dicatat. Coba rekam ulang, atau ketik kalimatnya.'**
+  String get voiceFailedBody;
+
+  /// No description provided for @voiceReviewContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PERIKSA TEKS'**
+  String get voiceReviewContextLabel;
+
+  /// No description provided for @voiceReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah benar?'**
+  String get voiceReviewTitle;
+
+  /// No description provided for @voiceReviewSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil pengenalan bisa keliru. Perbaiki dulu sebelum diurai.'**
+  String get voiceReviewSubtitle;
+
+  /// No description provided for @voiceReviewFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TEKS YANG TERDENGAR'**
+  String get voiceReviewFieldLabel;
+
+  /// No description provided for @voiceReviewFieldHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk memperbaiki kata yang salah'**
+  String get voiceReviewFieldHint;
+
+  /// No description provided for @voiceRecordingDeletedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman suara sudah dihapus'**
+  String get voiceRecordingDeletedTitle;
+
+  /// No description provided for @voiceRecordingDeletedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang tersisa hanya teks di atas.'**
+  String get voiceRecordingDeletedBody;
+
+  /// No description provided for @voiceParseNeedsInternetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengurai butuh internet'**
+  String get voiceParseNeedsInternetTitle;
+
+  /// No description provided for @voiceParseNeedsInternetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang dikirim hanya teks ini, bukan rekaman suaramu. Tanpa internet, cari di katalog.'**
+  String get voiceParseNeedsInternetBody;
+
+  /// No description provided for @voiceRerecordAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam ulang'**
+  String get voiceRerecordAction;
+
+  /// No description provided for @voiceCatalogLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa internet? Cari di katalog'**
+  String get voiceCatalogLink;
+
+  /// No description provided for @voiceParseAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Urai jadi daftar makanan'**
+  String get voiceParseAction;
+
+  /// No description provided for @voiceUnavailableContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'SUARA TIDAK TERSEDIA'**
+  String get voiceUnavailableContextLabel;
+
+  /// No description provided for @voiceUnavailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mikrofon belum aktif'**
+  String get voiceUnavailableTitle;
+
+  /// No description provided for @voiceUnavailableSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu tetap bisa mencatat dengan mengetik kalimatnya.'**
+  String get voiceUnavailableSubtitle;
+
+  /// No description provided for @voicePermissionDeniedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon belum diberikan'**
+  String get voicePermissionDeniedTitle;
+
+  /// No description provided for @voicePermissionDeniedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu bisa memberi izin lewat pengaturan perangkat, atau ketik kalimatnya di bawah.'**
+  String get voicePermissionDeniedBody;
+
+  /// No description provided for @voiceNotSupportedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengenalan suara belum didukung'**
+  String get voiceNotSupportedTitle;
+
+  /// No description provided for @voiceNotSupportedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Perangkat ini belum mendukung pengenalan suara bahasa Indonesia di perangkat. Rekaman tidak dikirim ke mana pun.'**
+  String get voiceNotSupportedBody;
+
+  /// No description provided for @voiceTypeFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik kalimatnya'**
+  String get voiceTypeFieldLabel;
+
+  /// No description provided for @voiceTypeFieldHint.
+  ///
+  /// In id, this message translates to:
+  /// **'nasi 150 gram, ayam bakar satu potong, tempe dua'**
+  String get voiceTypeFieldHint;
+
+  /// No description provided for @voiceTypeFieldHelper.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebut jumlahnya bila ingat'**
+  String get voiceTypeFieldHelper;
+
+  /// No description provided for @voiceTypeScopeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya untuk mencatat makanan'**
+  String get voiceTypeScopeTitle;
+
+  /// No description provided for @voiceTypeScopeBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat di luar makanan tidak dijalankan. Berat badan dan program tetap diisi di layarnya sendiri.'**
+  String get voiceTypeScopeBody;
+
+  /// No description provided for @voiceTypeContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'KETIK KALIMAT'**
+  String get voiceTypeContextLabel;
+
+  /// No description provided for @voiceTypeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis yang kamu makan'**
+  String get voiceTypeTitle;
+
+  /// No description provided for @voiceTypeSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kalimat cukup. Hasilnya kamu periksa dulu sebelum dicatat.'**
+  String get voiceTypeSubtitle;
+
+  /// No description provided for @voiceParseTypedAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Urai kalimat ini'**
+  String get voiceParseTypedAction;
+
+  /// No description provided for @voiceParsingInProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengurai kalimat…'**
+  String get voiceParsingInProgress;
+
+  /// No description provided for @voiceParseUnavailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat belum bisa diurai'**
+  String get voiceParseUnavailableTitle;
+
+  /// No description provided for @voiceParseUnavailableOffline.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada koneksi. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.'**
+  String get voiceParseUnavailableOffline;
+
+  /// No description provided for @voiceParseUnavailableTimeout.
+  ///
+  /// In id, this message translates to:
+  /// **'Penguraian terlalu lama. Teksmu tetap di sini — coba lagi, atau cari di katalog.'**
+  String get voiceParseUnavailableTimeout;
+
+  /// No description provided for @voiceParseUnavailableQuota.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan penguraian sedang penuh. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.'**
+  String get voiceParseUnavailableQuota;
+
+  /// No description provided for @voiceParseUnavailableRefused.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan penguraian sedang tidak tersedia. Teksmu tetap di sini — coba lagi nanti, atau cari di katalog.'**
+  String get voiceParseUnavailableRefused;
+
+  /// No description provided for @voiceParsedIgnoredPartShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagian di luar makanan diabaikan, tidak dijalankan.'**
+  String get voiceParsedIgnoredPartShort;
+
+  /// No description provided for @voiceScopeRejectedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara hanya untuk mencatat makanan'**
+  String get voiceScopeRejectedTitle;
+
+  /// No description provided for @voiceScopeRejectedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada yang dijalankan atau diubah. {where}'**
+  String voiceScopeRejectedBody(String where);
+
+  /// No description provided for @voiceScopeWhereWeight.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat badan dicatat di ruang Program.'**
+  String get voiceScopeWhereWeight;
+
+  /// No description provided for @voiceScopeWhereProgram.
+  ///
+  /// In id, this message translates to:
+  /// **'Program diatur di ruang Program.'**
+  String get voiceScopeWhereProgram;
+
+  /// No description provided for @voiceScopeWhereProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil dan pengaturan ada di ruang Profil.'**
+  String get voiceScopeWhereProfile;
+
+  /// No description provided for @voiceScopeWhereDiary.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan makan diubah atau dihapus dari Hari ini atau Riwayat.'**
+  String get voiceScopeWhereDiary;
+
+  /// No description provided for @voiceScopeWhereToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan kalori ada di Hari ini.'**
+  String get voiceScopeWhereToday;
+
+  /// No description provided for @voiceScopeWhereOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat itu tidak bisa dijalankan dari sini.'**
+  String get voiceScopeWhereOther;
+
+  /// No description provided for @voiceReviewComponentsContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TINJAU HASIL SUARA'**
+  String get voiceReviewComponentsContextLabel;
+
+  /// No description provided for @voiceReviewComponentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau daftar makanan'**
+  String get voiceReviewComponentsTitle;
+
+  /// No description provided for @voiceReviewBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Perkiraan dari kalimat · periksa dulu'**
+  String get voiceReviewBadge;
+
+  /// No description provided for @voiceReviewBadgeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai gizi dari padanan katalog. Tetapkan jumlah yang belum ditentukan sebelum dicatat.'**
+  String get voiceReviewBadgeNote;
+
+  /// No description provided for @voiceReviewOnDeviceBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Diurai tanpa koneksi · periksa lebih teliti'**
+  String get voiceReviewOnDeviceBadge;
+
+  /// No description provided for @voiceReviewOnDeviceBadgeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat diurai di perangkat ini dengan aturan sederhana. Periksa setiap makanan dan jumlahnya.'**
+  String get voiceReviewOnDeviceBadgeNote;
+
+  /// No description provided for @voiceReviewCancelConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan yang dibuat. Daftar dari kalimat ini akan dibuang.'**
+  String get voiceReviewCancelConfirmBody;
+
+  /// No description provided for @voiceComponentCorrectionBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'DAFTAR DARI KALIMAT'**
+  String get voiceComponentCorrectionBadge;
+
+  /// No description provided for @voiceQuantityUndetermined.
+  ///
+  /// In id, this message translates to:
+  /// **'jumlah belum ditentukan'**
+  String get voiceQuantityUndetermined;
+
+  /// No description provided for @voiceQuantityUndeterminedWithUnit.
+  ///
+  /// In id, this message translates to:
+  /// **'jumlah belum ditentukan · disebut \"{unit}\"'**
+  String voiceQuantityUndeterminedWithUnit(String unit);
+
+  /// No description provided for @voiceParseNothingFoundTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada makanan yang dikenali'**
+  String get voiceParseNothingFoundTitle;
+
+  /// No description provided for @voiceParseNothingFoundBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki kalimatnya, atau cari makanannya di katalog. Tidak ada yang dicatat.'**
+  String get voiceParseNothingFoundBody;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

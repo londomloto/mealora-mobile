@@ -21,6 +21,8 @@ import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_component_correction_screen.dart';
 import 'package:mealora/features/diary/food_photo_draft_storage.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
+import 'package:mealora/features/diary/voice_input_shared.dart'
+    show voiceUndeterminedLabel;
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `03 · Tinjau foto makanan` (task 5.1/5.2/5.8/5.9, change 011): ringkasan
@@ -29,9 +31,16 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// Menutup layar ini TANPA konfirmasi SHALL TIDAK pernah membuat catatan
 /// apa pun (task 5.9).
 class FoodPhotoReviewScreen extends ConsumerStatefulWidget {
-  const FoodPhotoReviewScreen({required this.draft, super.key});
+  const FoodPhotoReviewScreen({
+    required this.draft,
+    this.origin = ComponentDraftOrigin.photo,
+    super.key,
+  });
 
   final PhotoDraft draft;
+
+  /// Jalur suara (change 012, design D7) memakai ulang layar ini.
+  final ComponentDraftOrigin origin;
 
   @override
   ConsumerState<FoodPhotoReviewScreen> createState() =>
@@ -51,7 +60,9 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
   bool get _canConfirm =>
       !_saving &&
       _draft.components.isNotEmpty &&
-      _draft.components.every((c) => c.matchedFoodId != null);
+      _draft.components.every(
+        (c) => c.matchedFoodId != null && !c.quantityUndetermined,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +109,9 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          text.foodPhotoReviewContextLabel,
+                          widget.origin.isVoice
+                              ? text.voiceReviewComponentsContextLabel
+                              : text.foodPhotoReviewContextLabel,
                           style: MealoraTypography.eyebrow,
                         ),
                       ),
@@ -125,14 +138,27 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
                   const SizedBox(height: MealoraSpacing.md),
                   MealoraNoteCard(
                     icon: Icons.info_outline,
-                    title: text.foodPhotoReviewBadge,
-                    body: text.foodPhotoReviewBadgeNote,
+                    title: switch (widget.origin) {
+                      ComponentDraftOrigin.photo => text.foodPhotoReviewBadge,
+                      ComponentDraftOrigin.voice => text.voiceReviewBadge,
+                      ComponentDraftOrigin.voiceOnDevice =>
+                        text.voiceReviewOnDeviceBadge,
+                    },
+                    body: switch (widget.origin) {
+                      ComponentDraftOrigin.photo =>
+                        text.foodPhotoReviewBadgeNote,
+                      ComponentDraftOrigin.voice => text.voiceReviewBadgeNote,
+                      ComponentDraftOrigin.voiceOnDevice =>
+                        text.voiceReviewOnDeviceBadgeNote,
+                    },
                     background: MealoraColors.iconFieldAmber,
                     foreground: MealoraColors.amberText,
                   ),
                   const SizedBox(height: MealoraSpacing.lg),
                   Text(
-                    text.foodPhotoReviewTitle,
+                    widget.origin.isVoice
+                        ? text.voiceReviewComponentsTitle
+                        : text.foodPhotoReviewTitle,
                     style: MealoraTypography.title,
                   ),
                   const SizedBox(height: MealoraSpacing.xxs),
@@ -207,7 +233,8 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
   Future<void> _openCorrection() async {
     final updated = await Navigator.of(context).push<PhotoDraft>(
       MaterialPageRoute<PhotoDraft>(
-        builder: (_) => FoodComponentCorrectionScreen(draft: _draft),
+        builder: (_) =>
+            FoodComponentCorrectionScreen(draft: _draft, origin: widget.origin),
       ),
     );
     if (updated != null && mounted) {
@@ -231,7 +258,7 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
 
   Future<void> _updateDraft(PhotoDraft draft) async {
     setState(() => _draft = draft);
-    await savePhotoDraft(ref, draft);
+    if (widget.origin.persistsDraft) await savePhotoDraft(ref, draft);
   }
 
   Future<void> _confirmCancel() async {
@@ -240,7 +267,11 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(text.foodPhotoReviewCancelConfirmTitle),
-        content: Text(text.foodPhotoReviewCancelConfirmBody),
+        content: Text(
+          widget.origin.isVoice
+              ? text.voiceReviewCancelConfirmBody
+              : text.foodPhotoReviewCancelConfirmBody,
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -259,6 +290,7 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
   }
 
   Future<void> _discardDraft() async {
+    if (!widget.origin.persistsDraft) return;
     await discardPhotoDraft(ref, _draft.id);
     final path = _draft.sourceImagePath;
     if (path == null) return;
@@ -333,6 +365,8 @@ class _ComponentSummaryRow extends ConsumerWidget {
         final nutrition = snapshot.data;
         final detail = component.matchedFoodId == null
             ? text.foodComponentMatchMissing
+            : component.quantityUndetermined
+            ? voiceUndeterminedLabel(text, component.quantityUnitLabel)
             : '${component.quantity.toStringAsFixed(1).replaceAll('.', ',')}× '
                   '·  ${DiaryFormat.kcal(nutrition?.energy, text)}';
         return SizedBox(
@@ -376,7 +410,7 @@ class _ComponentSummaryRow extends ConsumerWidget {
   Future<NutritionProfile?> _nutritionFor(WidgetRef ref) async {
     final foodId = component.matchedFoodId;
     final servingId = component.matchedServingId;
-    if (foodId == null) return null;
+    if (foodId == null || component.quantityUndetermined) return null;
     final food = await ref.read(foodRepositoryProvider).findById(foodId);
     if (food == null) return null;
     final serving = servingId == null
@@ -416,7 +450,7 @@ class _TotalSummary extends ConsumerWidget {
     final profiles = <NutritionProfile>[];
     for (final component in components) {
       final foodId = component.matchedFoodId;
-      if (foodId == null) continue;
+      if (foodId == null || component.quantityUndetermined) continue;
       final food = await repository.findById(foodId);
       if (food == null) continue;
       final serving = component.matchedServingId == null

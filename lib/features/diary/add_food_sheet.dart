@@ -8,6 +8,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/features/diary/barcode_scan_screen.dart';
 import 'package:mealora/features/diary/food_photo_screen.dart';
 import 'package:mealora/features/diary/food_search_screen.dart';
+import 'package:mealora/features/diary/voice_record_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `02 · Tambah makanan` — pintu masuk pencatatan (task 8.3/8.4).
@@ -15,10 +16,9 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// Jalur pencarian/input manual, barcode (change 009), dan foto makanan
 /// (change 011) selalu tersedia luring untuk produk tersimpan — foto
 /// membuka `FoodPhotoScreen` (`19`), yang sendiri menawarkan jalur manual
-/// bila kamera atau pengenalan tidak tersedia. Jalur suara masih ditandai
-/// belum tersedia dan SHALL TIDAK membuka layar yang gagal (spec
-/// daily-dashboard, "Jalur yang belum tersedia") — menyusul pada change
-/// 012.
+/// bila kamera atau pengenalan tidak tersedia. Jalur suara (change 012)
+/// membuka `VoiceRecordScreen` (`42`); izin mikrofon baru diminta di sana,
+/// bukan saat lembar ini dibuka (task 3.8).
 Future<void> showAddFoodSheet(BuildContext context, {LocalDate? date}) {
   return showGeneralDialog<void>(
     context: context,
@@ -166,7 +166,14 @@ class _AddFoodSheet extends StatelessWidget {
                       iconForeground: MealoraColors.info,
                       title: text.addFoodVoiceTitle,
                       description: text.addFoodVoiceDescription,
-                      onTap: () => _announceUnavailable(context, text),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => VoiceRecordScreen(date: date),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: MealoraSpacing.sm),
                     _AddFoodRow(
@@ -245,17 +252,6 @@ class _AddFoodSheet extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _announceUnavailable(BuildContext context, AppText text) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(text.addFoodPathUnavailable),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
   }
 }
 
