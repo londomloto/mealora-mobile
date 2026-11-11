@@ -32,13 +32,12 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// buatan sendiri` (change 007, `CustomFoodScreen`): serat/gula/natrium
 /// tetap boleh kosong, bukan dikarang nol.
 class PackagedFoodManualFillScreen extends ConsumerStatefulWidget {
-  const PackagedFoodManualFillScreen({
-    required this.barcode,
-    this.date,
-    super.key,
-  });
+  const PackagedFoodManualFillScreen({this.barcode, this.date, super.key});
 
-  final String barcode;
+  /// `null` ketika dibuka langsung dari layar pindai atau layar foto label
+  /// tanpa barcode (change 010) — produk tersimpan tanpa barcode, hanya
+  /// ditemukan kembali lewat pencarian nama.
+  final String? barcode;
   final LocalDate? date;
 
   @override
@@ -137,6 +136,7 @@ class _PackagedFoodManualFillScreenState
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: MealoraSpacing.md),
                   MealoraField(
@@ -146,7 +146,13 @@ class _PackagedFoodManualFillScreenState
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    onChanged: (_) => setState(() {}),
                   ),
+                  if (_packageArithmeticNote(text)
+                      case final note?) ...<Widget>[
+                    const SizedBox(height: MealoraSpacing.xs),
+                    Text(note, style: MealoraTypography.caption),
+                  ],
                 ],
                 const SizedBox(height: MealoraSpacing.lg),
                 Text(
@@ -238,6 +244,26 @@ class _PackagedFoodManualFillScreenState
     ServingBasis.perServing => text.packagedFoodFillBasisPerServing,
     ServingBasis.perHundredGrams => text.packagedFoodFillBasisPer100g,
   };
+
+  /// Pengingat aritmetika kemasan (task 8.2, spec "Pengingat aritmetika
+  /// kemasan") — `null` sampai ukuran sajian DAN jumlah sajian per kemasan
+  /// sama-sama terisi, persis syarat yang sama dengan layar tinjau
+  /// ekstraksi (`24`), memakai string bersama.
+  String? _packageArithmeticNote(AppText text) {
+    final servingGrams = double.tryParse(
+      _servingGrams.text.trim().replaceAll(',', '.'),
+    );
+    final unitsPerPackage = double.tryParse(
+      _unitsPerPackage.text.trim().replaceAll(',', '.'),
+    );
+    if (servingGrams == null || unitsPerPackage == null) {
+      return null;
+    }
+    return text.labelReviewPackageArithmeticNote(
+      IdFormatHelpers.trimTrailingZero(unitsPerPackage),
+      '${IdFormatHelpers.trimTrailingZero(servingGrams)} ${text.unitGram}',
+    );
+  }
 
   Future<void> _pickBasis() async {
     final picked = await showModalBottomSheet<ServingBasis>(

@@ -30,7 +30,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 6;
+const int kSchemaVersion = 8;
 
 @DriftDatabase(
   tables: <Type>[
@@ -176,6 +176,42 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         // kolom provenans dan indeks pada barcode. Tidak menyentuh data
         // versi 5 (design.md Migration Plan item 1-3).
         await m.createTable(packagedFoodProperties);
+        await createPackagedFoodIndexes(this);
+      }
+      if (from < 7) {
+        // Versi 6 → 7 (change 010): `packaged_food_properties` mendapat
+        // nilai `source_type` baru (`label_extraction`) dan kolom
+        // `source_image_path` opsional. CHECK constraint pada
+        // `source_type` adalah bagian dari SQL `CREATE TABLE` — melonggarkannya
+        // tidak bisa lewat `ALTER TABLE` biasa, jadi tabel dibangun ulang
+        // dengan definisi Dart terkini (idiom yang sama dengan migrasi versi
+        // 2 → 3 untuk `user_programs`, lihat komentar `from == 2` di atas).
+        // Baris versi 6 yang ada — hanya `openfoodfacts`/`user_manual` —
+        // tetap sah di bawah CHECK yang lebih longgar ini, jadi seluruh
+        // data dipertahankan tanpa perubahan (design.md Migration Plan).
+        await m.alterTable(
+          TableMigration(
+            packagedFoodProperties,
+            newColumns: <GeneratedColumn<Object>>[
+              packagedFoodProperties.sourceImagePath,
+            ],
+          ),
+        );
+        await createPackagedFoodIndexes(this);
+      }
+      if (from < 8) {
+        // Versi 7 → 8 (change 010): `packaged_food_properties.barcode`
+        // menjadi nullable — produk yang dikonfirmasi lewat foto label
+        // tanpa barcode (kemasan rusak, atau jalur foto langsung dari
+        // layar pindai) tidak punya pengenal barcode sama sekali. NOT
+        // NULL adalah bagian dari SQL `CREATE TABLE`, sama seperti migrasi
+        // versi 6 → 7, sehingga tabel dibangun ulang lagi. Baris versi 7
+        // yang ada semuanya punya barcode terisi, jadi tetap sah di bawah
+        // kolom yang lebih longgar ini tanpa kehilangan data (design.md
+        // Migration Plan). Indeks unik pada barcode tetap berlaku — SQLite
+        // memperlakukan setiap NULL sebagai berbeda, jadi produk tanpa
+        // barcode tidak saling bentrok.
+        await m.alterTable(TableMigration(packagedFoodProperties));
         await createPackagedFoodIndexes(this);
       }
     },

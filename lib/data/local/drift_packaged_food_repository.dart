@@ -100,6 +100,7 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
         sourceVersion: remote.sourceVersion,
         verifiedAt: _clock.nowUtc(),
         userCorrected: false,
+        sourceImagePath: null,
       ),
     );
   }
@@ -110,17 +111,26 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
     final serving = product.food.defaultServing;
 
     return transaction(() async {
-      final existing =
-          await (select(packagedFoodProperties)..where(
-                (t) =>
-                    t.barcode.equals(product.barcode) &
-                    UserRecords.active(t.deletedAt),
-              ))
-              .getSingleOrNull();
+      // Produk tanpa barcode (change 010: jalur foto langsung, atau
+      // kemasan tanpa barcode) SHALL TIDAK dicocokkan ke baris mana pun —
+      // tidak ada pengenal yang stabil untuk dicocokkan, jadi setiap
+      // konfirmasi semacam ini SELALU menjadi baris baru (tidak pernah
+      // memperbarui baris tanpa-barcode yang sudah ada).
+      final existing = product.barcode == null
+          ? null
+          : await (select(packagedFoodProperties)..where(
+                  (t) =>
+                      t.barcode.equals(product.barcode!) &
+                      UserRecords.active(t.deletedAt),
+                ))
+                .getSingleOrNull();
+
+      final String packagedFoodPropertiesId;
 
       if (existing == null) {
         final foodId = _ids.next();
         final servingId = _ids.next();
+        packagedFoodPropertiesId = _ids.next();
         await into(foods).insert(
           FoodsCompanion.insert(
             id: foodId,
@@ -156,11 +166,11 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
         );
         await into(packagedFoodProperties).insert(
           PackagedFoodPropertiesCompanion.insert(
-            id: _ids.next(),
+            id: packagedFoodPropertiesId,
             createdAt: now,
             updatedAt: now,
             foodId: foodId,
-            barcode: product.barcode,
+            barcode: Value<String?>(product.barcode),
             packageSize: Value<String?>(product.packageSize),
             unitsPerPackage: Value<double?>(product.unitsPerPackage),
             servingBasis: product.servingBasis.stableCode,
@@ -169,9 +179,11 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
             sourceVersion: Value<String?>(product.provenance.sourceVersion),
             verifiedAt: now,
             userCorrected: Value<bool>(product.provenance.userCorrected),
+            sourceImagePath: Value<String?>(product.provenance.sourceImagePath),
           ),
         );
       } else {
+        packagedFoodPropertiesId = existing.id;
         final servingRow =
             await (select(foodServings)..where(
                   (t) =>
@@ -221,13 +233,14 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
             userCorrected: Value<bool>(
               product.provenance.userCorrected || existing.userCorrected,
             ),
+            sourceImagePath: Value<String?>(product.provenance.sourceImagePath),
             updatedAt: Value<DateTime>(now),
             revision: Value<int>(existing.revision + 1),
           ),
         );
       }
 
-      return (await _findLocal(product.barcode))!;
+      return (await _findByPropertiesId(packagedFoodPropertiesId))!;
     });
   }
 
@@ -238,10 +251,20 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
                   t.barcode.equals(barcode) & UserRecords.active(t.deletedAt),
             ))
             .getSingleOrNull();
-    if (props == null) {
-      return null;
-    }
+    return props == null ? null : _buildFromRow(props);
+  }
 
+  /// Memuat ulang produk yang baru saja disimpan lewat [confirm] memakai
+  /// pengenal barisnya sendiri (BUKAN barcode) — satu-satunya pengenal
+  /// yang SELALU ada, termasuk untuk produk tanpa barcode (change 010).
+  Future<PackagedFood?> _findByPropertiesId(String id) async {
+    final props = await (select(
+      packagedFoodProperties,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return props == null ? null : _buildFromRow(props);
+  }
+
+  Future<PackagedFood> _buildFromRow(PackagedFoodPropertiesRow props) async {
     final foodRow = await (select(
       foods,
     )..where((t) => t.id.equals(props.foodId))).getSingle();
@@ -283,6 +306,7 @@ class DriftPackagedFoodRepository extends DatabaseAccessor<AppDatabase>
         sourceVersion: props.sourceVersion,
         verifiedAt: props.verifiedAt,
         userCorrected: props.userCorrected,
+        sourceImagePath: props.sourceImagePath,
       ),
     );
   }

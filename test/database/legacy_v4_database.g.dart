@@ -7042,7 +7042,7 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
   final String category;
   final bool isUserCreated;
 
-  /// Jenis sumber (mis. `usda_fdc`) — lihat
+  /// Jenis sumber (mis. `usda_fdc`, `tkpi`) — lihat
   /// `mealora-plans/docs/food-data-sources.md`.
   final String? sourceType;
 

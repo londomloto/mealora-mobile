@@ -17,6 +17,8 @@ import 'legacy_v2_database.dart' as legacy2;
 import 'legacy_v3_database.dart' as legacy3;
 import 'legacy_v4_database.dart' as legacy4;
 import 'legacy_v5_database.dart' as legacy5;
+import 'legacy_v6_database.dart' as legacy6;
+import 'legacy_v7_database.dart' as legacy7;
 import 'test_database.dart';
 
 /// Harness migrasi, termasuk migrasi versi 1 → 2 (change 004, tasks
@@ -743,6 +745,299 @@ void main() {
     });
   });
 
+  group('fixture: migrasi versi 6 ke 7 (change 010)', () {
+    test('basis data versi 6 berisi produk kemasan sumber daring bermigrasi '
+        'ke versi 7 dengan sehat, nilai lama tidak berubah, dan sourceType '
+        'label_extraction baru dapat dipakai setelahnya', () async {
+      final file = databaseFile();
+
+      final v6 = legacy6.LegacyV6Database(NativeDatabase(file));
+      final foodId = await _insertLegacyV6Food(v6, id: 'legacy-v6-food');
+      await _insertLegacyV6PackagedFoodProperties(
+        v6,
+        id: 'legacy-v6-packaged',
+        foodId: foodId,
+        barcode: '8991234567890',
+      );
+      await _insertLegacyHarnessRecordV6(
+        v6,
+        id: 'legacy-v6-harness',
+        label: 'Sebelum migrasi ke v7',
+        amount: 4,
+      );
+      await v6.customStatement('PRAGMA user_version = 6');
+      await v6.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect(check.foreignKeyViolations, 0);
+
+      final packagedRows = await upgraded
+          .select(upgraded.packagedFoodProperties)
+          .get();
+      expect(packagedRows, hasLength(1));
+      final preserved = packagedRows.single;
+      expect(preserved.barcode, '8991234567890');
+      expect(
+        preserved.sourceType,
+        'openfoodfacts',
+        reason:
+            'data versi 6 tidak tersentuh migrasi (design.md Migration '
+            'Plan item 3)',
+      );
+      expect(
+        preserved.sourceImagePath,
+        isNull,
+        reason: 'kolom baru, baris versi 6 tidak pernah mengisinya',
+      );
+
+      // CHECK constraint SHALL benar-benar melonggar, bukan hanya kolom
+      // baru ditambahkan — dibuktikan dengan menyisipkan baris bernilai
+      // sumber baru setelah migrasi.
+      final secondFoodId = await _insertUpgradedFood(
+        upgraded,
+        id: 'post-migration-food',
+      );
+      await upgraded
+          .into(upgraded.packagedFoodProperties)
+          .insert(
+            PackagedFoodPropertiesCompanion.insert(
+              id: 'post-migration-packaged',
+              createdAt: testInstant,
+              updatedAt: testInstant,
+              foodId: secondFoodId,
+              barcode: const Value<String?>('8990000000001'),
+              servingBasis: 'per_serving',
+              sourceType: 'label_extraction',
+              verifiedAt: testInstant,
+              sourceImagePath: const Value<String?>(
+                '/data/user/0/app/files/label-photos/x.jpg',
+              ),
+            ),
+          );
+      final afterInsert = await (upgraded.select(
+        upgraded.packagedFoodProperties,
+      )..where((t) => t.id.equals('post-migration-packaged'))).getSingle();
+      expect(afterInsert.sourceType, 'label_extraction');
+      expect(afterInsert.sourceImagePath, isNotNull);
+
+      final harnessDao = HarnessRecordDao(
+        upgraded,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await harnessDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Sebelum migrasi ke v7');
+    });
+
+    test('migrasi versi 6 ke 7 yang terputus di tengah tidak merusak data '
+        'dan percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v6 = legacy6.LegacyV6Database(NativeDatabase(file));
+      final foodId = await _insertLegacyV6Food(v6, id: 'legacy-v6-food-2');
+      await _insertLegacyV6PackagedFoodProperties(
+        v6,
+        id: 'legacy-v6-packaged-2',
+        foodId: foodId,
+        barcode: '8991234567891',
+      );
+      await v6.customStatement('PRAGMA user_version = 6');
+      await v6.close();
+
+      // Simulasi migrasi v6→v7 yang terhenti: `TableMigration` pada Drift
+      // bekerja lewat tabel sementara `_packaged_food_properties_new_X` —
+      // simulasikan interupsi di tengah proses serupa itu.
+      final interrupted = legacy6.LegacyV6Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE packaged_food_properties_migration_wip '
+            '(id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect(check.foreignKeyViolations, 0);
+
+      final packagedRows = await retry
+          .select(retry.packagedFoodProperties)
+          .get();
+      expect(packagedRows, hasLength(1));
+      expect(packagedRows.single.barcode, '8991234567891');
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'packaged_food_properties_migration_wip'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+  });
+
+  group('fixture: migrasi versi 7 ke 8 (change 010, barcode opsional)', () {
+    test('basis data versi 7 berisi produk kemasan berbarcode bermigrasi ke '
+        'versi 8 dengan sehat, barcode lama tetap ada, dan barcode kosong '
+        'baru dapat dipakai setelahnya', () async {
+      final file = databaseFile();
+
+      final v7 = legacy7.LegacyV7Database(NativeDatabase(file));
+      final foodId = await _insertLegacyV7Food(v7, id: 'legacy-v7-food');
+      await _insertLegacyV7PackagedFoodProperties(
+        v7,
+        id: 'legacy-v7-packaged',
+        foodId: foodId,
+        barcode: '8991234567892',
+      );
+      await v7.customStatement('PRAGMA user_version = 7');
+      await v7.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect(check.foreignKeyViolations, 0);
+
+      final preserved = await (upgraded.select(
+        upgraded.packagedFoodProperties,
+      )..where((t) => t.id.equals('legacy-v7-packaged'))).getSingle();
+      expect(
+        preserved.barcode,
+        '8991234567892',
+        reason: 'data versi 7 tidak tersentuh migrasi',
+      );
+
+      // NOT NULL SHALL benar-benar longgar — dibuktikan dengan menyisipkan
+      // baris tanpa barcode sama sekali setelah migrasi (task yang
+      // mendasari fitur "Foto Info Gizi tanpa pindai barcode").
+      final secondFoodId = await _insertUpgradedFood(
+        upgraded,
+        id: 'post-migration-food-v8',
+      );
+      await upgraded
+          .into(upgraded.packagedFoodProperties)
+          .insert(
+            PackagedFoodPropertiesCompanion.insert(
+              id: 'post-migration-packaged-v8',
+              createdAt: testInstant,
+              updatedAt: testInstant,
+              foodId: secondFoodId,
+              servingBasis: 'per_serving',
+              sourceType: 'label_extraction',
+              verifiedAt: testInstant,
+            ),
+          );
+      final withoutBarcode = await (upgraded.select(
+        upgraded.packagedFoodProperties,
+      )..where((t) => t.id.equals('post-migration-packaged-v8'))).getSingle();
+      expect(withoutBarcode.barcode, isNull);
+
+      // Dua baris tanpa barcode boleh bersisian — SQLite memperlakukan
+      // setiap NULL sebagai berbeda pada indeks unik.
+      final thirdFoodId = await _insertUpgradedFood(
+        upgraded,
+        id: 'post-migration-food-v8-b',
+      );
+      await upgraded
+          .into(upgraded.packagedFoodProperties)
+          .insert(
+            PackagedFoodPropertiesCompanion.insert(
+              id: 'post-migration-packaged-v8-b',
+              createdAt: testInstant,
+              updatedAt: testInstant,
+              foodId: thirdFoodId,
+              servingBasis: 'per_serving',
+              sourceType: 'label_extraction',
+              verifiedAt: testInstant,
+            ),
+          );
+      final allRows = await upgraded
+          .select(upgraded.packagedFoodProperties)
+          .get();
+      expect(
+        allRows.where((r) => r.barcode == null),
+        hasLength(2),
+        reason: 'dua produk tanpa barcode tidak saling bentrok',
+      );
+    });
+
+    test('migrasi versi 7 ke 8 yang terputus di tengah tidak merusak data '
+        'dan percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v7 = legacy7.LegacyV7Database(NativeDatabase(file));
+      final foodId = await _insertLegacyV7Food(v7, id: 'legacy-v7-food-2');
+      await _insertLegacyV7PackagedFoodProperties(
+        v7,
+        id: 'legacy-v7-packaged-2',
+        foodId: foodId,
+        barcode: '8991234567893',
+      );
+      await v7.customStatement('PRAGMA user_version = 7');
+      await v7.close();
+
+      final interrupted = legacy7.LegacyV7Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE packaged_food_properties_migration_wip_v8 '
+            '(id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+      expect(check.foreignKeyViolations, 0);
+
+      final packagedRows = await retry
+          .select(retry.packagedFoodProperties)
+          .get();
+      expect(packagedRows, hasLength(1));
+      expect(packagedRows.single.barcode, '8991234567893');
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'packaged_food_properties_migration_wip_v8'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+  });
+
   group('kegagalan inisialisasi penyimpanan', () {
     test('dilaporkan sebagai kegagalan bertipe, bukan exception', () async {
       final result = await openLocalStorage(
@@ -1109,6 +1404,143 @@ Future<String> _insertLegacyV5UserFood(
           foodNameSnapshot: 'Makanan sebelum migrasi v6',
           servingLabelSnapshot: '1 porsi',
           energyKcalSnapshot: const Value<double?>(120),
+        ),
+      );
+  return id;
+}
+
+/// Menyisipkan satu baris harness langsung lewat `LegacyV6Database`.
+Future<void> _insertLegacyHarnessRecordV6(
+  legacy6.LegacyV6Database db, {
+  required String id,
+  required String label,
+  required double amount,
+}) {
+  return db
+      .into(db.harnessRecords)
+      .insert(
+        legacy6.HarnessRecordsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          label: label,
+          amount: amount,
+          localDate: '2026-11-08',
+          timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu makanan minimal langsung lewat `LegacyV6Database` —
+/// hanya untuk memenuhi foreign key `packaged_food_properties.food_id`
+/// (fixture migrasi versi 6 ke 7, task 5.4); rantai takaran/nilai gizi
+/// lengkap sudah diuji oleh fixture versi 5 ke 6. Mengembalikan `foodId`.
+Future<String> _insertLegacyV6Food(
+  legacy6.LegacyV6Database db, {
+  required String id,
+}) async {
+  await db
+      .into(db.foods)
+      .insert(
+        legacy6.FoodsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          name: 'Produk sebelum migrasi ke v7',
+          category: 'other',
+          isUserCreated: const Value<bool>(true),
+        ),
+      );
+  return id;
+}
+
+/// Menyisipkan satu baris `packaged_food_properties` BENTUK VERSI 6 (tanpa
+/// `source_image_path`, `source_type` terbatas pada `openfoodfacts`/
+/// `user_manual`) langsung lewat `LegacyV6Database` — fixture migrasi versi
+/// 6 ke 7 (task 5.4, change 010).
+Future<void> _insertLegacyV6PackagedFoodProperties(
+  legacy6.LegacyV6Database db, {
+  required String id,
+  required String foodId,
+  required String barcode,
+}) {
+  return db
+      .into(db.packagedFoodPropertiesV6)
+      .insert(
+        legacy6.PackagedFoodPropertiesV6Companion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          foodId: foodId,
+          barcode: barcode,
+          servingBasis: 'per_serving',
+          sourceType: 'openfoodfacts',
+          verifiedAt: testInstant,
+        ),
+      );
+}
+
+/// Menyisipkan satu makanan minimal langsung lewat `LegacyV7Database` —
+/// fixture migrasi versi 7 ke 8 (change 010, barcode opsional).
+Future<String> _insertLegacyV7Food(
+  legacy7.LegacyV7Database db, {
+  required String id,
+}) async {
+  await db
+      .into(db.foods)
+      .insert(
+        legacy7.FoodsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          name: 'Produk sebelum migrasi ke v8',
+          category: 'other',
+          isUserCreated: const Value<bool>(true),
+        ),
+      );
+  return id;
+}
+
+/// Menyisipkan satu baris `packaged_food_properties` BENTUK VERSI 7
+/// (barcode MASIH wajib) langsung lewat `LegacyV7Database` — fixture
+/// migrasi versi 7 ke 8 (change 010, barcode opsional).
+Future<void> _insertLegacyV7PackagedFoodProperties(
+  legacy7.LegacyV7Database db, {
+  required String id,
+  required String foodId,
+  required String barcode,
+}) {
+  return db
+      .into(db.packagedFoodPropertiesV7)
+      .insert(
+        legacy7.PackagedFoodPropertiesV7Companion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          foodId: foodId,
+          barcode: barcode,
+          servingBasis: 'per_serving',
+          sourceType: 'label_extraction',
+          verifiedAt: testInstant,
+        ),
+      );
+}
+
+/// Menyisipkan satu makanan minimal langsung lewat `AppDatabase` terkini —
+/// dipakai fixture migrasi versi 6 ke 7 untuk membuktikan CHECK
+/// `source_type` benar-benar melonggar setelah migrasi (bukan hanya kolom
+/// baru ditambahkan), dengan baris baru yang foreign key-nya sah.
+Future<String> _insertUpgradedFood(AppDatabase db, {required String id}) async {
+  await db
+      .into(db.foods)
+      .insert(
+        FoodsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          name: 'Produk hasil ekstraksi label',
+          category: 'other',
+          isUserCreated: const Value<bool>(true),
         ),
       );
   return id;

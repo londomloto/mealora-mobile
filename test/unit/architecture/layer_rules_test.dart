@@ -165,15 +165,18 @@ void main() {
 
   group('kemandirian dari jaringan', () {
     test('tidak ada klien jaringan di seluruh aplikasi, kecuali klien sumber '
-        'data produk kemasan (change 009, Design D2/D3): pencarian daring '
-        'opsional untuk barcode yang tidak ketemu di perangkat, di balik '
-        'antarmuka yang dapat diganti, hanya mengirim nomor barcode', () {
-      const packagedFoodNetworkClientPath =
-          'lib/data/remote/openfoodfacts_product_client.dart';
+        'data produk kemasan (change 009, Design D2/D3) dan klien proksi '
+        'inferensi label gizi (change 010, Design D2): keduanya di balik '
+        'antarmuka yang dapat diganti, dan klien proksi hanya mengirim bita '
+        'gambar — tidak ada kredensial penyedia model di aplikasi', () {
+      const allowedNetworkClientPaths = <String>{
+        'lib/data/remote/openfoodfacts_product_client.dart',
+        'lib/data/remote/vision_proxy_label_provider.dart',
+      };
 
       final violations = _violations(
         sources,
-        where: (path) => path != packagedFoodNetworkClientPath,
+        where: (path) => !allowedNetworkClientPaths.contains(path),
         forbidden: <String>[
           'package:http/',
           'package:dio/',

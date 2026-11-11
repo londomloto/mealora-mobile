@@ -10,6 +10,7 @@ import 'package:mealora/domain/packaged_food/product_data_source_client.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/features/diary/barcode_manual_entry_screen.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
+import 'package:mealora/features/diary/packaged_food_manual_fill_screen.dart';
 
 import 'harness.dart';
 
@@ -134,6 +135,39 @@ void main() {
       expect(packagedRows.single.barcode, '8991234567890');
     },
   );
+
+  testWidgets('mengisi ukuran sajian dan jumlah sajian per kemasan menampilkan '
+      'pengingat aritmetika kemasan (task 8.2)', (tester) async {
+    final db = await seededDatabase();
+    addTearDown(db.close);
+    await useDesignViewport(tester);
+
+    await tester.pumpWidget(
+      wrapForTest(
+        const PackagedFoodManualFillScreen(barcode: '8991234567890'),
+        database: db,
+        overrides: overridesFor(db),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.textContaining('1 kemasan ='),
+      findsNothing,
+      reason: 'belum tampil sebelum kedua nilai terisi',
+    );
+
+    final servingField = find.widgetWithText(TextField, 'mis. 1 porsi · 180 g');
+    await tester.enterText(servingField, '30');
+    final unitsField = find.widgetWithText(TextField, 'mis. 2');
+    await tester.enterText(unitsField, '2');
+    await tester.pumpAndSettle();
+
+    expect(
+      find.textContaining('1 kemasan = 2× nilai per sajian (30 g).'),
+      findsOneWidget,
+    );
+  });
 }
 
 final class _AlwaysNotFoundClient implements ProductDataSourceClient {

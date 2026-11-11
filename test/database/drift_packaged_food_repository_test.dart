@@ -306,4 +306,70 @@ void main() {
       );
     });
   });
+
+  group('produk tanpa barcode (change 010, "Foto Info Gizi tanpa pindai")', () {
+    PackagedFood transientProductWithoutBarcode({
+      String name = 'Produk Tanpa Barcode',
+    }) {
+      return PackagedFood(
+        food: Food(
+          id: 'transient-food-no-barcode',
+          name: name,
+          category: FoodCategory.snack,
+          isUserCreated: true,
+          servings: <ServingSize>[
+            ServingSize(
+              id: 'transient-serving-no-barcode',
+              label: '1 sajian',
+              amount: 1,
+              unit: 'sajian',
+              isDefault: true,
+              nutrition: NutritionProfile(
+                energy: Energy.kcalValue(100, field: 'x').valueOrNull,
+                proteinG: 1,
+                carbohydrateG: 10,
+                fatG: 3,
+              ),
+            ),
+          ],
+        ),
+        servingBasis: ServingBasis.perServing,
+        provenance: PackagedFoodProvenance(
+          sourceType: 'label_extraction',
+          verifiedAt: testInstant,
+          userCorrected: false,
+        ),
+      );
+    }
+
+    test('tersimpan dengan barcode null dan dapat ditemukan lewat pencarian '
+        'nama', () async {
+      await repository.confirm(
+        transientProductWithoutBarcode(name: 'Kue Tanpa Barcode'),
+      );
+
+      final foodRepository = DriftFoodRepository(
+        db,
+        ids: createTestIds(),
+        clock: createTestClock(),
+      );
+      final bySearch = await foodRepository.search('Kue Tanpa Barcode');
+      expect(bySearch.map((f) => f.name), contains('Kue Tanpa Barcode'));
+
+      final row = await (db.select(
+        db.packagedFoodProperties,
+      )..where((t) => t.foodId.equals(bySearch.single.id))).getSingle();
+      expect(row.barcode, isNull);
+    });
+
+    test('dua kali konfirmasi tanpa barcode menghasilkan DUA baris terpisah '
+        '— tidak ada pengenal untuk dicocokkan', () async {
+      await repository.confirm(transientProductWithoutBarcode());
+      await repository.confirm(transientProductWithoutBarcode());
+
+      final rows = await db.select(db.packagedFoodProperties).get();
+      expect(rows, hasLength(2));
+      expect(rows.every((r) => r.barcode == null), isTrue);
+    });
+  });
 }

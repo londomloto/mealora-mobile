@@ -18,7 +18,7 @@ abstract final class MealoraSpacing {
 
   /// Geometri spesifik frame `05 · Program saya` pada kanvas 390 px — teks
   /// judul hero diindentasi 24 px, berbeda dari kartu kontennya yang
-  /// memakai [screenGutter] (22 px) seperti layar `01`/`16`.
+  /// memakai [MealoraSpacing.screenGutter] (22 px) seperti layar `01`/`16`.
   static const double programHeroGutter = 24;
 
   /// Geometri hero bersama tab utama (Hari ini, Program, Riwayat). Nilai
@@ -35,7 +35,7 @@ abstract final class MealoraSpacing {
   static const double navigationBlendHeight = 28;
 
   /// Ruang gulir agar konten terakhir dapat naik sepenuhnya di atas dock
-  /// ketika [Scaffold.extendBody] aktif.
+  /// ketika `Scaffold.extendBody` aktif.
   static const double navigationContentClearance = 144;
 }
 

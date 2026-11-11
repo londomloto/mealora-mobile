@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/domain/packaged_food/barcode_format.dart';
 import 'package:mealora/features/diary/barcode_manual_entry_screen.dart';
 import 'package:mealora/features/diary/food_search_screen.dart';
+import 'package:mealora/features/diary/nutrition_label_photo_screen.dart';
 import 'package:mealora/features/diary/packaged_food_not_found_screen.dart';
 import 'package:mealora/features/diary/packaged_food_providers.dart';
 import 'package:mealora/features/diary/packaged_food_review_screen.dart';
@@ -104,6 +106,14 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
                       onSearchCatalog: _openCatalogSearch,
                     ),
                   ),
+                if (!_cameraRequested) ...<Widget>[
+                  const SizedBox(height: MealoraSpacing.md),
+                  MealoraPrimaryButton(
+                    label: text.barcodeScanUseCamera,
+                    icon: Icons.arrow_forward,
+                    onPressed: _startCamera,
+                  ),
+                ],
                 const SizedBox(height: MealoraSpacing.md),
                 MealoraNoteCard(
                   icon: Icons.shield_outlined,
@@ -121,28 +131,25 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
                     semanticsLabel: text.barcodeScanSlowHint,
                   ),
                 ],
-                const SizedBox(height: MealoraSpacing.md),
-                Semantics(
-                  button: true,
-                  link: true,
-                  label: text.barcodeScanManualLink,
-                  child: InkWell(
-                    onTap: _openManualEntry,
-                    child: Text(
-                      '${text.barcodeScanManualLink} →',
-                      style: MealoraTypography.bodyEmphasis.copyWith(
-                        color: MealoraColors.primaryDeep,
-                      ),
-                    ),
-                  ),
+                const SizedBox(height: MealoraSpacing.lg),
+                Text(
+                  text.barcodeScanAlternativesHeading,
+                  style: MealoraTypography.bodyEmphasis,
                 ),
-                if (!_cameraRequested) ...<Widget>[
-                  const SizedBox(height: MealoraSpacing.xl),
-                  MealoraPrimaryButton(
-                    label: text.barcodeScanUseCamera,
-                    onPressed: _startCamera,
-                  ),
-                ],
+                const SizedBox(height: MealoraSpacing.xs),
+                _AlternativeActionCard(
+                  icon: Icons.keyboard_alt_outlined,
+                  title: text.barcodeScanManualLink,
+                  body: text.barcodeScanManualDescription,
+                  onTap: _openManualEntry,
+                ),
+                const SizedBox(height: MealoraSpacing.xs),
+                _AlternativeActionCard(
+                  icon: Icons.camera_alt_outlined,
+                  title: text.barcodeScanPhotoLabelLink,
+                  body: text.barcodeScanPhotoLabelDescription,
+                  onTap: _openLabelPhotoWithoutBarcode,
+                ),
               ],
             ),
           ),
@@ -224,6 +231,18 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
     );
   }
 
+  /// Jalur langsung ke foto label TANPA barcode (change 010) — kemasan
+  /// rusak/tidak terbaca, atau pengguna lebih memilih memotret langsung.
+  /// Produk yang dihasilkan tersimpan tanpa barcode, hanya ditemukan
+  /// kembali lewat pencarian nama.
+  void _openLabelPhotoWithoutBarcode() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => NutritionLabelPhotoScreen(date: widget.date),
+      ),
+    );
+  }
+
   void _openCatalogSearch() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
@@ -231,6 +250,97 @@ class _BarcodeScanScreenState extends ConsumerState<BarcodeScanScreen> {
       ),
     );
   }
+}
+
+class _AlternativeActionCard extends StatelessWidget {
+  const _AlternativeActionCard({
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: '$title. $body',
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowGlass,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(MealoraRadius.card),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Material(
+            color: MealoraColors.glassCard,
+            child: InkWell(
+              onTap: onTap,
+              child: Container(
+                height: 70,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MealoraSpacing.md,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: MealoraColors.glassBorder),
+                  borderRadius: BorderRadius.circular(MealoraRadius.card),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: MealoraColors.iconFieldGreen,
+                        borderRadius: BorderRadius.circular(
+                          MealoraRadius.iconField,
+                        ),
+                      ),
+                      child: Icon(
+                        icon,
+                        color: MealoraColors.primary,
+                        size: MealoraIconSize.action,
+                      ),
+                    ),
+                    const SizedBox(width: MealoraSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(title, style: MealoraTypography.bodyEmphasis),
+                          const SizedBox(height: MealoraSpacing.xxs),
+                          Text(body, style: MealoraTypography.caption),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: MealoraSpacing.xs),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: MealoraColors.affordance,
+                      size: MealoraIconSize.action,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _ScannerViewport extends StatelessWidget {

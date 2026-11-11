@@ -9,8 +9,10 @@ import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/drift_weight_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/data/remote/openfoodfacts_product_client.dart';
+import 'package:mealora/data/remote/vision_proxy_label_provider.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
+import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
@@ -152,6 +154,15 @@ final Override packagedFoodRepositoryAppOverride =
       ),
     );
 
+/// Menimpa `nutritionLabelProviderProvider` (core/providers, change 010)
+/// dengan klien `mealora-vision-proxy` sungguhan — alamat proksi dibaca
+/// dari `--dart-define` saat build (lihat `VisionProxyConfig`), tidak
+/// pernah ditanam di kode.
+final Override nutritionLabelProviderAppOverride =
+    nutritionLabelProviderProvider.overrideWithValue(
+      VisionProxyLabelProvider(config: VisionProxyConfig.fromEnvironment),
+    );
+
 /// Profil lokal perangkat ini sudah lengkap (Design D2, change 005) — gerbang
 /// antara alur onboarding dan ruang utama. `null`/belum lengkap berarti
 /// onboarding, apa pun alasannya (belum pernah diisi, atau ditinggalkan di
@@ -214,5 +225,63 @@ class SelectedDestination extends AsyncNotifier<MealoraDestination> {
     await ref
         .read(uiPreferenceDaoProvider)
         .write(UiPreferenceKeys.selectedDestination, destination.storageKey);
+  }
+}
+
+/// Pengaturan persetujuan unggah gambar (change 010, task 3.5) — bawaan
+/// [ImageUploadConsentPreference.askEachTime] sampai pengguna sendiri
+/// menetapkan pilihan tetap (Design D3).
+final AsyncNotifierProvider<
+  ImageUploadConsentSetting,
+  ImageUploadConsentPreference
+>
+imageUploadConsentPreferenceProvider =
+    AsyncNotifierProvider<
+      ImageUploadConsentSetting,
+      ImageUploadConsentPreference
+    >(ImageUploadConsentSetting.new);
+
+class ImageUploadConsentSetting
+    extends AsyncNotifier<ImageUploadConsentPreference> {
+  @override
+  Future<ImageUploadConsentPreference> build() async {
+    final dao = ref.watch(uiPreferenceDaoProvider);
+    final stored = await dao.read(UiPreferenceKeys.imageUploadConsent);
+    return stored == null
+        ? ImageUploadConsentPreference.defaultValue
+        : ImageUploadConsentPreference.fromStableCode(stored);
+  }
+
+  Future<void> set(ImageUploadConsentPreference preference) async {
+    state = AsyncValue<ImageUploadConsentPreference>.data(preference);
+    await ref
+        .read(uiPreferenceDaoProvider)
+        .write(UiPreferenceKeys.imageUploadConsent, preference.stableCode);
+  }
+}
+
+/// Pengaturan retensi foto label sumber (change 010, task 3.6) — bawaan
+/// [ImageRetentionPreference.deleteAfterLogging] (rancangan `35`).
+final AsyncNotifierProvider<ImageRetentionSetting, ImageRetentionPreference>
+imageRetentionPreferenceProvider =
+    AsyncNotifierProvider<ImageRetentionSetting, ImageRetentionPreference>(
+      ImageRetentionSetting.new,
+    );
+
+class ImageRetentionSetting extends AsyncNotifier<ImageRetentionPreference> {
+  @override
+  Future<ImageRetentionPreference> build() async {
+    final dao = ref.watch(uiPreferenceDaoProvider);
+    final stored = await dao.read(UiPreferenceKeys.imageRetention);
+    return stored == null
+        ? ImageRetentionPreference.defaultValue
+        : ImageRetentionPreference.fromStableCode(stored);
+  }
+
+  Future<void> set(ImageRetentionPreference preference) async {
+    state = AsyncValue<ImageRetentionPreference>.data(preference);
+    await ref
+        .read(uiPreferenceDaoProvider)
+        .write(UiPreferenceKeys.imageRetention, preference.stableCode);
   }
 }

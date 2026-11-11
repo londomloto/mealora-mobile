@@ -9,6 +9,14 @@ part 'ui_preference_dao.g.dart';
 abstract final class UiPreferenceKeys {
   /// Ruang navigasi yang terakhir dibuka pengguna.
   static const String selectedDestination = 'selected_destination';
+
+  /// Pengaturan persetujuan unggah gambar (change 010, rancangan `35`) —
+  /// nilai `ImageUploadConsentPreference.stableCode`.
+  static const String imageUploadConsent = 'image_upload_consent';
+
+  /// Pengaturan retensi foto label sumber (change 010, rancangan `35`) —
+  /// nilai `ImageRetentionPreference.stableCode`.
+  static const String imageRetention = 'image_retention';
 }
 
 /// Akses baca/tulis preferensi antarmuka lokal.

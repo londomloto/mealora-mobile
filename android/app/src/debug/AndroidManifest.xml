@@ -4,4 +4,7 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Development-only local proxy. Release builds keep cleartext HTTP
+         disabled and must point at an HTTPS endpoint. -->
+    <application android:usesCleartextTraffic="true"/>
 </manifest>

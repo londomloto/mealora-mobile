@@ -1529,7 +1529,21 @@ class AppTextId extends AppText {
   String get barcodeScanNoteBody => 'Barcode bukan sumber nilai nutrisi.';
 
   @override
-  String get barcodeScanManualLink => 'Masukkan nomor barcode secara manual';
+  String get barcodeScanAlternativesHeading => 'Tidak bisa memindai?';
+
+  @override
+  String get barcodeScanManualLink => 'Masukkan barcode manual';
+
+  @override
+  String get barcodeScanManualDescription =>
+      'Ketik nomor yang tertera di kemasan';
+
+  @override
+  String get barcodeScanPhotoLabelLink => 'Foto Info Gizi';
+
+  @override
+  String get barcodeScanPhotoLabelDescription =>
+      'Baca nilai nutrisi dari foto label';
 
   @override
   String get barcodeScanUseCamera => 'Gunakan kamera';
@@ -1610,7 +1624,7 @@ class AppTextId extends AppText {
 
   @override
   String get packagedFoodNotFoundBody =>
-      'Kamu tetap bisa mencatatnya. Isi nilai dari kemasan secara manual, atau foto label gizi.';
+      'Kamu tetap bisa mencatatnya. Foto label gizi untuk mengekstrak data, atau isi nilai dari kemasan secara manual.';
 
   @override
   String get packagedFoodNotFoundManualTitle => 'Isi nilai secara manual';
@@ -1624,11 +1638,7 @@ class AppTextId extends AppText {
 
   @override
   String get packagedFoodNotFoundPhotoDescription =>
-      'Belum tersedia pada versi ini';
-
-  @override
-  String get packagedFoodPathUnavailable =>
-      'Jalur ini belum tersedia pada versi aplikasi ini.';
+      'Butuh internet dan izin unggah';
 
   @override
   String get packagedFoodFillContextLabel => 'TANPA INTERNET';
@@ -1961,4 +1971,189 @@ class AppTextId extends AppText {
 
   @override
   String get weightDeleteCancelAction => 'Batal';
+
+  @override
+  String get labelExtractionUnavailableTitle =>
+      'Pembacaan otomatis belum bisa dilakukan';
+
+  @override
+  String get labelExtractionReasonOffline =>
+      'Tidak ada koneksi internet saat ini.';
+
+  @override
+  String get labelExtractionReasonTimeout =>
+      'Layanan pembacaan tidak merespons.';
+
+  @override
+  String get labelExtractionReasonQuotaExceeded =>
+      'Layanan pembacaan sedang tidak tersedia.';
+
+  @override
+  String get labelExtractionReasonRefused =>
+      'Layanan tidak bisa membaca foto ini.';
+
+  @override
+  String get labelExtractionDraftPreservedNote =>
+      'Foto dan nilai yang sudah kamu isi tetap tersimpan.';
+
+  @override
+  String get privacySettingsContextLabel => 'PRIVASI';
+
+  @override
+  String get privacySettingsTitle => 'Privasi & data lokal';
+
+  @override
+  String get privacySettingsSubtitle =>
+      'Atur bagaimana foto label diperlakukan saat Mealora membacanya.';
+
+  @override
+  String get privacySettingsUploadHeading => 'Izin unggah foto label';
+
+  @override
+  String get privacySettingsUploadAskEachTimeTitle => 'Tanya setiap kali';
+
+  @override
+  String get privacySettingsUploadAskEachTimeDetail =>
+      'Mealora meminta persetujuan setiap kali akan mengirim foto.';
+
+  @override
+  String get privacySettingsUploadAlwaysAllowTitle => 'Selalu izinkan';
+
+  @override
+  String get privacySettingsUploadAlwaysAllowDetail =>
+      'Foto langsung dikirim tanpa ditanya lagi setiap kali.';
+
+  @override
+  String get privacySettingsRetentionHeading => 'Foto sumber setelah dicatat';
+
+  @override
+  String get privacySettingsRetentionDeleteTitle => 'Hapus setelah dicatat';
+
+  @override
+  String get privacySettingsRetentionDeleteDetail =>
+      'Foto dihapus dari perangkat begitu catatan dibuat.';
+
+  @override
+  String get privacySettingsRetentionKeepTitle => 'Simpan di perangkat';
+
+  @override
+  String get privacySettingsRetentionKeepDetail =>
+      'Foto tetap tersimpan di perangkat ini agar bisa diperiksa lagi.';
+
+  @override
+  String get privacySettingsNote =>
+      'Foto hanya dikirim ke layanan pembacaan label saat kamu setuju, dan tidak pernah disimpan di luar perangkat ini.';
+
+  @override
+  String get uploadConsentBody =>
+      'Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.';
+
+  @override
+  String get uploadConsentCheckboxLabel => 'Izinkan unggah foto label ini';
+
+  @override
+  String get uploadConsentCheckedState => 'Dicentang';
+
+  @override
+  String get uploadConsentUncheckedState => 'Belum dicentang';
+
+  @override
+  String get labelPhotoContextLabel => 'INFORMASI NILAI GIZI';
+
+  @override
+  String get labelPhotoTitle => 'Foto label kemasan';
+
+  @override
+  String get labelPhotoSubtitle => 'Pastikan teks dan satuan terlihat jelas.';
+
+  @override
+  String get labelPhotoFrameCaption =>
+      'Informasi Nilai Gizi harus terbaca penuh';
+
+  @override
+  String get labelPhotoExtractAction => 'Ekstrak untuk ditinjau';
+
+  @override
+  String get labelPhotoRetryAction => 'Coba lagi dengan foto ini';
+
+  @override
+  String get labelPhotoManualLink => 'Isi label secara manual tanpa unggah';
+
+  @override
+  String get labelPhotoPermissionDeniedTitle => 'Kamera tidak dapat diakses';
+
+  @override
+  String get labelPhotoPermissionDeniedBody =>
+      'Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa mengisi nilai label secara manual.';
+
+  @override
+  String get labelReviewContextLabel => 'TINJAU HASIL BACAAN';
+
+  @override
+  String get labelReviewTitle => 'Periksa nilai yang terbaca';
+
+  @override
+  String get labelReviewSubtitle =>
+      'Ini bacaan yang perlu diperiksa, bukan data terverifikasi. Bandingkan dengan fotonya.';
+
+  @override
+  String get labelReviewNameLabel => 'NAMA PRODUK';
+
+  @override
+  String get labelReviewNameHint => 'mis. Keripik Singkong Renyah';
+
+  @override
+  String get labelReviewBasisLabel => 'DASAR NILAI PADA KEMASAN';
+
+  @override
+  String get labelReviewBasisUnreadNote =>
+      'Basis tidak terbaca dari foto — pilih sendiri sebelum lanjut.';
+
+  @override
+  String labelReviewPackageArithmeticNote(
+    String multiplier,
+    String servingSize,
+  ) {
+    return '1 kemasan = $multiplier× nilai per sajian ($servingSize).';
+  }
+
+  @override
+  String get labelReviewConfidenceConfident => 'Terbaca yakin';
+
+  @override
+  String get labelReviewConfidenceNeedsCheck => 'Perlu diperiksa';
+
+  @override
+  String get labelReviewConfidenceUnread => 'Tidak terbaca';
+
+  @override
+  String get labelReviewMarkAbsentAction => 'Tidak tercantum di kemasan';
+
+  @override
+  String get labelReviewValueMarkedAbsent =>
+      'Ditandai tidak tercantum di kemasan';
+
+  @override
+  String labelReviewPendingValuesNote(String fields) {
+    return 'Lengkapi dulu: $fields.';
+  }
+
+  @override
+  String get labelReviewConfirmAction => 'Konfirmasi nilai';
+
+  @override
+  String get labelReviewCancelAction => 'Batal';
+
+  @override
+  String get labelReviewCancelConfirmTitle => 'Batalkan peninjauan ini?';
+
+  @override
+  String get labelReviewCancelConfirmBody =>
+      'Foto dan nilai yang sudah dibaca tidak akan disimpan sebagai produk.';
+
+  @override
+  String get labelReviewCancelConfirmAction => 'Ya, batalkan';
+
+  @override
+  String get labelReviewCancelKeepReviewingAction => 'Lanjutkan meninjau';
 }

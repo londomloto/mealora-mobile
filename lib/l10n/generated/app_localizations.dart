@@ -2785,11 +2785,35 @@ abstract class AppText {
   /// **'Barcode bukan sumber nilai nutrisi.'**
   String get barcodeScanNoteBody;
 
+  /// No description provided for @barcodeScanAlternativesHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa memindai?'**
+  String get barcodeScanAlternativesHeading;
+
   /// No description provided for @barcodeScanManualLink.
   ///
   /// In id, this message translates to:
-  /// **'Masukkan nomor barcode secara manual'**
+  /// **'Masukkan barcode manual'**
   String get barcodeScanManualLink;
+
+  /// No description provided for @barcodeScanManualDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik nomor yang tertera di kemasan'**
+  String get barcodeScanManualDescription;
+
+  /// No description provided for @barcodeScanPhotoLabelLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto Info Gizi'**
+  String get barcodeScanPhotoLabelLink;
+
+  /// No description provided for @barcodeScanPhotoLabelDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca nilai nutrisi dari foto label'**
+  String get barcodeScanPhotoLabelDescription;
 
   /// No description provided for @barcodeScanUseCamera.
   ///
@@ -2932,7 +2956,7 @@ abstract class AppText {
   /// No description provided for @packagedFoodNotFoundBody.
   ///
   /// In id, this message translates to:
-  /// **'Kamu tetap bisa mencatatnya. Isi nilai dari kemasan secara manual, atau foto label gizi.'**
+  /// **'Kamu tetap bisa mencatatnya. Foto label gizi untuk mengekstrak data, atau isi nilai dari kemasan secara manual.'**
   String get packagedFoodNotFoundBody;
 
   /// No description provided for @packagedFoodNotFoundManualTitle.
@@ -2956,14 +2980,8 @@ abstract class AppText {
   /// No description provided for @packagedFoodNotFoundPhotoDescription.
   ///
   /// In id, this message translates to:
-  /// **'Belum tersedia pada versi ini'**
+  /// **'Butuh internet dan izin unggah'**
   String get packagedFoodNotFoundPhotoDescription;
-
-  /// No description provided for @packagedFoodPathUnavailable.
-  ///
-  /// In id, this message translates to:
-  /// **'Jalur ini belum tersedia pada versi aplikasi ini.'**
-  String get packagedFoodPathUnavailable;
 
   /// No description provided for @packagedFoodFillContextLabel.
   ///
@@ -3546,6 +3564,327 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Batal'**
   String get weightDeleteCancelAction;
+
+  /// No description provided for @labelExtractionUnavailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pembacaan otomatis belum bisa dilakukan'**
+  String get labelExtractionUnavailableTitle;
+
+  /// No description provided for @labelExtractionReasonOffline.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada koneksi internet saat ini.'**
+  String get labelExtractionReasonOffline;
+
+  /// No description provided for @labelExtractionReasonTimeout.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan pembacaan tidak merespons.'**
+  String get labelExtractionReasonTimeout;
+
+  /// No description provided for @labelExtractionReasonQuotaExceeded.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan pembacaan sedang tidak tersedia.'**
+  String get labelExtractionReasonQuotaExceeded;
+
+  /// No description provided for @labelExtractionReasonRefused.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan tidak bisa membaca foto ini.'**
+  String get labelExtractionReasonRefused;
+
+  /// No description provided for @labelExtractionDraftPreservedNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto dan nilai yang sudah kamu isi tetap tersimpan.'**
+  String get labelExtractionDraftPreservedNote;
+
+  /// No description provided for @privacySettingsContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PRIVASI'**
+  String get privacySettingsContextLabel;
+
+  /// No description provided for @privacySettingsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Privasi & data lokal'**
+  String get privacySettingsTitle;
+
+  /// No description provided for @privacySettingsSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur bagaimana foto label diperlakukan saat Mealora membacanya.'**
+  String get privacySettingsSubtitle;
+
+  /// No description provided for @privacySettingsUploadHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin unggah foto label'**
+  String get privacySettingsUploadHeading;
+
+  /// No description provided for @privacySettingsUploadAskEachTimeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanya setiap kali'**
+  String get privacySettingsUploadAskEachTimeTitle;
+
+  /// No description provided for @privacySettingsUploadAskEachTimeDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora meminta persetujuan setiap kali akan mengirim foto.'**
+  String get privacySettingsUploadAskEachTimeDetail;
+
+  /// No description provided for @privacySettingsUploadAlwaysAllowTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Selalu izinkan'**
+  String get privacySettingsUploadAlwaysAllowTitle;
+
+  /// No description provided for @privacySettingsUploadAlwaysAllowDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto langsung dikirim tanpa ditanya lagi setiap kali.'**
+  String get privacySettingsUploadAlwaysAllowDetail;
+
+  /// No description provided for @privacySettingsRetentionHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto sumber setelah dicatat'**
+  String get privacySettingsRetentionHeading;
+
+  /// No description provided for @privacySettingsRetentionDeleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus setelah dicatat'**
+  String get privacySettingsRetentionDeleteTitle;
+
+  /// No description provided for @privacySettingsRetentionDeleteDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto dihapus dari perangkat begitu catatan dibuat.'**
+  String get privacySettingsRetentionDeleteDetail;
+
+  /// No description provided for @privacySettingsRetentionKeepTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan di perangkat'**
+  String get privacySettingsRetentionKeepTitle;
+
+  /// No description provided for @privacySettingsRetentionKeepDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto tetap tersimpan di perangkat ini agar bisa diperiksa lagi.'**
+  String get privacySettingsRetentionKeepDetail;
+
+  /// No description provided for @privacySettingsNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto hanya dikirim ke layanan pembacaan label saat kamu setuju, dan tidak pernah disimpan di luar perangkat ini.'**
+  String get privacySettingsNote;
+
+  /// No description provided for @uploadConsentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.'**
+  String get uploadConsentBody;
+
+  /// No description provided for @uploadConsentCheckboxLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan unggah foto label ini'**
+  String get uploadConsentCheckboxLabel;
+
+  /// No description provided for @uploadConsentCheckedState.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicentang'**
+  String get uploadConsentCheckedState;
+
+  /// No description provided for @uploadConsentUncheckedState.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dicentang'**
+  String get uploadConsentUncheckedState;
+
+  /// No description provided for @labelPhotoContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'INFORMASI NILAI GIZI'**
+  String get labelPhotoContextLabel;
+
+  /// No description provided for @labelPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto label kemasan'**
+  String get labelPhotoTitle;
+
+  /// No description provided for @labelPhotoSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pastikan teks dan satuan terlihat jelas.'**
+  String get labelPhotoSubtitle;
+
+  /// No description provided for @labelPhotoFrameCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi Nilai Gizi harus terbaca penuh'**
+  String get labelPhotoFrameCaption;
+
+  /// No description provided for @labelPhotoExtractAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekstrak untuk ditinjau'**
+  String get labelPhotoExtractAction;
+
+  /// No description provided for @labelPhotoRetryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi dengan foto ini'**
+  String get labelPhotoRetryAction;
+
+  /// No description provided for @labelPhotoManualLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi label secara manual tanpa unggah'**
+  String get labelPhotoManualLink;
+
+  /// No description provided for @labelPhotoPermissionDeniedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera tidak dapat diakses'**
+  String get labelPhotoPermissionDeniedTitle;
+
+  /// No description provided for @labelPhotoPermissionDeniedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa mengisi nilai label secara manual.'**
+  String get labelPhotoPermissionDeniedBody;
+
+  /// No description provided for @labelReviewContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TINJAU HASIL BACAAN'**
+  String get labelReviewContextLabel;
+
+  /// No description provided for @labelReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa nilai yang terbaca'**
+  String get labelReviewTitle;
+
+  /// No description provided for @labelReviewSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ini bacaan yang perlu diperiksa, bukan data terverifikasi. Bandingkan dengan fotonya.'**
+  String get labelReviewSubtitle;
+
+  /// No description provided for @labelReviewNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'NAMA PRODUK'**
+  String get labelReviewNameLabel;
+
+  /// No description provided for @labelReviewNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Keripik Singkong Renyah'**
+  String get labelReviewNameHint;
+
+  /// No description provided for @labelReviewBasisLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'DASAR NILAI PADA KEMASAN'**
+  String get labelReviewBasisLabel;
+
+  /// No description provided for @labelReviewBasisUnreadNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Basis tidak terbaca dari foto — pilih sendiri sebelum lanjut.'**
+  String get labelReviewBasisUnreadNote;
+
+  /// No description provided for @labelReviewPackageArithmeticNote.
+  ///
+  /// In id, this message translates to:
+  /// **'1 kemasan = {multiplier}× nilai per sajian ({servingSize}).'**
+  String labelReviewPackageArithmeticNote(
+    String multiplier,
+    String servingSize,
+  );
+
+  /// No description provided for @labelReviewConfidenceConfident.
+  ///
+  /// In id, this message translates to:
+  /// **'Terbaca yakin'**
+  String get labelReviewConfidenceConfident;
+
+  /// No description provided for @labelReviewConfidenceNeedsCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu diperiksa'**
+  String get labelReviewConfidenceNeedsCheck;
+
+  /// No description provided for @labelReviewConfidenceUnread.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak terbaca'**
+  String get labelReviewConfidenceUnread;
+
+  /// No description provided for @labelReviewMarkAbsentAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak tercantum di kemasan'**
+  String get labelReviewMarkAbsentAction;
+
+  /// No description provided for @labelReviewValueMarkedAbsent.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditandai tidak tercantum di kemasan'**
+  String get labelReviewValueMarkedAbsent;
+
+  /// No description provided for @labelReviewPendingValuesNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi dulu: {fields}.'**
+  String labelReviewPendingValuesNote(String fields);
+
+  /// No description provided for @labelReviewConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi nilai'**
+  String get labelReviewConfirmAction;
+
+  /// No description provided for @labelReviewCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get labelReviewCancelAction;
+
+  /// No description provided for @labelReviewCancelConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan peninjauan ini?'**
+  String get labelReviewCancelConfirmTitle;
+
+  /// No description provided for @labelReviewCancelConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto dan nilai yang sudah dibaca tidak akan disimpan sebagai produk.'**
+  String get labelReviewCancelConfirmBody;
+
+  /// No description provided for @labelReviewCancelConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya, batalkan'**
+  String get labelReviewCancelConfirmAction;
+
+  /// No description provided for @labelReviewCancelKeepReviewingAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan meninjau'**
+  String get labelReviewCancelKeepReviewingAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

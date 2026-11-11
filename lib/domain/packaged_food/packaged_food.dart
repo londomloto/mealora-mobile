@@ -15,9 +15,9 @@ import 'package:mealora/domain/packaged_food/serving_basis.dart';
 final class PackagedFood {
   const PackagedFood({
     required this.food,
-    required this.barcode,
     required this.servingBasis,
     required this.provenance,
+    this.barcode,
     this.packageSize,
     this.unitsPerPackage,
   });
@@ -26,7 +26,12 @@ final class PackagedFood {
 
   /// Nomor barcode (EAN/UPC) — pengenal pencarian, bukan sumber nilai gizi
   /// (spec, "Barcode adalah pengenal produk, bukan sumber nilai gizi").
-  final String barcode;
+  /// `null` ketika produk dikonfirmasi lewat foto label tanpa barcode
+  /// (change 010) — kemasan rusak/tidak punya barcode, atau pengguna
+  /// memilih jalur foto langsung dari layar pindai tanpa memindai dulu.
+  /// Produk semacam ini HANYA dapat ditemukan kembali lewat pencarian
+  /// nama, tidak lewat pemindaian.
+  final String? barcode;
 
   /// Label ukuran kemasan sehari-hari (mis. "60 g"). `null` bila tidak
   /// diketahui.

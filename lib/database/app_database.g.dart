@@ -7042,7 +7042,7 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
   final String category;
   final bool isUserCreated;
 
-  /// Jenis sumber (mis. `usda_fdc`) — lihat
+  /// Jenis sumber (mis. `usda_fdc`, `tkpi`) — lihat
   /// `mealora-plans/docs/food-data-sources.md`.
   final String? sourceType;
 
@@ -11431,13 +11431,13 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
   late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
     'barcode',
     aliasedName,
-    false,
+    true,
     additionalChecks: GeneratedColumn.checkTextLength(
       minTextLength: 8,
       maxTextLength: 14,
     ),
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _packageSizeMeta = const VerificationMeta(
     'packageSize',
@@ -11554,6 +11554,21 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _sourceImagePathMeta = const VerificationMeta(
+    'sourceImagePath',
+  );
+  @override
+  late final GeneratedColumn<String> sourceImagePath = GeneratedColumn<String>(
+    'source_image_path',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 512,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -11572,6 +11587,7 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
     sourceVersion,
     verifiedAt,
     userCorrected,
+    sourceImagePath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11637,8 +11653,6 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
         _barcodeMeta,
         barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta),
       );
-    } else if (isInserting) {
-      context.missing(_barcodeMeta);
     }
     if (data.containsKey('package_size')) {
       context.handle(
@@ -11709,6 +11723,15 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
         ),
       );
     }
+    if (data.containsKey('source_image_path')) {
+      context.handle(
+        _sourceImagePathMeta,
+        sourceImagePath.isAcceptableOrUnknown(
+          data['source_image_path']!,
+          _sourceImagePathMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -11752,7 +11775,7 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
       barcode: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}barcode'],
-      )!,
+      ),
       packageSize: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}package_size'],
@@ -11785,6 +11808,10 @@ class $PackagedFoodPropertiesTable extends PackagedFoodProperties
         DriftSqlType.bool,
         data['${effectivePrefix}user_corrected'],
       )!,
+      sourceImagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_image_path'],
+      ),
     );
   }
 
@@ -11817,8 +11844,12 @@ class PackagedFoodPropertiesRow extends DataClass
 
   /// Nomor barcode (EAN/UPC) — pengenal pencarian, SHALL TIDAK dipakai
   /// sebagai sumber nilai gizi (spec, "Barcode adalah pengenal produk,
-  /// bukan sumber nilai gizi").
-  final String barcode;
+  /// bukan sumber nilai gizi"). `null` untuk produk yang dikonfirmasi lewat
+  /// foto label tanpa barcode (change 010) — baris semacam ini hanya
+  /// ditemukan lewat pencarian nama, tidak lewat pemindaian. SQLite
+  /// memperlakukan tiap `NULL` sebagai berbeda pada indeks unik di bawah,
+  /// jadi banyak produk tanpa barcode boleh bersisian.
+  final String? barcode;
 
   /// Label ukuran kemasan sehari-hari (mis. "60 g"). `null` bila tidak
   /// diketahui dari sumber.
@@ -11854,6 +11885,13 @@ class PackagedFoodPropertiesRow extends DataClass
   /// D5) — sumber daring SHALL TIDAK menimpa nilai tanpa persetujuan ketika
   /// bendera ini menyala (task 4.5).
   final bool userCorrected;
+
+  /// Rujukan ke foto label sumber di perangkat (change 010, task 5.2) —
+  /// `null` kecuali [sourceType] `label_extraction` DAN pengaturan retensi
+  /// gambar pengguna mengizinkan penyimpanan (Design D9). Nilai opsional:
+  /// rekaman `label_extraction` yang retensinya "hapus setelah dicatat"
+  /// SHALL TIDAK mengisi kolom ini.
+  final String? sourceImagePath;
   const PackagedFoodPropertiesRow({
     required this.id,
     required this.createdAt,
@@ -11862,7 +11900,7 @@ class PackagedFoodPropertiesRow extends DataClass
     required this.syncStatus,
     required this.revision,
     required this.foodId,
-    required this.barcode,
+    this.barcode,
     this.packageSize,
     this.unitsPerPackage,
     required this.servingBasis,
@@ -11871,6 +11909,7 @@ class PackagedFoodPropertiesRow extends DataClass
     this.sourceVersion,
     required this.verifiedAt,
     required this.userCorrected,
+    this.sourceImagePath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -11884,7 +11923,9 @@ class PackagedFoodPropertiesRow extends DataClass
     map['sync_status'] = Variable<String>(syncStatus);
     map['revision'] = Variable<int>(revision);
     map['food_id'] = Variable<String>(foodId);
-    map['barcode'] = Variable<String>(barcode);
+    if (!nullToAbsent || barcode != null) {
+      map['barcode'] = Variable<String>(barcode);
+    }
     if (!nullToAbsent || packageSize != null) {
       map['package_size'] = Variable<String>(packageSize);
     }
@@ -11901,6 +11942,9 @@ class PackagedFoodPropertiesRow extends DataClass
     }
     map['verified_at'] = Variable<DateTime>(verifiedAt);
     map['user_corrected'] = Variable<bool>(userCorrected);
+    if (!nullToAbsent || sourceImagePath != null) {
+      map['source_image_path'] = Variable<String>(sourceImagePath);
+    }
     return map;
   }
 
@@ -11915,7 +11959,9 @@ class PackagedFoodPropertiesRow extends DataClass
       syncStatus: Value(syncStatus),
       revision: Value(revision),
       foodId: Value(foodId),
-      barcode: Value(barcode),
+      barcode: barcode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(barcode),
       packageSize: packageSize == null && nullToAbsent
           ? const Value.absent()
           : Value(packageSize),
@@ -11932,6 +11978,9 @@ class PackagedFoodPropertiesRow extends DataClass
           : Value(sourceVersion),
       verifiedAt: Value(verifiedAt),
       userCorrected: Value(userCorrected),
+      sourceImagePath: sourceImagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceImagePath),
     );
   }
 
@@ -11948,7 +11997,7 @@ class PackagedFoodPropertiesRow extends DataClass
       syncStatus: serializer.fromJson<String>(json['syncStatus']),
       revision: serializer.fromJson<int>(json['revision']),
       foodId: serializer.fromJson<String>(json['foodId']),
-      barcode: serializer.fromJson<String>(json['barcode']),
+      barcode: serializer.fromJson<String?>(json['barcode']),
       packageSize: serializer.fromJson<String?>(json['packageSize']),
       unitsPerPackage: serializer.fromJson<double?>(json['unitsPerPackage']),
       servingBasis: serializer.fromJson<String>(json['servingBasis']),
@@ -11957,6 +12006,7 @@ class PackagedFoodPropertiesRow extends DataClass
       sourceVersion: serializer.fromJson<String?>(json['sourceVersion']),
       verifiedAt: serializer.fromJson<DateTime>(json['verifiedAt']),
       userCorrected: serializer.fromJson<bool>(json['userCorrected']),
+      sourceImagePath: serializer.fromJson<String?>(json['sourceImagePath']),
     );
   }
   @override
@@ -11970,7 +12020,7 @@ class PackagedFoodPropertiesRow extends DataClass
       'syncStatus': serializer.toJson<String>(syncStatus),
       'revision': serializer.toJson<int>(revision),
       'foodId': serializer.toJson<String>(foodId),
-      'barcode': serializer.toJson<String>(barcode),
+      'barcode': serializer.toJson<String?>(barcode),
       'packageSize': serializer.toJson<String?>(packageSize),
       'unitsPerPackage': serializer.toJson<double?>(unitsPerPackage),
       'servingBasis': serializer.toJson<String>(servingBasis),
@@ -11979,6 +12029,7 @@ class PackagedFoodPropertiesRow extends DataClass
       'sourceVersion': serializer.toJson<String?>(sourceVersion),
       'verifiedAt': serializer.toJson<DateTime>(verifiedAt),
       'userCorrected': serializer.toJson<bool>(userCorrected),
+      'sourceImagePath': serializer.toJson<String?>(sourceImagePath),
     };
   }
 
@@ -11990,7 +12041,7 @@ class PackagedFoodPropertiesRow extends DataClass
     String? syncStatus,
     int? revision,
     String? foodId,
-    String? barcode,
+    Value<String?> barcode = const Value.absent(),
     Value<String?> packageSize = const Value.absent(),
     Value<double?> unitsPerPackage = const Value.absent(),
     String? servingBasis,
@@ -11999,6 +12050,7 @@ class PackagedFoodPropertiesRow extends DataClass
     Value<String?> sourceVersion = const Value.absent(),
     DateTime? verifiedAt,
     bool? userCorrected,
+    Value<String?> sourceImagePath = const Value.absent(),
   }) => PackagedFoodPropertiesRow(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -12007,7 +12059,7 @@ class PackagedFoodPropertiesRow extends DataClass
     syncStatus: syncStatus ?? this.syncStatus,
     revision: revision ?? this.revision,
     foodId: foodId ?? this.foodId,
-    barcode: barcode ?? this.barcode,
+    barcode: barcode.present ? barcode.value : this.barcode,
     packageSize: packageSize.present ? packageSize.value : this.packageSize,
     unitsPerPackage: unitsPerPackage.present
         ? unitsPerPackage.value
@@ -12020,6 +12072,9 @@ class PackagedFoodPropertiesRow extends DataClass
         : this.sourceVersion,
     verifiedAt: verifiedAt ?? this.verifiedAt,
     userCorrected: userCorrected ?? this.userCorrected,
+    sourceImagePath: sourceImagePath.present
+        ? sourceImagePath.value
+        : this.sourceImagePath,
   );
   PackagedFoodPropertiesRow copyWithCompanion(
     PackagedFoodPropertiesCompanion data,
@@ -12057,6 +12112,9 @@ class PackagedFoodPropertiesRow extends DataClass
       userCorrected: data.userCorrected.present
           ? data.userCorrected.value
           : this.userCorrected,
+      sourceImagePath: data.sourceImagePath.present
+          ? data.sourceImagePath.value
+          : this.sourceImagePath,
     );
   }
 
@@ -12078,7 +12136,8 @@ class PackagedFoodPropertiesRow extends DataClass
           ..write('sourceRef: $sourceRef, ')
           ..write('sourceVersion: $sourceVersion, ')
           ..write('verifiedAt: $verifiedAt, ')
-          ..write('userCorrected: $userCorrected')
+          ..write('userCorrected: $userCorrected, ')
+          ..write('sourceImagePath: $sourceImagePath')
           ..write(')'))
         .toString();
   }
@@ -12101,6 +12160,7 @@ class PackagedFoodPropertiesRow extends DataClass
     sourceVersion,
     verifiedAt,
     userCorrected,
+    sourceImagePath,
   );
   @override
   bool operator ==(Object other) =>
@@ -12121,7 +12181,8 @@ class PackagedFoodPropertiesRow extends DataClass
           other.sourceRef == this.sourceRef &&
           other.sourceVersion == this.sourceVersion &&
           other.verifiedAt == this.verifiedAt &&
-          other.userCorrected == this.userCorrected);
+          other.userCorrected == this.userCorrected &&
+          other.sourceImagePath == this.sourceImagePath);
 }
 
 class PackagedFoodPropertiesCompanion
@@ -12133,7 +12194,7 @@ class PackagedFoodPropertiesCompanion
   final Value<String> syncStatus;
   final Value<int> revision;
   final Value<String> foodId;
-  final Value<String> barcode;
+  final Value<String?> barcode;
   final Value<String?> packageSize;
   final Value<double?> unitsPerPackage;
   final Value<String> servingBasis;
@@ -12142,6 +12203,7 @@ class PackagedFoodPropertiesCompanion
   final Value<String?> sourceVersion;
   final Value<DateTime> verifiedAt;
   final Value<bool> userCorrected;
+  final Value<String?> sourceImagePath;
   final Value<int> rowid;
   const PackagedFoodPropertiesCompanion({
     this.id = const Value.absent(),
@@ -12160,6 +12222,7 @@ class PackagedFoodPropertiesCompanion
     this.sourceVersion = const Value.absent(),
     this.verifiedAt = const Value.absent(),
     this.userCorrected = const Value.absent(),
+    this.sourceImagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PackagedFoodPropertiesCompanion.insert({
@@ -12170,7 +12233,7 @@ class PackagedFoodPropertiesCompanion
     this.syncStatus = const Value.absent(),
     this.revision = const Value.absent(),
     required String foodId,
-    required String barcode,
+    this.barcode = const Value.absent(),
     this.packageSize = const Value.absent(),
     this.unitsPerPackage = const Value.absent(),
     required String servingBasis,
@@ -12179,12 +12242,12 @@ class PackagedFoodPropertiesCompanion
     this.sourceVersion = const Value.absent(),
     required DateTime verifiedAt,
     this.userCorrected = const Value.absent(),
+    this.sourceImagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt),
        foodId = Value(foodId),
-       barcode = Value(barcode),
        servingBasis = Value(servingBasis),
        sourceType = Value(sourceType),
        verifiedAt = Value(verifiedAt);
@@ -12205,6 +12268,7 @@ class PackagedFoodPropertiesCompanion
     Expression<String>? sourceVersion,
     Expression<DateTime>? verifiedAt,
     Expression<bool>? userCorrected,
+    Expression<String>? sourceImagePath,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -12224,6 +12288,7 @@ class PackagedFoodPropertiesCompanion
       if (sourceVersion != null) 'source_version': sourceVersion,
       if (verifiedAt != null) 'verified_at': verifiedAt,
       if (userCorrected != null) 'user_corrected': userCorrected,
+      if (sourceImagePath != null) 'source_image_path': sourceImagePath,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -12236,7 +12301,7 @@ class PackagedFoodPropertiesCompanion
     Value<String>? syncStatus,
     Value<int>? revision,
     Value<String>? foodId,
-    Value<String>? barcode,
+    Value<String?>? barcode,
     Value<String?>? packageSize,
     Value<double?>? unitsPerPackage,
     Value<String>? servingBasis,
@@ -12245,6 +12310,7 @@ class PackagedFoodPropertiesCompanion
     Value<String?>? sourceVersion,
     Value<DateTime>? verifiedAt,
     Value<bool>? userCorrected,
+    Value<String?>? sourceImagePath,
     Value<int>? rowid,
   }) {
     return PackagedFoodPropertiesCompanion(
@@ -12264,6 +12330,7 @@ class PackagedFoodPropertiesCompanion
       sourceVersion: sourceVersion ?? this.sourceVersion,
       verifiedAt: verifiedAt ?? this.verifiedAt,
       userCorrected: userCorrected ?? this.userCorrected,
+      sourceImagePath: sourceImagePath ?? this.sourceImagePath,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -12319,6 +12386,9 @@ class PackagedFoodPropertiesCompanion
     if (userCorrected.present) {
       map['user_corrected'] = Variable<bool>(userCorrected.value);
     }
+    if (sourceImagePath.present) {
+      map['source_image_path'] = Variable<String>(sourceImagePath.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -12344,6 +12414,7 @@ class PackagedFoodPropertiesCompanion
           ..write('sourceVersion: $sourceVersion, ')
           ..write('verifiedAt: $verifiedAt, ')
           ..write('userCorrected: $userCorrected, ')
+          ..write('sourceImagePath: $sourceImagePath, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -20175,7 +20246,7 @@ typedef $$PackagedFoodPropertiesTableCreateCompanionBuilder =
       Value<String> syncStatus,
       Value<int> revision,
       required String foodId,
-      required String barcode,
+      Value<String?> barcode,
       Value<String?> packageSize,
       Value<double?> unitsPerPackage,
       required String servingBasis,
@@ -20184,6 +20255,7 @@ typedef $$PackagedFoodPropertiesTableCreateCompanionBuilder =
       Value<String?> sourceVersion,
       required DateTime verifiedAt,
       Value<bool> userCorrected,
+      Value<String?> sourceImagePath,
       Value<int> rowid,
     });
 typedef $$PackagedFoodPropertiesTableUpdateCompanionBuilder =
@@ -20195,7 +20267,7 @@ typedef $$PackagedFoodPropertiesTableUpdateCompanionBuilder =
       Value<String> syncStatus,
       Value<int> revision,
       Value<String> foodId,
-      Value<String> barcode,
+      Value<String?> barcode,
       Value<String?> packageSize,
       Value<double?> unitsPerPackage,
       Value<String> servingBasis,
@@ -20204,6 +20276,7 @@ typedef $$PackagedFoodPropertiesTableUpdateCompanionBuilder =
       Value<String?> sourceVersion,
       Value<DateTime> verifiedAt,
       Value<bool> userCorrected,
+      Value<String?> sourceImagePath,
       Value<int> rowid,
     });
 
@@ -20322,6 +20395,11 @@ class $$PackagedFoodPropertiesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$FoodsTableFilterComposer get foodId {
     final $$FoodsTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -20430,6 +20508,11 @@ class $$PackagedFoodPropertiesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$FoodsTableOrderingComposer get foodId {
     final $$FoodsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -20524,6 +20607,11 @@ class $$PackagedFoodPropertiesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => column,
+  );
+
   $$FoodsTableAnnotationComposer get foodId {
     final $$FoodsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -20594,7 +20682,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 Value<String> syncStatus = const Value.absent(),
                 Value<int> revision = const Value.absent(),
                 Value<String> foodId = const Value.absent(),
-                Value<String> barcode = const Value.absent(),
+                Value<String?> barcode = const Value.absent(),
                 Value<String?> packageSize = const Value.absent(),
                 Value<double?> unitsPerPackage = const Value.absent(),
                 Value<String> servingBasis = const Value.absent(),
@@ -20603,6 +20691,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 Value<String?> sourceVersion = const Value.absent(),
                 Value<DateTime> verifiedAt = const Value.absent(),
                 Value<bool> userCorrected = const Value.absent(),
+                Value<String?> sourceImagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PackagedFoodPropertiesCompanion(
                 id: id,
@@ -20621,6 +20710,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 sourceVersion: sourceVersion,
                 verifiedAt: verifiedAt,
                 userCorrected: userCorrected,
+                sourceImagePath: sourceImagePath,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -20632,7 +20722,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 Value<String> syncStatus = const Value.absent(),
                 Value<int> revision = const Value.absent(),
                 required String foodId,
-                required String barcode,
+                Value<String?> barcode = const Value.absent(),
                 Value<String?> packageSize = const Value.absent(),
                 Value<double?> unitsPerPackage = const Value.absent(),
                 required String servingBasis,
@@ -20641,6 +20731,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 Value<String?> sourceVersion = const Value.absent(),
                 required DateTime verifiedAt,
                 Value<bool> userCorrected = const Value.absent(),
+                Value<String?> sourceImagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PackagedFoodPropertiesCompanion.insert(
                 id: id,
@@ -20659,6 +20750,7 @@ class $$PackagedFoodPropertiesTableTableManager
                 sourceVersion: sourceVersion,
                 verifiedAt: verifiedAt,
                 userCorrected: userCorrected,
+                sourceImagePath: sourceImagePath,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

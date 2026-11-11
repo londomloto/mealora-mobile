@@ -162,11 +162,11 @@ class _PackagedFoodReviewScreenState
                         product.food.name,
                         style: MealoraTypography.headline,
                       ),
-                      const SizedBox(height: MealoraSpacing.xxs),
-                      Text(
-                        _identityLine(product),
-                        style: MealoraTypography.bodySmall,
-                      ),
+                      if (_identityLine(product)
+                          case final identity?) ...<Widget>[
+                        const SizedBox(height: MealoraSpacing.xxs),
+                        Text(identity, style: MealoraTypography.bodySmall),
+                      ],
                     ],
                   ),
                 ),
@@ -271,12 +271,18 @@ class _PackagedFoodReviewScreenState
     );
   }
 
-  String _identityLine(PackagedFood product) {
+  /// `null` ketika tidak ada merek, ukuran kemasan, maupun barcode untuk
+  /// ditampilkan (change 010: produk tanpa barcode) — baris kedua kartu ini
+  /// dilewati sepenuhnya, bukan dipaksa menampilkan sesuatu.
+  String? _identityLine(PackagedFood product) {
     final parts = <String>[
       if (product.food.brand != null) product.food.brand!,
       if (product.packageSize != null) 'Kemasan ${product.packageSize}',
     ];
-    return parts.isEmpty ? product.barcode : parts.join('  ·  ');
+    if (parts.isNotEmpty) {
+      return parts.join('  ·  ');
+    }
+    return product.barcode;
   }
 
   PackagedFoodQuantity? _currentQuantity() {

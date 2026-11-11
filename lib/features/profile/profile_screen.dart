@@ -6,6 +6,7 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/features/profile/edit_profile_screen.dart';
+import 'package:mealora/features/profile/privacy_settings_screen.dart';
 import 'package:mealora/features/program/history_screens.dart';
 import 'package:mealora/features/program/program_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -138,6 +139,11 @@ class ProfileScreen extends ConsumerWidget {
                   color: MealoraColors.primaryDeep,
                   background: MealoraColors.iconField,
                   label: text.profilePrivacyAction,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const PrivacySettingsScreen(),
+                    ),
+                  ),
                 ),
                 _SettingsItem(
                   icon: Icons.info_outline_rounded,

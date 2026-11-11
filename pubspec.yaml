@@ -28,14 +28,25 @@ dependencies:
   flutter_timezone: ^5.1.1
   sqlite3: ">=3.4.0 <3.5.0"
 
-  # Pencarian daring OPSIONAL produk kemasan (Open Food Facts), hanya
-  # ketika barcode tidak ketemu di perangkat (change 009, Design D1-D3).
-  # Satu-satunya pemakaian jaringan di aplikasi; dipagari ke SATU berkas
-  # oleh test/unit/architecture/layer_rules_test.dart.
+  # Pencarian daring OPSIONAL produk kemasan (Open Food Facts, change 009)
+  # dan klien proksi inferensi label gizi (change 010, Design D2) — kedua
+  # pemakaian jaringan di aplikasi, masing-masing di balik antarmuka yang
+  # dapat diganti; dipagari ke dua berkas itu oleh
+  # test/unit/architecture/layer_rules_test.dart.
   http: ^1.6.0
+  http_parser: ^4.1.2
 
   # Pemindai barcode kamera (change 009, task 5.1).
   mobile_scanner: ^7.5.0
+
+  # Pratinjau kamera kustom untuk pemotretan label gizi (change 010, task
+  # 6.1) dengan bingkai panduan di atas pratinjau, persis rancangan `23` —
+  # pola yang sama dengan `mobile_scanner` di layar pindai barcode.
+  camera: ^0.11.0+2
+
+  # Direktori dokumen aplikasi untuk menyimpan foto label sumber di
+  # perangkat ketika pengaturan retensi mengizinkan (change 010, Design D9).
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
