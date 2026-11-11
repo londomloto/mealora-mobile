@@ -53,64 +53,60 @@ class FloatingNavigation extends StatelessWidget {
         padding: const EdgeInsets.only(
           top: MealoraSpacing.navigationBlendHeight,
         ),
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              MealoraSpacing.navigationGutter,
-              0,
-              MealoraSpacing.navigationGutter,
-              MealoraSpacing.md,
-            ),
-            child: Stack(
-              alignment: Alignment.topCenter,
-              clipBehavior: Clip.none,
-              children: <Widget>[
-                Padding(
-                  // Memberi ruang bagi bagian tombol Catat yang menyembul ke atas.
-                  padding: const EdgeInsets.only(top: MealoraSpacing.inlineGap),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: MealoraColors.navigationSurface,
-                      borderRadius: BorderRadius.circular(
-                        MealoraRadius.navigation,
-                      ),
-                      border: Border.all(color: MealoraColors.glassBorder),
-                      boxShadow: const <BoxShadow>[
-                        BoxShadow(
-                          color: MealoraColors.shadowNavigation,
-                          offset: Offset(0, 8),
-                          blurRadius: 24,
-                        ),
-                      ],
+        child: Stack(
+          alignment: Alignment.topCenter,
+          clipBehavior: Clip.none,
+          children: <Widget>[
+            Padding(
+              // Memberi ruang bagi bagian tombol Catat yang menyembul ke atas.
+              padding: const EdgeInsets.only(top: MealoraSpacing.inlineGap),
+              // Bar penuh selebar layar yang menempel di tepi bawah;
+              // warnanya ikut mengisi area navigasi sistem.
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: MealoraColors.navigationSurface,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(MealoraRadius.navigation),
+                  ),
+                  border: Border(
+                    top: BorderSide(color: MealoraColors.glassBorder),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: MealoraColors.shadowNavigation,
+                      offset: Offset(0, -4),
+                      blurRadius: 24,
                     ),
-                    child: SizedBox(
-                      height: MealoraSpacing.navigationHeight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: MealoraSpacing.navigationInset,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            for (final destination in leading)
-                              Expanded(child: _slot(text, destination)),
-                            // Celah tempat tombol Catat duduk.
-                            const SizedBox(width: MealoraTouch.raisedAction),
-                            for (final destination in trailing)
-                              Expanded(child: _slot(text, destination)),
-                          ],
-                        ),
+                  ],
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: SizedBox(
+                    height: MealoraSpacing.navigationHeight,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: MealoraSpacing.navigationInset,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          for (final destination in leading)
+                            Expanded(child: _slot(text, destination)),
+                          // Celah tempat tombol Catat duduk.
+                          const SizedBox(width: MealoraTouch.raisedAction),
+                          for (final destination in trailing)
+                            Expanded(child: _slot(text, destination)),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                _RecordButton(
-                  semanticsLabel: text.navRecordSemantics,
-                  onTap: onRecord,
-                ),
-              ],
+              ),
             ),
-          ),
+            _RecordButton(
+              semanticsLabel: text.navRecordSemantics,
+              onTap: onRecord,
+            ),
+          ],
         ),
       ),
     );

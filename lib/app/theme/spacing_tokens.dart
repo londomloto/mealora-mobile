@@ -28,7 +28,6 @@ abstract final class MealoraSpacing {
   static const double mainHeroOverlap = 36;
 
   /// Geometri navigation dock pada kanvas acuan 390×844.
-  static const double navigationGutter = 20;
   static const double navigationHeight = 72;
   static const double navigationInset = 10;
   static const double navigationSlotHeight = 52;
@@ -36,7 +35,7 @@ abstract final class MealoraSpacing {
 
   /// Ruang gulir agar konten terakhir dapat naik sepenuhnya di atas dock
   /// ketika `Scaffold.extendBody` aktif.
-  static const double navigationContentClearance = 144;
+  static const double navigationContentClearance = 168;
 }
 
 /// Radius sudut.

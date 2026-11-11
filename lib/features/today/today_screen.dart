@@ -22,6 +22,7 @@ import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_photo_review_screen.dart';
+import 'package:mealora/features/shell/destinations.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// Ruang `01 · Hari ini` (task 8.1/8.2/8.6/8.7): energi tercatat, target bila
@@ -59,6 +60,9 @@ class TodayScreen extends ConsumerWidget {
         dailyTotal: dailyTotal.valueOrNull ?? DailyNutritionTotal.empty,
         entries: entries.valueOrNull ?? const <MealEntry>[],
         pendingDraft: pendingDraft,
+        onProgramTap: () => ref
+            .read(selectedDestinationProvider.notifier)
+            .select(MealoraDestination.program),
       ),
     );
   }
@@ -74,6 +78,7 @@ class _TodayBody extends StatelessWidget {
     required this.dailyTotal,
     required this.entries,
     required this.pendingDraft,
+    required this.onProgramTap,
   });
 
   final AppText text;
@@ -90,6 +95,9 @@ class _TodayBody extends StatelessWidget {
   /// yang sudah ada alih-alih merancang komponen baru, konsisten dengan
   /// bahasa visual yang berlaku.
   final PhotoDraft? pendingDraft;
+
+  /// Kartu "Program aktif" membuka tab Program.
+  final VoidCallback onProgramTap;
 
   @override
   Widget build(BuildContext context) {
@@ -161,83 +169,92 @@ class _TodayBody extends StatelessWidget {
                       if (programName != null)
                         Semantics(
                           label: text.todayProgramChipSemantics(programName),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              MealoraRadius.chip,
-                            ),
-                            child: BackdropFilter(
-                              filter: ui.ImageFilter.blur(
-                                sigmaX: 16,
-                                sigmaY: 16,
+                          button: true,
+                          onTap: onProgramTap,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: onProgramTap,
+                            excludeFromSemantics: true,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                MealoraRadius.chip,
                               ),
-                              child: Container(
-                                height: 52,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                              child: BackdropFilter(
+                                filter: ui.ImageFilter.blur(
+                                  sigmaX: 16,
+                                  sigmaY: 16,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: MealoraColors.glassOnHero,
-                                  borderRadius: BorderRadius.circular(
-                                    MealoraRadius.chip,
+                                child: Container(
+                                  height: 52,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
                                   ),
-                                  border: Border.all(
-                                    color: MealoraColors.welcomeCardBorder,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                        color: MealoraColors.glassOnHeroStrong,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.energy_savings_leaf_outlined,
-                                        size: 16,
-                                        color: MealoraColors.onPrimaryMuted,
-                                      ),
+                                  decoration: BoxDecoration(
+                                    color: MealoraColors.glassOnHero,
+                                    borderRadius: BorderRadius.circular(
+                                      MealoraRadius.chip,
                                     ),
-                                    const SizedBox(width: MealoraSpacing.sm),
-                                    Expanded(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            text.todayProgramActiveLabel,
-                                            style: MealoraTypography.chipLabel
-                                                .copyWith(
-                                                  color:
-                                                      MealoraColors.onPrimary,
-                                                ),
-                                          ),
-                                          Text(
-                                            ' · ',
-                                            style: MealoraTypography.chipLabel
-                                                .copyWith(
-                                                  color:
-                                                      MealoraColors.onPrimary,
-                                                ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              programName,
-                                              overflow: TextOverflow.ellipsis,
+                                    border: Border.all(
+                                      color: MealoraColors.welcomeCardBorder,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: const BoxDecoration(
+                                          color:
+                                              MealoraColors.glassOnHeroStrong,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.energy_savings_leaf_outlined,
+                                          size: 16,
+                                          color: MealoraColors.onPrimaryMuted,
+                                        ),
+                                      ),
+                                      const SizedBox(width: MealoraSpacing.sm),
+                                      Expanded(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              text.todayProgramActiveLabel,
                                               style: MealoraTypography.chipLabel
                                                   .copyWith(
                                                     color:
                                                         MealoraColors.onPrimary,
                                                   ),
                                             ),
-                                          ),
-                                        ],
+                                            Text(
+                                              ' · ',
+                                              style: MealoraTypography.chipLabel
+                                                  .copyWith(
+                                                    color:
+                                                        MealoraColors.onPrimary,
+                                                  ),
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                programName,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: MealoraTypography
+                                                    .chipLabel
+                                                    .copyWith(
+                                                      color: MealoraColors
+                                                          .onPrimary,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: MealoraColors.onPrimaryMuted,
-                                    ),
-                                  ],
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: MealoraColors.onPrimaryMuted,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
