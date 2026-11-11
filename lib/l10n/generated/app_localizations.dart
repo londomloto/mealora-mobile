@@ -105,6 +105,12 @@ abstract class AppText {
   /// **'Diary makanan harianmu'**
   String get appTagline;
 
+  /// Label pembaca layar tombol kembali bersama (MealoraBackEyebrow) — dipakai layar yang dibuka lewat push dan tidak memakai AppBar.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get backButtonSemantics;
+
   /// Janji penyimpanan lokal pada splash.
   ///
   /// In id, this message translates to:
@@ -482,6 +488,12 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'g'**
   String get unitGram;
+
+  /// No description provided for @unitMilligram.
+  ///
+  /// In id, this message translates to:
+  /// **'mg'**
+  String get unitMilligram;
 
   /// Nilai beserta satuannya, dirangkai sebagai satu kalimat utuh agar satuan dapat diganti belakangan.
   ///
@@ -2377,6 +2389,24 @@ abstract class AppText {
   /// **'Karbohidrat'**
   String get nutrientCarbohydrate;
 
+  /// No description provided for @nutrientFiber.
+  ///
+  /// In id, this message translates to:
+  /// **'Serat'**
+  String get nutrientFiber;
+
+  /// No description provided for @nutrientSugar.
+  ///
+  /// In id, this message translates to:
+  /// **'Gula'**
+  String get nutrientSugar;
+
+  /// No description provided for @nutrientSodium.
+  ///
+  /// In id, this message translates to:
+  /// **'Natrium'**
+  String get nutrientSodium;
+
   /// No description provided for @nutrientFat.
   ///
   /// In id, this message translates to:
@@ -2718,6 +2748,408 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Nilai gizi tidak boleh negatif.'**
   String get customFoodNegativeValueError;
+
+  /// No description provided for @barcodeScanContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PRODUK KEMASAN'**
+  String get barcodeScanContextLabel;
+
+  /// No description provided for @barcodeScanTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pindai barcode'**
+  String get barcodeScanTitle;
+
+  /// No description provided for @barcodeScanSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Arahkan kode pada kemasan ke bingkai.'**
+  String get barcodeScanSubtitle;
+
+  /// No description provided for @barcodeScanHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Posisikan barcode di tengah'**
+  String get barcodeScanHint;
+
+  /// No description provided for @barcodeScanNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Produk tersimpan bisa dicari offline'**
+  String get barcodeScanNoteTitle;
+
+  /// No description provided for @barcodeScanNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Barcode bukan sumber nilai nutrisi.'**
+  String get barcodeScanNoteBody;
+
+  /// No description provided for @barcodeScanManualLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan nomor barcode secara manual'**
+  String get barcodeScanManualLink;
+
+  /// No description provided for @barcodeScanSlowHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode belum terbaca? Ketik nomor secara manual.'**
+  String get barcodeScanSlowHint;
+
+  /// No description provided for @barcodeScanPermissionDeniedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin kamera ditolak'**
+  String get barcodeScanPermissionDeniedTitle;
+
+  /// No description provided for @barcodeScanPermissionDeniedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora memakai kamera hanya untuk memindai barcode kemasan. Kamu tetap bisa mencatat produk tanpa kamera.'**
+  String get barcodeScanPermissionDeniedBody;
+
+  /// No description provided for @barcodeScanUnavailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemindaian tidak tersedia'**
+  String get barcodeScanUnavailableTitle;
+
+  /// No description provided for @barcodeScanUnavailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lingkungan ini tidak mendukung kamera. Masukkan nomor barcode secara manual, atau cari di katalog.'**
+  String get barcodeScanUnavailableBody;
+
+  /// No description provided for @barcodeScanManualAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan nomor manual'**
+  String get barcodeScanManualAction;
+
+  /// No description provided for @barcodeScanSearchCatalogAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari di katalog'**
+  String get barcodeScanSearchCatalogAction;
+
+  /// No description provided for @barcodeScanLookupInProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Mencari produk…'**
+  String get barcodeScanLookupInProgress;
+
+  /// No description provided for @barcodeManualContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'MASUKKAN MANUAL'**
+  String get barcodeManualContextLabel;
+
+  /// No description provided for @barcodeManualTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan nomor barcode'**
+  String get barcodeManualTitle;
+
+  /// No description provided for @barcodeManualSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik nomor yang tertera di kemasan.'**
+  String get barcodeManualSubtitle;
+
+  /// No description provided for @barcodeManualFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'NOMOR BARCODE'**
+  String get barcodeManualFieldLabel;
+
+  /// No description provided for @barcodeManualFieldHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. 8991234567890'**
+  String get barcodeManualFieldHint;
+
+  /// No description provided for @barcodeManualHelper.
+  ///
+  /// In id, this message translates to:
+  /// **'8–14 digit, sesuai EAN/UPC pada kemasan'**
+  String get barcodeManualHelper;
+
+  /// No description provided for @barcodeManualInvalidError.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor harus 8–14 digit angka — periksa kembali kemasan.'**
+  String get barcodeManualInvalidError;
+
+  /// No description provided for @barcodeManualNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersedia tanpa kamera dan tanpa koneksi'**
+  String get barcodeManualNoteTitle;
+
+  /// No description provided for @barcodeManualNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pencarian produk tersimpan tetap bekerja di mode pesawat.'**
+  String get barcodeManualNoteBody;
+
+  /// No description provided for @barcodeManualSearchAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari produk'**
+  String get barcodeManualSearchAction;
+
+  /// No description provided for @packagedFoodNotFoundContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'HASIL PEMINDAIAN'**
+  String get packagedFoodNotFoundContextLabel;
+
+  /// No description provided for @packagedFoodNotFoundTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Produk belum ditemukan'**
+  String get packagedFoodNotFoundTitle;
+
+  /// No description provided for @packagedFoodNotFoundSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Barcode: {barcode}'**
+  String packagedFoodNotFoundSubtitle(String barcode);
+
+  /// No description provided for @packagedFoodNotFoundHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di katalog lokal'**
+  String get packagedFoodNotFoundHeading;
+
+  /// No description provided for @packagedFoodNotFoundBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu tetap bisa mencatatnya. Isi nilai dari kemasan secara manual, atau foto label gizi.'**
+  String get packagedFoodNotFoundBody;
+
+  /// No description provided for @packagedFoodNotFoundManualTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi nilai secara manual'**
+  String get packagedFoodNotFoundManualTitle;
+
+  /// No description provided for @packagedFoodNotFoundManualDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersedia sepenuhnya offline'**
+  String get packagedFoodNotFoundManualDescription;
+
+  /// No description provided for @packagedFoodNotFoundPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto label gizi'**
+  String get packagedFoodNotFoundPhotoTitle;
+
+  /// No description provided for @packagedFoodNotFoundPhotoDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum tersedia pada versi ini'**
+  String get packagedFoodNotFoundPhotoDescription;
+
+  /// No description provided for @packagedFoodPathUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Jalur ini belum tersedia pada versi aplikasi ini.'**
+  String get packagedFoodPathUnavailable;
+
+  /// No description provided for @packagedFoodFillContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TANPA INTERNET'**
+  String get packagedFoodFillContextLabel;
+
+  /// No description provided for @packagedFoodFillTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi label secara manual'**
+  String get packagedFoodFillTitle;
+
+  /// No description provided for @packagedFoodFillSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin nilai dari kemasan, lalu periksa satuan.'**
+  String get packagedFoodFillSubtitle;
+
+  /// No description provided for @packagedFoodFillBasisLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'DASAR NILAI PADA KEMASAN'**
+  String get packagedFoodFillBasisLabel;
+
+  /// No description provided for @packagedFoodFillBasisPerServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Per sajian'**
+  String get packagedFoodFillBasisPerServing;
+
+  /// No description provided for @packagedFoodFillBasisPer100g.
+  ///
+  /// In id, this message translates to:
+  /// **'Per 100 g'**
+  String get packagedFoodFillBasisPer100g;
+
+  /// No description provided for @packagedFoodFillNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama produk'**
+  String get packagedFoodFillNameLabel;
+
+  /// No description provided for @packagedFoodFillNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Keripik Singkong Renyah'**
+  String get packagedFoodFillNameHint;
+
+  /// No description provided for @packagedFoodFillBrandLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Merek (opsional)'**
+  String get packagedFoodFillBrandLabel;
+
+  /// No description provided for @packagedFoodFillBrandHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. MerekA'**
+  String get packagedFoodFillBrandHint;
+
+  /// No description provided for @packagedFoodFillPackageSizeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran kemasan (opsional)'**
+  String get packagedFoodFillPackageSizeLabel;
+
+  /// No description provided for @packagedFoodFillPackageSizeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. 60 g'**
+  String get packagedFoodFillPackageSizeHint;
+
+  /// No description provided for @packagedFoodFillUnitsPerPackageLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sajian per kemasan (opsional)'**
+  String get packagedFoodFillUnitsPerPackageLabel;
+
+  /// No description provided for @packagedFoodFillUnitsPerPackageHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. 2'**
+  String get packagedFoodFillUnitsPerPackageHint;
+
+  /// No description provided for @packagedFoodFillContinueAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau sebelum mencatat'**
+  String get packagedFoodFillContinueAction;
+
+  /// No description provided for @packagedFoodFillNameRequiredError.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama produk tidak boleh kosong.'**
+  String get packagedFoodFillNameRequiredError;
+
+  /// No description provided for @packagedFoodFillInvalidNumberError.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukan angka yang sah.'**
+  String get packagedFoodFillInvalidNumberError;
+
+  /// No description provided for @packagedFoodReviewContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TINJAU PRODUK'**
+  String get packagedFoodReviewContextLabel;
+
+  /// No description provided for @packagedFoodReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau produk'**
+  String get packagedFoodReviewTitle;
+
+  /// No description provided for @packagedFoodReviewSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Cocokkan dengan kemasan di tanganmu'**
+  String get packagedFoodReviewSubtitle;
+
+  /// No description provided for @packagedFoodReviewSourceOpenFoodFacts.
+  ///
+  /// In id, this message translates to:
+  /// **'Open Food Facts · barcode'**
+  String get packagedFoodReviewSourceOpenFoodFacts;
+
+  /// No description provided for @packagedFoodReviewSourceManual.
+  ///
+  /// In id, this message translates to:
+  /// **'Diisi manual'**
+  String get packagedFoodReviewSourceManual;
+
+  /// No description provided for @packagedFoodReviewNutritionHeadingPerServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Nutrisi per 1 sajian'**
+  String get packagedFoodReviewNutritionHeadingPerServing;
+
+  /// No description provided for @packagedFoodReviewNutritionHeadingPer100g.
+  ///
+  /// In id, this message translates to:
+  /// **'Nutrisi per 100 g'**
+  String get packagedFoodReviewNutritionHeadingPer100g;
+
+  /// No description provided for @packagedFoodReviewServingsOption.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} sajian'**
+  String packagedFoodReviewServingsOption(String count);
+
+  /// No description provided for @packagedFoodReviewWholePackageOption.
+  ///
+  /// In id, this message translates to:
+  /// **'1 kemasan · {units} sajian'**
+  String packagedFoodReviewWholePackageOption(String units);
+
+  /// No description provided for @packagedFoodReviewGramsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Gram yang dimakan'**
+  String get packagedFoodReviewGramsLabel;
+
+  /// No description provided for @packagedFoodReviewQuantityHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah yang dimakan'**
+  String get packagedFoodReviewQuantityHeading;
+
+  /// No description provided for @packagedFoodReviewCorrectionLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Beda dengan kemasanmu?  Koreksi nilai'**
+  String get packagedFoodReviewCorrectionLink;
+
+  /// No description provided for @packagedFoodReviewCorrectedBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikoreksi'**
+  String get packagedFoodReviewCorrectedBadge;
+
+  /// No description provided for @packagedFoodReviewVerifiedOn.
+  ///
+  /// In id, this message translates to:
+  /// **'Diverifikasi {date}'**
+  String packagedFoodReviewVerifiedOn(String date);
+
+  /// No description provided for @packagedFoodReviewConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat · {kcal}'**
+  String packagedFoodReviewConfirmAction(String kcal);
 
   /// No description provided for @diaryEyebrowToday.
   ///

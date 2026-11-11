@@ -51,10 +51,7 @@ class _CompleteProgramScreenState extends ConsumerState<CompleteProgramScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        text.completeContextLabel,
-                        style: MealoraTypography.eyebrow,
-                      ),
+                      MealoraBackEyebrow(label: text.completeContextLabel),
                       const SizedBox(height: MealoraSpacing.xs),
                       Text(text.completeTitle, style: MealoraTypography.title),
                       const SizedBox(height: MealoraSpacing.xs),

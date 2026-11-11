@@ -12,7 +12,7 @@ final class FoodProvenance {
     required this.verifiedAt,
   });
 
-  /// Jenis sumber (mis. `usda_fdc`) — lihat
+  /// Jenis sumber (mis. `usda_fdc`, `tkpi`) — lihat
   /// `mealora-plans/docs/food-data-sources.md`.
   final String sourceType;
 

@@ -7,6 +7,11 @@
   "appTagline": "Diary makanan harianmu",
   "@appTagline": { "description": "Tagline pada splash." },
 
+  "backButtonSemantics": "Kembali",
+  "@backButtonSemantics": {
+    "description": "Label pembaca layar tombol kembali bersama (MealoraBackEyebrow) — dipakai layar yang dibuka lewat push dan tidak memakai AppBar."
+  },
+
   "splashPrivacyPromise": "Pribadi di perangkatmu · siap digunakan offline",
   "@splashPrivacyPromise": { "description": "Janji penyimpanan lokal pada splash." },
 
@@ -121,6 +126,7 @@
   "unitCentimeter": "cm",
   "unitKilocalorie": "kkal",
   "unitGram": "g",
+  "unitMilligram": "mg",
 
   "valueWithUnit": "{value} {unit}",
   "@valueWithUnit": {
@@ -548,6 +554,9 @@
   "nutrientEnergy": "Energi",
   "nutrientProtein": "Protein",
   "nutrientCarbohydrate": "Karbohidrat",
+  "nutrientFiber": "Serat",
+  "nutrientSugar": "Gula",
+  "nutrientSodium": "Natrium",
   "nutrientFat": "Lemak",
   "macroMacrosShort": "P {protein} · K {carb} · L {fat}",
   "@macroMacrosShort": {
@@ -629,6 +638,93 @@
   "customFoodNameRequiredError": "Nama makanan tidak boleh kosong.",
   "customFoodServingRequiredError": "Ukuran sajian tidak boleh kosong.",
   "customFoodNegativeValueError": "Nilai gizi tidak boleh negatif.",
+
+  "barcodeScanContextLabel": "PRODUK KEMASAN",
+  "barcodeScanTitle": "Pindai barcode",
+  "barcodeScanSubtitle": "Arahkan kode pada kemasan ke bingkai.",
+  "barcodeScanHint": "Posisikan barcode di tengah",
+  "barcodeScanNoteTitle": "Produk tersimpan bisa dicari offline",
+  "barcodeScanNoteBody": "Barcode bukan sumber nilai nutrisi.",
+  "barcodeScanManualLink": "Masukkan nomor barcode secara manual",
+  "barcodeScanSlowHint": "Kode belum terbaca? Ketik nomor secara manual.",
+  "barcodeScanPermissionDeniedTitle": "Izin kamera ditolak",
+  "barcodeScanPermissionDeniedBody": "Mealora memakai kamera hanya untuk memindai barcode kemasan. Kamu tetap bisa mencatat produk tanpa kamera.",
+  "barcodeScanUnavailableTitle": "Pemindaian tidak tersedia",
+  "barcodeScanUnavailableBody": "Lingkungan ini tidak mendukung kamera. Masukkan nomor barcode secara manual, atau cari di katalog.",
+  "barcodeScanManualAction": "Masukkan nomor manual",
+  "barcodeScanSearchCatalogAction": "Cari di katalog",
+  "barcodeScanLookupInProgress": "Mencari produk…",
+
+  "barcodeManualContextLabel": "MASUKKAN MANUAL",
+  "barcodeManualTitle": "Masukkan nomor barcode",
+  "barcodeManualSubtitle": "Ketik nomor yang tertera di kemasan.",
+  "barcodeManualFieldLabel": "NOMOR BARCODE",
+  "barcodeManualFieldHint": "mis. 8991234567890",
+  "barcodeManualHelper": "8–14 digit, sesuai EAN/UPC pada kemasan",
+  "barcodeManualInvalidError": "Nomor harus 8–14 digit angka — periksa kembali kemasan.",
+  "barcodeManualNoteTitle": "Tersedia tanpa kamera dan tanpa koneksi",
+  "barcodeManualNoteBody": "Pencarian produk tersimpan tetap bekerja di mode pesawat.",
+  "barcodeManualSearchAction": "Cari produk",
+
+  "packagedFoodNotFoundContextLabel": "HASIL PEMINDAIAN",
+  "packagedFoodNotFoundTitle": "Produk belum ditemukan",
+  "packagedFoodNotFoundSubtitle": "Barcode: {barcode}",
+  "@packagedFoodNotFoundSubtitle": {
+    "placeholders": { "barcode": { "type": "String" } }
+  },
+  "packagedFoodNotFoundHeading": "Belum ada di katalog lokal",
+  "packagedFoodNotFoundBody": "Kamu tetap bisa mencatatnya. Isi nilai dari kemasan secara manual, atau foto label gizi.",
+  "packagedFoodNotFoundManualTitle": "Isi nilai secara manual",
+  "packagedFoodNotFoundManualDescription": "Tersedia sepenuhnya offline",
+  "packagedFoodNotFoundPhotoTitle": "Foto label gizi",
+  "packagedFoodNotFoundPhotoDescription": "Belum tersedia pada versi ini",
+  "packagedFoodPathUnavailable": "Jalur ini belum tersedia pada versi aplikasi ini.",
+
+  "packagedFoodFillContextLabel": "TANPA INTERNET",
+  "packagedFoodFillTitle": "Isi label secara manual",
+  "packagedFoodFillSubtitle": "Salin nilai dari kemasan, lalu periksa satuan.",
+  "packagedFoodFillBasisLabel": "DASAR NILAI PADA KEMASAN",
+  "packagedFoodFillBasisPerServing": "Per sajian",
+  "packagedFoodFillBasisPer100g": "Per 100 g",
+  "packagedFoodFillNameLabel": "Nama produk",
+  "packagedFoodFillNameHint": "mis. Keripik Singkong Renyah",
+  "packagedFoodFillBrandLabel": "Merek (opsional)",
+  "packagedFoodFillBrandHint": "mis. MerekA",
+  "packagedFoodFillPackageSizeLabel": "Ukuran kemasan (opsional)",
+  "packagedFoodFillPackageSizeHint": "mis. 60 g",
+  "packagedFoodFillUnitsPerPackageLabel": "Sajian per kemasan (opsional)",
+  "packagedFoodFillUnitsPerPackageHint": "mis. 2",
+  "packagedFoodFillContinueAction": "Tinjau sebelum mencatat",
+  "packagedFoodFillNameRequiredError": "Nama produk tidak boleh kosong.",
+  "packagedFoodFillInvalidNumberError": "Bukan angka yang sah.",
+
+  "packagedFoodReviewContextLabel": "TINJAU PRODUK",
+  "packagedFoodReviewTitle": "Tinjau produk",
+  "packagedFoodReviewSubtitle": "Cocokkan dengan kemasan di tanganmu",
+  "packagedFoodReviewSourceOpenFoodFacts": "Open Food Facts · barcode",
+  "packagedFoodReviewSourceManual": "Diisi manual",
+  "packagedFoodReviewNutritionHeadingPerServing": "Nutrisi per 1 sajian",
+  "packagedFoodReviewNutritionHeadingPer100g": "Nutrisi per 100 g",
+  "packagedFoodReviewServingsOption": "{count} sajian",
+  "@packagedFoodReviewServingsOption": {
+    "placeholders": { "count": { "type": "String" } }
+  },
+  "packagedFoodReviewWholePackageOption": "1 kemasan · {units} sajian",
+  "@packagedFoodReviewWholePackageOption": {
+    "placeholders": { "units": { "type": "String" } }
+  },
+  "packagedFoodReviewGramsLabel": "Gram yang dimakan",
+  "packagedFoodReviewQuantityHeading": "Jumlah yang dimakan",
+  "packagedFoodReviewCorrectionLink": "Beda dengan kemasanmu?  Koreksi nilai",
+  "packagedFoodReviewCorrectedBadge": "Dikoreksi",
+  "packagedFoodReviewVerifiedOn": "Diverifikasi {date}",
+  "@packagedFoodReviewVerifiedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "packagedFoodReviewConfirmAction": "Catat · {kcal}",
+  "@packagedFoodReviewConfirmAction": {
+    "placeholders": { "kcal": { "type": "String" } }
+  },
 
   "diaryEyebrowToday": "HARI INI",
   "diaryTitle": "Buku harian",

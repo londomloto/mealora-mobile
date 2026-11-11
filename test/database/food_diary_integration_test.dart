@@ -72,7 +72,7 @@ void main() {
     expect(baseline.hasAnyEntries, isFalse);
 
     // Cari makanan (pencarian luring sepenuhnya di atas SQLite lokal).
-    final results = await foodRepository.search('nasi putih');
+    final results = await foodRepository.search('nasi');
     expect(results, isNotEmpty);
     final food = results.first;
 
@@ -152,7 +152,7 @@ void main() {
             updatedAt: testInstant,
           ),
         );
-    final food = (await firstFoodRepo.findById('food-telur-rebus'))!;
+    final food = (await firstFoodRepo.findById('food-tkpi-1215'))!;
     await firstDiaryRepo.addEntry(
       profileId: profileId,
       date: today,

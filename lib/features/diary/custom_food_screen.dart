@@ -71,10 +71,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  text.customFoodContextLabel,
-                  style: MealoraTypography.eyebrow,
-                ),
+                MealoraBackEyebrow(label: text.customFoodContextLabel),
                 const SizedBox(height: MealoraSpacing.xs),
                 Text(text.customFoodTitle, style: MealoraTypography.title),
                 const SizedBox(height: MealoraSpacing.xxs),

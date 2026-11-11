@@ -15,6 +15,9 @@ class AppTextId extends AppText {
   String get appTagline => 'Diary makanan harianmu';
 
   @override
+  String get backButtonSemantics => 'Kembali';
+
+  @override
   String get splashPrivacyPromise =>
       'Pribadi di perangkatmu · siap digunakan offline';
 
@@ -229,6 +232,9 @@ class AppTextId extends AppText {
 
   @override
   String get unitGram => 'g';
+
+  @override
+  String get unitMilligram => 'mg';
 
   @override
   String valueWithUnit(String value, String unit) {
@@ -1310,6 +1316,15 @@ class AppTextId extends AppText {
   String get nutrientCarbohydrate => 'Karbohidrat';
 
   @override
+  String get nutrientFiber => 'Serat';
+
+  @override
+  String get nutrientSugar => 'Gula';
+
+  @override
+  String get nutrientSodium => 'Natrium';
+
+  @override
   String get nutrientFat => 'Lemak';
 
   @override
@@ -1494,6 +1509,234 @@ class AppTextId extends AppText {
 
   @override
   String get customFoodNegativeValueError => 'Nilai gizi tidak boleh negatif.';
+
+  @override
+  String get barcodeScanContextLabel => 'PRODUK KEMASAN';
+
+  @override
+  String get barcodeScanTitle => 'Pindai barcode';
+
+  @override
+  String get barcodeScanSubtitle => 'Arahkan kode pada kemasan ke bingkai.';
+
+  @override
+  String get barcodeScanHint => 'Posisikan barcode di tengah';
+
+  @override
+  String get barcodeScanNoteTitle => 'Produk tersimpan bisa dicari offline';
+
+  @override
+  String get barcodeScanNoteBody => 'Barcode bukan sumber nilai nutrisi.';
+
+  @override
+  String get barcodeScanManualLink => 'Masukkan nomor barcode secara manual';
+
+  @override
+  String get barcodeScanSlowHint =>
+      'Kode belum terbaca? Ketik nomor secara manual.';
+
+  @override
+  String get barcodeScanPermissionDeniedTitle => 'Izin kamera ditolak';
+
+  @override
+  String get barcodeScanPermissionDeniedBody =>
+      'Mealora memakai kamera hanya untuk memindai barcode kemasan. Kamu tetap bisa mencatat produk tanpa kamera.';
+
+  @override
+  String get barcodeScanUnavailableTitle => 'Pemindaian tidak tersedia';
+
+  @override
+  String get barcodeScanUnavailableBody =>
+      'Lingkungan ini tidak mendukung kamera. Masukkan nomor barcode secara manual, atau cari di katalog.';
+
+  @override
+  String get barcodeScanManualAction => 'Masukkan nomor manual';
+
+  @override
+  String get barcodeScanSearchCatalogAction => 'Cari di katalog';
+
+  @override
+  String get barcodeScanLookupInProgress => 'Mencari produk…';
+
+  @override
+  String get barcodeManualContextLabel => 'MASUKKAN MANUAL';
+
+  @override
+  String get barcodeManualTitle => 'Masukkan nomor barcode';
+
+  @override
+  String get barcodeManualSubtitle => 'Ketik nomor yang tertera di kemasan.';
+
+  @override
+  String get barcodeManualFieldLabel => 'NOMOR BARCODE';
+
+  @override
+  String get barcodeManualFieldHint => 'mis. 8991234567890';
+
+  @override
+  String get barcodeManualHelper => '8–14 digit, sesuai EAN/UPC pada kemasan';
+
+  @override
+  String get barcodeManualInvalidError =>
+      'Nomor harus 8–14 digit angka — periksa kembali kemasan.';
+
+  @override
+  String get barcodeManualNoteTitle =>
+      'Tersedia tanpa kamera dan tanpa koneksi';
+
+  @override
+  String get barcodeManualNoteBody =>
+      'Pencarian produk tersimpan tetap bekerja di mode pesawat.';
+
+  @override
+  String get barcodeManualSearchAction => 'Cari produk';
+
+  @override
+  String get packagedFoodNotFoundContextLabel => 'HASIL PEMINDAIAN';
+
+  @override
+  String get packagedFoodNotFoundTitle => 'Produk belum ditemukan';
+
+  @override
+  String packagedFoodNotFoundSubtitle(String barcode) {
+    return 'Barcode: $barcode';
+  }
+
+  @override
+  String get packagedFoodNotFoundHeading => 'Belum ada di katalog lokal';
+
+  @override
+  String get packagedFoodNotFoundBody =>
+      'Kamu tetap bisa mencatatnya. Isi nilai dari kemasan secara manual, atau foto label gizi.';
+
+  @override
+  String get packagedFoodNotFoundManualTitle => 'Isi nilai secara manual';
+
+  @override
+  String get packagedFoodNotFoundManualDescription =>
+      'Tersedia sepenuhnya offline';
+
+  @override
+  String get packagedFoodNotFoundPhotoTitle => 'Foto label gizi';
+
+  @override
+  String get packagedFoodNotFoundPhotoDescription =>
+      'Belum tersedia pada versi ini';
+
+  @override
+  String get packagedFoodPathUnavailable =>
+      'Jalur ini belum tersedia pada versi aplikasi ini.';
+
+  @override
+  String get packagedFoodFillContextLabel => 'TANPA INTERNET';
+
+  @override
+  String get packagedFoodFillTitle => 'Isi label secara manual';
+
+  @override
+  String get packagedFoodFillSubtitle =>
+      'Salin nilai dari kemasan, lalu periksa satuan.';
+
+  @override
+  String get packagedFoodFillBasisLabel => 'DASAR NILAI PADA KEMASAN';
+
+  @override
+  String get packagedFoodFillBasisPerServing => 'Per sajian';
+
+  @override
+  String get packagedFoodFillBasisPer100g => 'Per 100 g';
+
+  @override
+  String get packagedFoodFillNameLabel => 'Nama produk';
+
+  @override
+  String get packagedFoodFillNameHint => 'mis. Keripik Singkong Renyah';
+
+  @override
+  String get packagedFoodFillBrandLabel => 'Merek (opsional)';
+
+  @override
+  String get packagedFoodFillBrandHint => 'mis. MerekA';
+
+  @override
+  String get packagedFoodFillPackageSizeLabel => 'Ukuran kemasan (opsional)';
+
+  @override
+  String get packagedFoodFillPackageSizeHint => 'mis. 60 g';
+
+  @override
+  String get packagedFoodFillUnitsPerPackageLabel =>
+      'Sajian per kemasan (opsional)';
+
+  @override
+  String get packagedFoodFillUnitsPerPackageHint => 'mis. 2';
+
+  @override
+  String get packagedFoodFillContinueAction => 'Tinjau sebelum mencatat';
+
+  @override
+  String get packagedFoodFillNameRequiredError =>
+      'Nama produk tidak boleh kosong.';
+
+  @override
+  String get packagedFoodFillInvalidNumberError => 'Bukan angka yang sah.';
+
+  @override
+  String get packagedFoodReviewContextLabel => 'TINJAU PRODUK';
+
+  @override
+  String get packagedFoodReviewTitle => 'Tinjau produk';
+
+  @override
+  String get packagedFoodReviewSubtitle =>
+      'Cocokkan dengan kemasan di tanganmu';
+
+  @override
+  String get packagedFoodReviewSourceOpenFoodFacts =>
+      'Open Food Facts · barcode';
+
+  @override
+  String get packagedFoodReviewSourceManual => 'Diisi manual';
+
+  @override
+  String get packagedFoodReviewNutritionHeadingPerServing =>
+      'Nutrisi per 1 sajian';
+
+  @override
+  String get packagedFoodReviewNutritionHeadingPer100g => 'Nutrisi per 100 g';
+
+  @override
+  String packagedFoodReviewServingsOption(String count) {
+    return '$count sajian';
+  }
+
+  @override
+  String packagedFoodReviewWholePackageOption(String units) {
+    return '1 kemasan · $units sajian';
+  }
+
+  @override
+  String get packagedFoodReviewGramsLabel => 'Gram yang dimakan';
+
+  @override
+  String get packagedFoodReviewQuantityHeading => 'Jumlah yang dimakan';
+
+  @override
+  String get packagedFoodReviewCorrectionLink =>
+      'Beda dengan kemasanmu?  Koreksi nilai';
+
+  @override
+  String get packagedFoodReviewCorrectedBadge => 'Dikoreksi';
+
+  @override
+  String packagedFoodReviewVerifiedOn(String date) {
+    return 'Diverifikasi $date';
+  }
+
+  @override
+  String packagedFoodReviewConfirmAction(String kcal) {
+    return 'Catat · $kcal';
+  }
 
   @override
   String get diaryEyebrowToday => 'HARI INI';

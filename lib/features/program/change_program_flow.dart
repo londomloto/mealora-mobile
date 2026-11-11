@@ -50,10 +50,7 @@ class ProgramChangePreviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        text.changeContextLabel,
-                        style: MealoraTypography.eyebrow,
-                      ),
+                      MealoraBackEyebrow(label: text.changeContextLabel),
                       const SizedBox(height: MealoraSpacing.xs),
                       Text(text.changeTitle, style: MealoraTypography.title),
                       const SizedBox(height: MealoraSpacing.xs),
@@ -178,10 +175,7 @@ class _PickReplacementProgramScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        text.changeContextLabel,
-                        style: MealoraTypography.eyebrow,
-                      ),
+                      MealoraBackEyebrow(label: text.changeContextLabel),
                       const SizedBox(height: MealoraSpacing.xs),
                       Text(
                         text.changePickReplacementTitle,

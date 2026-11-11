@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:mealora/database/connection/mealora_connection.dart';
 import 'package:mealora/database/migrations/food_diary_indexes.dart';
+import 'package:mealora/database/migrations/packaged_food_indexes.dart';
 import 'package:mealora/database/migrations/program_indexes.dart';
 import 'package:mealora/database/migrations/program_invariant_trigger.dart';
 import 'package:mealora/database/migrations/user_record_triggers.dart';
@@ -13,6 +14,7 @@ import 'package:mealora/database/tables/harness_records.dart';
 import 'package:mealora/database/tables/meal_entries_table.dart';
 import 'package:mealora/database/tables/meal_entry_items_table.dart';
 import 'package:mealora/database/tables/nutrition_values_table.dart';
+import 'package:mealora/database/tables/packaged_food_properties_table.dart';
 import 'package:mealora/database/tables/profiles_table.dart';
 import 'package:mealora/database/tables/program_events_table.dart';
 import 'package:mealora/database/tables/program_progress_table.dart';
@@ -28,7 +30,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 5;
+const int kSchemaVersion = 6;
 
 @DriftDatabase(
   tables: <Type>[
@@ -46,6 +48,7 @@ const int kSchemaVersion = 5;
     MealEntries,
     MealEntryItems,
     WeightRecords,
+    PackagedFoodProperties,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -66,6 +69,7 @@ class AppDatabase extends _$AppDatabase {
       await createFoodDiaryIndexes(this);
       await seedFoodCatalog(this);
       await createWeightIndexes(this);
+      await createPackagedFoodIndexes(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -166,6 +170,13 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         // (design.md Migration Plan item 3).
         await m.createTable(weightRecords);
         await createWeightIndexes(this);
+      }
+      if (from < 6) {
+        // Versi 5 → 6 (change 009): tabel sifat produk kemasan beserta
+        // kolom provenans dan indeks pada barcode. Tidak menyentuh data
+        // versi 5 (design.md Migration Plan item 1-3).
+        await m.createTable(packagedFoodProperties);
+        await createPackagedFoodIndexes(this);
       }
     },
     beforeOpen: (details) async {

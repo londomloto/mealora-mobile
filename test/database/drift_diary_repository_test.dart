@@ -181,7 +181,7 @@ void main() {
 
   group('penolakan jumlah tidak sah (task 4.6)', () {
     test('jumlah nol ditolak dan tidak membuat catatan', () async {
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
 
       final result = await repository.addEntry(
         profileId: profileId,
@@ -197,7 +197,7 @@ void main() {
     });
 
     test('jumlah negatif ditolak dan tidak membuat catatan', () async {
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
 
       final result = await repository.addEntry(
         profileId: profileId,
@@ -217,7 +217,7 @@ void main() {
     test(
       'nilai belum diketahui tidak pernah menjadi nol di agregasi',
       () async {
-        final knownFood = (await foodRepository.findById('food-nasi-putih'))!;
+        final knownFood = (await foodRepository.findById('food-tkpi-921'))!;
         final unknownFatFood = await foodRepository.createUserFood(
           name: 'Makanan tanpa data lemak',
           category: FoodCategory.other,
@@ -278,7 +278,7 @@ void main() {
     test(
       'memindahkan catatan antar waktu makan tidak mengubah total harian',
       () async {
-        final food = (await foodRepository.findById('food-nasi-putih'))!;
+        final food = (await foodRepository.findById('food-tkpi-921'))!;
         final added = await repository.addEntry(
           profileId: profileId,
           date: today,
@@ -308,7 +308,7 @@ void main() {
 
     test('menyunting satu catatan tidak mengubah catatan lain dari makanan '
         'yang sama di hari berbeda', () async {
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
       const other = LocalDate(2026, 11, 7);
 
       final todayEntry =
@@ -343,7 +343,7 @@ void main() {
     });
 
     test('menghapus catatan mengurangi total harian sesuai nilainya', () async {
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
       final added =
           ((await repository.addEntry(
                     profileId: profileId,
@@ -368,7 +368,7 @@ void main() {
   group('penyambungan potret kemajuan program (Design D8, task 5.3/5.4)', () {
     test('tanpa program berjalan, pencatatan tetap berhasil tanpa memicu '
         'potret kemajuan apa pun', () async {
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
       final result = await repository.addEntry(
         profileId: profileId,
         date: today,
@@ -387,7 +387,7 @@ void main() {
         'ulang potret kemajuan tanpa menggandakan baris', () async {
       await activeMaintenanceProgram();
       final program = (await programRepository.findRunning(profileId))!;
-      final food = (await foodRepository.findById('food-nasi-putih'))!;
+      final food = (await foodRepository.findById('food-tkpi-921'))!;
 
       final added =
           ((await repository.addEntry(

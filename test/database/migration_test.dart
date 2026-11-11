@@ -16,6 +16,7 @@ import 'legacy_v1_database.dart' as legacy;
 import 'legacy_v2_database.dart' as legacy2;
 import 'legacy_v3_database.dart' as legacy3;
 import 'legacy_v4_database.dart' as legacy4;
+import 'legacy_v5_database.dart' as legacy5;
 import 'test_database.dart';
 
 /// Harness migrasi, termasuk migrasi versi 1 → 2 (change 004, tasks
@@ -622,6 +623,126 @@ void main() {
     });
   });
 
+  group('fixture: migrasi versi 5 ke 6 (change 009)', () {
+    test('basis data versi 5 berisi profil, makanan, catatan, dan berat '
+        'bermigrasi ke versi 6 dengan sehat, tabel sifat produk kemasan '
+        'baru dan kosong, dan data lama tidak tersentuh', () async {
+      final file = databaseFile();
+
+      final v5 = legacy5.LegacyV5Database(NativeDatabase(file));
+      await _insertLegacyV5Profile(v5, id: 'profile-v5');
+      final foodId = await _insertLegacyV5UserFood(
+        v5,
+        id: 'legacy-v5-food',
+        profileId: 'profile-v5',
+      );
+      await _insertLegacyHarnessRecordV5(
+        v5,
+        id: 'legacy-v5-harness',
+        label: 'Sebelum migrasi ke v6',
+        amount: 4,
+      );
+      await v5.customStatement('PRAGMA user_version = 5');
+      await v5.close();
+
+      final upgraded = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(upgraded.close);
+
+      final check = await verifyMigration(
+        upgraded,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final packagedRows = await upgraded
+          .select(upgraded.packagedFoodProperties)
+          .get();
+      expect(
+        packagedRows,
+        isEmpty,
+        reason: 'tabel sifat produk kemasan baru dan kosong pada migrasi',
+      );
+
+      final foods = await upgraded.select(upgraded.foods).get();
+      expect(foods.map((f) => f.id), contains(foodId));
+
+      final entries = await upgraded.select(upgraded.mealEntries).get();
+      expect(entries, hasLength(1));
+      final entryItems = await upgraded.select(upgraded.mealEntryItems).get();
+      expect(entryItems, hasLength(1));
+      expect(entryItems.single.foodId, foodId);
+
+      final harnessDao = HarnessRecordDao(
+        upgraded,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await harnessDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Sebelum migrasi ke v6');
+
+      final profiles = await upgraded.select(upgraded.profiles).get();
+      expect(profiles, hasLength(1));
+      expect(profiles.single.id, 'profile-v5');
+    });
+
+    test('migrasi versi 5 ke 6 yang terputus di tengah tidak merusak data '
+        'dan percobaan berikutnya berhasil', () async {
+      final file = databaseFile();
+
+      final v5 = legacy5.LegacyV5Database(NativeDatabase(file));
+      await _insertLegacyHarnessRecordV5(
+        v5,
+        id: 'legacy-v5-harness-2',
+        label: 'Harus selamat lintas migrasi v6',
+        amount: 1,
+      );
+      await v5.customStatement('PRAGMA user_version = 5');
+      await v5.close();
+
+      // Simulasi migrasi v5→v6 yang terhenti: tabel sifat produk kemasan
+      // mulai dibuat di dalam transaksi, lalu prosesnya berhenti sebelum
+      // selesai.
+      final interrupted = legacy5.LegacyV5Database(NativeDatabase(file));
+      await expectLater(
+        interrupted.transaction(() async {
+          await interrupted.customStatement(
+            'CREATE TABLE packaged_food_properties_wip (id TEXT NOT NULL)',
+          );
+          throw const _SimulatedInterruption();
+        }),
+        throwsA(isA<_SimulatedInterruption>()),
+      );
+      await interrupted.close();
+
+      final retry = createTestDatabase(executor: NativeDatabase(file));
+      addTearDown(retry.close);
+
+      final check = await verifyMigration(
+        retry,
+        expectedSchemaVersion: kSchemaVersion,
+      );
+      expect(check.isHealthy, isTrue);
+
+      final retryDao = HarnessRecordDao(
+        retry,
+        clock: createTestClock(),
+        ids: createTestIds(),
+      );
+      final records = await retryDao.listActive();
+      expect(records, hasLength(1));
+      expect(records.single.label, 'Harus selamat lintas migrasi v6');
+
+      final leftovers = await retry
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name = 'packaged_food_properties_wip'",
+          )
+          .get();
+      expect(leftovers, isEmpty);
+    });
+  });
+
   group('kegagalan inisialisasi penyimpanan', () {
     test('dilaporkan sebagai kegagalan bertipe, bukan exception', () async {
       final result = await openLocalStorage(
@@ -872,6 +993,125 @@ Future<void> _insertLegacyV4Profile(
           onboardingComplete: const Value<bool>(true),
         ),
       );
+}
+
+/// Menyisipkan satu baris harness langsung lewat `LegacyV5Database`.
+Future<void> _insertLegacyHarnessRecordV5(
+  legacy5.LegacyV5Database db, {
+  required String id,
+  required String label,
+  required double amount,
+}) {
+  return db
+      .into(db.harnessRecords)
+      .insert(
+        legacy5.HarnessRecordsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          label: label,
+          amount: amount,
+          localDate: '2026-11-08',
+          timeZoneId: 'Asia/Jakarta',
+        ),
+      );
+}
+
+/// Menyisipkan satu profil langsung lewat `LegacyV5Database` (task 2.6 —
+/// migrasi versi 5 ke 6 SHALL mempertahankan seluruh data versi 5).
+Future<void> _insertLegacyV5Profile(
+  legacy5.LegacyV5Database db, {
+  required String id,
+}) {
+  return db
+      .into(db.profiles)
+      .insert(
+        legacy5.ProfilesCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          onboardingComplete: const Value<bool>(true),
+        ),
+      );
+}
+
+/// Menyisipkan satu makanan buatan pengguna lengkap dengan takaran, nilai
+/// gizi, dan satu catatan buku harian langsung lewat `LegacyV5Database` —
+/// fixture migrasi versi 5 ke 6 (task 2.5/2.6, change 009). Mengembalikan
+/// `foodId` untuk diperiksa setelah migrasi.
+Future<String> _insertLegacyV5UserFood(
+  legacy5.LegacyV5Database db, {
+  required String id,
+  required String profileId,
+}) async {
+  const servingId = 'legacy-v5-serving';
+  await db
+      .into(db.foods)
+      .insert(
+        legacy5.FoodsCompanion.insert(
+          id: id,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          name: 'Makanan sebelum migrasi v6',
+          category: 'other',
+          isUserCreated: const Value<bool>(true),
+        ),
+      );
+  await db
+      .into(db.foodServings)
+      .insert(
+        legacy5.FoodServingsCompanion.insert(
+          id: servingId,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          foodId: id,
+          label: '1 porsi',
+          amount: 1,
+          unit: 'porsi',
+          isDefault: const Value<bool>(true),
+        ),
+      );
+  await db
+      .into(db.nutritionValues)
+      .insert(
+        legacy5.NutritionValuesCompanion.insert(
+          id: 'legacy-v5-nutrition',
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          servingId: servingId,
+          energyKcal: const Value<double?>(120),
+        ),
+      );
+  const entryId = 'legacy-v5-entry';
+  await db
+      .into(db.mealEntries)
+      .insert(
+        legacy5.MealEntriesCompanion.insert(
+          id: entryId,
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          profileId: profileId,
+          localDate: '2026-11-08',
+          mealTime: 'breakfast',
+        ),
+      );
+  await db
+      .into(db.mealEntryItems)
+      .insert(
+        legacy5.MealEntryItemsCompanion.insert(
+          id: 'legacy-v5-entry-item',
+          createdAt: testInstant,
+          updatedAt: testInstant,
+          mealEntryId: entryId,
+          foodId: id,
+          servingId: servingId,
+          quantity: 1,
+          foodNameSnapshot: 'Makanan sebelum migrasi v6',
+          servingLabelSnapshot: '1 porsi',
+          energyKcalSnapshot: const Value<double?>(120),
+        ),
+      );
+  return id;
 }
 
 /// Basis data dengan versi skema yang sengaja berbeda, untuk menguji

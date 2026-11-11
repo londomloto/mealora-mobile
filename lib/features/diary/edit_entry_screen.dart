@@ -67,12 +67,11 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  text.editEntryContextFormat(
+                MealoraBackEyebrow(
+                  label: text.editEntryContextFormat(
                     DiaryFormat.mealTimeLabel(widget.entry.mealTime, text),
                     IdFormat.shortDate(widget.entry.localDate).toUpperCase(),
                   ),
-                  style: MealoraTypography.eyebrow,
                 ),
                 const SizedBox(height: MealoraSpacing.xs),
                 Text(text.editEntryTitle, style: MealoraTypography.title),

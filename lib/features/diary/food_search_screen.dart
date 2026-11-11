@@ -54,10 +54,7 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  text.foodSearchContextLabel,
-                  style: MealoraTypography.eyebrow,
-                ),
+                MealoraBackEyebrow(label: text.foodSearchContextLabel),
                 const SizedBox(height: MealoraSpacing.xs),
                 Text(text.foodSearchTitle, style: MealoraTypography.title),
                 const SizedBox(height: MealoraSpacing.xxs),

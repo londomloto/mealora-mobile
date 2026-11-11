@@ -5,16 +5,17 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/core/clock/clock.dart';
+import 'package:mealora/features/diary/barcode_scan_screen.dart';
 import 'package:mealora/features/diary/food_search_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `02 · Tambah makanan` — pintu masuk pencatatan (task 8.3/8.4).
 ///
-/// Jalur pencarian/input manual selalu tersedia luring. Jalur suara, foto,
-/// dan barcode ditandai belum tersedia dan SHALL TIDAK membuka layar yang
-/// gagal (spec daily-dashboard, "Jalur yang belum tersedia") — change ini
-/// hanya membangun katalog/buku harian (proposal.md "Tidak termasuk"); jalur
-/// suara menyusul pada change 012, foto dan barcode pada change terpisah.
+/// Jalur pencarian/input manual dan barcode (change 009) selalu tersedia
+/// luring untuk produk tersimpan. Jalur suara dan foto ditandai belum
+/// tersedia dan SHALL TIDAK membuka layar yang gagal (spec daily-dashboard,
+/// "Jalur yang belum tersedia") — jalur suara menyusul pada change 012,
+/// foto pada change terpisah.
 Future<void> showAddFoodSheet(BuildContext context, {LocalDate? date}) {
   return showGeneralDialog<void>(
     context: context,
@@ -180,7 +181,14 @@ class _AddFoodSheet extends StatelessWidget {
                       iconForeground: MealoraColors.peach,
                       title: text.addFoodBarcodeTitle,
                       description: text.addFoodBarcodeDescription,
-                      onTap: () => _announceUnavailable(context, text),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => BarcodeScanScreen(date: date),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: MealoraSpacing.lg),
                     Container(

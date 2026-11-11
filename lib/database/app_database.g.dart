@@ -11332,6 +11332,1024 @@ class WeightRecordsCompanion extends UpdateCompanion<WeightRecordRow> {
   }
 }
 
+class $PackagedFoodPropertiesTable extends PackagedFoodProperties
+    with TableInfo<$PackagedFoodPropertiesTable, PackagedFoodPropertiesRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PackagedFoodPropertiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 64,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('local'),
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _foodIdMeta = const VerificationMeta('foodId');
+  @override
+  late final GeneratedColumn<String> foodId = GeneratedColumn<String>(
+    'food_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES foods (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _barcodeMeta = const VerificationMeta(
+    'barcode',
+  );
+  @override
+  late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
+    'barcode',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 8,
+      maxTextLength: 14,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _packageSizeMeta = const VerificationMeta(
+    'packageSize',
+  );
+  @override
+  late final GeneratedColumn<String> packageSize = GeneratedColumn<String>(
+    'package_size',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 40,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _unitsPerPackageMeta = const VerificationMeta(
+    'unitsPerPackage',
+  );
+  @override
+  late final GeneratedColumn<double> unitsPerPackage = GeneratedColumn<double>(
+    'units_per_package',
+    aliasedName,
+    true,
+    check: () => ComparableExpr(unitsPerPackage).isBiggerThanValue(0),
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _servingBasisMeta = const VerificationMeta(
+    'servingBasis',
+  );
+  @override
+  late final GeneratedColumn<String> servingBasis = GeneratedColumn<String>(
+    'serving_basis',
+    aliasedName,
+    false,
+    check: () => servingBasis.isIn(kServingBasisValues),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceTypeMeta = const VerificationMeta(
+    'sourceType',
+  );
+  @override
+  late final GeneratedColumn<String> sourceType = GeneratedColumn<String>(
+    'source_type',
+    aliasedName,
+    false,
+    check: () => sourceType.isIn(kPackagedFoodSourceTypeValues),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 32,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceRefMeta = const VerificationMeta(
+    'sourceRef',
+  );
+  @override
+  late final GeneratedColumn<String> sourceRef = GeneratedColumn<String>(
+    'source_ref',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 64,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceVersionMeta = const VerificationMeta(
+    'sourceVersion',
+  );
+  @override
+  late final GeneratedColumn<String> sourceVersion = GeneratedColumn<String>(
+    'source_version',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 32,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _verifiedAtMeta = const VerificationMeta(
+    'verifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> verifiedAt = GeneratedColumn<DateTime>(
+    'verified_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userCorrectedMeta = const VerificationMeta(
+    'userCorrected',
+  );
+  @override
+  late final GeneratedColumn<bool> userCorrected = GeneratedColumn<bool>(
+    'user_corrected',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("user_corrected" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    foodId,
+    barcode,
+    packageSize,
+    unitsPerPackage,
+    servingBasis,
+    sourceType,
+    sourceRef,
+    sourceVersion,
+    verifiedAt,
+    userCorrected,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'packaged_food_properties';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PackagedFoodPropertiesRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('food_id')) {
+      context.handle(
+        _foodIdMeta,
+        foodId.isAcceptableOrUnknown(data['food_id']!, _foodIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_foodIdMeta);
+    }
+    if (data.containsKey('barcode')) {
+      context.handle(
+        _barcodeMeta,
+        barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_barcodeMeta);
+    }
+    if (data.containsKey('package_size')) {
+      context.handle(
+        _packageSizeMeta,
+        packageSize.isAcceptableOrUnknown(
+          data['package_size']!,
+          _packageSizeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('units_per_package')) {
+      context.handle(
+        _unitsPerPackageMeta,
+        unitsPerPackage.isAcceptableOrUnknown(
+          data['units_per_package']!,
+          _unitsPerPackageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('serving_basis')) {
+      context.handle(
+        _servingBasisMeta,
+        servingBasis.isAcceptableOrUnknown(
+          data['serving_basis']!,
+          _servingBasisMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_servingBasisMeta);
+    }
+    if (data.containsKey('source_type')) {
+      context.handle(
+        _sourceTypeMeta,
+        sourceType.isAcceptableOrUnknown(data['source_type']!, _sourceTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceTypeMeta);
+    }
+    if (data.containsKey('source_ref')) {
+      context.handle(
+        _sourceRefMeta,
+        sourceRef.isAcceptableOrUnknown(data['source_ref']!, _sourceRefMeta),
+      );
+    }
+    if (data.containsKey('source_version')) {
+      context.handle(
+        _sourceVersionMeta,
+        sourceVersion.isAcceptableOrUnknown(
+          data['source_version']!,
+          _sourceVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('verified_at')) {
+      context.handle(
+        _verifiedAtMeta,
+        verifiedAt.isAcceptableOrUnknown(data['verified_at']!, _verifiedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_verifiedAtMeta);
+    }
+    if (data.containsKey('user_corrected')) {
+      context.handle(
+        _userCorrectedMeta,
+        userCorrected.isAcceptableOrUnknown(
+          data['user_corrected']!,
+          _userCorrectedMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PackagedFoodPropertiesRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PackagedFoodPropertiesRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      foodId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}food_id'],
+      )!,
+      barcode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}barcode'],
+      )!,
+      packageSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}package_size'],
+      ),
+      unitsPerPackage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}units_per_package'],
+      ),
+      servingBasis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}serving_basis'],
+      )!,
+      sourceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_type'],
+      )!,
+      sourceRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_ref'],
+      ),
+      sourceVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_version'],
+      ),
+      verifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}verified_at'],
+      )!,
+      userCorrected: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}user_corrected'],
+      )!,
+    );
+  }
+
+  @override
+  $PackagedFoodPropertiesTable createAlias(String alias) {
+    return $PackagedFoodPropertiesTable(attachedDatabase, alias);
+  }
+}
+
+class PackagedFoodPropertiesRow extends DataClass
+    implements Insertable<PackagedFoodPropertiesRow> {
+  /// Pengenal unik global yang dibuat aplikasi, bukan nomor urut basis data.
+  final String id;
+
+  /// Waktu pembuatan (UTC). Tidak pernah berubah setelah record dibuat.
+  final DateTime createdAt;
+
+  /// Waktu pembaruan terakhir (UTC).
+  final DateTime updatedAt;
+
+  /// Penanda terhapus (UTC). `null` berarti record aktif.
+  final DateTime? deletedAt;
+
+  /// Keadaan sinkronisasi. Selalu [kSyncStatusLocal] di MVP 1.
+  final String syncStatus;
+
+  /// Nomor revisi; bertambah satu setiap kali record berubah.
+  final int revision;
+  final String foodId;
+
+  /// Nomor barcode (EAN/UPC) — pengenal pencarian, SHALL TIDAK dipakai
+  /// sebagai sumber nilai gizi (spec, "Barcode adalah pengenal produk,
+  /// bukan sumber nilai gizi").
+  final String barcode;
+
+  /// Label ukuran kemasan sehari-hari (mis. "60 g"). `null` bila tidak
+  /// diketahui dari sumber.
+  final String? packageSize;
+
+  /// Jumlah sajian per kemasan — SHALL terisi untuk [servingBasis]
+  /// `per_serving` (dipakai menghitung "1 kemasan penuh"); boleh kosong
+  /// untuk `per_100g`, yang dihitung dari gram yang benar-benar dimakan,
+  /// bukan jumlah sajian (ditegakkan kode repositori, bukan `CHECK` SQL —
+  /// pola yang sama dengan provenans opsional `Foods`, lihat komentar
+  /// tabel itu).
+  final double? unitsPerPackage;
+
+  /// Basis takaran rekaman INI — disimpan apa adanya, konversi hanya saat
+  /// menghitung jumlah yang dimakan (Design D4). Lihat `ServingBasis`
+  /// (domain/packaged_food).
+  final String servingBasis;
+  final String sourceType;
+
+  /// Pengenal pada sumber (mis. kode produk Open Food Facts) — `null` untuk
+  /// `user_manual`.
+  final String? sourceRef;
+
+  /// Versi/rilis sumber (mis. tanggal ekspor data) — `null` untuk
+  /// `user_manual`.
+  final String? sourceVersion;
+
+  /// Tanggal pengguna meninjau dan mengonfirmasi nilai ini — selalu terisi
+  /// (spec, "Produk ditinjau sebelum dicatat").
+  final DateTime verifiedAt;
+
+  /// `true` ketika pengguna pernah mengoreksi nilai gizi produk ini (Design
+  /// D5) — sumber daring SHALL TIDAK menimpa nilai tanpa persetujuan ketika
+  /// bendera ini menyala (task 4.5).
+  final bool userCorrected;
+  const PackagedFoodPropertiesRow({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.syncStatus,
+    required this.revision,
+    required this.foodId,
+    required this.barcode,
+    this.packageSize,
+    this.unitsPerPackage,
+    required this.servingBasis,
+    required this.sourceType,
+    this.sourceRef,
+    this.sourceVersion,
+    required this.verifiedAt,
+    required this.userCorrected,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    map['revision'] = Variable<int>(revision);
+    map['food_id'] = Variable<String>(foodId);
+    map['barcode'] = Variable<String>(barcode);
+    if (!nullToAbsent || packageSize != null) {
+      map['package_size'] = Variable<String>(packageSize);
+    }
+    if (!nullToAbsent || unitsPerPackage != null) {
+      map['units_per_package'] = Variable<double>(unitsPerPackage);
+    }
+    map['serving_basis'] = Variable<String>(servingBasis);
+    map['source_type'] = Variable<String>(sourceType);
+    if (!nullToAbsent || sourceRef != null) {
+      map['source_ref'] = Variable<String>(sourceRef);
+    }
+    if (!nullToAbsent || sourceVersion != null) {
+      map['source_version'] = Variable<String>(sourceVersion);
+    }
+    map['verified_at'] = Variable<DateTime>(verifiedAt);
+    map['user_corrected'] = Variable<bool>(userCorrected);
+    return map;
+  }
+
+  PackagedFoodPropertiesCompanion toCompanion(bool nullToAbsent) {
+    return PackagedFoodPropertiesCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+      revision: Value(revision),
+      foodId: Value(foodId),
+      barcode: Value(barcode),
+      packageSize: packageSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(packageSize),
+      unitsPerPackage: unitsPerPackage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitsPerPackage),
+      servingBasis: Value(servingBasis),
+      sourceType: Value(sourceType),
+      sourceRef: sourceRef == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceRef),
+      sourceVersion: sourceVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceVersion),
+      verifiedAt: Value(verifiedAt),
+      userCorrected: Value(userCorrected),
+    );
+  }
+
+  factory PackagedFoodPropertiesRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PackagedFoodPropertiesRow(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+      revision: serializer.fromJson<int>(json['revision']),
+      foodId: serializer.fromJson<String>(json['foodId']),
+      barcode: serializer.fromJson<String>(json['barcode']),
+      packageSize: serializer.fromJson<String?>(json['packageSize']),
+      unitsPerPackage: serializer.fromJson<double?>(json['unitsPerPackage']),
+      servingBasis: serializer.fromJson<String>(json['servingBasis']),
+      sourceType: serializer.fromJson<String>(json['sourceType']),
+      sourceRef: serializer.fromJson<String?>(json['sourceRef']),
+      sourceVersion: serializer.fromJson<String?>(json['sourceVersion']),
+      verifiedAt: serializer.fromJson<DateTime>(json['verifiedAt']),
+      userCorrected: serializer.fromJson<bool>(json['userCorrected']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+      'revision': serializer.toJson<int>(revision),
+      'foodId': serializer.toJson<String>(foodId),
+      'barcode': serializer.toJson<String>(barcode),
+      'packageSize': serializer.toJson<String?>(packageSize),
+      'unitsPerPackage': serializer.toJson<double?>(unitsPerPackage),
+      'servingBasis': serializer.toJson<String>(servingBasis),
+      'sourceType': serializer.toJson<String>(sourceType),
+      'sourceRef': serializer.toJson<String?>(sourceRef),
+      'sourceVersion': serializer.toJson<String?>(sourceVersion),
+      'verifiedAt': serializer.toJson<DateTime>(verifiedAt),
+      'userCorrected': serializer.toJson<bool>(userCorrected),
+    };
+  }
+
+  PackagedFoodPropertiesRow copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    String? syncStatus,
+    int? revision,
+    String? foodId,
+    String? barcode,
+    Value<String?> packageSize = const Value.absent(),
+    Value<double?> unitsPerPackage = const Value.absent(),
+    String? servingBasis,
+    String? sourceType,
+    Value<String?> sourceRef = const Value.absent(),
+    Value<String?> sourceVersion = const Value.absent(),
+    DateTime? verifiedAt,
+    bool? userCorrected,
+  }) => PackagedFoodPropertiesRow(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+    revision: revision ?? this.revision,
+    foodId: foodId ?? this.foodId,
+    barcode: barcode ?? this.barcode,
+    packageSize: packageSize.present ? packageSize.value : this.packageSize,
+    unitsPerPackage: unitsPerPackage.present
+        ? unitsPerPackage.value
+        : this.unitsPerPackage,
+    servingBasis: servingBasis ?? this.servingBasis,
+    sourceType: sourceType ?? this.sourceType,
+    sourceRef: sourceRef.present ? sourceRef.value : this.sourceRef,
+    sourceVersion: sourceVersion.present
+        ? sourceVersion.value
+        : this.sourceVersion,
+    verifiedAt: verifiedAt ?? this.verifiedAt,
+    userCorrected: userCorrected ?? this.userCorrected,
+  );
+  PackagedFoodPropertiesRow copyWithCompanion(
+    PackagedFoodPropertiesCompanion data,
+  ) {
+    return PackagedFoodPropertiesRow(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      foodId: data.foodId.present ? data.foodId.value : this.foodId,
+      barcode: data.barcode.present ? data.barcode.value : this.barcode,
+      packageSize: data.packageSize.present
+          ? data.packageSize.value
+          : this.packageSize,
+      unitsPerPackage: data.unitsPerPackage.present
+          ? data.unitsPerPackage.value
+          : this.unitsPerPackage,
+      servingBasis: data.servingBasis.present
+          ? data.servingBasis.value
+          : this.servingBasis,
+      sourceType: data.sourceType.present
+          ? data.sourceType.value
+          : this.sourceType,
+      sourceRef: data.sourceRef.present ? data.sourceRef.value : this.sourceRef,
+      sourceVersion: data.sourceVersion.present
+          ? data.sourceVersion.value
+          : this.sourceVersion,
+      verifiedAt: data.verifiedAt.present
+          ? data.verifiedAt.value
+          : this.verifiedAt,
+      userCorrected: data.userCorrected.present
+          ? data.userCorrected.value
+          : this.userCorrected,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PackagedFoodPropertiesRow(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('foodId: $foodId, ')
+          ..write('barcode: $barcode, ')
+          ..write('packageSize: $packageSize, ')
+          ..write('unitsPerPackage: $unitsPerPackage, ')
+          ..write('servingBasis: $servingBasis, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('sourceRef: $sourceRef, ')
+          ..write('sourceVersion: $sourceVersion, ')
+          ..write('verifiedAt: $verifiedAt, ')
+          ..write('userCorrected: $userCorrected')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    foodId,
+    barcode,
+    packageSize,
+    unitsPerPackage,
+    servingBasis,
+    sourceType,
+    sourceRef,
+    sourceVersion,
+    verifiedAt,
+    userCorrected,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PackagedFoodPropertiesRow &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus &&
+          other.revision == this.revision &&
+          other.foodId == this.foodId &&
+          other.barcode == this.barcode &&
+          other.packageSize == this.packageSize &&
+          other.unitsPerPackage == this.unitsPerPackage &&
+          other.servingBasis == this.servingBasis &&
+          other.sourceType == this.sourceType &&
+          other.sourceRef == this.sourceRef &&
+          other.sourceVersion == this.sourceVersion &&
+          other.verifiedAt == this.verifiedAt &&
+          other.userCorrected == this.userCorrected);
+}
+
+class PackagedFoodPropertiesCompanion
+    extends UpdateCompanion<PackagedFoodPropertiesRow> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> revision;
+  final Value<String> foodId;
+  final Value<String> barcode;
+  final Value<String?> packageSize;
+  final Value<double?> unitsPerPackage;
+  final Value<String> servingBasis;
+  final Value<String> sourceType;
+  final Value<String?> sourceRef;
+  final Value<String?> sourceVersion;
+  final Value<DateTime> verifiedAt;
+  final Value<bool> userCorrected;
+  final Value<int> rowid;
+  const PackagedFoodPropertiesCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.foodId = const Value.absent(),
+    this.barcode = const Value.absent(),
+    this.packageSize = const Value.absent(),
+    this.unitsPerPackage = const Value.absent(),
+    this.servingBasis = const Value.absent(),
+    this.sourceType = const Value.absent(),
+    this.sourceRef = const Value.absent(),
+    this.sourceVersion = const Value.absent(),
+    this.verifiedAt = const Value.absent(),
+    this.userCorrected = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PackagedFoodPropertiesCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    required String foodId,
+    required String barcode,
+    this.packageSize = const Value.absent(),
+    this.unitsPerPackage = const Value.absent(),
+    required String servingBasis,
+    required String sourceType,
+    this.sourceRef = const Value.absent(),
+    this.sourceVersion = const Value.absent(),
+    required DateTime verifiedAt,
+    this.userCorrected = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       foodId = Value(foodId),
+       barcode = Value(barcode),
+       servingBasis = Value(servingBasis),
+       sourceType = Value(sourceType),
+       verifiedAt = Value(verifiedAt);
+  static Insertable<PackagedFoodPropertiesRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? revision,
+    Expression<String>? foodId,
+    Expression<String>? barcode,
+    Expression<String>? packageSize,
+    Expression<double>? unitsPerPackage,
+    Expression<String>? servingBasis,
+    Expression<String>? sourceType,
+    Expression<String>? sourceRef,
+    Expression<String>? sourceVersion,
+    Expression<DateTime>? verifiedAt,
+    Expression<bool>? userCorrected,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (revision != null) 'revision': revision,
+      if (foodId != null) 'food_id': foodId,
+      if (barcode != null) 'barcode': barcode,
+      if (packageSize != null) 'package_size': packageSize,
+      if (unitsPerPackage != null) 'units_per_package': unitsPerPackage,
+      if (servingBasis != null) 'serving_basis': servingBasis,
+      if (sourceType != null) 'source_type': sourceType,
+      if (sourceRef != null) 'source_ref': sourceRef,
+      if (sourceVersion != null) 'source_version': sourceVersion,
+      if (verifiedAt != null) 'verified_at': verifiedAt,
+      if (userCorrected != null) 'user_corrected': userCorrected,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PackagedFoodPropertiesCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<String>? syncStatus,
+    Value<int>? revision,
+    Value<String>? foodId,
+    Value<String>? barcode,
+    Value<String?>? packageSize,
+    Value<double?>? unitsPerPackage,
+    Value<String>? servingBasis,
+    Value<String>? sourceType,
+    Value<String?>? sourceRef,
+    Value<String?>? sourceVersion,
+    Value<DateTime>? verifiedAt,
+    Value<bool>? userCorrected,
+    Value<int>? rowid,
+  }) {
+    return PackagedFoodPropertiesCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      revision: revision ?? this.revision,
+      foodId: foodId ?? this.foodId,
+      barcode: barcode ?? this.barcode,
+      packageSize: packageSize ?? this.packageSize,
+      unitsPerPackage: unitsPerPackage ?? this.unitsPerPackage,
+      servingBasis: servingBasis ?? this.servingBasis,
+      sourceType: sourceType ?? this.sourceType,
+      sourceRef: sourceRef ?? this.sourceRef,
+      sourceVersion: sourceVersion ?? this.sourceVersion,
+      verifiedAt: verifiedAt ?? this.verifiedAt,
+      userCorrected: userCorrected ?? this.userCorrected,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (foodId.present) {
+      map['food_id'] = Variable<String>(foodId.value);
+    }
+    if (barcode.present) {
+      map['barcode'] = Variable<String>(barcode.value);
+    }
+    if (packageSize.present) {
+      map['package_size'] = Variable<String>(packageSize.value);
+    }
+    if (unitsPerPackage.present) {
+      map['units_per_package'] = Variable<double>(unitsPerPackage.value);
+    }
+    if (servingBasis.present) {
+      map['serving_basis'] = Variable<String>(servingBasis.value);
+    }
+    if (sourceType.present) {
+      map['source_type'] = Variable<String>(sourceType.value);
+    }
+    if (sourceRef.present) {
+      map['source_ref'] = Variable<String>(sourceRef.value);
+    }
+    if (sourceVersion.present) {
+      map['source_version'] = Variable<String>(sourceVersion.value);
+    }
+    if (verifiedAt.present) {
+      map['verified_at'] = Variable<DateTime>(verifiedAt.value);
+    }
+    if (userCorrected.present) {
+      map['user_corrected'] = Variable<bool>(userCorrected.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PackagedFoodPropertiesCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('foodId: $foodId, ')
+          ..write('barcode: $barcode, ')
+          ..write('packageSize: $packageSize, ')
+          ..write('unitsPerPackage: $unitsPerPackage, ')
+          ..write('servingBasis: $servingBasis, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('sourceRef: $sourceRef, ')
+          ..write('sourceVersion: $sourceVersion, ')
+          ..write('verifiedAt: $verifiedAt, ')
+          ..write('userCorrected: $userCorrected, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11354,6 +12372,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MealEntriesTable mealEntries = $MealEntriesTable(this);
   late final $MealEntryItemsTable mealEntryItems = $MealEntryItemsTable(this);
   late final $WeightRecordsTable weightRecords = $WeightRecordsTable(this);
+  late final $PackagedFoodPropertiesTable packagedFoodProperties =
+      $PackagedFoodPropertiesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11373,6 +12393,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     mealEntries,
     mealEntryItems,
     weightRecords,
+    packagedFoodProperties,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -11389,6 +12410,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('meal_entry_items', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'foods',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('packaged_food_properties', kind: UpdateKind.delete),
+      ],
     ),
   ]);
   @override
@@ -15707,6 +16737,31 @@ final class $$FoodsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $PackagedFoodPropertiesTable,
+    List<PackagedFoodPropertiesRow>
+  >
+  _packagedFoodPropertiesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.packagedFoodProperties,
+        aliasName: 'foods__id__packaged_food_properties__food_id',
+      );
+
+  $$PackagedFoodPropertiesTableProcessedTableManager
+  get packagedFoodPropertiesRefs {
+    final manager = $$PackagedFoodPropertiesTableTableManager(
+      $_db,
+      $_db.packagedFoodProperties,
+    ).filter((f) => f.foodId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _packagedFoodPropertiesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$FoodsTableFilterComposer extends Composer<_$AppDatabase, $FoodsTable> {
@@ -15834,6 +16889,32 @@ class $$FoodsTableFilterComposer extends Composer<_$AppDatabase, $FoodsTable> {
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> packagedFoodPropertiesRefs(
+    Expression<bool> Function($$PackagedFoodPropertiesTableFilterComposer f) f,
+  ) {
+    final $$PackagedFoodPropertiesTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.packagedFoodProperties,
+          getReferencedColumn: (t) => t.foodId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PackagedFoodPropertiesTableFilterComposer(
+                $db: $db,
+                $table: $db.packagedFoodProperties,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -16028,6 +17109,32 @@ class $$FoodsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> packagedFoodPropertiesRefs<T extends Object>(
+    Expression<T> Function($$PackagedFoodPropertiesTableAnnotationComposer a) f,
+  ) {
+    final $$PackagedFoodPropertiesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.packagedFoodProperties,
+          getReferencedColumn: (t) => t.foodId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PackagedFoodPropertiesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.packagedFoodProperties,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$FoodsTableTableManager
@@ -16046,6 +17153,7 @@ class $$FoodsTableTableManager
           PrefetchHooks Function({
             bool foodServingsRefs,
             bool mealEntryItemsRefs,
+            bool packagedFoodPropertiesRefs,
           })
         > {
   $$FoodsTableTableManager(_$AppDatabase db, $FoodsTable table)
@@ -16134,12 +17242,17 @@ class $$FoodsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({foodServingsRefs = false, mealEntryItemsRefs = false}) {
+              ({
+                foodServingsRefs = false,
+                mealEntryItemsRefs = false,
+                packagedFoodPropertiesRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (foodServingsRefs) db.foodServings,
                     if (mealEntryItemsRefs) db.mealEntryItems,
+                    if (packagedFoodPropertiesRefs) db.packagedFoodProperties,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -16186,6 +17299,27 @@ class $$FoodsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (packagedFoodPropertiesRefs)
+                        await $_getPrefetchedData<
+                          FoodRow,
+                          $FoodsTable,
+                          PackagedFoodPropertiesRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$FoodsTableReferences
+                              ._packagedFoodPropertiesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$FoodsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).packagedFoodPropertiesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.foodId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -16206,7 +17340,11 @@ typedef $$FoodsTableProcessedTableManager =
       $$FoodsTableUpdateCompanionBuilder,
       (FoodRow, $$FoodsTableReferences),
       FoodRow,
-      PrefetchHooks Function({bool foodServingsRefs, bool mealEntryItemsRefs})
+      PrefetchHooks Function({
+        bool foodServingsRefs,
+        bool mealEntryItemsRefs,
+        bool packagedFoodPropertiesRefs,
+      })
     >;
 typedef $$FoodServingsTableCreateCompanionBuilder =
     FoodServingsCompanion Function({
@@ -19028,6 +20166,570 @@ typedef $$WeightRecordsTableProcessedTableManager =
       WeightRecordRow,
       PrefetchHooks Function({bool profileId})
     >;
+typedef $$PackagedFoodPropertiesTableCreateCompanionBuilder =
+    PackagedFoodPropertiesCompanion Function({
+      required String id,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      required String foodId,
+      required String barcode,
+      Value<String?> packageSize,
+      Value<double?> unitsPerPackage,
+      required String servingBasis,
+      required String sourceType,
+      Value<String?> sourceRef,
+      Value<String?> sourceVersion,
+      required DateTime verifiedAt,
+      Value<bool> userCorrected,
+      Value<int> rowid,
+    });
+typedef $$PackagedFoodPropertiesTableUpdateCompanionBuilder =
+    PackagedFoodPropertiesCompanion Function({
+      Value<String> id,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      Value<String> foodId,
+      Value<String> barcode,
+      Value<String?> packageSize,
+      Value<double?> unitsPerPackage,
+      Value<String> servingBasis,
+      Value<String> sourceType,
+      Value<String?> sourceRef,
+      Value<String?> sourceVersion,
+      Value<DateTime> verifiedAt,
+      Value<bool> userCorrected,
+      Value<int> rowid,
+    });
+
+final class $$PackagedFoodPropertiesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PackagedFoodPropertiesTable,
+          PackagedFoodPropertiesRow
+        > {
+  $$PackagedFoodPropertiesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $FoodsTable _foodIdTable(_$AppDatabase db) =>
+      db.foods.createAlias('packaged_food_properties__food_id__foods__id');
+
+  $$FoodsTableProcessedTableManager get foodId {
+    final $_column = $_itemColumn<String>('food_id')!;
+
+    final manager = $$FoodsTableTableManager(
+      $_db,
+      $_db.foods,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_foodIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PackagedFoodPropertiesTableFilterComposer
+    extends Composer<_$AppDatabase, $PackagedFoodPropertiesTable> {
+  $$PackagedFoodPropertiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get barcode => $composableBuilder(
+    column: $table.barcode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get packageSize => $composableBuilder(
+    column: $table.packageSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get unitsPerPackage => $composableBuilder(
+    column: $table.unitsPerPackage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get servingBasis => $composableBuilder(
+    column: $table.servingBasis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceType => $composableBuilder(
+    column: $table.sourceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceRef => $composableBuilder(
+    column: $table.sourceRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceVersion => $composableBuilder(
+    column: $table.sourceVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get userCorrected => $composableBuilder(
+    column: $table.userCorrected,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$FoodsTableFilterComposer get foodId {
+    final $$FoodsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.foodId,
+      referencedTable: $db.foods,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoodsTableFilterComposer(
+            $db: $db,
+            $table: $db.foods,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PackagedFoodPropertiesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PackagedFoodPropertiesTable> {
+  $$PackagedFoodPropertiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get barcode => $composableBuilder(
+    column: $table.barcode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get packageSize => $composableBuilder(
+    column: $table.packageSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get unitsPerPackage => $composableBuilder(
+    column: $table.unitsPerPackage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get servingBasis => $composableBuilder(
+    column: $table.servingBasis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceType => $composableBuilder(
+    column: $table.sourceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceRef => $composableBuilder(
+    column: $table.sourceRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceVersion => $composableBuilder(
+    column: $table.sourceVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get userCorrected => $composableBuilder(
+    column: $table.userCorrected,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$FoodsTableOrderingComposer get foodId {
+    final $$FoodsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.foodId,
+      referencedTable: $db.foods,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoodsTableOrderingComposer(
+            $db: $db,
+            $table: $db.foods,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PackagedFoodPropertiesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PackagedFoodPropertiesTable> {
+  $$PackagedFoodPropertiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<String> get barcode =>
+      $composableBuilder(column: $table.barcode, builder: (column) => column);
+
+  GeneratedColumn<String> get packageSize => $composableBuilder(
+    column: $table.packageSize,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get unitsPerPackage => $composableBuilder(
+    column: $table.unitsPerPackage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get servingBasis => $composableBuilder(
+    column: $table.servingBasis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceType => $composableBuilder(
+    column: $table.sourceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceRef =>
+      $composableBuilder(column: $table.sourceRef, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceVersion => $composableBuilder(
+    column: $table.sourceVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get userCorrected => $composableBuilder(
+    column: $table.userCorrected,
+    builder: (column) => column,
+  );
+
+  $$FoodsTableAnnotationComposer get foodId {
+    final $$FoodsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.foodId,
+      referencedTable: $db.foods,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoodsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.foods,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PackagedFoodPropertiesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PackagedFoodPropertiesTable,
+          PackagedFoodPropertiesRow,
+          $$PackagedFoodPropertiesTableFilterComposer,
+          $$PackagedFoodPropertiesTableOrderingComposer,
+          $$PackagedFoodPropertiesTableAnnotationComposer,
+          $$PackagedFoodPropertiesTableCreateCompanionBuilder,
+          $$PackagedFoodPropertiesTableUpdateCompanionBuilder,
+          (PackagedFoodPropertiesRow, $$PackagedFoodPropertiesTableReferences),
+          PackagedFoodPropertiesRow,
+          PrefetchHooks Function({bool foodId})
+        > {
+  $$PackagedFoodPropertiesTableTableManager(
+    _$AppDatabase db,
+    $PackagedFoodPropertiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PackagedFoodPropertiesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$PackagedFoodPropertiesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PackagedFoodPropertiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String> foodId = const Value.absent(),
+                Value<String> barcode = const Value.absent(),
+                Value<String?> packageSize = const Value.absent(),
+                Value<double?> unitsPerPackage = const Value.absent(),
+                Value<String> servingBasis = const Value.absent(),
+                Value<String> sourceType = const Value.absent(),
+                Value<String?> sourceRef = const Value.absent(),
+                Value<String?> sourceVersion = const Value.absent(),
+                Value<DateTime> verifiedAt = const Value.absent(),
+                Value<bool> userCorrected = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PackagedFoodPropertiesCompanion(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                foodId: foodId,
+                barcode: barcode,
+                packageSize: packageSize,
+                unitsPerPackage: unitsPerPackage,
+                servingBasis: servingBasis,
+                sourceType: sourceType,
+                sourceRef: sourceRef,
+                sourceVersion: sourceVersion,
+                verifiedAt: verifiedAt,
+                userCorrected: userCorrected,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                required String foodId,
+                required String barcode,
+                Value<String?> packageSize = const Value.absent(),
+                Value<double?> unitsPerPackage = const Value.absent(),
+                required String servingBasis,
+                required String sourceType,
+                Value<String?> sourceRef = const Value.absent(),
+                Value<String?> sourceVersion = const Value.absent(),
+                required DateTime verifiedAt,
+                Value<bool> userCorrected = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PackagedFoodPropertiesCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                foodId: foodId,
+                barcode: barcode,
+                packageSize: packageSize,
+                unitsPerPackage: unitsPerPackage,
+                servingBasis: servingBasis,
+                sourceType: sourceType,
+                sourceRef: sourceRef,
+                sourceVersion: sourceVersion,
+                verifiedAt: verifiedAt,
+                userCorrected: userCorrected,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PackagedFoodPropertiesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({foodId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (foodId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.foodId,
+                                referencedTable:
+                                    $$PackagedFoodPropertiesTableReferences
+                                        ._foodIdTable(db),
+                                referencedColumn:
+                                    $$PackagedFoodPropertiesTableReferences
+                                        ._foodIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PackagedFoodPropertiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PackagedFoodPropertiesTable,
+      PackagedFoodPropertiesRow,
+      $$PackagedFoodPropertiesTableFilterComposer,
+      $$PackagedFoodPropertiesTableOrderingComposer,
+      $$PackagedFoodPropertiesTableAnnotationComposer,
+      $$PackagedFoodPropertiesTableCreateCompanionBuilder,
+      $$PackagedFoodPropertiesTableUpdateCompanionBuilder,
+      (PackagedFoodPropertiesRow, $$PackagedFoodPropertiesTableReferences),
+      PackagedFoodPropertiesRow,
+      PrefetchHooks Function({bool foodId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19060,4 +20762,9 @@ class $AppDatabaseManager {
       $$MealEntryItemsTableTableManager(_db, _db.mealEntryItems);
   $$WeightRecordsTableTableManager get weightRecords =>
       $$WeightRecordsTableTableManager(_db, _db.weightRecords);
+  $$PackagedFoodPropertiesTableTableManager get packagedFoodProperties =>
+      $$PackagedFoodPropertiesTableTableManager(
+        _db,
+        _db.packagedFoodProperties,
+      );
 }

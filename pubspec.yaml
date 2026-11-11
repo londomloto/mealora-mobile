@@ -28,6 +28,15 @@ dependencies:
   flutter_timezone: ^5.1.1
   sqlite3: ">=3.4.0 <3.5.0"
 
+  # Pencarian daring OPSIONAL produk kemasan (Open Food Facts), hanya
+  # ketika barcode tidak ketemu di perangkat (change 009, Design D1-D3).
+  # Satu-satunya pemakaian jaringan di aplikasi; dipagari ke SATU berkas
+  # oleh test/unit/architecture/layer_rules_test.dart.
+  http: ^1.6.0
+
+  # Pemindai barcode kamera (change 009, task 5.1).
+  mobile_scanner: ^7.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -25,9 +25,9 @@ void main() {
 
   group('search (task 3.2)', () {
     test('mengabaikan huruf besar-kecil', () async {
-      final lower = await repository.search('nasi putih');
-      final upper = await repository.search('NASI PUTIH');
-      final mixed = await repository.search('Nasi Putih');
+      final lower = await repository.search('nasi');
+      final upper = await repository.search('NASI');
+      final mixed = await repository.search('Nasi');
 
       expect(lower.map((f) => f.id), upper.map((f) => f.id));
       expect(lower.map((f) => f.id), mixed.map((f) => f.id));
@@ -36,7 +36,7 @@ void main() {
 
     test('mencocokkan bagian mana pun dari nama', () async {
       final results = await repository.search('putih');
-      expect(results.map((f) => f.name), contains('Nasi putih'));
+      expect(results.map((f) => f.name), contains('Bawang Putih'));
     });
 
     test('mendahulukan kecocokan di awal nama', () async {

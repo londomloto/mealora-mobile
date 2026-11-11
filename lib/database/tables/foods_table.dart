@@ -33,7 +33,7 @@ class Foods extends Table with UserRecordColumns {
   BoolColumn get isUserCreated =>
       boolean().withDefault(const Constant(false))();
 
-  /// Jenis sumber (mis. `usda_fdc`) — lihat
+  /// Jenis sumber (mis. `usda_fdc`, `tkpi`) — lihat
   /// `mealora-plans/docs/food-data-sources.md`.
   TextColumn get sourceType => text().withLength(min: 1, max: 32).nullable()();
 

@@ -8,6 +8,42 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
+/// Baris eyebrow dengan tombol kembali (`Navigator.pop`), untuk layar yang
+/// dibuka lewat `Navigator.push` dan memakai header eyebrow/judul/subjudul
+/// alih-alih `AppBar` (mis. layar tinjau atau isian).
+///
+/// Layar seperti ini SHALL selalu menawarkan jalan kembali yang terlihat —
+/// gestur kembali OS/browser tidak selalu ada (tidak ada sama sekali di
+/// target web). Jangan dipakai pada ruang utama navigasi bawah (tidak
+/// pernah di-push, tidak pernah perlu kembali).
+class MealoraBackEyebrow extends StatelessWidget {
+  const MealoraBackEyebrow({required this.label, super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    return Row(
+      children: <Widget>[
+        Semantics(
+          button: true,
+          label: text.backButtonSemantics,
+          child: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            borderRadius: BorderRadius.circular(MealoraRadius.pill),
+            child: const Padding(
+              padding: EdgeInsets.all(MealoraSpacing.xxs),
+              child: Icon(Icons.arrow_back, color: MealoraColors.ink),
+            ),
+          ),
+        ),
+        Expanded(child: Text(label, style: MealoraTypography.eyebrow)),
+      ],
+    );
+  }
+}
+
 /// Bidang hero bersama untuk tiga tab utama. Menyatukan tinggi, gradien,
 /// radius, dan glow agar perpindahan Hari ini ↔ Program ↔ Riwayat tidak
 /// terasa meloncat.

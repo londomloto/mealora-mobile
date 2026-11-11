@@ -72,10 +72,7 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  text.servingDetailContextLabel,
-                  style: MealoraTypography.eyebrow,
-                ),
+                MealoraBackEyebrow(label: text.servingDetailContextLabel),
                 const SizedBox(height: MealoraSpacing.xs),
                 Text(widget.food.name, style: MealoraTypography.title),
                 const SizedBox(height: MealoraSpacing.xxs),

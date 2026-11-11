@@ -3,10 +3,12 @@ import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/data/local/drift_diary_repository.dart';
 import 'package:mealora/data/local/drift_food_repository.dart';
+import 'package:mealora/data/local/drift_packaged_food_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/drift_weight_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
+import 'package:mealora/data/remote/openfoodfacts_product_client.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
@@ -133,6 +135,20 @@ final Override weightRepositoryAppOverride = weightRepositoryProvider
             ids: ref.watch(idGeneratorProvider),
           ),
         ),
+      ),
+    );
+
+/// Menimpa `packagedFoodRepositoryProvider` (features/diary, change 009)
+/// dengan implementasi Drift sungguhan, memakai `OpenFoodFactsProductClient`
+/// di baliknya (Design D2) — pencarian daring opsional, hanya dipanggil
+/// ketika barcode tidak ketemu di perangkat.
+final Override packagedFoodRepositoryAppOverride =
+    packagedFoodRepositoryProvider.overrideWith(
+      (ref) => DriftPackagedFoodRepository(
+        ref.watch(appDatabaseProvider),
+        ids: ref.watch(idGeneratorProvider),
+        clock: ref.watch(clockProvider),
+        client: OpenFoodFactsProductClient(),
       ),
     );
 

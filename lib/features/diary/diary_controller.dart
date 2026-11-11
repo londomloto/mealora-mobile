@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/domain/diary/diary_repository.dart';
 import 'package:mealora/domain/food/food_repository.dart';
+import 'package:mealora/domain/packaged_food/packaged_food_repository.dart';
 
 /// Diinjeksi di `main.dart`/pengujian, mengikuti pola `profileRepositoryProvider`
 /// (features/onboarding, change 005).
@@ -17,6 +18,16 @@ final Provider<DiaryRepository> diaryRepositoryProvider =
     Provider<DiaryRepository>(
       (ref) => throw UnimplementedError(
         'diaryRepositoryProvider harus ditimpa di ProviderScope '
+        '(lihat lib/main.dart dan test/).',
+      ),
+    );
+
+/// Diinjeksi di `main.dart`/pengujian, sama seperti [foodRepositoryProvider]
+/// (change 009).
+final Provider<PackagedFoodRepository> packagedFoodRepositoryProvider =
+    Provider<PackagedFoodRepository>(
+      (ref) => throw UnimplementedError(
+        'packagedFoodRepositoryProvider harus ditimpa di ProviderScope '
         '(lihat lib/main.dart dan test/).',
       ),
     );
