@@ -9,7 +9,10 @@ import 'package:mealora/core/clock/fixed_clock.dart';
 import 'package:mealora/core/ids/sequential_id_generator.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/database/app_database.dart';
+import 'package:mealora/domain/reminders/reminder_scheduler.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
+
+import '../support/fake_reminder_gateway.dart';
 
 /// Ukuran layar acuan desain (`docs/mealora.pen`).
 const Size kDesignViewport = Size(390, 844);
@@ -34,12 +37,16 @@ Widget wrapForTest(
   AppDatabase? database,
   double textScale = 1,
   List<Override> overrides = const <Override>[],
+  ReminderNotificationGateway? reminderGateway,
 }) {
   return ProviderScope(
     overrides: <Override>[
       clockProvider.overrideWithValue(createWidgetTestClock()),
       idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
       if (database != null) appDatabaseProvider.overrideWithValue(database),
+      reminderNotificationGatewayProvider.overrideWithValue(
+        reminderGateway ?? FakeReminderGateway(),
+      ),
       ...overrides,
     ],
     child: MaterialApp(

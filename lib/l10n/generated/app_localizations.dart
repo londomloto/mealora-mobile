@@ -4898,6 +4898,378 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Perbaiki kalimatnya, atau cari makanannya di katalog. Tidak ada yang dicatat.'**
   String get voiceParseNothingFoundBody;
+
+  /// No description provided for @profileRemindersAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get profileRemindersAction;
+
+  /// No description provided for @profileRemindersOff.
+  ///
+  /// In id, this message translates to:
+  /// **'Mati'**
+  String get profileRemindersOff;
+
+  /// No description provided for @profileRemindersOnCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} menyala'**
+  String profileRemindersOnCount(int count);
+
+  /// No description provided for @remindersContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PENGINGAT'**
+  String get remindersContextLabel;
+
+  /// No description provided for @remindersTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get remindersTitle;
+
+  /// No description provided for @remindersSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi muncul di HP ini saja. Waktunya bisa bergeser beberapa menit.'**
+  String get remindersSubtitle;
+
+  /// No description provided for @remindersMealsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam makan'**
+  String get remindersMealsHeading;
+
+  /// No description provided for @remindersBreakfast.
+  ///
+  /// In id, this message translates to:
+  /// **'Sarapan'**
+  String get remindersBreakfast;
+
+  /// No description provided for @remindersLunch.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan siang'**
+  String get remindersLunch;
+
+  /// No description provided for @remindersSnack.
+  ///
+  /// In id, this message translates to:
+  /// **'Camilan'**
+  String get remindersSnack;
+
+  /// No description provided for @remindersDinner.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan malam'**
+  String get remindersDinner;
+
+  /// No description provided for @remindersWeighHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Timbang berat'**
+  String get remindersWeighHeading;
+
+  /// No description provided for @remindersWeighLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Timbang berat'**
+  String get remindersWeighLabel;
+
+  /// No description provided for @remindersWeighDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Seminggu sekali'**
+  String get remindersWeighDetail;
+
+  /// No description provided for @remindersWeighTimeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam'**
+  String get remindersWeighTimeLabel;
+
+  /// No description provided for @remindersWeekdayShortMon.
+  ///
+  /// In id, this message translates to:
+  /// **'S'**
+  String get remindersWeekdayShortMon;
+
+  /// No description provided for @remindersWeekdayShortTue.
+  ///
+  /// In id, this message translates to:
+  /// **'S'**
+  String get remindersWeekdayShortTue;
+
+  /// No description provided for @remindersWeekdayShortWed.
+  ///
+  /// In id, this message translates to:
+  /// **'R'**
+  String get remindersWeekdayShortWed;
+
+  /// No description provided for @remindersWeekdayShortThu.
+  ///
+  /// In id, this message translates to:
+  /// **'K'**
+  String get remindersWeekdayShortThu;
+
+  /// No description provided for @remindersWeekdayShortFri.
+  ///
+  /// In id, this message translates to:
+  /// **'J'**
+  String get remindersWeekdayShortFri;
+
+  /// No description provided for @remindersWeekdayShortSat.
+  ///
+  /// In id, this message translates to:
+  /// **'S'**
+  String get remindersWeekdayShortSat;
+
+  /// No description provided for @remindersWeekdayShortSun.
+  ///
+  /// In id, this message translates to:
+  /// **'M'**
+  String get remindersWeekdayShortSun;
+
+  /// No description provided for @remindersWeekdayMon.
+  ///
+  /// In id, this message translates to:
+  /// **'Senin'**
+  String get remindersWeekdayMon;
+
+  /// No description provided for @remindersWeekdayTue.
+  ///
+  /// In id, this message translates to:
+  /// **'Selasa'**
+  String get remindersWeekdayTue;
+
+  /// No description provided for @remindersWeekdayWed.
+  ///
+  /// In id, this message translates to:
+  /// **'Rabu'**
+  String get remindersWeekdayWed;
+
+  /// No description provided for @remindersWeekdayThu.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamis'**
+  String get remindersWeekdayThu;
+
+  /// No description provided for @remindersWeekdayFri.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumat'**
+  String get remindersWeekdayFri;
+
+  /// No description provided for @remindersWeekdaySat.
+  ///
+  /// In id, this message translates to:
+  /// **'Sabtu'**
+  String get remindersWeekdaySat;
+
+  /// No description provided for @remindersWeekdaySun.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu'**
+  String get remindersWeekdaySun;
+
+  /// No description provided for @remindersBedtimeHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam tidur'**
+  String get remindersBedtimeHeading;
+
+  /// No description provided for @remindersBedtimeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam tidur'**
+  String get remindersBedtimeLabel;
+
+  /// No description provided for @remindersBedtimeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai untuk mengingatkan saat kamu mencatat makan menjelang tidur.'**
+  String get remindersBedtimeNote;
+
+  /// No description provided for @remindersBlockedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi diblokir. Pengingat tidak bisa muncul sampai kamu mengizinkannya.'**
+  String get remindersBlockedBody;
+
+  /// No description provided for @remindersBlockedAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka pengaturan'**
+  String get remindersBlockedAction;
+
+  /// No description provided for @remindersToggleSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat {name}'**
+  String remindersToggleSemantics(String name);
+
+  /// No description provided for @remindersTimeSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah jam {name}, sekarang {time}'**
+  String remindersTimeSemantics(String name, String time);
+
+  /// No description provided for @remindersTimePickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jam'**
+  String get remindersTimePickerTitle;
+
+  /// No description provided for @remindersTimePickerDaily.
+  ///
+  /// In id, this message translates to:
+  /// **'{name} · pengingat harian'**
+  String remindersTimePickerDaily(String name);
+
+  /// No description provided for @remindersTimePickerWeekly.
+  ///
+  /// In id, this message translates to:
+  /// **'Timbang berat · pengingat mingguan'**
+  String get remindersTimePickerWeekly;
+
+  /// No description provided for @remindersTimePickerBedtime.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam tidur · untuk peringatan makan larut'**
+  String get remindersTimePickerBedtime;
+
+  /// No description provided for @remindersTimePickerNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu notifikasi bisa bergeser beberapa menit mengikuti penghematan baterai.'**
+  String get remindersTimePickerNote;
+
+  /// No description provided for @remindersTimePickerCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get remindersTimePickerCancel;
+
+  /// No description provided for @remindersTimePickerSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get remindersTimePickerSave;
+
+  /// No description provided for @remindersPermissionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan notifikasi?'**
+  String get remindersPermissionTitle;
+
+  /// No description provided for @remindersPermissionBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora butuh izin agar pengingat bisa muncul. Kamu bisa mematikannya kapan saja.'**
+  String get remindersPermissionBody;
+
+  /// No description provided for @remindersPermissionLocalNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat dibuat di HP ini. Tidak ada data yang dikirim.'**
+  String get remindersPermissionLocalNote;
+
+  /// No description provided for @remindersPermissionLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti'**
+  String get remindersPermissionLater;
+
+  /// No description provided for @remindersPermissionContinue.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get remindersPermissionContinue;
+
+  /// No description provided for @reminderChannelName.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get reminderChannelName;
+
+  /// No description provided for @reminderChannelDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat jam makan dan timbang berat'**
+  String get reminderChannelDescription;
+
+  /// No description provided for @reminderBreakfastTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktunya sarapan'**
+  String get reminderBreakfastTitle;
+
+  /// No description provided for @reminderBreakfastBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan lupa catat sarapanmu di Mealora.'**
+  String get reminderBreakfastBody;
+
+  /// No description provided for @reminderLunchTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktunya makan siang'**
+  String get reminderLunchTitle;
+
+  /// No description provided for @reminderLunchBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan lupa catat makan siangmu di Mealora.'**
+  String get reminderLunchBody;
+
+  /// No description provided for @reminderSnackTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktunya camilan'**
+  String get reminderSnackTitle;
+
+  /// No description provided for @reminderSnackBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan lupa catat camilanmu di Mealora.'**
+  String get reminderSnackBody;
+
+  /// No description provided for @reminderDinnerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktunya makan malam'**
+  String get reminderDinnerTitle;
+
+  /// No description provided for @reminderDinnerBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan lupa catat makan malammu di Mealora.'**
+  String get reminderDinnerBody;
+
+  /// No description provided for @reminderWeighTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktunya timbang'**
+  String get reminderWeighTitle;
+
+  /// No description provided for @reminderWeighBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat berat badanmu minggu ini.'**
+  String get reminderWeighBody;
+
+  /// No description provided for @lateMealNoticeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah dekat jam tidur.'**
+  String get lateMealNoticeTitle;
+
+  /// No description provided for @lateMealNoticeBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar.'**
+  String get lateMealNoticeBody;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

@@ -77,4 +77,9 @@ abstract interface class Clock {
 
   /// Tanggal lokal dari [instantUtc] menurut zona waktu perangkat.
   LocalDate localDateOf(DateTime instantUtc);
+
+  /// Waktu dinding lokal saat ini (komponen tahun–menit menurut zona waktu
+  /// perangkat). Dipakai untuk logika berbasis jam, mis. rentang jam tidur
+  /// (change 013) — bukan untuk disimpan.
+  DateTime localNow();
 }

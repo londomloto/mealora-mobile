@@ -22,6 +22,7 @@ import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
 import 'package:mealora/features/diary/packaged_food_providers.dart';
+import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `04 · Tinjau produk kemasan` (tasks 7.1-7.8, change 009): nama, merek,
@@ -349,7 +350,18 @@ class _PackagedFoodReviewScreenState
       setState(() => _saving = false);
       return;
     }
+    // Peringatan jelang tidur (change 013, task 4.3): hanya setelah Ok.
+    final lateMealNotice = ref.read(lateMealNoticeProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    final noticeText = AppText.of(context);
     Navigator.of(context).popUntil((route) => route.isFirst);
+    unawaited(
+      lateMealNotice.maybeShow(
+        messenger: messenger,
+        text: noticeText,
+        date: widget.date,
+      ),
+    );
   }
 
   NutritionProfile _applyCorrections(NutritionProfile original) {

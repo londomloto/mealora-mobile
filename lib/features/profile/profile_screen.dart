@@ -12,6 +12,8 @@ import 'package:mealora/features/profile/privacy_settings_screen.dart';
 import 'package:mealora/features/profile/widgets/settings_list_card.dart';
 import 'package:mealora/features/program/history_screens.dart';
 import 'package:mealora/features/program/program_screen.dart';
+import 'package:mealora/features/reminders/reminder_providers.dart';
+import 'package:mealora/features/reminders/reminders_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `33 · Profil & pengaturan`.
@@ -25,6 +27,8 @@ class ProfileScreen extends ConsumerWidget {
     final name = profile?.nickname?.trim().isNotEmpty == true
         ? profile!.nickname!.trim()
         : text.todayDefaultName;
+    final enabledReminders =
+        ref.watch(reminderSettingsProvider).valueOrNull?.enabledCount ?? 0;
 
     return MealoraBlobBackdrop(
       child: SingleChildScrollView(
@@ -128,6 +132,20 @@ class ProfileScreen extends ConsumerWidget {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const ProgramHistoryListScreen(),
+                    ),
+                  ),
+                ),
+                SettingsListItem(
+                  icon: Icons.notifications_none_rounded,
+                  color: MealoraColors.amberText,
+                  background: MealoraColors.iconFieldAmber,
+                  label: text.profileRemindersAction,
+                  detail: enabledReminders == 0
+                      ? text.profileRemindersOff
+                      : text.profileRemindersOnCount(enabledReminders),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const RemindersScreen(),
                     ),
                   ),
                 ),

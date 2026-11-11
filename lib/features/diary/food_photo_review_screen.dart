@@ -23,6 +23,7 @@ import 'package:mealora/features/diary/food_photo_draft_storage.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
 import 'package:mealora/features/diary/voice_input_shared.dart'
     show voiceUndeterminedLabel;
+import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `03 · Tinjau foto makanan` (task 5.1/5.2/5.8/5.9, change 011): ringkasan
@@ -341,7 +342,18 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
 
     await _discardDraft();
     if (!mounted) return;
+    // Peringatan jelang tidur (change 013, task 4.3): hanya setelah Ok.
+    final lateMealNotice = ref.read(lateMealNoticeProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    final noticeText = AppText.of(context);
     Navigator.of(context).popUntil((route) => route.isFirst);
+    unawaited(
+      lateMealNotice.maybeShow(
+        messenger: messenger,
+        text: noticeText,
+        date: _draft.localDate,
+      ),
+    );
   }
 }
 

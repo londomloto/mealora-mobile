@@ -19,6 +19,7 @@ import 'package:mealora/features/shell/app_shell.dart';
 import 'package:mealora/features/splash/splash_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
+import '../support/fake_reminder_gateway.dart';
 import 'harness.dart';
 
 void main() {
@@ -121,6 +122,9 @@ Widget _bootstrapApp({required AppDatabase Function() databaseFactory}) {
   return ProviderScope(
     overrides: <Override>[
       clockProvider.overrideWithValue(createWidgetTestClock()),
+      reminderNotificationGatewayProvider.overrideWithValue(
+        FakeReminderGateway(),
+      ),
       idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
       databaseFactoryProvider.overrideWithValue(databaseFactory),
       profileRepositoryAppOverride,

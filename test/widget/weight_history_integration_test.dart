@@ -24,6 +24,7 @@ import 'package:mealora/features/shell/floating_navigation.dart';
 import 'package:mealora/features/weight/add_weight_screen.dart';
 import 'package:mealora/features/weight/weight_monitor_screen.dart';
 
+import '../support/fake_reminder_gateway.dart';
 import 'harness.dart';
 
 /// Alur lintas layar (change 008, task 6.6, bagian pencatatan berat):
@@ -96,6 +97,9 @@ void main() {
     final container = ProviderContainer(
       overrides: <Override>[
         clockProvider.overrideWithValue(createWidgetTestClock()),
+        reminderNotificationGatewayProvider.overrideWithValue(
+          FakeReminderGateway(),
+        ),
         idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
         databaseFactoryProvider.overrideWithValue(() => database),
         profileRepositoryAppOverride,

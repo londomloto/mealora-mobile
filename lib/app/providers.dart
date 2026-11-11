@@ -9,6 +9,7 @@ import 'package:mealora/data/local/drift_photo_draft_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/drift_weight_repository.dart';
+import 'package:mealora/data/local/reminder_settings_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/data/ocr/ocr_nutrition_label_provider.dart';
 import 'package:mealora/data/remote/model_proxy_food_sentence_parser.dart';
@@ -71,6 +72,12 @@ final Provider<UiPreferenceDao> uiPreferenceDaoProvider =
         ref.watch(appDatabaseProvider),
         clock: ref.watch(clockProvider),
       ),
+    );
+
+/// Pengaturan pengingat & jam tidur di `UiPreferences` (change 013).
+final Provider<ReminderSettingsRepository> reminderSettingsRepositoryProvider =
+    Provider<ReminderSettingsRepository>(
+      (ref) => ReminderSettingsRepository(ref.watch(uiPreferenceDaoProvider)),
     );
 
 /// Menimpa `profileRepositoryProvider` (features/onboarding, change 005)

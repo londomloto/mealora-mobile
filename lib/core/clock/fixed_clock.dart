@@ -29,6 +29,19 @@ final class FixedClock implements Clock {
   LocalDate today() => localDateOf(_instantUtc);
 
   @override
+  DateTime localNow() {
+    final shifted = _instantUtc.add(_utcOffset);
+    return DateTime(
+      shifted.year,
+      shifted.month,
+      shifted.day,
+      shifted.hour,
+      shifted.minute,
+      shifted.second,
+    );
+  }
+
+  @override
   LocalDate localDateOf(DateTime instantUtc) {
     final shifted = instantUtc.toUtc().add(_utcOffset);
     return LocalDate(shifted.year, shifted.month, shifted.day);

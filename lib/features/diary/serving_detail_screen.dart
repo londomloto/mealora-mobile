@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
@@ -13,6 +15,7 @@ import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
+import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `14 · Detail sajian` (task 6.5): memilih takaran, jumlah, dan waktu
@@ -193,7 +196,18 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
       setState(() => _saving = false);
       return;
     }
+    // Peringatan jelang tidur (change 013, task 4.3): hanya setelah Ok.
+    final lateMealNotice = ref.read(lateMealNoticeProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    final noticeText = AppText.of(context);
     Navigator.of(context).popUntil((route) => route.isFirst);
+    unawaited(
+      lateMealNotice.maybeShow(
+        messenger: messenger,
+        text: noticeText,
+        date: widget.date,
+      ),
+    );
   }
 }
 

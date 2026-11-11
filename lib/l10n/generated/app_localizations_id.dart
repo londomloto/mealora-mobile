@@ -2733,4 +2733,208 @@ class AppTextId extends AppText {
   @override
   String get voiceParseNothingFoundBody =>
       'Perbaiki kalimatnya, atau cari makanannya di katalog. Tidak ada yang dicatat.';
+
+  @override
+  String get profileRemindersAction => 'Pengingat';
+
+  @override
+  String get profileRemindersOff => 'Mati';
+
+  @override
+  String profileRemindersOnCount(int count) {
+    return '$count menyala';
+  }
+
+  @override
+  String get remindersContextLabel => 'PENGINGAT';
+
+  @override
+  String get remindersTitle => 'Pengingat';
+
+  @override
+  String get remindersSubtitle =>
+      'Notifikasi muncul di HP ini saja. Waktunya bisa bergeser beberapa menit.';
+
+  @override
+  String get remindersMealsHeading => 'Jam makan';
+
+  @override
+  String get remindersBreakfast => 'Sarapan';
+
+  @override
+  String get remindersLunch => 'Makan siang';
+
+  @override
+  String get remindersSnack => 'Camilan';
+
+  @override
+  String get remindersDinner => 'Makan malam';
+
+  @override
+  String get remindersWeighHeading => 'Timbang berat';
+
+  @override
+  String get remindersWeighLabel => 'Timbang berat';
+
+  @override
+  String get remindersWeighDetail => 'Seminggu sekali';
+
+  @override
+  String get remindersWeighTimeLabel => 'Jam';
+
+  @override
+  String get remindersWeekdayShortMon => 'S';
+
+  @override
+  String get remindersWeekdayShortTue => 'S';
+
+  @override
+  String get remindersWeekdayShortWed => 'R';
+
+  @override
+  String get remindersWeekdayShortThu => 'K';
+
+  @override
+  String get remindersWeekdayShortFri => 'J';
+
+  @override
+  String get remindersWeekdayShortSat => 'S';
+
+  @override
+  String get remindersWeekdayShortSun => 'M';
+
+  @override
+  String get remindersWeekdayMon => 'Senin';
+
+  @override
+  String get remindersWeekdayTue => 'Selasa';
+
+  @override
+  String get remindersWeekdayWed => 'Rabu';
+
+  @override
+  String get remindersWeekdayThu => 'Kamis';
+
+  @override
+  String get remindersWeekdayFri => 'Jumat';
+
+  @override
+  String get remindersWeekdaySat => 'Sabtu';
+
+  @override
+  String get remindersWeekdaySun => 'Minggu';
+
+  @override
+  String get remindersBedtimeHeading => 'Jam tidur';
+
+  @override
+  String get remindersBedtimeLabel => 'Jam tidur';
+
+  @override
+  String get remindersBedtimeNote =>
+      'Dipakai untuk mengingatkan saat kamu mencatat makan menjelang tidur.';
+
+  @override
+  String get remindersBlockedBody =>
+      'Notifikasi diblokir. Pengingat tidak bisa muncul sampai kamu mengizinkannya.';
+
+  @override
+  String get remindersBlockedAction => 'Buka pengaturan';
+
+  @override
+  String remindersToggleSemantics(String name) {
+    return 'Pengingat $name';
+  }
+
+  @override
+  String remindersTimeSemantics(String name, String time) {
+    return 'Ubah jam $name, sekarang $time';
+  }
+
+  @override
+  String get remindersTimePickerTitle => 'Pilih jam';
+
+  @override
+  String remindersTimePickerDaily(String name) {
+    return '$name · pengingat harian';
+  }
+
+  @override
+  String get remindersTimePickerWeekly => 'Timbang berat · pengingat mingguan';
+
+  @override
+  String get remindersTimePickerBedtime =>
+      'Jam tidur · untuk peringatan makan larut';
+
+  @override
+  String get remindersTimePickerNote =>
+      'Waktu notifikasi bisa bergeser beberapa menit mengikuti penghematan baterai.';
+
+  @override
+  String get remindersTimePickerCancel => 'Batal';
+
+  @override
+  String get remindersTimePickerSave => 'Simpan';
+
+  @override
+  String get remindersPermissionTitle => 'Izinkan notifikasi?';
+
+  @override
+  String get remindersPermissionBody =>
+      'Mealora butuh izin agar pengingat bisa muncul. Kamu bisa mematikannya kapan saja.';
+
+  @override
+  String get remindersPermissionLocalNote =>
+      'Pengingat dibuat di HP ini. Tidak ada data yang dikirim.';
+
+  @override
+  String get remindersPermissionLater => 'Nanti';
+
+  @override
+  String get remindersPermissionContinue => 'Lanjut';
+
+  @override
+  String get reminderChannelName => 'Pengingat';
+
+  @override
+  String get reminderChannelDescription =>
+      'Pengingat jam makan dan timbang berat';
+
+  @override
+  String get reminderBreakfastTitle => 'Waktunya sarapan';
+
+  @override
+  String get reminderBreakfastBody => 'Jangan lupa catat sarapanmu di Mealora.';
+
+  @override
+  String get reminderLunchTitle => 'Waktunya makan siang';
+
+  @override
+  String get reminderLunchBody => 'Jangan lupa catat makan siangmu di Mealora.';
+
+  @override
+  String get reminderSnackTitle => 'Waktunya camilan';
+
+  @override
+  String get reminderSnackBody => 'Jangan lupa catat camilanmu di Mealora.';
+
+  @override
+  String get reminderDinnerTitle => 'Waktunya makan malam';
+
+  @override
+  String get reminderDinnerBody =>
+      'Jangan lupa catat makan malammu di Mealora.';
+
+  @override
+  String get reminderWeighTitle => 'Waktunya timbang';
+
+  @override
+  String get reminderWeighBody => 'Catat berat badanmu minggu ini.';
+
+  @override
+  String get lateMealNoticeTitle => 'Sudah dekat jam tidur.';
+
+  @override
+  String get lateMealNoticeBody =>
+      'Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar.';
 }

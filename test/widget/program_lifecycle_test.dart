@@ -26,6 +26,7 @@ import 'package:mealora/features/shell/floating_navigation.dart';
 import 'package:mealora/features/today/today_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
+import '../support/fake_reminder_gateway.dart';
 import 'harness.dart';
 
 /// Uji integrasi siklus hidup program change 006 di atas basis data
@@ -40,6 +41,9 @@ void main() {
     final container = ProviderContainer(
       overrides: <Override>[
         clockProvider.overrideWithValue(createWidgetTestClock()),
+        reminderNotificationGatewayProvider.overrideWithValue(
+          FakeReminderGateway(),
+        ),
         idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
         databaseFactoryProvider.overrideWithValue(() => database),
         profileRepositoryAppOverride,
@@ -268,6 +272,9 @@ void main() {
 
       List<Override> overrides() => <Override>[
         clockProvider.overrideWithValue(createWidgetTestClock()),
+        reminderNotificationGatewayProvider.overrideWithValue(
+          FakeReminderGateway(),
+        ),
         idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
         databaseFactoryProvider.overrideWithValue(() => database),
         profileRepositoryAppOverride,
@@ -397,6 +404,9 @@ void main() {
       final firstRun = ProviderContainer(
         overrides: <Override>[
           clockProvider.overrideWithValue(createWidgetTestClock()),
+          reminderNotificationGatewayProvider.overrideWithValue(
+            FakeReminderGateway(),
+          ),
           idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
           databaseFactoryProvider.overrideWithValue(() => database),
           profileRepositoryAppOverride,
@@ -446,6 +456,9 @@ void main() {
       final secondRun = ProviderContainer(
         overrides: <Override>[
           clockProvider.overrideWithValue(createWidgetTestClock()),
+          reminderNotificationGatewayProvider.overrideWithValue(
+            FakeReminderGateway(),
+          ),
           idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
           databaseFactoryProvider.overrideWithValue(() => database),
           profileRepositoryAppOverride,
@@ -549,6 +562,9 @@ void main() {
         final container = ProviderContainer(
           overrides: <Override>[
             clockProvider.overrideWithValue(createWidgetTestClock()),
+            reminderNotificationGatewayProvider.overrideWithValue(
+              FakeReminderGateway(),
+            ),
             idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
             databaseFactoryProvider.overrideWithValue(() => database),
             profileRepositoryAppOverride,
@@ -617,6 +633,9 @@ void main() {
 
         List<Override> overrides() => <Override>[
           clockProvider.overrideWithValue(createWidgetTestClock()),
+          reminderNotificationGatewayProvider.overrideWithValue(
+            FakeReminderGateway(),
+          ),
           idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
           databaseFactoryProvider.overrideWithValue(() => database),
           profileRepositoryAppOverride,

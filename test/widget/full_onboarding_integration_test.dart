@@ -15,6 +15,7 @@ import 'package:mealora/features/shell/app_shell.dart';
 import 'package:mealora/features/splash/splash_screen.dart';
 import 'package:mealora/features/today/today_screen.dart';
 
+import '../support/fake_reminder_gateway.dart';
 import 'harness.dart';
 
 /// Uji integrasi alur penuh (task 7.5): pemasangan baru → onboarding →
@@ -34,6 +35,9 @@ void main() {
 
       List<Override> overrides() => <Override>[
         clockProvider.overrideWithValue(createWidgetTestClock()),
+        reminderNotificationGatewayProvider.overrideWithValue(
+          FakeReminderGateway(),
+        ),
         idGeneratorProvider.overrideWithValue(SequentialIdGenerator()),
         databaseFactoryProvider.overrideWithValue(() => database),
         profileRepositoryAppOverride,

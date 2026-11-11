@@ -20,6 +20,9 @@ final class SystemClock implements Clock {
   LocalDate today() => LocalDate.fromLocalInstant(DateTime.now());
 
   @override
+  DateTime localNow() => DateTime.now();
+
+  @override
   LocalDate localDateOf(DateTime instantUtc) =>
       LocalDate.fromLocalInstant(instantUtc.toLocal());
 }

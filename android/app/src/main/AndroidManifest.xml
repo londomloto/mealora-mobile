@@ -9,6 +9,11 @@
          — satu-satunya pemakaian jaringan aplikasi; jalur luring tidak
          bergantung padanya (Design D1/D11). -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Pengingat lokal (change 013): izin notifikasi diminta saat pengguna
+         menyalakan pengingat pertama; boot dipakai receiver plugin untuk
+         memulihkan jadwal. Sengaja TANPA SCHEDULE_EXACT_ALARM (Design D1). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Kamera opsional: perangkat tanpa kamera tetap dapat memasang dan
          memakai aplikasi lewat masukan barcode manual (Design D6). -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
@@ -39,6 +44,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Penjadwalan pengingat lokal dan pemulihannya setelah boot atau
+             pembaruan aplikasi (change 013, Design D3). -->
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

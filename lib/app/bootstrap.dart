@@ -6,6 +6,7 @@ import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/features/onboarding/onboarding_flow.dart';
+import 'package:mealora/features/reminders/reminder_lifecycle.dart';
 import 'package:mealora/features/shell/app_shell.dart';
 import 'package:mealora/features/splash/splash_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -52,7 +53,9 @@ class _OnboardingGate extends ConsumerWidget {
     return isComplete.when(
       loading: () => const SplashScreen(),
       error: (error, stackTrace) => const OnboardingFlow(),
-      data: (complete) => complete ? const AppShell() : const OnboardingFlow(),
+      data: (complete) => complete
+          ? const ReminderLifecycle(child: AppShell())
+          : const OnboardingFlow(),
     );
   }
 }

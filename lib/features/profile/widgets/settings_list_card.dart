@@ -11,12 +11,16 @@ class SettingsListItem {
     required this.color,
     required this.background,
     required this.label,
+    this.detail,
     this.onTap,
   });
   final IconData icon;
   final Color color;
   final Color background;
   final String label;
+
+  /// Keterangan kecil di bawah label (mis. status Pengingat, `47`).
+  final String? detail;
   final VoidCallback? onTap;
 }
 
@@ -49,31 +53,48 @@ class _SettingsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: item.onTap,
-      child: SizedBox(
-        height: 58,
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: item.background,
-                borderRadius: BorderRadius.circular(
-                  MealoraRadius.compactIconField,
+      child: ConstrainedBox(
+        // Tinggi minimum, bukan tetap: baris berketerangan (`47`) tetap
+        // terbaca pada skala teks besar.
+        constraints: const BoxConstraints(minHeight: 58),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: MealoraSpacing.xs),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: item.background,
+                  borderRadius: BorderRadius.circular(
+                    MealoraRadius.compactIconField,
+                  ),
                 ),
+                child: Icon(item.icon, color: item.color, size: 18),
               ),
-              child: Icon(item.icon, color: item.color, size: 18),
-            ),
-            const SizedBox(width: MealoraSpacing.sm),
-            Expanded(
-              child: Text(item.label, style: MealoraTypography.bodyEmphasis),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: MealoraColors.affordance,
-              size: 18,
-            ),
-          ],
+              const SizedBox(width: MealoraSpacing.sm),
+              Expanded(
+                child: item.detail == null
+                    ? Text(item.label, style: MealoraTypography.bodyEmphasis)
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            item.label,
+                            style: MealoraTypography.bodyEmphasis,
+                          ),
+                          Text(item.detail!, style: MealoraTypography.caption),
+                        ],
+                      ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: MealoraColors.affordance,
+                size: 18,
+              ),
+            ],
+          ),
         ),
       ),
     );
