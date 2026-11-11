@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/ids/id_generator.dart';
+import 'package:mealora/domain/food_photo_input/food_component_recognition_provider.dart';
 import 'package:mealora/domain/image_ai_access/nutrition_label_provider.dart';
 
 /// Sumber waktu aplikasi.
@@ -31,5 +32,21 @@ final Provider<NutritionLabelProvider> nutritionLabelProviderProvider =
       (ref) => throw UnimplementedError(
         'nutritionLabelProviderProvider harus ditimpa di ProviderScope '
         '(lihat lib/main.dart dan test/).',
+      ),
+    );
+
+/// Penyedia model pengenalan komponen foto makanan (change 011, Design
+/// D1/D2) — di balik antarmuka [FoodComponentRecognitionProvider], berdiri
+/// sendiri dari [nutritionLabelProviderProvider] karena tugas dan skema
+/// keluarannya berbeda (Design D7: evaluasi penyedia tidak dapat dipakai
+/// silang). Ditimpa dengan `VisionProxyFoodComponentProvider` di
+/// `lib/main.dart`, dan dengan `MockFoodComponentRecognitionProvider` pada
+/// pengujian.
+final Provider<FoodComponentRecognitionProvider>
+foodComponentRecognitionProviderProvider =
+    Provider<FoodComponentRecognitionProvider>(
+      (ref) => throw UnimplementedError(
+        'foodComponentRecognitionProviderProvider harus ditimpa di '
+        'ProviderScope (lihat lib/main.dart dan test/).',
       ),
     );

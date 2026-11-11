@@ -3885,6 +3885,377 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Lanjutkan meninjau'**
   String get labelReviewCancelKeepReviewingAction;
+
+  /// No description provided for @foodPhotoContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'FOTO MAKANAN'**
+  String get foodPhotoContextLabel;
+
+  /// No description provided for @foodPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ambil foto makanan'**
+  String get foodPhotoTitle;
+
+  /// No description provided for @foodPhotoSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Saran dari foto selalu perlu diperiksa.'**
+  String get foodPhotoSubtitle;
+
+  /// No description provided for @foodPhotoFrameCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Arahkan ke piringmu'**
+  String get foodPhotoFrameCaption;
+
+  /// No description provided for @foodPhotoConsentHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebelum dianalisis'**
+  String get foodPhotoConsentHeading;
+
+  /// No description provided for @foodPhotoConsentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Analisis AI memerlukan internet. Foto hanya diunggah jika kamu mengizinkan. Catatan tetap tersimpan lokal.'**
+  String get foodPhotoConsentBody;
+
+  /// No description provided for @foodPhotoConsentCheckboxLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya izinkan unggah foto ini'**
+  String get foodPhotoConsentCheckboxLabel;
+
+  /// No description provided for @foodPhotoCaptureAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ambil foto & lanjutkan'**
+  String get foodPhotoCaptureAction;
+
+  /// No description provided for @foodPhotoManualLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa internet? Pilih makanan secara manual'**
+  String get foodPhotoManualLink;
+
+  /// No description provided for @foodPhotoPermissionDeniedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera tidak dapat diakses'**
+  String get foodPhotoPermissionDeniedTitle;
+
+  /// No description provided for @foodPhotoPermissionDeniedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa memilih makanan secara manual.'**
+  String get foodPhotoPermissionDeniedBody;
+
+  /// No description provided for @foodPhotoDraftContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'FOTO MAKANAN'**
+  String get foodPhotoDraftContextLabel;
+
+  /// No description provided for @foodPhotoDraftSavedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto tersimpan sebagai draf'**
+  String get foodPhotoDraftSavedTitle;
+
+  /// No description provided for @foodPhotoDraftSavedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan makan yang dibuat.'**
+  String get foodPhotoDraftSavedBody;
+
+  /// No description provided for @foodPhotoDraftBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Draf foto · tersimpan di perangkat'**
+  String get foodPhotoDraftBadge;
+
+  /// No description provided for @foodPhotoDraftUnavailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Analisis foto belum tersedia'**
+  String get foodPhotoDraftUnavailableTitle;
+
+  /// No description provided for @foodPhotoDraftUnavailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Koneksi atau kuota layanan bermasalah. Draf fotomu tidak hilang.'**
+  String get foodPhotoDraftUnavailableBody;
+
+  /// No description provided for @foodPhotoDraftManualHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut tanpa AI'**
+  String get foodPhotoDraftManualHeading;
+
+  /// No description provided for @foodPhotoDraftManualDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari makanan di katalog, tambah bahan, lalu atur porsinya sendiri.'**
+  String get foodPhotoDraftManualDescription;
+
+  /// No description provided for @foodPhotoDraftManualAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih makanan manual'**
+  String get foodPhotoDraftManualAction;
+
+  /// No description provided for @foodPhotoReviewContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TINJAU FOTO MAKANAN'**
+  String get foodPhotoReviewContextLabel;
+
+  /// No description provided for @foodPhotoReviewBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Saran foto · porsi perlu dicek'**
+  String get foodPhotoReviewBadge;
+
+  /// No description provided for @foodPhotoReviewBadgeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Nutrisi dari padanan katalog; periksa bahan.'**
+  String get foodPhotoReviewBadgeNote;
+
+  /// No description provided for @foodPhotoReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau foto makanan'**
+  String get foodPhotoReviewTitle;
+
+  /// No description provided for @foodPhotoReviewSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa perkiraan sebelum dicatat'**
+  String get foodPhotoReviewSubtitle;
+
+  /// No description provided for @foodPhotoReviewEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi piringmu'**
+  String get foodPhotoReviewEmptyTitle;
+
+  /// No description provided for @foodPhotoReviewComponentCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count, plural, =0{Tidak ada bahan} =1{1 bahan} other{{count} bahan}}'**
+  String foodPhotoReviewComponentCount(int count);
+
+  /// No description provided for @foodPhotoReviewEditAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah'**
+  String get foodPhotoReviewEditAction;
+
+  /// No description provided for @foodPhotoReviewNoMatchLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada padanan — pilih atau buat makanan'**
+  String get foodPhotoReviewNoMatchLabel;
+
+  /// No description provided for @foodPhotoReviewTotalSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'· {kcal} kkal  ·  P {protein} g  ·  K {carbohydrate} g  ·  L {fat} g'**
+  String foodPhotoReviewTotalSummary(
+    String kcal,
+    String protein,
+    String carbohydrate,
+    String fat,
+  );
+
+  /// No description provided for @foodPhotoReviewConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi & catat'**
+  String get foodPhotoReviewConfirmAction;
+
+  /// No description provided for @foodPhotoReviewCancelConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan peninjauan ini?'**
+  String get foodPhotoReviewCancelConfirmTitle;
+
+  /// No description provided for @foodPhotoReviewCancelConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan yang dibuat. Draf fotonya akan dibuang sesuai pengaturan privasi.'**
+  String get foodPhotoReviewCancelConfirmBody;
+
+  /// No description provided for @foodPhotoReviewCancelConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya, batalkan'**
+  String get foodPhotoReviewCancelConfirmAction;
+
+  /// No description provided for @foodPhotoReviewCancelKeepReviewingAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan meninjau'**
+  String get foodPhotoReviewCancelKeepReviewingAction;
+
+  /// No description provided for @foodComponentCorrectionBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'DRAF FOTO MAKANAN'**
+  String get foodComponentCorrectionBadge;
+
+  /// No description provided for @foodComponentCorrectionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah komponen'**
+  String get foodComponentCorrectionTitle;
+
+  /// No description provided for @foodComponentCorrectionSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap bahan dan porsi bisa kamu koreksi.'**
+  String get foodComponentCorrectionSubtitle;
+
+  /// No description provided for @foodComponentCorrectionHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahan yang dikenali'**
+  String get foodComponentCorrectionHeading;
+
+  /// No description provided for @foodComponentCorrectionRemoveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus bahan'**
+  String get foodComponentCorrectionRemoveAction;
+
+  /// No description provided for @foodComponentCorrectionAddAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah bahan, minyak, atau saus'**
+  String get foodComponentCorrectionAddAction;
+
+  /// No description provided for @foodComponentCorrectionConfirmAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau total baru'**
+  String get foodComponentCorrectionConfirmAction;
+
+  /// No description provided for @foodComponentMatchOk.
+  ///
+  /// In id, this message translates to:
+  /// **'cocok dengan katalog'**
+  String get foodComponentMatchOk;
+
+  /// No description provided for @foodComponentMatchMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'belum ada padanan'**
+  String get foodComponentMatchMissing;
+
+  /// No description provided for @foodComponentPortionNeedsCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'porsi perlu dicek'**
+  String get foodComponentPortionNeedsCheck;
+
+  /// No description provided for @foodComponentCookingMethodNeedsCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'metode masak perlu dicek'**
+  String get foodComponentCookingMethodNeedsCheck;
+
+  /// No description provided for @foodComponentEditorFoodLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'MAKANAN'**
+  String get foodComponentEditorFoodLabel;
+
+  /// No description provided for @foodComponentEditorFoodChangeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti makanan'**
+  String get foodComponentEditorFoodChangeAction;
+
+  /// No description provided for @foodComponentEditorQuantityLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'JUMLAH TAKARAN'**
+  String get foodComponentEditorQuantityLabel;
+
+  /// No description provided for @foodComponentEditorServingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TAKARAN'**
+  String get foodComponentEditorServingLabel;
+
+  /// No description provided for @foodComponentEditorCookingMethodLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'METODE MASAK (OPSIONAL)'**
+  String get foodComponentEditorCookingMethodLabel;
+
+  /// No description provided for @foodComponentEditorCookingMethodHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. digoreng, dikukus, dibakar'**
+  String get foodComponentEditorCookingMethodHint;
+
+  /// No description provided for @foodComponentEditorSaveAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get foodComponentEditorSaveAction;
+
+  /// No description provided for @foodComponentPickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih makanan'**
+  String get foodComponentPickerTitle;
+
+  /// No description provided for @foodComponentPickerHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari di katalog'**
+  String get foodComponentPickerHint;
+
+  /// No description provided for @foodComponentPickerCreateLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat makanan baru'**
+  String get foodComponentPickerCreateLink;
+
+  /// No description provided for @foodComponentPickerNoResultsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ditemukan'**
+  String get foodComponentPickerNoResultsTitle;
+
+  /// No description provided for @foodComponentPickerNoResultsBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata kunci lain, atau buat makanan baru.'**
+  String get foodComponentPickerNoResultsBody;
+
+  /// No description provided for @todayPendingDraftTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Draf foto makanan menunggu'**
+  String get todayPendingDraftTitle;
+
+  /// No description provided for @todayPendingDraftBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.'**
+  String get todayPendingDraftBody;
+
+  /// No description provided for @todayPendingDraftSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Draf foto makanan menunggu. Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.'**
+  String get todayPendingDraftSemantics;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

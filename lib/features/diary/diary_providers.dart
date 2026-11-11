@@ -3,13 +3,15 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/diary/daily_nutrition_total.dart';
-import 'package:mealora/domain/diary/meal_entry.dart';
+import 'package:mealora/domain/diary/meal_entry.dart'
+    show MealEntry, NewMealEntry;
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/food_category.dart';
 import 'package:mealora/domain/food/food_repository.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/recent_food.dart';
 import 'package:mealora/domain/food/serving_size.dart';
+import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
     show onboardingRefreshSignalProvider, profileRepositoryProvider;
@@ -108,6 +110,34 @@ Future<Result<MealEntry>> logFoodEntry(
   return result;
 }
 
+/// Menambah beberapa catatan sekaligus (task 7.1, change 011: foto makanan
+/// dan — lewat jalur peninjauan yang sama — suara) dalam satu transaksi
+/// atomik, dan menaikkan sinyal pembaruan sekali pada keberhasilan.
+Future<Result<List<MealEntry>>> logFoodEntries(
+  WidgetRef ref, {
+  required MealTime mealTime,
+  required List<NewMealEntry> entries,
+  LocalDate? date,
+}) async {
+  final profile = await ref.read(profileRepositoryProvider).current();
+  if (profile == null) {
+    throw StateError('logFoodEntries dipanggil sebelum profil siap.');
+  }
+  final effectiveDate = date ?? ref.read(clockProvider).today();
+  final result = await ref
+      .read(diaryRepositoryProvider)
+      .addEntries(
+        profileId: profile.id,
+        date: effectiveDate,
+        mealTime: mealTime,
+        entries: entries,
+      );
+  if (result is Ok<List<MealEntry>>) {
+    bumpDiaryRefresh(ref);
+  }
+  return result;
+}
+
 /// Menyunting sebuah catatan (task 4.3/4.4) dan menaikkan sinyal pembaruan
 /// pada keberhasilan.
 Future<Result<MealEntry>> updateFoodEntry(
@@ -153,4 +183,36 @@ Future<Food> createUserFood(
       );
   bumpDiaryRefresh(ref);
   return food;
+}
+
+/// Draf foto makanan belum selesai milik profil aktif, bila ada (change
+/// 011, task 3.4) — dipakai `TodayScreen` untuk menawarkan pemulihan draf
+/// setelah aplikasi ditutup paksa dan dibuka kembali: penyimpanan draf
+/// sudah bertahan melewati itu (Design D6), yang hilang hanya keadaan
+/// navigasi di memori, jadi titik masuk ruang utama inilah yang
+/// memulihkannya kembali, bukan draf itu sendiri.
+final FutureProvider<PhotoDraft?> pendingPhotoDraftProvider =
+    FutureProvider<PhotoDraft?>((ref) async {
+      ref.watch(photoDraftRefreshSignalProvider);
+      ref.watch(onboardingRefreshSignalProvider);
+      final profile = await ref.watch(profileRepositoryProvider).current();
+      if (profile == null) {
+        return null;
+      }
+      return ref.watch(photoDraftRepositoryProvider).current(profile.id);
+    });
+
+/// Menyimpan [draft] dan menaikkan sinyal pembaruan (change 011) — SATU-
+/// SATUNYA jalur yang SHALL dipakai layar foto untuk menulis draf, supaya
+/// `pendingPhotoDraftProvider` selalu mutakhir.
+Future<void> savePhotoDraft(WidgetRef ref, PhotoDraft draft) async {
+  await ref.read(photoDraftRepositoryProvider).save(draft);
+  bumpPhotoDraftRefresh(ref);
+}
+
+/// Membuang draf [draftId] (dicatat atau dibatalkan) dan menaikkan sinyal
+/// pembaruan, sama seperti [savePhotoDraft].
+Future<void> discardPhotoDraft(WidgetRef ref, String draftId) async {
+  await ref.read(photoDraftRepositoryProvider).discard(draftId);
+  bumpPhotoDraftRefresh(ref);
 }

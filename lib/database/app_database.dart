@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:mealora/database/connection/mealora_connection.dart';
 import 'package:mealora/database/migrations/food_diary_indexes.dart';
+import 'package:mealora/database/migrations/food_photo_draft_indexes.dart';
 import 'package:mealora/database/migrations/packaged_food_indexes.dart';
 import 'package:mealora/database/migrations/program_indexes.dart';
 import 'package:mealora/database/migrations/program_invariant_trigger.dart';
@@ -8,6 +9,7 @@ import 'package:mealora/database/migrations/user_record_triggers.dart';
 import 'package:mealora/database/migrations/weight_indexes.dart';
 import 'package:mealora/database/seeds/food_catalog_seed.dart';
 import 'package:mealora/database/seeds/program_catalog_seed.dart';
+import 'package:mealora/database/tables/food_photo_drafts_table.dart';
 import 'package:mealora/database/tables/food_servings_table.dart';
 import 'package:mealora/database/tables/foods_table.dart';
 import 'package:mealora/database/tables/harness_records.dart';
@@ -30,7 +32,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 8;
+const int kSchemaVersion = 9;
 
 @DriftDatabase(
   tables: <Type>[
@@ -49,6 +51,7 @@ const int kSchemaVersion = 8;
     MealEntryItems,
     WeightRecords,
     PackagedFoodProperties,
+    FoodPhotoDrafts,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -70,6 +73,7 @@ class AppDatabase extends _$AppDatabase {
       await ensureFoodCatalogSeeded(this);
       await createWeightIndexes(this);
       await createPackagedFoodIndexes(this);
+      await createFoodPhotoDraftIndexes(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -213,6 +217,13 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         // barcode tidak saling bentrok.
         await m.alterTable(TableMigration(packagedFoodProperties));
         await createPackagedFoodIndexes(this);
+      }
+      if (from < 9) {
+        // Versi 8 → 9 (change 011): tabel draf foto makanan. Tidak
+        // menyentuh data versi 8 (design.md Migration Plan — tidak ada
+        // perubahan skema buku harian, hanya kapabilitas baru).
+        await m.createTable(foodPhotoDrafts);
+        await createFoodPhotoDraftIndexes(this);
       }
     },
     beforeOpen: (details) async {

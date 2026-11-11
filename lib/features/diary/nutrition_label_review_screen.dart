@@ -178,19 +178,23 @@ class _NutritionLabelReviewScreenState
                     style: MealoraTypography.subtitle,
                   ),
                   const SizedBox(height: MealoraSpacing.lg),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                      MealoraRadius.welcomeCard,
-                    ),
-                    child: Image.memory(
-                      widget.photoBytes,
-                      height: 220,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                  MealoraCard(
+                    radius: MealoraRadius.choiceCard,
+                    padding: const EdgeInsets.all(MealoraSpacing.xxs),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        MealoraRadius.choiceCard - MealoraSpacing.xxs,
+                      ),
+                      child: Image.memory(
+                        widget.photoBytes,
+                        height: 196,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: MealoraSpacing.lg),
-                  MealoraField(
+                  _ReviewGlassInputField(
                     label: text.labelReviewNameLabel,
                     hint: text.labelReviewNameHint,
                     controller: _name,
@@ -256,36 +260,62 @@ class _NutritionLabelReviewScreenState
                     style: MealoraTypography.headline,
                   ),
                   const SizedBox(height: MealoraSpacing.sm),
-                  _ReviewNutrientRow(
-                    label: text.nutrientEnergy,
-                    unit: text.unitKilocalorie,
-                    field: _energy,
-                    text: text,
-                    onChanged: () => setState(() {}),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: _ReviewNutrientRow(
+                          label: text.nutrientEnergy,
+                          unit: text.unitKilocalorie,
+                          field: _energy,
+                          text: text,
+                          onChanged: () => setState(() {}),
+                          accent: MealoraColors.amberText,
+                          accentBackground: MealoraColors.iconFieldAmber,
+                        ),
+                      ),
+                      const SizedBox(width: MealoraSpacing.sm),
+                      Expanded(
+                        child: _ReviewNutrientRow(
+                          label: text.nutrientProtein,
+                          unit: text.unitGram,
+                          field: _protein,
+                          text: text,
+                          onChanged: () => setState(() {}),
+                          accent: MealoraColors.primary,
+                          accentBackground: MealoraColors.iconFieldGreen,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: MealoraSpacing.sm),
-                  _ReviewNutrientRow(
-                    label: text.nutrientProtein,
-                    unit: text.unitGram,
-                    field: _protein,
-                    text: text,
-                    onChanged: () => setState(() {}),
-                  ),
-                  const SizedBox(height: MealoraSpacing.sm),
-                  _ReviewNutrientRow(
-                    label: text.nutrientCarbohydrate,
-                    unit: text.unitGram,
-                    field: _carbohydrate,
-                    text: text,
-                    onChanged: () => setState(() {}),
-                  ),
-                  const SizedBox(height: MealoraSpacing.sm),
-                  _ReviewNutrientRow(
-                    label: text.nutrientFat,
-                    unit: text.unitGram,
-                    field: _fat,
-                    text: text,
-                    onChanged: () => setState(() {}),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: _ReviewNutrientRow(
+                          label: text.nutrientCarbohydrate,
+                          unit: text.unitGram,
+                          field: _carbohydrate,
+                          text: text,
+                          onChanged: () => setState(() {}),
+                          accent: MealoraColors.amberText,
+                          accentBackground: MealoraColors.iconFieldAmber,
+                        ),
+                      ),
+                      const SizedBox(width: MealoraSpacing.sm),
+                      Expanded(
+                        child: _ReviewNutrientRow(
+                          label: text.nutrientFat,
+                          unit: text.unitGram,
+                          field: _fat,
+                          text: text,
+                          onChanged: () => setState(() {}),
+                          accent: MealoraColors.coralText,
+                          accentBackground: MealoraColors.iconFieldCoral,
+                        ),
+                      ),
+                    ],
                   ),
                   if (pending.isNotEmpty) ...<Widget>[
                     const SizedBox(height: MealoraSpacing.md),
@@ -535,6 +565,68 @@ class _BasisField extends StatelessWidget {
   }
 }
 
+/// Field kaca yang mengikuti bahasa visual `15 · Makanan buatan sendiri`,
+/// tetapi tetap berupa input teks biasa agar hasil ekstraksi mudah dikoreksi.
+class _ReviewGlassInputField extends StatelessWidget {
+  const _ReviewGlassInputField({
+    required this.label,
+    required this.hint,
+    required this.controller,
+  });
+
+  final String label;
+  final String hint;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: Text(label, style: MealoraTypography.label),
+        ),
+        const SizedBox(height: MealoraSpacing.xxs),
+        SizedBox(
+          height: 56,
+          child: MealoraCard(
+            radius: MealoraRadius.button,
+            padding: const EdgeInsets.symmetric(horizontal: MealoraSpacing.md),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    style: MealoraTypography.bodyEmphasis,
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: MealoraTypography.bodyMuted,
+                      filled: false,
+                      fillColor: MealoraColors.transparent,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: MealoraSpacing.sm),
+                const Icon(
+                  Icons.edit_outlined,
+                  size: MealoraIconSize.inline,
+                  color: MealoraColors.affordance,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _ReviewNutrientRow extends StatelessWidget {
   const _ReviewNutrientRow({
     required this.label,
@@ -543,6 +635,8 @@ class _ReviewNutrientRow extends StatelessWidget {
     required this.text,
     required this.onChanged,
     this.allowMarkAbsent = true,
+    this.accent = MealoraColors.ink,
+    this.accentBackground = MealoraColors.iconField,
   });
 
   final String label;
@@ -551,51 +645,56 @@ class _ReviewNutrientRow extends StatelessWidget {
   final AppText text;
   final VoidCallback onChanged;
   final bool allowMarkAbsent;
+  final Color accent;
+  final Color accentBackground;
 
   @override
   Widget build(BuildContext context) {
     return MealoraCard(
+      radius: MealoraRadius.choiceCard,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text(label, style: MealoraTypography.label),
+          const SizedBox(height: MealoraSpacing.xxs),
           Row(
             children: <Widget>[
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(label, style: MealoraTypography.label),
-                    const SizedBox(height: MealoraSpacing.xxs),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Semantics(
-                            label:
-                                '$label. '
-                                '${_confidenceLabel(field.displayConfidence, text)}',
-                            textField: true,
-                            child: TextField(
-                              controller: field.controller,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
-                              style: MealoraTypography.bodyEmphasis,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                border: InputBorder.none,
-                                suffixText: unit.isEmpty ? null : unit,
-                              ),
-                              onChanged: (_) {
-                                field.markTouched();
-                                onChanged();
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                child: Semantics(
+                  label:
+                      '$label. '
+                      '${_confidenceLabel(field.displayConfidence, text)}',
+                  textField: true,
+                  child: TextField(
+                    controller: field.controller,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
-                  ],
+                    style: MealoraTypography.nutrientFieldValue.copyWith(
+                      color: accent,
+                    ),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      filled: false,
+                      fillColor: MealoraColors.transparent,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      suffixText: unit.isEmpty ? null : unit,
+                      suffixStyle: MealoraTypography.bodySmall.copyWith(
+                        color: accent,
+                      ),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    onChanged: (_) {
+                      field.markTouched();
+                      onChanged();
+                    },
+                  ),
                 ),
               ),
               _ConfidenceBadge(confidence: field.displayConfidence, text: text),
@@ -621,6 +720,15 @@ class _ReviewNutrientRow extends StatelessWidget {
                 ),
               ],
             ],
+          ),
+          const SizedBox(height: MealoraSpacing.xxs),
+          Container(
+            width: 28,
+            height: 4,
+            decoration: BoxDecoration(
+              color: accentBackground,
+              borderRadius: BorderRadius.circular(MealoraRadius.track),
+            ),
           ),
           // Teks, bukan hanya warna ikon — pengguna low-vision maupun
           // pembaca layar SHALL TIDAK bergantung pada warna saja untuk

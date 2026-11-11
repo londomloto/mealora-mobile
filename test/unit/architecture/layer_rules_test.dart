@@ -165,13 +165,16 @@ void main() {
 
   group('kemandirian dari jaringan', () {
     test('tidak ada klien jaringan di seluruh aplikasi, kecuali klien sumber '
-        'data produk kemasan (change 009, Design D2/D3) dan klien proksi '
-        'inferensi label gizi (change 010, Design D2): keduanya di balik '
-        'antarmuka yang dapat diganti, dan klien proksi hanya mengirim bita '
-        'gambar — tidak ada kredensial penyedia model di aplikasi', () {
+        'data produk kemasan (change 009, Design D2/D3), klien proksi '
+        'inferensi label gizi (change 010, Design D2), dan klien proksi '
+        'pengenalan komponen foto makanan (change 011, Design D2): seluruhnya '
+        'di balik antarmuka yang dapat diganti, dan klien proksi hanya '
+        'mengirim bita gambar — tidak ada kredensial penyedia model di '
+        'aplikasi', () {
       const allowedNetworkClientPaths = <String>{
         'lib/data/remote/openfoodfacts_product_client.dart',
         'lib/data/remote/vision_proxy_label_provider.dart',
+        'lib/data/remote/vision_proxy_food_component_provider.dart',
       };
 
       final violations = _violations(

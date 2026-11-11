@@ -35,6 +35,23 @@ abstract interface class DiaryRepository {
     required double quantity,
   });
 
+  /// Menambah beberapa catatan sekaligus pada [mealTime]/[date], seluruhnya
+  /// dalam SATU transaksi: berhasil semua atau tidak sama sekali (spec
+  /// food-photo-input, "Pencatatan menghasilkan catatan per komponen",
+  /// change 011) — setiap entri membekukan potretnya sendiri, persis
+  /// seperti [addEntry] dipanggil berkali-kali, hanya atomik dan dengan
+  /// SATU pembangunan ulang potret kemajuan di akhir (bukan satu per
+  /// entri).
+  ///
+  /// Menolak permintaan ini SELURUHNYA (tidak menulis apa pun) bila SALAH
+  /// SATU [entries] punya `quantity` nol atau negatif.
+  Future<Result<List<MealEntry>>> addEntries({
+    required String profileId,
+    required LocalDate date,
+    required MealTime mealTime,
+    required List<NewMealEntry> entries,
+  });
+
   /// Menyunting takaran, jumlah, dan/atau waktu makan sebuah catatan.
   /// Menghitung ulang dari potret TERSIMPAN pada catatan itu (spec,
   /// "Pengguna menyunting catatannya") — bukan dari katalog saat ini, kecuali

@@ -27,6 +27,8 @@ Future<void> main() async {
         weightRepositoryAppOverride,
         packagedFoodRepositoryAppOverride,
         nutritionLabelProviderAppOverride,
+        foodComponentRecognitionProviderAppOverride,
+        photoDraftRepositoryAppOverride,
       ],
       child: const MealoraApp(),
     ),

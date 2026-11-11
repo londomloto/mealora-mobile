@@ -179,6 +179,81 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
   }
 
   @override
+  Future<Result<List<MealEntry>>> addEntries({
+    required String profileId,
+    required LocalDate date,
+    required MealTime mealTime,
+    required List<NewMealEntry> entries,
+  }) async {
+    for (final entry in entries) {
+      final validQuantity = ValueRules.positiveAmount(
+        entry.quantity,
+        field: 'quantity',
+      );
+      if (validQuantity is Err<double>) {
+        return Err<List<MealEntry>>(validQuantity.failureOrNull!);
+      }
+    }
+
+    final now = _clock.nowUtc();
+    final ids = <(String entryId, String itemId)>[
+      for (final _ in entries) (_ids.next(), _ids.next()),
+    ];
+
+    await transaction(() async {
+      for (var i = 0; i < entries.length; i++) {
+        final entry = entries[i];
+        final (entryId, itemId) = ids[i];
+        await into(mealEntries).insert(
+          MealEntriesCompanion.insert(
+            id: entryId,
+            createdAt: now,
+            updatedAt: now,
+            profileId: profileId,
+            localDate: date.iso,
+            mealTime: mealTime.stableCode,
+          ),
+        );
+        await into(mealEntryItems).insert(
+          MealEntryItemsCompanion.insert(
+            id: itemId,
+            createdAt: now,
+            updatedAt: now,
+            mealEntryId: entryId,
+            foodId: entry.food.id,
+            servingId: entry.serving.id,
+            quantity: entry.quantity,
+            foodNameSnapshot: entry.food.name,
+            servingLabelSnapshot: entry.serving.label,
+            energyKcalSnapshot: Value<double?>(
+              entry.serving.nutrition.energy?.kcal,
+            ),
+            proteinGSnapshot: Value<double?>(entry.serving.nutrition.proteinG),
+            carbohydrateGSnapshot: Value<double?>(
+              entry.serving.nutrition.carbohydrateG,
+            ),
+            fatGSnapshot: Value<double?>(entry.serving.nutrition.fatG),
+          ),
+        );
+      }
+    });
+
+    await rebuildProgressFor(profileId, date);
+
+    final results = <MealEntry>[];
+    for (final (entryId, itemId) in ids) {
+      final entryRow = await (select(
+        mealEntries,
+      )..where((t) => t.id.equals(entryId))).getSingle();
+      final itemRow = await (select(
+        mealEntryItems,
+      )..where((t) => t.id.equals(itemId))).getSingle();
+      results.add(_toDomain(entryRow, itemRow));
+    }
+    return Ok<List<MealEntry>>(results);
+  }
+
+  @override
   Future<Result<MealEntry>> updateEntry({
     required String entryId,
     required ServingSize serving,

@@ -12421,6 +12421,715 @@ class PackagedFoodPropertiesCompanion
   }
 }
 
+class $FoodPhotoDraftsTable extends FoodPhotoDrafts
+    with TableInfo<$FoodPhotoDraftsTable, FoodPhotoDraftRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FoodPhotoDraftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 64,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('local'),
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _localDateMeta = const VerificationMeta(
+    'localDate',
+  );
+  @override
+  late final GeneratedColumn<String> localDate = GeneratedColumn<String>(
+    'local_date',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 10,
+      maxTextLength: 10,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mealTimeMeta = const VerificationMeta(
+    'mealTime',
+  );
+  @override
+  late final GeneratedColumn<String> mealTime = GeneratedColumn<String>(
+    'meal_time',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceImagePathMeta = const VerificationMeta(
+    'sourceImagePath',
+  );
+  @override
+  late final GeneratedColumn<String> sourceImagePath = GeneratedColumn<String>(
+    'source_image_path',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 512,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _componentsJsonMeta = const VerificationMeta(
+    'componentsJson',
+  );
+  @override
+  late final GeneratedColumn<String> componentsJson = GeneratedColumn<String>(
+    'components_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    profileId,
+    localDate,
+    mealTime,
+    sourceImagePath,
+    componentsJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'food_photo_drafts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FoodPhotoDraftRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('local_date')) {
+      context.handle(
+        _localDateMeta,
+        localDate.isAcceptableOrUnknown(data['local_date']!, _localDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localDateMeta);
+    }
+    if (data.containsKey('meal_time')) {
+      context.handle(
+        _mealTimeMeta,
+        mealTime.isAcceptableOrUnknown(data['meal_time']!, _mealTimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mealTimeMeta);
+    }
+    if (data.containsKey('source_image_path')) {
+      context.handle(
+        _sourceImagePathMeta,
+        sourceImagePath.isAcceptableOrUnknown(
+          data['source_image_path']!,
+          _sourceImagePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('components_json')) {
+      context.handle(
+        _componentsJsonMeta,
+        componentsJson.isAcceptableOrUnknown(
+          data['components_json']!,
+          _componentsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_componentsJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FoodPhotoDraftRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FoodPhotoDraftRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      localDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_date'],
+      )!,
+      mealTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}meal_time'],
+      )!,
+      sourceImagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_image_path'],
+      ),
+      componentsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}components_json'],
+      )!,
+    );
+  }
+
+  @override
+  $FoodPhotoDraftsTable createAlias(String alias) {
+    return $FoodPhotoDraftsTable(attachedDatabase, alias);
+  }
+}
+
+class FoodPhotoDraftRow extends DataClass
+    implements Insertable<FoodPhotoDraftRow> {
+  /// Pengenal unik global yang dibuat aplikasi, bukan nomor urut basis data.
+  final String id;
+
+  /// Waktu pembuatan (UTC). Tidak pernah berubah setelah record dibuat.
+  final DateTime createdAt;
+
+  /// Waktu pembaruan terakhir (UTC).
+  final DateTime updatedAt;
+
+  /// Penanda terhapus (UTC). `null` berarti record aktif.
+  final DateTime? deletedAt;
+
+  /// Keadaan sinkronisasi. Selalu [kSyncStatusLocal] di MVP 1.
+  final String syncStatus;
+
+  /// Nomor revisi; bertambah satu setiap kali record berubah.
+  final int revision;
+  final String profileId;
+
+  /// `YYYY-MM-DD`, selaras `LocalDate.iso` (konvensi change 001/004).
+  final String localDate;
+  final String mealTime;
+
+  /// Rujukan ke foto sumber di perangkat (`source_image_storage`, change
+  /// 010) — `null` kecuali pengaturan retensi gambar mengizinkan
+  /// penyimpanan.
+  final String? sourceImagePath;
+  final String componentsJson;
+  const FoodPhotoDraftRow({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.syncStatus,
+    required this.revision,
+    required this.profileId,
+    required this.localDate,
+    required this.mealTime,
+    this.sourceImagePath,
+    required this.componentsJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    map['revision'] = Variable<int>(revision);
+    map['profile_id'] = Variable<String>(profileId);
+    map['local_date'] = Variable<String>(localDate);
+    map['meal_time'] = Variable<String>(mealTime);
+    if (!nullToAbsent || sourceImagePath != null) {
+      map['source_image_path'] = Variable<String>(sourceImagePath);
+    }
+    map['components_json'] = Variable<String>(componentsJson);
+    return map;
+  }
+
+  FoodPhotoDraftsCompanion toCompanion(bool nullToAbsent) {
+    return FoodPhotoDraftsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+      revision: Value(revision),
+      profileId: Value(profileId),
+      localDate: Value(localDate),
+      mealTime: Value(mealTime),
+      sourceImagePath: sourceImagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceImagePath),
+      componentsJson: Value(componentsJson),
+    );
+  }
+
+  factory FoodPhotoDraftRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FoodPhotoDraftRow(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+      revision: serializer.fromJson<int>(json['revision']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      localDate: serializer.fromJson<String>(json['localDate']),
+      mealTime: serializer.fromJson<String>(json['mealTime']),
+      sourceImagePath: serializer.fromJson<String?>(json['sourceImagePath']),
+      componentsJson: serializer.fromJson<String>(json['componentsJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+      'revision': serializer.toJson<int>(revision),
+      'profileId': serializer.toJson<String>(profileId),
+      'localDate': serializer.toJson<String>(localDate),
+      'mealTime': serializer.toJson<String>(mealTime),
+      'sourceImagePath': serializer.toJson<String?>(sourceImagePath),
+      'componentsJson': serializer.toJson<String>(componentsJson),
+    };
+  }
+
+  FoodPhotoDraftRow copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    String? syncStatus,
+    int? revision,
+    String? profileId,
+    String? localDate,
+    String? mealTime,
+    Value<String?> sourceImagePath = const Value.absent(),
+    String? componentsJson,
+  }) => FoodPhotoDraftRow(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+    revision: revision ?? this.revision,
+    profileId: profileId ?? this.profileId,
+    localDate: localDate ?? this.localDate,
+    mealTime: mealTime ?? this.mealTime,
+    sourceImagePath: sourceImagePath.present
+        ? sourceImagePath.value
+        : this.sourceImagePath,
+    componentsJson: componentsJson ?? this.componentsJson,
+  );
+  FoodPhotoDraftRow copyWithCompanion(FoodPhotoDraftsCompanion data) {
+    return FoodPhotoDraftRow(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      localDate: data.localDate.present ? data.localDate.value : this.localDate,
+      mealTime: data.mealTime.present ? data.mealTime.value : this.mealTime,
+      sourceImagePath: data.sourceImagePath.present
+          ? data.sourceImagePath.value
+          : this.sourceImagePath,
+      componentsJson: data.componentsJson.present
+          ? data.componentsJson.value
+          : this.componentsJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FoodPhotoDraftRow(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('profileId: $profileId, ')
+          ..write('localDate: $localDate, ')
+          ..write('mealTime: $mealTime, ')
+          ..write('sourceImagePath: $sourceImagePath, ')
+          ..write('componentsJson: $componentsJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+    revision,
+    profileId,
+    localDate,
+    mealTime,
+    sourceImagePath,
+    componentsJson,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FoodPhotoDraftRow &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus &&
+          other.revision == this.revision &&
+          other.profileId == this.profileId &&
+          other.localDate == this.localDate &&
+          other.mealTime == this.mealTime &&
+          other.sourceImagePath == this.sourceImagePath &&
+          other.componentsJson == this.componentsJson);
+}
+
+class FoodPhotoDraftsCompanion extends UpdateCompanion<FoodPhotoDraftRow> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> revision;
+  final Value<String> profileId;
+  final Value<String> localDate;
+  final Value<String> mealTime;
+  final Value<String?> sourceImagePath;
+  final Value<String> componentsJson;
+  final Value<int> rowid;
+  const FoodPhotoDraftsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.localDate = const Value.absent(),
+    this.mealTime = const Value.absent(),
+    this.sourceImagePath = const Value.absent(),
+    this.componentsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FoodPhotoDraftsCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.revision = const Value.absent(),
+    required String profileId,
+    required String localDate,
+    required String mealTime,
+    this.sourceImagePath = const Value.absent(),
+    required String componentsJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       profileId = Value(profileId),
+       localDate = Value(localDate),
+       mealTime = Value(mealTime),
+       componentsJson = Value(componentsJson);
+  static Insertable<FoodPhotoDraftRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? revision,
+    Expression<String>? profileId,
+    Expression<String>? localDate,
+    Expression<String>? mealTime,
+    Expression<String>? sourceImagePath,
+    Expression<String>? componentsJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (revision != null) 'revision': revision,
+      if (profileId != null) 'profile_id': profileId,
+      if (localDate != null) 'local_date': localDate,
+      if (mealTime != null) 'meal_time': mealTime,
+      if (sourceImagePath != null) 'source_image_path': sourceImagePath,
+      if (componentsJson != null) 'components_json': componentsJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FoodPhotoDraftsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<String>? syncStatus,
+    Value<int>? revision,
+    Value<String>? profileId,
+    Value<String>? localDate,
+    Value<String>? mealTime,
+    Value<String?>? sourceImagePath,
+    Value<String>? componentsJson,
+    Value<int>? rowid,
+  }) {
+    return FoodPhotoDraftsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      revision: revision ?? this.revision,
+      profileId: profileId ?? this.profileId,
+      localDate: localDate ?? this.localDate,
+      mealTime: mealTime ?? this.mealTime,
+      sourceImagePath: sourceImagePath ?? this.sourceImagePath,
+      componentsJson: componentsJson ?? this.componentsJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (localDate.present) {
+      map['local_date'] = Variable<String>(localDate.value);
+    }
+    if (mealTime.present) {
+      map['meal_time'] = Variable<String>(mealTime.value);
+    }
+    if (sourceImagePath.present) {
+      map['source_image_path'] = Variable<String>(sourceImagePath.value);
+    }
+    if (componentsJson.present) {
+      map['components_json'] = Variable<String>(componentsJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FoodPhotoDraftsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('revision: $revision, ')
+          ..write('profileId: $profileId, ')
+          ..write('localDate: $localDate, ')
+          ..write('mealTime: $mealTime, ')
+          ..write('sourceImagePath: $sourceImagePath, ')
+          ..write('componentsJson: $componentsJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12445,6 +13154,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WeightRecordsTable weightRecords = $WeightRecordsTable(this);
   late final $PackagedFoodPropertiesTable packagedFoodProperties =
       $PackagedFoodPropertiesTable(this);
+  late final $FoodPhotoDraftsTable foodPhotoDrafts = $FoodPhotoDraftsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -12465,6 +13177,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     mealEntryItems,
     weightRecords,
     packagedFoodProperties,
+    foodPhotoDrafts,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12490,6 +13203,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       result: [
         TableUpdate('packaged_food_properties', kind: UpdateKind.delete),
       ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('food_photo_drafts', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -13980,6 +14700,26 @@ final class $$ProfilesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$FoodPhotoDraftsTable, List<FoodPhotoDraftRow>>
+  _foodPhotoDraftsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.foodPhotoDrafts,
+    aliasName: 'profiles__id__food_photo_drafts__profile_id',
+  );
+
+  $$FoodPhotoDraftsTableProcessedTableManager get foodPhotoDraftsRefs {
+    final manager = $$FoodPhotoDraftsTableTableManager(
+      $_db,
+      $_db.foodPhotoDrafts,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _foodPhotoDraftsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ProfilesTableFilterComposer
@@ -14122,6 +14862,31 @@ class $$ProfilesTableFilterComposer
           }) => $$WeightRecordsTableFilterComposer(
             $db: $db,
             $table: $db.weightRecords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> foodPhotoDraftsRefs(
+    Expression<bool> Function($$FoodPhotoDraftsTableFilterComposer f) f,
+  ) {
+    final $$FoodPhotoDraftsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.foodPhotoDrafts,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoodPhotoDraftsTableFilterComposer(
+            $db: $db,
+            $table: $db.foodPhotoDrafts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -14339,6 +15104,31 @@ class $$ProfilesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> foodPhotoDraftsRefs<T extends Object>(
+    Expression<T> Function($$FoodPhotoDraftsTableAnnotationComposer a) f,
+  ) {
+    final $$FoodPhotoDraftsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.foodPhotoDrafts,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoodPhotoDraftsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.foodPhotoDrafts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -14358,6 +15148,7 @@ class $$ProfilesTableTableManager
             bool userProgramsRefs,
             bool mealEntriesRefs,
             bool weightRecordsRefs,
+            bool foodPhotoDraftsRefs,
           })
         > {
   $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
@@ -14448,6 +15239,7 @@ class $$ProfilesTableTableManager
                 userProgramsRefs = false,
                 mealEntriesRefs = false,
                 weightRecordsRefs = false,
+                foodPhotoDraftsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -14455,6 +15247,7 @@ class $$ProfilesTableTableManager
                     if (userProgramsRefs) db.userPrograms,
                     if (mealEntriesRefs) db.mealEntries,
                     if (weightRecordsRefs) db.weightRecords,
+                    if (foodPhotoDraftsRefs) db.foodPhotoDrafts,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -14522,6 +15315,27 @@ class $$ProfilesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (foodPhotoDraftsRefs)
+                        await $_getPrefetchedData<
+                          ProfileRow,
+                          $ProfilesTable,
+                          FoodPhotoDraftRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._foodPhotoDraftsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).foodPhotoDraftsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.profileId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -14546,6 +15360,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool userProgramsRefs,
         bool mealEntriesRefs,
         bool weightRecordsRefs,
+        bool foodPhotoDraftsRefs,
       })
     >;
 typedef $$UserProgramsTableCreateCompanionBuilder =
@@ -20822,6 +21637,456 @@ typedef $$PackagedFoodPropertiesTableProcessedTableManager =
       PackagedFoodPropertiesRow,
       PrefetchHooks Function({bool foodId})
     >;
+typedef $$FoodPhotoDraftsTableCreateCompanionBuilder =
+    FoodPhotoDraftsCompanion Function({
+      required String id,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      required String profileId,
+      required String localDate,
+      required String mealTime,
+      Value<String?> sourceImagePath,
+      required String componentsJson,
+      Value<int> rowid,
+    });
+typedef $$FoodPhotoDraftsTableUpdateCompanionBuilder =
+    FoodPhotoDraftsCompanion Function({
+      Value<String> id,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> revision,
+      Value<String> profileId,
+      Value<String> localDate,
+      Value<String> mealTime,
+      Value<String?> sourceImagePath,
+      Value<String> componentsJson,
+      Value<int> rowid,
+    });
+
+final class $$FoodPhotoDraftsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FoodPhotoDraftsTable,
+          FoodPhotoDraftRow
+        > {
+  $$FoodPhotoDraftsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('food_photo_drafts__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<String>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FoodPhotoDraftsTableFilterComposer
+    extends Composer<_$AppDatabase, $FoodPhotoDraftsTable> {
+  $$FoodPhotoDraftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mealTime => $composableBuilder(
+    column: $table.mealTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get componentsJson => $composableBuilder(
+    column: $table.componentsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoodPhotoDraftsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FoodPhotoDraftsTable> {
+  $$FoodPhotoDraftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mealTime => $composableBuilder(
+    column: $table.mealTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get componentsJson => $composableBuilder(
+    column: $table.componentsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoodPhotoDraftsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FoodPhotoDraftsTable> {
+  $$FoodPhotoDraftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<String> get localDate =>
+      $composableBuilder(column: $table.localDate, builder: (column) => column);
+
+  GeneratedColumn<String> get mealTime =>
+      $composableBuilder(column: $table.mealTime, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceImagePath => $composableBuilder(
+    column: $table.sourceImagePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get componentsJson => $composableBuilder(
+    column: $table.componentsJson,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoodPhotoDraftsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FoodPhotoDraftsTable,
+          FoodPhotoDraftRow,
+          $$FoodPhotoDraftsTableFilterComposer,
+          $$FoodPhotoDraftsTableOrderingComposer,
+          $$FoodPhotoDraftsTableAnnotationComposer,
+          $$FoodPhotoDraftsTableCreateCompanionBuilder,
+          $$FoodPhotoDraftsTableUpdateCompanionBuilder,
+          (FoodPhotoDraftRow, $$FoodPhotoDraftsTableReferences),
+          FoodPhotoDraftRow,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$FoodPhotoDraftsTableTableManager(
+    _$AppDatabase db,
+    $FoodPhotoDraftsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FoodPhotoDraftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FoodPhotoDraftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FoodPhotoDraftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> localDate = const Value.absent(),
+                Value<String> mealTime = const Value.absent(),
+                Value<String?> sourceImagePath = const Value.absent(),
+                Value<String> componentsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FoodPhotoDraftsCompanion(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                profileId: profileId,
+                localDate: localDate,
+                mealTime: mealTime,
+                sourceImagePath: sourceImagePath,
+                componentsJson: componentsJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                required String profileId,
+                required String localDate,
+                required String mealTime,
+                Value<String?> sourceImagePath = const Value.absent(),
+                required String componentsJson,
+                Value<int> rowid = const Value.absent(),
+              }) => FoodPhotoDraftsCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                revision: revision,
+                profileId: profileId,
+                localDate: localDate,
+                mealTime: mealTime,
+                sourceImagePath: sourceImagePath,
+                componentsJson: componentsJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FoodPhotoDraftsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.profileId,
+                                referencedTable:
+                                    $$FoodPhotoDraftsTableReferences
+                                        ._profileIdTable(db),
+                                referencedColumn:
+                                    $$FoodPhotoDraftsTableReferences
+                                        ._profileIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FoodPhotoDraftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FoodPhotoDraftsTable,
+      FoodPhotoDraftRow,
+      $$FoodPhotoDraftsTableFilterComposer,
+      $$FoodPhotoDraftsTableOrderingComposer,
+      $$FoodPhotoDraftsTableAnnotationComposer,
+      $$FoodPhotoDraftsTableCreateCompanionBuilder,
+      $$FoodPhotoDraftsTableUpdateCompanionBuilder,
+      (FoodPhotoDraftRow, $$FoodPhotoDraftsTableReferences),
+      FoodPhotoDraftRow,
+      PrefetchHooks Function({bool profileId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -20859,4 +22124,6 @@ class $AppDatabaseManager {
         _db,
         _db.packagedFoodProperties,
       );
+  $$FoodPhotoDraftsTableTableManager get foodPhotoDrafts =>
+      $$FoodPhotoDraftsTableTableManager(_db, _db.foodPhotoDrafts);
 }

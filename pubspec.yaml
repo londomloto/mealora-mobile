@@ -48,6 +48,11 @@ dependencies:
   # perangkat ketika pengaturan retensi mengizinkan (change 010, Design D9).
   path_provider: ^2.1.5
 
+  # Pengenalan teks di perangkat untuk OCR lokal — langkah antara sebelum
+  # jalur manual ketika penyedia cloud gagal (change 010, Design D11). Tidak
+  # ada gambar yang meninggalkan perangkat pada langkah ini.
+  google_mlkit_text_recognition: ^0.16.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

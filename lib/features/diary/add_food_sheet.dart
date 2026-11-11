@@ -6,16 +6,19 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/features/diary/barcode_scan_screen.dart';
+import 'package:mealora/features/diary/food_photo_screen.dart';
 import 'package:mealora/features/diary/food_search_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `02 · Tambah makanan` — pintu masuk pencatatan (task 8.3/8.4).
 ///
-/// Jalur pencarian/input manual dan barcode (change 009) selalu tersedia
-/// luring untuk produk tersimpan. Jalur suara dan foto ditandai belum
-/// tersedia dan SHALL TIDAK membuka layar yang gagal (spec daily-dashboard,
-/// "Jalur yang belum tersedia") — jalur suara menyusul pada change 012,
-/// foto pada change terpisah.
+/// Jalur pencarian/input manual, barcode (change 009), dan foto makanan
+/// (change 011) selalu tersedia luring untuk produk tersimpan — foto
+/// membuka `FoodPhotoScreen` (`19`), yang sendiri menawarkan jalur manual
+/// bila kamera atau pengenalan tidak tersedia. Jalur suara masih ditandai
+/// belum tersedia dan SHALL TIDAK membuka layar yang gagal (spec
+/// daily-dashboard, "Jalur yang belum tersedia") — menyusul pada change
+/// 012.
 Future<void> showAddFoodSheet(BuildContext context, {LocalDate? date}) {
   return showGeneralDialog<void>(
     context: context,
@@ -172,7 +175,14 @@ class _AddFoodSheet extends StatelessWidget {
                       iconForeground: MealoraColors.primaryBright,
                       title: text.addFoodPhotoTitle,
                       description: text.addFoodPhotoDescription,
-                      onTap: () => _announceUnavailable(context, text),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => FoodPhotoScreen(date: date),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: MealoraSpacing.sm),
                     _AddFoodRow(

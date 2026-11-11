@@ -1,17 +1,22 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/data/local/drift_diary_repository.dart';
 import 'package:mealora/data/local/drift_food_repository.dart';
 import 'package:mealora/data/local/drift_packaged_food_repository.dart';
+import 'package:mealora/data/local/drift_photo_draft_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/data/local/drift_program_repository.dart';
 import 'package:mealora/data/local/drift_weight_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
+import 'package:mealora/data/ocr/ocr_nutrition_label_provider.dart';
 import 'package:mealora/data/remote/openfoodfacts_product_client.dart';
+import 'package:mealora/data/remote/vision_proxy_food_component_provider.dart';
 import 'package:mealora/data/remote/vision_proxy_label_provider.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
+import 'package:mealora/domain/image_ai_access/fallback_nutrition_label_provider.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
@@ -154,13 +159,60 @@ final Override packagedFoodRepositoryAppOverride =
       ),
     );
 
+/// HANYA untuk pengujian manual OCR lokal di perangkat TANPA memanggil
+/// penyedia cloud sama sekali — jadi tidak memakai kuota Gemini sedikit pun
+/// selama diaktifkan. Dibaca dari
+/// `--dart-define=MEALORA_FORCE_LOCAL_OCR=true` dan digabung dengan
+/// `kDebugMode` supaya build rilis SELALU memakai
+/// [FallbackNutritionLabelProvider] yang sesungguhnya, apa pun nilai define
+/// ini — tidak ada jalan bagi flag pengujian untuk ikut ke build yang
+/// didistribusikan (bandingkan task 9.4).
+///
+/// Dipakai dengan: `flutter run --dart-define=MEALORA_FORCE_LOCAL_OCR=true`.
+/// Hapus flag ini dari perintah untuk kembali ke jalur cloud → OCR → manual
+/// yang sesungguhnya.
+const bool _forceLocalOcrForTesting = bool.fromEnvironment(
+  'MEALORA_FORCE_LOCAL_OCR',
+);
+
 /// Menimpa `nutritionLabelProviderProvider` (core/providers, change 010)
-/// dengan klien `mealora-vision-proxy` sungguhan — alamat proksi dibaca
-/// dari `--dart-define` saat build (lihat `VisionProxyConfig`), tidak
-/// pernah ditanam di kode.
+/// dengan [FallbackNutritionLabelProvider]: klien `mealora-vision-proxy`
+/// sungguhan lebih dulu (alamat proksi dibaca dari `--dart-define` saat
+/// build, lihat `VisionProxyConfig`, tidak pernah ditanam di kode), lalu
+/// OCR lokal ketika penyedia cloud gagal (Design D11).
 final Override nutritionLabelProviderAppOverride =
     nutritionLabelProviderProvider.overrideWithValue(
-      VisionProxyLabelProvider(config: VisionProxyConfig.fromEnvironment),
+      kDebugMode && _forceLocalOcrForTesting
+          ? OcrNutritionLabelProvider()
+          : FallbackNutritionLabelProvider(
+              primary: VisionProxyLabelProvider(
+                config: VisionProxyConfig.fromEnvironment,
+              ),
+              fallback: OcrNutritionLabelProvider(),
+            ),
+    );
+
+/// Menimpa `foodComponentRecognitionProviderProvider` (core/providers,
+/// change 011) dengan `VisionProxyFoodComponentProvider` sungguhan — sama
+/// dengan [nutritionLabelProviderAppOverride], TIDAK ADA jalur OCR lokal:
+/// pengenalan komponen hanya bermakna lewat model penglihatan (Design D1),
+/// jadi kegagalan layanan bermuara langsung ke draf + jalur manual (spec,
+/// "Jalur tanpa pengenalan selalu tersedia"), bukan ke fallback kedua.
+final Override foodComponentRecognitionProviderAppOverride =
+    foodComponentRecognitionProviderProvider.overrideWithValue(
+      VisionProxyFoodComponentProvider(
+        config: VisionProxyConfig.fromEnvironment,
+      ),
+    );
+
+/// Menimpa `photoDraftRepositoryProvider` (features/diary, change 011)
+/// dengan implementasi Drift sungguhan.
+final Override photoDraftRepositoryAppOverride = photoDraftRepositoryProvider
+    .overrideWith(
+      (ref) => DriftPhotoDraftRepository(
+        ref.watch(appDatabaseProvider),
+        clock: ref.watch(clockProvider),
+      ),
     );
 
 /// Profil lokal perangkat ini sudah lengkap (Design D2, change 005) — gerbang

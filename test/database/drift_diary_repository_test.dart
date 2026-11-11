@@ -213,6 +213,90 @@ void main() {
     });
   });
 
+  group(
+    'addEntries — pencatatan banyak komponen (change 011, task 7.1/7.3)',
+    () {
+      test('menulis beberapa komponen sekaligus pada satu transaksi', () async {
+        final rice = (await foodRepository.findById('food-tkpi-921'))!;
+        final tempe = await foodRepository.createUserFood(
+          name: 'Tempe goreng',
+          category: FoodCategory.other,
+          serving: const ServingSizeInput(
+            label: '2 potong',
+            amount: 2,
+            unit: 'potong',
+            nutrition: NutritionProfile(
+              proteinG: 10,
+              carbohydrateG: 6,
+              fatG: 8,
+            ),
+          ),
+        );
+
+        final result = await repository.addEntries(
+          profileId: profileId,
+          date: today,
+          mealTime: MealTime.lunch,
+          entries: <NewMealEntry>[
+            NewMealEntry(food: rice, serving: rice.defaultServing, quantity: 1),
+            NewMealEntry(
+              food: tempe,
+              serving: tempe.defaultServing,
+              quantity: 2,
+            ),
+          ],
+        );
+
+        expect(result, isA<Ok<List<MealEntry>>>());
+        final created = (result as Ok<List<MealEntry>>).value;
+        expect(created, hasLength(2));
+
+        final entries = await repository.entriesForDate(profileId, today);
+        expect(entries, hasLength(2));
+        expect(entries.every((e) => e.mealTime == MealTime.lunch), isTrue);
+      });
+
+      test(
+        'jumlah tidak sah pada salah satu komponen menolak seluruhnya, tidak '
+        'menyisakan satu pun catatan',
+        () async {
+          final rice = (await foodRepository.findById('food-tkpi-921'))!;
+          final tempe = await foodRepository.createUserFood(
+            name: 'Tempe goreng',
+            category: FoodCategory.other,
+            serving: const ServingSizeInput(
+              label: '2 potong',
+              amount: 2,
+              unit: 'potong',
+              nutrition: NutritionProfile(proteinG: 10),
+            ),
+          );
+
+          final result = await repository.addEntries(
+            profileId: profileId,
+            date: today,
+            mealTime: MealTime.lunch,
+            entries: <NewMealEntry>[
+              NewMealEntry(
+                food: rice,
+                serving: rice.defaultServing,
+                quantity: 1,
+              ),
+              NewMealEntry(
+                food: tempe,
+                serving: tempe.defaultServing,
+                quantity: 0,
+              ),
+            ],
+          );
+
+          expect(result, isA<Err<List<MealEntry>>>());
+          expect(await repository.entriesForDate(profileId, today), isEmpty);
+        },
+      );
+    },
+  );
+
   group('agregasi harian (Design D9, task 5.2)', () {
     test(
       'nilai belum diketahui tidak pernah menjadi nol di agregasi',

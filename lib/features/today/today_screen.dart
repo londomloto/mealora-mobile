@@ -14,12 +14,14 @@ import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/domain/nutrition/activity_level.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/program_target_proposal.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
+import 'package:mealora/features/diary/food_photo_review_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// Ruang `01 · Hari ini` (task 8.1/8.2/8.6/8.7): energi tercatat, target bila
@@ -36,6 +38,7 @@ class TodayScreen extends ConsumerWidget {
     final today = ref.watch(clockProvider).today();
     final dailyTotal = ref.watch(dailyNutritionTotalProvider(today));
     final entries = ref.watch(diaryEntriesProvider(today));
+    final pendingDraft = ref.watch(pendingPhotoDraftProvider).valueOrNull;
     final name = profile?.nickname?.trim().isNotEmpty == true
         ? profile!.nickname!.trim()
         : text.todayDefaultName;
@@ -55,6 +58,7 @@ class TodayScreen extends ConsumerWidget {
         activityLevel: profile.activityLevel,
         dailyTotal: dailyTotal.valueOrNull ?? DailyNutritionTotal.empty,
         entries: entries.valueOrNull ?? const <MealEntry>[],
+        pendingDraft: pendingDraft,
       ),
     );
   }
@@ -69,6 +73,7 @@ class _TodayBody extends StatelessWidget {
     required this.activityLevel,
     required this.dailyTotal,
     required this.entries,
+    required this.pendingDraft,
   });
 
   final AppText text;
@@ -78,6 +83,13 @@ class _TodayBody extends StatelessWidget {
   final ActivityLevel? activityLevel;
   final DailyNutritionTotal dailyTotal;
   final List<MealEntry> entries;
+
+  /// Draf foto makanan belum selesai (change 011, task 3.4) — `null` bila
+  /// tidak ada. Bukan bagian dari rancangan `01` di `mealora-v2.pen` (belum
+  /// ada layar pemulihan draf di sana); dipakai ulang `MealoraNoteCard`
+  /// yang sudah ada alih-alih merancang komponen baru, konsisten dengan
+  /// bahasa visual yang berlaku.
+  final PhotoDraft? pendingDraft;
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +266,10 @@ class _TodayBody extends StatelessWidget {
                   activityLevel: activityLevel,
                   text: text,
                 ),
+                if (pendingDraft != null) ...<Widget>[
+                  const SizedBox(height: MealoraSpacing.md),
+                  _PendingDraftBanner(draft: pendingDraft!, text: text),
+                ],
                 if (proposal?.macros != null) ...<Widget>[
                   const SizedBox(height: MealoraSpacing.md),
                   _MacroCard(
@@ -290,6 +306,35 @@ class _TodayBody extends StatelessWidget {
     ProgramCode.weightGain => text.onboardingProgramWeightGainName,
     ProgramCode.maintenance => text.onboardingProgramMaintenanceName,
   };
+}
+
+/// Tawaran melanjutkan draf foto makanan (change 011, task 3.4) — muncul
+/// begitu `pendingPhotoDraftProvider` menemukan draf yang belum dibuang,
+/// termasuk tepat setelah aplikasi dibuka kembali usai ditutup paksa di
+/// tengah peninjauan: penyimpanan draf sudah bertahan (Design D6), ruang
+/// utama inilah titik yang memulihkannya ke navigasi.
+class _PendingDraftBanner extends StatelessWidget {
+  const _PendingDraftBanner({required this.draft, required this.text});
+
+  final PhotoDraft draft;
+  final AppText text;
+
+  @override
+  Widget build(BuildContext context) {
+    return MealoraNoteCard(
+      icon: Icons.restaurant_outlined,
+      title: text.todayPendingDraftTitle,
+      body: text.todayPendingDraftBody,
+      background: MealoraColors.iconFieldAmber,
+      foreground: MealoraColors.amberText,
+      semanticsLabel: text.todayPendingDraftSemantics,
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => FoodPhotoReviewScreen(draft: draft),
+        ),
+      ),
+    );
+  }
 }
 
 class _SummaryCard extends StatelessWidget {

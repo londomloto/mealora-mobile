@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/domain/diary/diary_repository.dart';
 import 'package:mealora/domain/food/food_repository.dart';
+import 'package:mealora/domain/food_photo_input/photo_draft_repository.dart';
 import 'package:mealora/domain/packaged_food/packaged_food_repository.dart';
 
 /// Diinjeksi di `main.dart`/pengujian, mengikuti pola `profileRepositoryProvider`
@@ -32,6 +33,16 @@ final Provider<PackagedFoodRepository> packagedFoodRepositoryProvider =
       ),
     );
 
+/// Diinjeksi di `main.dart`/pengujian, sama seperti [foodRepositoryProvider]
+/// (change 011).
+final Provider<PhotoDraftRepository> photoDraftRepositoryProvider =
+    Provider<PhotoDraftRepository>(
+      (ref) => throw UnimplementedError(
+        'photoDraftRepositoryProvider harus ditimpa di ProviderScope '
+        '(lihat lib/main.dart dan test/).',
+      ),
+    );
+
 /// Menandai perubahan buku harian (tambah/sunting/pindah/hapus catatan, atau
 /// makanan buatan sendiri baru) — menaikkan nilai ini memaksa seluruh
 /// provider turunan di `diary_providers.dart` membaca ulang penyimpanan,
@@ -43,4 +54,15 @@ final StateProvider<int> diaryRefreshSignalProvider = StateProvider<int>(
 
 void bumpDiaryRefresh(WidgetRef ref) {
   ref.read(diaryRefreshSignalProvider.notifier).state++;
+}
+
+/// Menandai perubahan draf foto makanan (disimpan atau dibuang, change 011,
+/// task 3.4) — memaksa `pendingPhotoDraftProvider` (features/today) membaca
+/// ulang penyimpanan, mengikuti pola [diaryRefreshSignalProvider].
+final StateProvider<int> photoDraftRefreshSignalProvider = StateProvider<int>(
+  (ref) => 0,
+);
+
+void bumpPhotoDraftRefresh(WidgetRef ref) {
+  ref.read(photoDraftRefreshSignalProvider.notifier).state++;
 }

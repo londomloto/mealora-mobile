@@ -2156,4 +2156,217 @@ class AppTextId extends AppText {
 
   @override
   String get labelReviewCancelKeepReviewingAction => 'Lanjutkan meninjau';
+
+  @override
+  String get foodPhotoContextLabel => 'FOTO MAKANAN';
+
+  @override
+  String get foodPhotoTitle => 'Ambil foto makanan';
+
+  @override
+  String get foodPhotoSubtitle => 'Saran dari foto selalu perlu diperiksa.';
+
+  @override
+  String get foodPhotoFrameCaption => 'Arahkan ke piringmu';
+
+  @override
+  String get foodPhotoConsentHeading => 'Sebelum dianalisis';
+
+  @override
+  String get foodPhotoConsentBody =>
+      'Analisis AI memerlukan internet. Foto hanya diunggah jika kamu mengizinkan. Catatan tetap tersimpan lokal.';
+
+  @override
+  String get foodPhotoConsentCheckboxLabel => 'Saya izinkan unggah foto ini';
+
+  @override
+  String get foodPhotoCaptureAction => 'Ambil foto & lanjutkan';
+
+  @override
+  String get foodPhotoManualLink =>
+      'Tanpa internet? Pilih makanan secara manual';
+
+  @override
+  String get foodPhotoPermissionDeniedTitle => 'Kamera tidak dapat diakses';
+
+  @override
+  String get foodPhotoPermissionDeniedBody =>
+      'Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa memilih makanan secara manual.';
+
+  @override
+  String get foodPhotoDraftContextLabel => 'FOTO MAKANAN';
+
+  @override
+  String get foodPhotoDraftSavedTitle => 'Foto tersimpan sebagai draf';
+
+  @override
+  String get foodPhotoDraftSavedBody => 'Belum ada catatan makan yang dibuat.';
+
+  @override
+  String get foodPhotoDraftBadge => 'Draf foto · tersimpan di perangkat';
+
+  @override
+  String get foodPhotoDraftUnavailableTitle => 'Analisis foto belum tersedia';
+
+  @override
+  String get foodPhotoDraftUnavailableBody =>
+      'Koneksi atau kuota layanan bermasalah. Draf fotomu tidak hilang.';
+
+  @override
+  String get foodPhotoDraftManualHeading => 'Lanjut tanpa AI';
+
+  @override
+  String get foodPhotoDraftManualDescription =>
+      'Cari makanan di katalog, tambah bahan, lalu atur porsinya sendiri.';
+
+  @override
+  String get foodPhotoDraftManualAction => 'Pilih makanan manual';
+
+  @override
+  String get foodPhotoReviewContextLabel => 'TINJAU FOTO MAKANAN';
+
+  @override
+  String get foodPhotoReviewBadge => 'Saran foto · porsi perlu dicek';
+
+  @override
+  String get foodPhotoReviewBadgeNote =>
+      'Nutrisi dari padanan katalog; periksa bahan.';
+
+  @override
+  String get foodPhotoReviewTitle => 'Tinjau foto makanan';
+
+  @override
+  String get foodPhotoReviewSubtitle => 'Periksa perkiraan sebelum dicatat';
+
+  @override
+  String get foodPhotoReviewEmptyTitle => 'Isi piringmu';
+
+  @override
+  String foodPhotoReviewComponentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bahan',
+      one: '1 bahan',
+      zero: 'Tidak ada bahan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get foodPhotoReviewEditAction => 'Ubah';
+
+  @override
+  String get foodPhotoReviewNoMatchLabel =>
+      'Belum ada padanan — pilih atau buat makanan';
+
+  @override
+  String foodPhotoReviewTotalSummary(
+    String kcal,
+    String protein,
+    String carbohydrate,
+    String fat,
+  ) {
+    return '· $kcal kkal  ·  P $protein g  ·  K $carbohydrate g  ·  L $fat g';
+  }
+
+  @override
+  String get foodPhotoReviewConfirmAction => 'Konfirmasi & catat';
+
+  @override
+  String get foodPhotoReviewCancelConfirmTitle => 'Batalkan peninjauan ini?';
+
+  @override
+  String get foodPhotoReviewCancelConfirmBody =>
+      'Belum ada catatan yang dibuat. Draf fotonya akan dibuang sesuai pengaturan privasi.';
+
+  @override
+  String get foodPhotoReviewCancelConfirmAction => 'Ya, batalkan';
+
+  @override
+  String get foodPhotoReviewCancelKeepReviewingAction => 'Lanjutkan meninjau';
+
+  @override
+  String get foodComponentCorrectionBadge => 'DRAF FOTO MAKANAN';
+
+  @override
+  String get foodComponentCorrectionTitle => 'Ubah komponen';
+
+  @override
+  String get foodComponentCorrectionSubtitle =>
+      'Setiap bahan dan porsi bisa kamu koreksi.';
+
+  @override
+  String get foodComponentCorrectionHeading => 'Bahan yang dikenali';
+
+  @override
+  String get foodComponentCorrectionRemoveAction => 'Hapus bahan';
+
+  @override
+  String get foodComponentCorrectionAddAction =>
+      'Tambah bahan, minyak, atau saus';
+
+  @override
+  String get foodComponentCorrectionConfirmAction => 'Tinjau total baru';
+
+  @override
+  String get foodComponentMatchOk => 'cocok dengan katalog';
+
+  @override
+  String get foodComponentMatchMissing => 'belum ada padanan';
+
+  @override
+  String get foodComponentPortionNeedsCheck => 'porsi perlu dicek';
+
+  @override
+  String get foodComponentCookingMethodNeedsCheck => 'metode masak perlu dicek';
+
+  @override
+  String get foodComponentEditorFoodLabel => 'MAKANAN';
+
+  @override
+  String get foodComponentEditorFoodChangeAction => 'Ganti makanan';
+
+  @override
+  String get foodComponentEditorQuantityLabel => 'JUMLAH TAKARAN';
+
+  @override
+  String get foodComponentEditorServingLabel => 'TAKARAN';
+
+  @override
+  String get foodComponentEditorCookingMethodLabel => 'METODE MASAK (OPSIONAL)';
+
+  @override
+  String get foodComponentEditorCookingMethodHint =>
+      'mis. digoreng, dikukus, dibakar';
+
+  @override
+  String get foodComponentEditorSaveAction => 'Simpan';
+
+  @override
+  String get foodComponentPickerTitle => 'Pilih makanan';
+
+  @override
+  String get foodComponentPickerHint => 'Cari di katalog';
+
+  @override
+  String get foodComponentPickerCreateLink => 'Buat makanan baru';
+
+  @override
+  String get foodComponentPickerNoResultsTitle => 'Tidak ditemukan';
+
+  @override
+  String get foodComponentPickerNoResultsBody =>
+      'Coba kata kunci lain, atau buat makanan baru.';
+
+  @override
+  String get todayPendingDraftTitle => 'Draf foto makanan menunggu';
+
+  @override
+  String get todayPendingDraftBody =>
+      'Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.';
+
+  @override
+  String get todayPendingDraftSemantics =>
+      'Draf foto makanan menunggu. Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.';
 }
