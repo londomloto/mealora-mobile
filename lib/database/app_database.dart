@@ -67,7 +67,7 @@ class AppDatabase extends _$AppDatabase {
       await createProgramInvariantTrigger(this);
       await seedProgramCatalog(this);
       await createFoodDiaryIndexes(this);
-      await seedFoodCatalog(this);
+      await ensureFoodCatalogSeeded(this);
       await createWeightIndexes(this);
       await createPackagedFoodIndexes(this);
     },
@@ -162,7 +162,7 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         await m.createTable(mealEntries);
         await m.createTable(mealEntryItems);
         await createFoodDiaryIndexes(this);
-        await seedFoodCatalog(this);
+        await ensureFoodCatalogSeeded(this);
       }
       if (from < 5) {
         // Versi 4 → 5 (change 008): tabel catatan berat beserta indeks
@@ -183,6 +183,7 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
       // Kunci asing diaktifkan pada setiap pembukaan koneksi: PRAGMA ini
       // tidak bertahan antar koneksi di SQLite.
       await customStatement('PRAGMA foreign_keys = ON');
+      await ensureFoodCatalogSeeded(this);
     },
   );
 }

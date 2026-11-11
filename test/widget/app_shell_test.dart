@@ -182,6 +182,8 @@ void main() {
       ),
       findsOneWidget,
     );
+    // Screen 01 tidak menampilkan CTA kedua dengan aksi yang sama.
+    expect(find.bySemanticsLabel('Catat makanan'), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(FloatingNavigation),

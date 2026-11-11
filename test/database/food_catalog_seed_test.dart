@@ -38,6 +38,44 @@ void main() {
     expect(nutritionAfter, hasLength(before.length));
   });
 
+  test('katalog lama diselaraskan tanpa menghapus makanan buatan', () async {
+    const rendangId = 'food-tkpi-1045';
+    const customFoodId = 'food-custom-test';
+
+    await (db.delete(
+      db.nutritionValues,
+    )..where((row) => row.servingId.equals('$rendangId-default'))).go();
+    await (db.delete(
+      db.foodServings,
+    )..where((row) => row.foodId.equals(rendangId))).go();
+    await (db.delete(db.foods)..where((row) => row.id.equals(rendangId))).go();
+    await db
+        .into(db.foods)
+        .insert(
+          FoodsCompanion.insert(
+            id: customFoodId,
+            createdAt: kFoodCatalogSeedTimestamp,
+            updatedAt: kFoodCatalogSeedTimestamp,
+            name: 'Makanan buatan pengguna',
+            category: 'other',
+          ),
+        );
+    await (db.delete(
+      db.uiPreferences,
+    )..where((row) => row.key.equals('food_catalog_seed_version'))).go();
+
+    await ensureFoodCatalogSeeded(db);
+
+    final rendang = await (db.select(
+      db.foods,
+    )..where((row) => row.id.equals(rendangId))).getSingleOrNull();
+    final customFood = await (db.select(
+      db.foods,
+    )..where((row) => row.id.equals(customFoodId))).getSingleOrNull();
+    expect(rendang?.name, 'Rendang sapi masakan');
+    expect(customFood?.name, 'Makanan buatan pengguna');
+  });
+
   test(
     'setiap makanan bawaan punya provenans lengkap (task 1.5/2.3.5)',
     () async {

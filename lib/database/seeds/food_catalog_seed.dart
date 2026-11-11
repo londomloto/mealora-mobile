@@ -10,6 +10,13 @@ import 'package:mealora/domain/food/food_category.dart';
 const String _kSourceType = 'tkpi';
 const String _kSourceVersion = 'kaggle-indo-nutrition-v1';
 
+/// Versi isi katalog bawaan, terpisah dari versi skema database.
+///
+/// Naikkan nilai ini setiap kali [_kSeedFoods] berubah agar perangkat yang
+/// sudah memakai skema terbaru tetap mendapat penambahan/perbaikan katalog.
+const String kFoodCatalogSeedVersion = 'tkpi-2026-11-11-v1';
+const String _kFoodCatalogSeedPreferenceKey = 'food_catalog_seed_version';
+
 /// Waktu tetap untuk created_at/updated_at/verified_at baris katalog --
 /// baris katalog bukan record pengguna, nilainya sama di setiap perangkat
 /// (pola Design D2, change 004: kProgramCatalogSeedTimestamp).
@@ -13572,5 +13579,33 @@ Future<void> seedFoodCatalog(AppDatabase db) async {
         ),
       ),
     );
+  });
+}
+
+/// Menyelaraskan katalog bawaan saat versi isi yang tersimpan berbeda.
+///
+/// Penyelarasan bersifat idempoten dan tidak menghapus makanan buatan maupun
+/// catatan pengguna. Penanda versi ditulis dalam transaksi yang sama sehingga
+/// kegagalan di tengah proses akan dicoba lagi pada pembukaan berikutnya.
+Future<void> ensureFoodCatalogSeeded(AppDatabase db) async {
+  final storedVersion =
+      await (db.select(db.uiPreferences)
+            ..where((row) => row.key.equals(_kFoodCatalogSeedPreferenceKey)))
+          .getSingleOrNull();
+  if (storedVersion?.value == kFoodCatalogSeedVersion) {
+    return;
+  }
+
+  await db.transaction(() async {
+    await seedFoodCatalog(db);
+    await db
+        .into(db.uiPreferences)
+        .insertOnConflictUpdate(
+          UiPreferencesCompanion.insert(
+            key: _kFoodCatalogSeedPreferenceKey,
+            value: kFoodCatalogSeedVersion,
+            updatedAt: kFoodCatalogSeedTimestamp,
+          ),
+        );
   });
 }

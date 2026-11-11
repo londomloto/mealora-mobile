@@ -1532,6 +1532,9 @@ class AppTextId extends AppText {
   String get barcodeScanManualLink => 'Masukkan nomor barcode secara manual';
 
   @override
+  String get barcodeScanUseCamera => 'Gunakan kamera';
+
+  @override
   String get barcodeScanSlowHint =>
       'Kode belum terbaca? Ketik nomor secara manual.';
 

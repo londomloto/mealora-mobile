@@ -2791,6 +2791,12 @@ abstract class AppText {
   /// **'Masukkan nomor barcode secara manual'**
   String get barcodeScanManualLink;
 
+  /// No description provided for @barcodeScanUseCamera.
+  ///
+  /// In id, this message translates to:
+  /// **'Gunakan kamera'**
+  String get barcodeScanUseCamera;
+
   /// No description provided for @barcodeScanSlowHint.
   ///
   /// In id, this message translates to:

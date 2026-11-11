@@ -18,7 +18,6 @@ import 'package:mealora/domain/nutrition/activity_level.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/program_target_proposal.dart';
 import 'package:mealora/domain/program/user_program.dart';
-import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -277,11 +276,6 @@ class _TodayBody extends StatelessWidget {
                 ],
                 const SizedBox(height: MealoraSpacing.md),
                 _MealListCard(entries: entries, text: text),
-                const SizedBox(height: MealoraSpacing.lg),
-                MealoraPrimaryButton(
-                  label: text.todayLogFoodAction,
-                  onPressed: () => showAddFoodSheet(context),
-                ),
               ],
             ),
           ),

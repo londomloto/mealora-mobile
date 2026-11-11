@@ -63,6 +63,24 @@ abstract final class MealoraColors {
   /// Lime — aksen dekoratif (blob latar, sorotan langka).
   static const Color lime = Color(0xFFB6ED6A);
 
+  /// Permukaan pratinjau pemindai barcode pada layar `21`.
+  static const List<Color> barcodeScannerGradient = <Color>[
+    Color(0xFF0D2B20),
+    Color(0xFF1D4436),
+  ];
+
+  /// Lapisan dan aksen khusus bingkai pemindai barcode (`21`).
+  static const Color barcodeScannerWindow = Color(0x14B6ED6A);
+  static const Color barcodeScannerBorder = Color(0x33FFFFFF);
+  static const Color barcodeScannerScrim = Color(0x8A0D2B20);
+  static const List<Color> barcodeScannerSweepGradient = <Color>[
+    Color(0x00B6ED6A),
+    Color(0x1FB6ED6A),
+    Color(0x80B6ED6A),
+    Color(0x1FB6ED6A),
+    Color(0x00B6ED6A),
+  ];
+
   /// Kuning aksen (mis. makro lemak).
   static const Color accent = Color(0xFFFFB020);
 

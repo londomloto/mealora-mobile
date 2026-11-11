@@ -646,6 +646,7 @@
   "barcodeScanNoteTitle": "Produk tersimpan bisa dicari offline",
   "barcodeScanNoteBody": "Barcode bukan sumber nilai nutrisi.",
   "barcodeScanManualLink": "Masukkan nomor barcode secara manual",
+  "barcodeScanUseCamera": "Gunakan kamera",
   "barcodeScanSlowHint": "Kode belum terbaca? Ketik nomor secara manual.",
   "barcodeScanPermissionDeniedTitle": "Izin kamera ditolak",
   "barcodeScanPermissionDeniedBody": "Mealora memakai kamera hanya untuk memindai barcode kemasan. Kamu tetap bisa mencatat produk tanpa kamera.",
