@@ -17,6 +17,10 @@ abstract final class UiPreferenceKeys {
   /// Pengaturan retensi foto label sumber (change 010, rancangan `35`) —
   /// nilai `ImageRetentionPreference.stableCode`.
   static const String imageRetention = 'image_retention';
+
+  /// Awal minggu kalender & ringkasan mingguan (rancangan `65`) — nilai
+  /// `WeekStart.stableCode`.
+  static const String weekStart = 'week_start';
 }
 
 /// Akses baca/tulis preferensi antarmuka lokal.

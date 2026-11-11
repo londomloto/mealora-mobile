@@ -1286,7 +1286,7 @@ class AppTextId extends AppText {
   String get profileEditAction => 'Ubah profil';
 
   @override
-  String get profileUnitsLanguageAction => 'Satuan & bahasa';
+  String get profileUnitsLanguageAction => 'Bahasa & tampilan';
 
   @override
   String get profilePrivacyAction => 'Privasi & data lokal';
@@ -2043,6 +2043,81 @@ class AppTextId extends AppText {
   @override
   String get privacySettingsNote =>
       'Foto hanya dikirim ke layanan pembacaan label saat kamu setuju, dan tidak pernah disimpan di luar perangkat ini.';
+
+  @override
+  String get displaySettingsContextLabel => 'PROFIL';
+
+  @override
+  String get displaySettingsTitle => 'Bahasa & tampilan';
+
+  @override
+  String get displaySettingsSubtitle => 'Atur bahasa aplikasi dan awal minggu.';
+
+  @override
+  String get displaySettingsLanguageHeading => 'Bahasa';
+
+  @override
+  String get displaySettingsLanguageIndonesian => 'Bahasa Indonesia';
+
+  @override
+  String get displaySettingsLanguageCurrent => 'Dipakai sekarang';
+
+  @override
+  String get displaySettingsLanguageEnglish => 'English';
+
+  @override
+  String get displaySettingsLanguageComingSoon => 'Segera hadir';
+
+  @override
+  String get displaySettingsLanguageComingSoonChip => 'Segera';
+
+  @override
+  String get displaySettingsCalendarHeading => 'Kalender';
+
+  @override
+  String get displaySettingsWeekStartLabel => 'Awal minggu';
+
+  @override
+  String get displaySettingsWeekStartDetail => 'untuk ringkasan mingguan';
+
+  @override
+  String get displaySettingsWeekStartMonday => 'Senin';
+
+  @override
+  String get displaySettingsWeekStartSunday => 'Minggu';
+
+  @override
+  String get displaySettingsNote =>
+      'Awal minggu mengatur ringkasan mingguan di Riwayat dan Program. Catatan lamamu tetap utuh.';
+
+  @override
+  String get aboutContextLabel => 'PROFIL';
+
+  @override
+  String get aboutTitle => 'Tentang Mealora';
+
+  @override
+  String get aboutSubtitle => 'Versi aplikasi dan informasi penting.';
+
+  @override
+  String get aboutAppName => 'Mealora';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Versi $version · build $build';
+  }
+
+  @override
+  String get aboutLicensesAction => 'Lisensi sumber terbuka';
+
+  @override
+  String get aboutDisclaimer =>
+      'Mealora membantu mencatat makan dan memperkirakan gizi. Angkanya perkiraan, bukan nasihat kesehatan. Untuk kebutuhan khusus, bicarakan dengan tenaga kesehatan.';
+
+  @override
+  String aboutFooter(String year) {
+    return 'Dibuat di Indonesia · © $year Mealora';
+  }
 
   @override
   String get uploadConsentBody =>

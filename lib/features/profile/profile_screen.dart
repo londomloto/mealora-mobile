@@ -5,8 +5,11 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/features/profile/about_screen.dart';
+import 'package:mealora/features/profile/display_settings_screen.dart';
 import 'package:mealora/features/profile/edit_profile_screen.dart';
 import 'package:mealora/features/profile/privacy_settings_screen.dart';
+import 'package:mealora/features/profile/widgets/settings_list_card.dart';
 import 'package:mealora/features/program/history_screens.dart';
 import 'package:mealora/features/program/program_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -93,9 +96,9 @@ class ProfileScreen extends ConsumerWidget {
               style: MealoraTypography.sectionTitle,
             ),
             const SizedBox(height: MealoraSpacing.sm),
-            _SettingsCard(
-              items: <_SettingsItem>[
-                _SettingsItem(
+            SettingsListCard(
+              items: <SettingsListItem>[
+                SettingsListItem(
                   icon: Icons.person_outline_rounded,
                   color: MealoraColors.primaryDeep,
                   background: MealoraColors.iconField,
@@ -106,7 +109,7 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                _SettingsItem(
+                SettingsListItem(
                   icon: Icons.track_changes_rounded,
                   color: MealoraColors.accent,
                   background: MealoraColors.noteWarning,
@@ -117,7 +120,7 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                _SettingsItem(
+                SettingsListItem(
                   icon: Icons.history_rounded,
                   color: MealoraColors.peach,
                   background: MealoraColors.historyActionTint,
@@ -128,13 +131,18 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                _SettingsItem(
+                SettingsListItem(
                   icon: Icons.language_rounded,
                   color: MealoraColors.info,
                   background: MealoraColors.noteInfo,
                   label: text.profileUnitsLanguageAction,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const DisplaySettingsScreen(),
+                    ),
+                  ),
                 ),
-                _SettingsItem(
+                SettingsListItem(
                   icon: Icons.shield_outlined,
                   color: MealoraColors.primaryDeep,
                   background: MealoraColors.iconField,
@@ -145,87 +153,18 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                _SettingsItem(
+                SettingsListItem(
                   icon: Icons.info_outline_rounded,
                   color: MealoraColors.muted,
                   background: MealoraColors.line,
                   label: text.profileAboutAction,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const AboutScreen(),
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsItem {
-  const _SettingsItem({
-    required this.icon,
-    required this.color,
-    required this.background,
-    required this.label,
-    this.onTap,
-  });
-  final IconData icon;
-  final Color color;
-  final Color background;
-  final String label;
-  final VoidCallback? onTap;
-}
-
-class _SettingsCard extends StatelessWidget {
-  const _SettingsCard({required this.items});
-  final List<_SettingsItem> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return MealoraCard(
-      child: Column(
-        children: <Widget>[
-          for (var i = 0; i < items.length; i++) ...<Widget>[
-            _SettingsRow(item: items[i]),
-            if (i != items.length - 1)
-              const Divider(height: 1, color: MealoraColors.line),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({required this.item});
-  final _SettingsItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: item.onTap,
-      child: SizedBox(
-        height: 58,
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: item.background,
-                borderRadius: BorderRadius.circular(
-                  MealoraRadius.compactIconField,
-                ),
-              ),
-              child: Icon(item.icon, color: item.color, size: 18),
-            ),
-            const SizedBox(width: MealoraSpacing.sm),
-            Expanded(
-              child: Text(item.label, style: MealoraTypography.bodyEmphasis),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: MealoraColors.affordance,
-              size: 18,
             ),
           ],
         ),

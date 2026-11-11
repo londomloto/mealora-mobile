@@ -2332,7 +2332,7 @@ abstract class AppText {
   /// No description provided for @profileUnitsLanguageAction.
   ///
   /// In id, this message translates to:
-  /// **'Satuan & bahasa'**
+  /// **'Bahasa & tampilan'**
   String get profileUnitsLanguageAction;
 
   /// No description provided for @profilePrivacyAction.
@@ -3684,6 +3684,144 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Foto hanya dikirim ke layanan pembacaan label saat kamu setuju, dan tidak pernah disimpan di luar perangkat ini.'**
   String get privacySettingsNote;
+
+  /// No description provided for @displaySettingsContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROFIL'**
+  String get displaySettingsContextLabel;
+
+  /// No description provided for @displaySettingsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa & tampilan'**
+  String get displaySettingsTitle;
+
+  /// No description provided for @displaySettingsSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur bahasa aplikasi dan awal minggu.'**
+  String get displaySettingsSubtitle;
+
+  /// No description provided for @displaySettingsLanguageHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get displaySettingsLanguageHeading;
+
+  /// No description provided for @displaySettingsLanguageIndonesian.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa Indonesia'**
+  String get displaySettingsLanguageIndonesian;
+
+  /// No description provided for @displaySettingsLanguageCurrent.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai sekarang'**
+  String get displaySettingsLanguageCurrent;
+
+  /// No description provided for @displaySettingsLanguageEnglish.
+  ///
+  /// In id, this message translates to:
+  /// **'English'**
+  String get displaySettingsLanguageEnglish;
+
+  /// No description provided for @displaySettingsLanguageComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Segera hadir'**
+  String get displaySettingsLanguageComingSoon;
+
+  /// No description provided for @displaySettingsLanguageComingSoonChip.
+  ///
+  /// In id, this message translates to:
+  /// **'Segera'**
+  String get displaySettingsLanguageComingSoonChip;
+
+  /// No description provided for @displaySettingsCalendarHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalender'**
+  String get displaySettingsCalendarHeading;
+
+  /// No description provided for @displaySettingsWeekStartLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Awal minggu'**
+  String get displaySettingsWeekStartLabel;
+
+  /// No description provided for @displaySettingsWeekStartDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'untuk ringkasan mingguan'**
+  String get displaySettingsWeekStartDetail;
+
+  /// No description provided for @displaySettingsWeekStartMonday.
+  ///
+  /// In id, this message translates to:
+  /// **'Senin'**
+  String get displaySettingsWeekStartMonday;
+
+  /// No description provided for @displaySettingsWeekStartSunday.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu'**
+  String get displaySettingsWeekStartSunday;
+
+  /// No description provided for @displaySettingsNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Awal minggu mengatur ringkasan mingguan di Riwayat dan Program. Catatan lamamu tetap utuh.'**
+  String get displaySettingsNote;
+
+  /// No description provided for @aboutContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PROFIL'**
+  String get aboutContextLabel;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang Mealora'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi aplikasi dan informasi penting.'**
+  String get aboutSubtitle;
+
+  /// No description provided for @aboutAppName.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora'**
+  String get aboutAppName;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi {version} · build {build}'**
+  String aboutVersion(String version, String build);
+
+  /// No description provided for @aboutLicensesAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi sumber terbuka'**
+  String get aboutLicensesAction;
+
+  /// No description provided for @aboutDisclaimer.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora membantu mencatat makan dan memperkirakan gizi. Angkanya perkiraan, bukan nasihat kesehatan. Untuk kebutuhan khusus, bicarakan dengan tenaga kesehatan.'**
+  String get aboutDisclaimer;
+
+  /// No description provided for @aboutFooter.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat di Indonesia · © {year} Mealora'**
+  String aboutFooter(String year);
 
   /// No description provided for @uploadConsentBody.
   ///

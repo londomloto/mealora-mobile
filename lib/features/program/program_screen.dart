@@ -9,6 +9,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/data/local/program_progress_snapshot.dart';
+import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_state.dart';
@@ -258,8 +259,13 @@ class _RunningProgramView extends ConsumerWidget {
                 progressAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (error, stackTrace) => const SizedBox.shrink(),
-                  data: (snapshots) =>
-                      WeeklyConsistencyCard(snapshots: snapshots, today: today),
+                  data: (snapshots) => WeeklyConsistencyCard(
+                    snapshots: snapshots,
+                    today: today,
+                    weekStart:
+                        ref.watch(weekStartProvider).valueOrNull ??
+                        WeekStart.defaultValue,
+                  ),
                 ),
                 const SizedBox(height: MealoraSpacing.sm),
                 progressAsync.when(

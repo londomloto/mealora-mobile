@@ -20,6 +20,7 @@ import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 import 'package:mealora/domain/image_ai_access/fallback_nutrition_label_provider.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
+import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/domain/voice_input/fallback_food_sentence_parser.dart';
@@ -339,6 +340,29 @@ class ImageRetentionSetting extends AsyncNotifier<ImageRetentionPreference> {
     await ref
         .read(uiPreferenceDaoProvider)
         .write(UiPreferenceKeys.imageRetention, preference.stableCode);
+  }
+}
+
+/// Awal minggu untuk kalender Riwayat dan ringkasan mingguan Program
+/// (rancangan `65`) — bawaan [WeekStart.monday].
+final AsyncNotifierProvider<WeekStartSetting, WeekStart> weekStartProvider =
+    AsyncNotifierProvider<WeekStartSetting, WeekStart>(WeekStartSetting.new);
+
+class WeekStartSetting extends AsyncNotifier<WeekStart> {
+  @override
+  Future<WeekStart> build() async {
+    final dao = ref.watch(uiPreferenceDaoProvider);
+    final stored = await dao.read(UiPreferenceKeys.weekStart);
+    return stored == null
+        ? WeekStart.defaultValue
+        : WeekStart.fromStableCode(stored);
+  }
+
+  Future<void> set(WeekStart weekStart) async {
+    state = AsyncValue<WeekStart>.data(weekStart);
+    await ref
+        .read(uiPreferenceDaoProvider)
+        .write(UiPreferenceKeys.weekStart, weekStart.stableCode);
   }
 }
 

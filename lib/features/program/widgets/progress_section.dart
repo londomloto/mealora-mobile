@@ -7,6 +7,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/data/local/program_progress_snapshot.dart';
 import 'package:mealora/domain/food/meal_time.dart';
+import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// "Kebiasaan minggu ini" (`05`) — kemajuan seluruh program SHALL berupa
@@ -26,21 +27,13 @@ class WeeklyConsistencyCard extends StatelessWidget {
   const WeeklyConsistencyCard({
     required this.snapshots,
     required this.today,
+    this.weekStart = WeekStart.defaultValue,
     super.key,
   });
 
   final List<ProgramProgressSnapshot> snapshots;
   final LocalDate today;
-
-  static const List<String> _dayLetters = <String>[
-    'S',
-    'S',
-    'R',
-    'K',
-    'J',
-    'S',
-    'M',
-  ];
+  final WeekStart weekStart;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +43,12 @@ class WeeklyConsistencyCard extends StatelessWidget {
         snapshot.recordedLocalDate.iso: snapshot,
     };
     final todayDateTime = DateTime(today.year, today.month, today.day);
-    final monday = todayDateTime.subtract(
-      Duration(days: todayDateTime.weekday - DateTime.monday),
+    final firstDay = todayDateTime.subtract(
+      Duration(days: weekStart.offsetOf(todayDateTime.weekday)),
     );
+    final dayLetters = weekStart.dayLetters;
     final days = List<LocalDate>.generate(7, (i) {
-      final date = monday.add(Duration(days: i));
+      final date = DateTime(firstDay.year, firstDay.month, firstDay.day + i);
       return LocalDate(date.year, date.month, date.day);
     });
     final loggedCount = days.where((day) {
@@ -81,7 +75,7 @@ class WeeklyConsistencyCard extends StatelessWidget {
             children: <Widget>[
               for (var i = 0; i < 7; i++)
                 _DayBar(
-                  letter: _dayLetters[i],
+                  letter: dayLetters[i],
                   date: days[i],
                   snapshot: byDate[days[i].iso],
                   text: text,

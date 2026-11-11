@@ -15,6 +15,7 @@ import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
@@ -721,7 +722,9 @@ class _CalendarCard extends ConsumerWidget {
     final cellExtent = (38 + (textScale - 1).clamp(0, 1) * 32).toDouble();
     final first = DateTime(month.year, month.month);
     final dayCount = DateTime(month.year, month.month + 1, 0).day;
-    final leading = first.weekday - DateTime.monday;
+    final weekStart =
+        ref.watch(weekStartProvider).valueOrNull ?? WeekStart.defaultValue;
+    final leading = weekStart.offsetOf(first.weekday);
     final cells = <LocalDate?>[
       ...List<LocalDate?>.filled(leading, null),
       ...List<LocalDate>.generate(
@@ -781,15 +784,7 @@ class _CalendarCard extends ConsumerWidget {
           const SizedBox(height: MealoraSpacing.sm),
           Row(
             children: <Widget>[
-              for (final day in const <String>[
-                'S',
-                'S',
-                'R',
-                'K',
-                'J',
-                'S',
-                'M',
-              ])
+              for (final day in weekStart.dayLetters)
                 Expanded(
                   child: Text(
                     day,
