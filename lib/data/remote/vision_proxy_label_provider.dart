@@ -10,7 +10,7 @@ import 'package:mealora/domain/image_ai_access/label_service_failure.dart';
 import 'package:mealora/domain/image_ai_access/nutrition_label_provider.dart';
 import 'package:mealora/domain/image_ai_access/reading_confidence.dart';
 
-/// Konfigurasi proksi inferensi (`mealora-apps/mealora-vision-proxy`) —
+/// Konfigurasi proksi inferensi (`mealora-apps/mealora-model-proxy`) —
 /// dibaca dari waktu build, TIDAK PERNAH memuat kredensial penyedia model
 /// (Design D2, task 3.2): hanya alamat proksi dan token level-aplikasi
 /// opsional yang bukan kredensial penyedia (`docs/inference-proxy.md` §4).
@@ -34,7 +34,7 @@ final class VisionProxyConfig {
   bool get isConfigured => baseUrl.isNotEmpty;
 }
 
-/// Klien `mealora-vision-proxy` (change 010, Design D2) — SATU DARI DUA
+/// Klien `mealora-model-proxy` (change 010, Design D2) — SATU DARI DUA
 /// berkas di aplikasi yang boleh memakai `package:http`, bersama
 /// `OpenFoodFactsProductClient` (change 009); dipagari oleh
 /// `test/unit/architecture/layer_rules_test.dart`, grup "kemandirian dari
@@ -177,7 +177,7 @@ final class VisionProxyLabelProvider implements NutritionLabelProvider {
   ReadingConfidence _parseConfidence(Object? raw) => switch (raw) {
     'confident' => ReadingConfidence.confident,
     'unread' => ReadingConfidence.unread,
-    // 'needs_check' (lihat mealora-vision-proxy/src/schema.js
+    // 'needs_check' (lihat mealora-model-proxy/src/schema.js
     // CONFIDENCE_ENUM) jatuh ke sini bersama string tak dikenal/hilang.
     _ => ReadingConfidence.needsCheck,
   };

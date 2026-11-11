@@ -12,7 +12,7 @@ import 'package:mealora/domain/food_photo_input/food_component_recognition_provi
 import 'package:mealora/domain/image_ai_access/label_service_failure.dart';
 import 'package:mealora/domain/image_ai_access/reading_confidence.dart';
 
-/// Klien `mealora-vision-proxy` untuk pengenalan komponen makanan (change
+/// Klien `mealora-model-proxy` untuk pengenalan komponen makanan (change
 /// 011-food-photo-input, Design D1/D2, task 2.1) — satu dari sedikit berkas
 /// di aplikasi yang boleh memakai `package:http`, dipagari oleh
 /// `test/unit/architecture/layer_rules_test.dart`, grup "kemandirian dari

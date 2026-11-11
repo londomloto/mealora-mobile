@@ -176,7 +176,7 @@ const bool _forceLocalOcrForTesting = bool.fromEnvironment(
 );
 
 /// Menimpa `nutritionLabelProviderProvider` (core/providers, change 010)
-/// dengan [FallbackNutritionLabelProvider]: klien `mealora-vision-proxy`
+/// dengan [FallbackNutritionLabelProvider]: klien `mealora-model-proxy`
 /// sungguhan lebih dulu (alamat proksi dibaca dari `--dart-define` saat
 /// build, lihat `VisionProxyConfig`, tidak pernah ditanam di kode), lalu
 /// OCR lokal ketika penyedia cloud gagal (Design D11).
