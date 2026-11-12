@@ -117,17 +117,6 @@ void main() {
     return db;
   }
 
-  /// Ringkasan Riwayat (`_DiaryBody`) bertinggi tetap 108 px dan meluap 5 px
-  /// ketika tidak ada program (kalimat "tanpa target" terbungkus dua baris).
-  /// Bug lama di luar change 018 — di sini hanya ditangkap supaya uji
-  /// navigasi tetap memeriksa perilakunya sendiri.
-  void ignoreKnownHistoryOverflow(WidgetTester tester) {
-    final error = tester.takeException();
-    if (error != null) {
-      expect(error.toString(), contains('overflowed'));
-    }
-  }
-
   group('EnergyLineChart', () {
     testWidgets('hari kosong dibacakan belum dicatat, bukan 0 kkal', (
       tester,
@@ -274,7 +263,6 @@ void main() {
 
       await tester.tap(find.text('Buka Riwayat'));
       await tester.pumpAndSettle();
-      ignoreKnownHistoryOverflow(tester);
       final history = tester.widget<HistoryCalendarScreen>(
         find.byType(HistoryCalendarScreen),
       );
@@ -339,7 +327,6 @@ void main() {
         tester,
         const HistoryCalendarScreen(initialDate: LocalDate(2026, 11, 20)),
       );
-      ignoreKnownHistoryOverflow(tester);
       // Tanggal masa depan jatuh ke hari ini (Minggu, 8 November 2026).
       expect(find.text('8 Nov · Minggu'), findsOneWidget);
     },

@@ -275,10 +275,15 @@ class _DiaryBodyState extends State<_DiaryBody> {
 
     return Column(
       children: <Widget>[
-        SizedBox(
-          height: 108,
+        ConstrainedBox(
+          // Tinggi minimum, bukan tetap: kalimat target bisa terbungkus dua
+          // baris (mis. tanpa program) atau membesar pada skala teks besar.
+          constraints: const BoxConstraints(minHeight: 108),
           child: MealoraCard(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: MealoraSpacing.md,
+            ),
             child: Row(
               children: <Widget>[
                 Expanded(
