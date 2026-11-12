@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
@@ -29,101 +31,161 @@ class FoodSearchScreen extends ConsumerStatefulWidget {
 class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
   final TextEditingController _controller = TextEditingController();
   String _query = '';
+  Timer? _debounce;
+
+  /// Jeda ketik sebelum kueri dijalankan supaya tiap ketukan tidak memicu
+  /// pencarian penuh di perangkat kelas bawah.
+  static const Duration _debounceDelay = Duration(milliseconds: 250);
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onQueryChanged(String value) {
+    final next = value.trim();
+    _debounce?.cancel();
+    if (next.isEmpty) {
+      // Menghapus kueri langsung kembali ke "terakhir dicatat".
+      setState(() => _query = '');
+      return;
+    }
+    // Tombol hapus di kolom bergantung pada teks pengontrol.
+    setState(() {});
+    _debounce = Timer(_debounceDelay, () {
+      if (mounted && next != _query) {
+        setState(() => _query = next);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
+    final hasText = _controller.text.trim().isNotEmpty;
 
     return Scaffold(
       backgroundColor: MealoraColors.background,
       body: MealoraBlobBackdrop(
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(
-              MealoraSpacing.programHeroGutter,
-              MealoraSpacing.lg,
-              MealoraSpacing.programHeroGutter,
-              MealoraSpacing.xl,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                MealoraBackEyebrow(label: text.foodSearchContextLabel),
-                const SizedBox(height: MealoraSpacing.xs),
-                Text(text.foodSearchTitle, style: MealoraTypography.title),
-                const SizedBox(height: MealoraSpacing.xxs),
-                Text(
-                  text.foodSearchSubtitle,
-                  style: MealoraTypography.subtitle,
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            slivers: <Widget>[
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  MealoraSpacing.programHeroGutter,
+                  MealoraSpacing.lg,
+                  MealoraSpacing.programHeroGutter,
+                  MealoraSpacing.xl,
                 ),
-                const SizedBox(height: MealoraSpacing.lg),
-                _SearchField(
-                  controller: _controller,
-                  hint: text.foodSearchHint,
-                  clearSemantics: text.foodSearchClearSemantics,
-                  onChanged: (value) => setState(() => _query = value.trim()),
-                ),
-                const SizedBox(height: MealoraSpacing.xl),
-                if (_query.isEmpty)
-                  _RecentSection(text: text, date: widget.date)
-                else
-                  _ResultsSection(query: _query, text: text, date: widget.date),
-                const SizedBox(height: MealoraSpacing.lg),
-                Semantics(
-                  button: true,
-                  child: InkWell(
-                    onTap: () => _openCustomFood(context),
-                    child: Text(
-                      text.foodSearchCreateLink,
-                      style: MealoraTypography.bodyEmphasis.copyWith(
-                        color: MealoraColors.primary,
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      MealoraBackEyebrow(label: text.foodSearchContextLabel),
+                      const SizedBox(height: MealoraSpacing.xs),
+                      Text(
+                        text.foodSearchTitle,
+                        style: MealoraTypography.title,
                       ),
-                    ),
+                      const SizedBox(height: MealoraSpacing.xxs),
+                      Text(
+                        text.foodSearchSubtitle,
+                        style: MealoraTypography.subtitle,
+                      ),
+                      const SizedBox(height: MealoraSpacing.lg),
+                      _SearchField(
+                        controller: _controller,
+                        hint: text.foodSearchHint,
+                        clearSemantics: text.foodSearchClearSemantics,
+                        onChanged: _onQueryChanged,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: MealoraSpacing.lg),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Semantics(
-                    button: true,
-                    label:
-                        '${text.foodSearchFavoritesLabel}. ${text.foodSearchFavoritesUnavailable}',
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(MealoraRadius.chip),
-                      onTap: () => _announceFavoritesUnavailable(context, text),
-                      child: MealoraCard(
-                        radius: MealoraRadius.chip,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: MealoraSpacing.md,
-                          vertical: MealoraSpacing.sm,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Icon(
-                              Icons.star_border_rounded,
-                              size: 16,
-                              color: MealoraColors.accent,
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MealoraSpacing.programHeroGutter,
+                ),
+                sliver: hasText
+                    ? _ResultsSection(
+                        query: _query,
+                        text: text,
+                        date: widget.date,
+                      )
+                    : SliverToBoxAdapter(
+                        child: _RecentSection(text: text, date: widget.date),
+                      ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  MealoraSpacing.programHeroGutter,
+                  MealoraSpacing.lg,
+                  MealoraSpacing.programHeroGutter,
+                  MealoraSpacing.xl,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Semantics(
+                        button: true,
+                        child: InkWell(
+                          onTap: () => _openCustomFood(context),
+                          child: Text(
+                            text.foodSearchCreateLink,
+                            style: MealoraTypography.bodyEmphasis.copyWith(
+                              color: MealoraColors.primary,
                             ),
-                            const SizedBox(width: MealoraSpacing.xs),
-                            Text(
-                              text.foodSearchFavoritesLabel,
-                              style: MealoraTypography.bodyEmphasis,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: MealoraSpacing.lg),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Semantics(
+                          button: true,
+                          label:
+                              '${text.foodSearchFavoritesLabel}. ${text.foodSearchFavoritesUnavailable}',
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(
+                              MealoraRadius.chip,
+                            ),
+                            onTap: () =>
+                                _announceFavoritesUnavailable(context, text),
+                            child: MealoraCard(
+                              radius: MealoraRadius.chip,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: MealoraSpacing.md,
+                                vertical: MealoraSpacing.sm,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Icon(
+                                    Icons.star_border_rounded,
+                                    size: 16,
+                                    color: MealoraColors.accent,
+                                  ),
+                                  const SizedBox(width: MealoraSpacing.xs),
+                                  Text(
+                                    text.foodSearchFavoritesLabel,
+                                    style: MealoraTypography.bodyEmphasis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -358,52 +420,86 @@ class _RecentRow extends StatelessWidget {
   }
 }
 
-class _ResultsSection extends ConsumerWidget {
+class _ResultsSection extends ConsumerStatefulWidget {
   const _ResultsSection({required this.query, required this.text, this.date});
 
+  /// Kueri yang sudah melewati jeda ketik; kosong selama jeda pertama.
   final String query;
   final AppText text;
   final LocalDate? date;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final results = ref.watch(foodSearchProvider(query));
-    return results.when(
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: MealoraSpacing.lg),
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (_, _) => const SizedBox.shrink(),
-      data: (foods) {
-        if (foods.isEmpty) {
-          return MealoraEmptyState(
-            title: text.foodSearchNoResultsTitle,
-            body: text.foodSearchNoResultsBody,
-            icon: Icons.search_off_rounded,
-          );
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              text.foodSearchResultsHeading(query),
+  ConsumerState<_ResultsSection> createState() => _ResultsSectionState();
+}
+
+class _ResultsSectionState extends ConsumerState<_ResultsSection> {
+  /// Hasil terakhir yang sudah tampil — dipertahankan selama kueri baru
+  /// dimuat supaya daftar tidak berkedip menjadi spinner tiap ketukan.
+  List<Food>? _last;
+  String _lastQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final text = widget.text;
+    final results = widget.query.isEmpty
+        ? null
+        : ref.watch(foodSearchProvider(widget.query));
+    final fresh = results?.value;
+    if (fresh != null) {
+      _last = fresh;
+      _lastQuery = widget.query;
+    }
+    final foods = fresh ?? _last;
+    if (foods == null) {
+      if (results?.hasError ?? false) {
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      }
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: MealoraSpacing.lg),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+    if (foods.isEmpty) {
+      return SliverToBoxAdapter(
+        child: MealoraEmptyState(
+          title: text.foodSearchNoResultsTitle,
+          body: text.foodSearchNoResultsBody,
+          icon: Icons.search_off_rounded,
+        ),
+      );
+    }
+    return SliverMainAxisGroup(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: MealoraSpacing.sm),
+            child: Text(
+              text.foodSearchResultsHeading(_lastQuery),
               style: MealoraTypography.sectionTitle,
             ),
-            const SizedBox(height: MealoraSpacing.sm),
-            MealoraCard(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                children: <Widget>[
-                  for (var i = 0; i < foods.length; i++) ...<Widget>[
-                    if (i > 0) const Divider(height: 1),
-                    _ResultRow(food: foods[i], text: text, date: date),
-                  ],
-                ],
-              ),
+          ),
+        ),
+        // Hasil bisa ratusan baris ("nasi"): dibangun malas, dan tanpa
+        // BackdropFilter setinggi daftar yang berat saat digulir.
+        DecoratedSliver(
+          decoration: BoxDecoration(
+            color: MealoraColors.glassCard,
+            borderRadius: BorderRadius.circular(MealoraRadius.card),
+            border: Border.all(color: MealoraColors.glassBorder),
+          ),
+          sliver: SliverPadding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            sliver: SliverList.separated(
+              itemCount: foods.length,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (_, i) =>
+                  _ResultRow(food: foods[i], text: text, date: widget.date),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }

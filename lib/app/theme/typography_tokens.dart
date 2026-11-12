@@ -45,6 +45,10 @@ abstract final class MealoraTypography {
   static TextStyle get headline =>
       _jakarta(size: 24, weight: bold, color: MealoraColors.ink, height: 1.2);
 
+  /// Angka di kotak isian resep (desain `73`: 20 tebal).
+  static TextStyle get numberField =>
+      _jakarta(size: 20, weight: bold, color: MealoraColors.ink, height: 1.2);
+
   /// Judul bagian (mis. "Makanan hari ini").
   static TextStyle get sectionTitle =>
       _jakarta(size: 19, weight: bold, color: MealoraColors.ink, height: 1.3);

@@ -94,6 +94,8 @@ void main() {
       find.byKey(const ValueKey('recipe-add-ingredient')),
     );
     await tester.enterText(find.byType(TextField).last, query);
+    // Melewati jeda ketik pencarian (250 ms).
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
     await tester.tap(find.text(result).last);
     await tester.pumpAndSettle();
@@ -201,6 +203,7 @@ void main() {
       find.byKey(const ValueKey('recipe-add-ingredient')),
     );
     await tester.enterText(find.byType(TextField).last, 'zuba');
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Zuba nasi').last);
     await tester.pumpAndSettle();

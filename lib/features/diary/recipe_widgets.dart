@@ -40,9 +40,9 @@ class MealoraSegmentToggle<T> extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0x8FFFFFFF),
+        color: MealoraColors.segmentTrack,
         borderRadius: BorderRadius.circular(MealoraRadius.chip),
-        border: Border.all(color: MealoraColors.glassBorder),
+        border: Border.all(color: MealoraColors.glassSoft),
       ),
       child: Row(
         children: <Widget>[
@@ -56,7 +56,9 @@ class MealoraSegmentToggle<T> extends StatelessWidget {
   }
 
   Widget _segment(SegmentOption<T> option, bool active) {
-    final color = active ? MealoraColors.primaryDeep : MealoraColors.muted;
+    final color = active
+        ? MealoraColors.primary
+        : MealoraColors.segmentInactive;
     return Semantics(
       button: true,
       selected: active,
@@ -69,13 +71,18 @@ class MealoraSegmentToggle<T> extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
             color: active ? MealoraColors.surface : null,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+            border: Border.all(
+              color: active
+                  ? MealoraColors.segmentActiveBorder
+                  : MealoraColors.transparent,
+            ),
             boxShadow: active
                 ? const <BoxShadow>[
                     BoxShadow(
-                      color: Color(0x1F0B3A28),
-                      offset: Offset(0, 4),
-                      blurRadius: 12,
+                      color: MealoraColors.segmentActiveShadow,
+                      offset: Offset(0, 2),
+                      blurRadius: 8,
                     ),
                   ]
                 : null,
@@ -134,12 +141,21 @@ class RecipeNumberBox extends StatelessWidget {
       height: 52,
       padding: EdgeInsets.symmetric(horizontal: leading == null ? 14 : 6),
       decoration: BoxDecoration(
-        color: MealoraColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        // Kaca seperti desain `73`, tanpa BackdropFilter (berat di HP kelas
+        // bawah; latar di bawahnya polos sehingga hasilnya hampir sama).
+        color: MealoraColors.glassCard,
+        borderRadius: BorderRadius.circular(MealoraRadius.button),
         border: Border.all(
-          color: hasError ? MealoraColors.danger : const Color(0x330B3A28),
-          width: 1.5,
+          color: hasError ? MealoraColors.danger : MealoraColors.glassBorder,
+          width: hasError ? 1.5 : 1,
         ),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowGlass,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
       ),
       child: Row(
         children: <Widget>[
@@ -153,10 +169,7 @@ class RecipeNumberBox extends StatelessWidget {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              style: MealoraTypography.headline.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
+              style: MealoraTypography.numberField,
               decoration: const InputDecoration(
                 filled: false,
                 fillColor: MealoraColors.transparent,
@@ -201,7 +214,7 @@ class RecipeStepButton extends StatelessWidget {
         enabled: enabled,
         label: tooltip,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(MealoraRadius.compactIconField),
           onTap: onPressed,
           child: Container(
             width: 36,
@@ -210,12 +223,14 @@ class RecipeStepButton extends StatelessWidget {
               color: enabled
                   ? MealoraColors.iconFieldGreen
                   : MealoraColors.track,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(
+                MealoraRadius.compactIconField,
+              ),
             ),
             child: Icon(
               icon,
               size: 16,
-              color: enabled ? MealoraColors.primaryDeep : MealoraColors.muted,
+              color: enabled ? MealoraColors.primary : MealoraColors.muted,
             ),
           ),
         ),

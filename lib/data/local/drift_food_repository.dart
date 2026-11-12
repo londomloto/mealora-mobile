@@ -124,7 +124,51 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
                 (t) => OrderingTerm.asc(t.name),
               ]))
             .get();
-    return Future.wait(rows.map(_assemble));
+    return _assembleAll(rows);
+  }
+
+  /// Merakit banyak [rows] sekaligus dengan dua kueri per potongan (takaran
+  /// + gizi), bukan 1 + N kueri per makanan — kueri pendek seperti "nasi"
+  /// bisa mencocokkan ratusan makanan.
+  Future<List<Food>> _assembleAll(List<FoodRow> rows) async {
+    if (rows.isEmpty) {
+      return const <Food>[];
+    }
+    // Di bawah batas variabel SQLite (999 pada versi lama).
+    const chunkSize = 500;
+    final servingsByFood = <String, List<FoodServingRow>>{};
+    for (var i = 0; i < rows.length; i += chunkSize) {
+      final ids = [for (final r in rows.skip(i).take(chunkSize)) r.id];
+      final servingRows =
+          await (select(foodServings)..where(
+                (t) => t.foodId.isIn(ids) & UserRecords.active(t.deletedAt),
+              ))
+              .get();
+      for (final s in servingRows) {
+        (servingsByFood[s.foodId] ??= <FoodServingRow>[]).add(s);
+      }
+    }
+    final allServingIds = [
+      for (final list in servingsByFood.values)
+        for (final s in list) s.id,
+    ];
+    final nutritionByServing = <String, NutritionValueRow>{};
+    for (var i = 0; i < allServingIds.length; i += chunkSize) {
+      final ids = allServingIds.skip(i).take(chunkSize).toList();
+      final nutritionRows = await (select(
+        nutritionValues,
+      )..where((t) => t.servingId.isIn(ids))).get();
+      for (final n in nutritionRows) {
+        nutritionByServing[n.servingId] = n;
+      }
+    }
+    return <Food>[
+      for (final row in rows)
+        _foodFrom(row, <ServingSize>[
+          for (final s in servingsByFood[row.id] ?? const <FoodServingRow>[])
+            _servingWith(s, nutritionByServing[s.id]),
+        ]),
+    ];
   }
 
   /// Bentuk lain dari [token] menurut sinonim pencarian, dua arah.
@@ -641,6 +685,10 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
     final servings = <ServingSize>[
       for (final servingRow in servingRows) await _servingFrom(servingRow),
     ];
+    return _foodFrom(row, servings);
+  }
+
+  Food _foodFrom(FoodRow row, List<ServingSize> servings) {
     return Food(
       form: FoodForm.fromStableCode(row.form),
       nutritionOrigin: NutritionOrigin.fromStableCode(row.nutritionOrigin),
@@ -665,6 +713,13 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
     final nutritionRow = await (select(
       nutritionValues,
     )..where((t) => t.servingId.equals(servingRow.id))).getSingleOrNull();
+    return _servingWith(servingRow, nutritionRow);
+  }
+
+  ServingSize _servingWith(
+    FoodServingRow servingRow,
+    NutritionValueRow? nutritionRow,
+  ) {
     return ServingSize(
       id: servingRow.id,
       label: servingRow.label,

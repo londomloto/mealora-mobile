@@ -219,6 +219,13 @@ abstract final class MealoraColors {
   /// Isian ubin ikon pudar di atas hero gelap (putih 20%).
   static const Color glassOnHeroStrong = Color(0x33FFFFFF);
 
+  /// Pilihan bersegmen (desain `72`/`73`): track hijau tinta 8% bertepi
+  /// [glassSoft]; segmen aktif putih bertepi tipis dan berbayang `0 2 8`.
+  static const Color segmentTrack = Color(0x140B3A28);
+  static const Color segmentActiveBorder = Color(0x140B3A28);
+  static const Color segmentActiveShadow = Color(0x240B3A28);
+  static const Color segmentInactive = Color(0xFF5C7667);
+
   /// Garis tepi kaca (putih 80%, `strokeAlignment: inner` 1 px).
   static const Color glassBorder = Color(0xCCFFFFFF);
 

@@ -1,4 +1,4 @@
-import 'dart:async' show unawaited;
+import 'dart:async' show Timer, unawaited;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,9 +81,11 @@ class _FoodComponentPickerSheetState
     extends ConsumerState<_FoodComponentPickerSheet> {
   final _controller = TextEditingController();
   String _query = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -128,8 +130,7 @@ class _FoodComponentPickerSheetState
                             controller: _controller,
                             autofocus: true,
                             style: MealoraTypography.bodyEmphasis,
-                            onChanged: (value) =>
-                                setState(() => _query = value.trim()),
+                            onChanged: _onQueryChanged,
                             decoration: InputDecoration(
                               hintText: text.foodComponentPickerHint,
                               hintStyle: MealoraTypography.bodyMuted,
@@ -205,13 +206,28 @@ class _FoodComponentPickerSheetState
     );
   }
 
+  /// Jeda ketik sebelum kueri dijalankan — sama dengan layar Cari makanan.
+  void _onQueryChanged(String value) {
+    final next = value.trim();
+    _debounce?.cancel();
+    if (next.isEmpty) {
+      setState(() => _query = '');
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 250), () {
+      if (mounted && next != _query) {
+        setState(() => _query = next);
+      }
+    });
+  }
+
   Future<void> _createFood(BuildContext context) async {
     final created = await showModalBottomSheet<Food>(
       context: context,
       isScrollControlled: true,
       builder: (context) => _QuickCreateFoodSheet(
         per100g: widget.recipeMode,
-        initialName: _query,
+        initialName: _controller.text.trim(),
       ),
     );
     if (created != null && context.mounted) {
@@ -222,7 +238,8 @@ class _FoodComponentPickerSheetState
   Future<void> _addFreeText(BuildContext context) async {
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => _FreeTextNameDialog(initialName: _query),
+      builder: (context) =>
+          _FreeTextNameDialog(initialName: _controller.text.trim()),
     );
     if (name != null && name.isNotEmpty && context.mounted) {
       Navigator.of(context).pop(PickedFreeText(name));
@@ -341,7 +358,7 @@ class _FreeTextNameDialogState extends State<_FreeTextNameDialog> {
   }
 }
 
-class _ResultsList extends ConsumerWidget {
+class _ResultsList extends ConsumerStatefulWidget {
   const _ResultsList({
     required this.query,
     required this.scrollController,
@@ -355,39 +372,53 @@ class _ResultsList extends ConsumerWidget {
   final bool showForm;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final results = ref.watch(foodSearchProvider(query));
-    return results.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, _) => const SizedBox.shrink(),
-      data: (foods) {
-        if (foods.isEmpty) {
-          return MealoraEmptyState(
-            icon: Icons.search_off_rounded,
-            title: text.foodComponentPickerNoResultsTitle,
-            body: text.foodComponentPickerNoResultsBody,
-          );
-        }
-        return ListView.separated(
-          controller: scrollController,
-          itemCount: foods.length,
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            final food = foods[index];
-            return ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(food.name, style: MealoraTypography.bodyEmphasis),
-              subtitle: Text(
-                <String>[
-                  food.defaultServing.label,
-                  if (showForm && food.form != null)
-                    foodFormLabel(text, food.form!),
-                ].join(' · '),
-                style: MealoraTypography.caption,
-              ),
-              onTap: () => Navigator.of(context).pop(food),
-            );
-          },
+  ConsumerState<_ResultsList> createState() => _ResultsListState();
+}
+
+class _ResultsListState extends ConsumerState<_ResultsList> {
+  /// Hasil terakhir dipertahankan selama kueri baru dimuat supaya daftar
+  /// tidak berkedip menjadi spinner tiap ketukan.
+  List<Food>? _last;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = widget.text;
+    final results = ref.watch(foodSearchProvider(widget.query));
+    final foods = results.value ?? _last;
+    if (results.value != null) {
+      _last = results.value;
+    }
+    if (foods == null) {
+      return results.hasError
+          ? const SizedBox.shrink()
+          : const Center(child: CircularProgressIndicator());
+    }
+    if (foods.isEmpty) {
+      return MealoraEmptyState(
+        icon: Icons.search_off_rounded,
+        title: text.foodComponentPickerNoResultsTitle,
+        body: text.foodComponentPickerNoResultsBody,
+      );
+    }
+    return ListView.separated(
+      controller: widget.scrollController,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: foods.length,
+      separatorBuilder: (_, _) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final food = foods[index];
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(food.name, style: MealoraTypography.bodyEmphasis),
+          subtitle: Text(
+            <String>[
+              food.defaultServing.label,
+              if (widget.showForm && food.form != null)
+                foodFormLabel(text, food.form!),
+            ].join(' · '),
+            style: MealoraTypography.caption,
+          ),
+          onTap: () => Navigator.of(context).pop(food),
         );
       },
     );
