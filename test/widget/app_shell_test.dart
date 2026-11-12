@@ -220,7 +220,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Cari / input manual'), findsOneWidget);
-    expect(find.text('Scan barcode'), findsOneWidget);
+    expect(find.text('Scan barcode / info gizi'), findsOneWidget);
 
     // Jalur suara (change 012) kini membuka `VoiceRecordScreen`, diuji di
     // `voice_input_screens_test.dart` dan `add_food_sheet_microphone_test.dart`;

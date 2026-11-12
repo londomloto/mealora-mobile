@@ -7,7 +7,14 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/providers.dart';
+import 'package:mealora/domain/food/food.dart';
+import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_import.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_reading.dart';
+import 'package:mealora/features/diary/custom_food_screen.dart';
+import 'package:mealora/features/diary/diary_controller.dart';
+import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_component_picker_sheet.dart';
 import 'package:mealora/features/diary/voice_input_shared.dart'
@@ -27,11 +34,16 @@ class FoodComponentCorrectionScreen extends ConsumerStatefulWidget {
   const FoodComponentCorrectionScreen({
     required this.draft,
     this.origin = ComponentDraftOrigin.photo,
+    this.focusComponentId,
     super.key,
   });
 
   final PhotoDraft draft;
   final ComponentDraftOrigin origin;
+
+  /// Change 021 (design D2): "Lengkapi" di tinjau foto langsung membuka
+  /// sheet komponen ini, lalu kembali ke tinjau foto begitu sheet ditutup.
+  final String? focusComponentId;
 
   @override
   ConsumerState<FoodComponentCorrectionScreen> createState() =>
@@ -46,6 +58,17 @@ class _FoodComponentCorrectionScreenState
   void initState() {
     super.initState();
     _draft = widget.draft;
+    final focusId = widget.focusComponentId;
+    if (focusId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final component = _draft.components
+            .where((c) => c.localId == focusId)
+            .firstOrNull;
+        if (component == null || !mounted) return;
+        await _editComponent(component);
+        if (mounted) Navigator.of(context).pop(_draft);
+      });
+    }
   }
 
   @override
@@ -153,10 +176,12 @@ class _FoodComponentCorrectionScreenState
                         children: <Widget>[
                           const Icon(Icons.add, color: MealoraColors.primary),
                           const SizedBox(width: MealoraSpacing.xxs),
-                          Text(
-                            text.foodComponentCorrectionAddAction,
-                            style: MealoraTypography.bodyEmphasis.copyWith(
-                              color: MealoraColors.primary,
+                          Flexible(
+                            child: Text(
+                              text.foodComponentCorrectionAddAction,
+                              style: MealoraTypography.bodyEmphasis.copyWith(
+                                color: MealoraColors.primary,
+                              ),
                             ),
                           ),
                         ],
@@ -222,7 +247,7 @@ class _FoodComponentCorrectionScreenState
   }
 }
 
-class _ComponentRow extends StatelessWidget {
+class _ComponentRow extends ConsumerWidget {
   const _ComponentRow({
     required this.component,
     required this.text,
@@ -236,14 +261,15 @@ class _ComponentRow extends StatelessWidget {
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final servingLabel = ref
+        .watch(componentServingLabelProvider(component))
+        .valueOrNull;
     final (statusColor, statusLabel) = _status(component, text);
     final name = component.matchedFoodName ?? component.foodNameGuess;
-    final quantityText = component.matchedServingId == null
-        ? component.foodNameGuess
-        : component.quantityUndetermined
+    final quantityText = component.quantityUndetermined
         ? voiceUndeterminedLabel(text, component.quantityUnitLabel)
-        : '${component.quantity.toStringAsFixed(1).replaceAll('.', ',')}×';
+        : componentAmount(component, servingLabel);
 
     return Semantics(
       button: true,
@@ -301,7 +327,7 @@ class _ComponentRow extends StatelessWidget {
 
   (Color, String) _status(PhotoDraftComponent c, AppText text) {
     if (c.foodMatchNeedsCheck) {
-      return (MealoraColors.danger, text.foodComponentMatchMissing);
+      return (MealoraColors.coralText, text.foodComponentNotInCatalog);
     }
     if (c.quantityUndetermined) {
       return (
@@ -337,6 +363,7 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
   late String? _matchedFoodId;
   late String? _matchedServingId;
   late String? _matchedFoodName;
+  String? _servingLabel;
   late final TextEditingController _cookingMethod;
 
   @override
@@ -349,6 +376,16 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
     _cookingMethod = TextEditingController(
       text: widget.component.cookingMethod ?? '',
     );
+    unawaited(_loadServingLabel());
+  }
+
+  /// Label sajian padanan untuk satuan takaran (change 021, design D6).
+  Future<void> _loadServingLabel() async {
+    final foodId = _matchedFoodId;
+    if (foodId == null) return;
+    final food = await ref.read(foodRepositoryProvider).findById(foodId);
+    if (food == null || !mounted) return;
+    setState(() => _servingLabel = _servingOf(food, _matchedServingId).label);
   }
 
   @override
@@ -377,26 +414,34 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
               style: MealoraTypography.label,
             ),
             const SizedBox(height: MealoraSpacing.xxs),
-            MealoraCard(
-              padding: const EdgeInsets.symmetric(
-                horizontal: MealoraSpacing.md,
-                vertical: MealoraSpacing.sm,
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _matchedFoodName ?? widget.component.foodNameGuess,
-                      style: MealoraTypography.bodyEmphasis,
+            if (_matchedFoodId == null)
+              _NotInCatalogCard(
+                name: widget.component.foodNameGuess,
+                text: text,
+                onSearch: () => unawaited(_changeFood(bindAndClose: true)),
+                onCreate: () => unawaited(_createFood()),
+              )
+            else
+              MealoraCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MealoraSpacing.md,
+                  vertical: MealoraSpacing.sm,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _matchedFoodName ?? widget.component.foodNameGuess,
+                        style: MealoraTypography.bodyEmphasis,
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () => unawaited(_changeFood()),
-                    child: Text(text.foodComponentEditorFoodChangeAction),
-                  ),
-                ],
+                    TextButton(
+                      onPressed: () => unawaited(_changeFood()),
+                      child: Text(text.foodComponentEditorFoodChangeAction),
+                    ),
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: MealoraSpacing.md),
             Text(
               text.foodComponentEditorQuantityLabel,
@@ -412,9 +457,16 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
                       : null,
                   icon: const Icon(Icons.remove),
                 ),
-                Text(
-                  _quantity.toStringAsFixed(1).replaceAll('.', ','),
-                  style: MealoraTypography.headline,
+                Flexible(
+                  child: Text(
+                    DiaryFormat.entryAmount(
+                      _servingLabel ??
+                          unitServingLabel(widget.component.quantityUnitLabel),
+                      _quantity,
+                    ),
+                    textAlign: TextAlign.center,
+                    style: MealoraTypography.headline,
+                  ),
                 ),
                 IconButton(
                   onPressed: () => setState(() => _quantity += 0.5),
@@ -446,13 +498,45 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
     );
   }
 
-  Future<void> _changeFood() async {
+  /// [bindAndClose]: komponen tanpa padanan langsung tersimpan dan sheet
+  /// tertutup begitu makanan dipilih (change 021, design D2).
+  Future<void> _changeFood({bool bindAndClose = false}) async {
     final food = await showFoodComponentPickerSheet(context);
-    if (food == null) return;
+    if (food == null || !mounted) return;
+    _bind(food);
+    if (bindAndClose) _save();
+  }
+
+  /// "Buat makanan ini": form Buat makanan berisi nama dan sajian
+  /// perkiraan; makanan tersimpan menjadi padanan. Batal = tetap tanpa
+  /// padanan.
+  Future<void> _createFood() async {
+    final component = widget.component;
+    final food = await Navigator.of(context).push<Food>(
+      MaterialPageRoute<Food>(
+        builder: (_) => CustomFoodScreen(
+          returnCreatedFood: true,
+          prefill: NutritionImportResult(
+            foodName: component.foodNameGuess,
+            servingLabel: component.quantityUnitLabel == null
+                ? null
+                : unitServingLabel(component.quantityUnitLabel),
+            values: const <ImportNutrient, double?>{},
+          ),
+        ),
+      ),
+    );
+    if (food == null || !mounted) return;
+    _bind(food);
+    _save();
+  }
+
+  void _bind(Food food) {
     setState(() {
       _matchedFoodId = food.id;
       _matchedServingId = food.defaultServing.id;
       _matchedFoodName = food.name;
+      _servingLabel = food.defaultServing.label;
     });
   }
 
@@ -474,3 +558,156 @@ class _ComponentEditorSheetState extends ConsumerState<_ComponentEditorSheet> {
     );
   }
 }
+
+/// Kartu amber "Belum ada di katalog" dan dua pilihan (`93`): Cari di
+/// katalog atau Buat makanan ini.
+class _NotInCatalogCard extends StatelessWidget {
+  const _NotInCatalogCard({
+    required this.name,
+    required this.text,
+    required this.onSearch,
+    required this.onCreate,
+  });
+
+  final String name;
+  final AppText text;
+  final VoidCallback onSearch;
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          decoration: BoxDecoration(
+            color: MealoraColors.iconFieldAmber,
+            borderRadius: BorderRadius.circular(MealoraRadius.button),
+            border: Border.all(color: MealoraColors.notInCatalogBorder),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(name, style: MealoraTypography.notInCatalogName),
+              const SizedBox(height: MealoraSpacing.xxs),
+              Text(
+                text.foodComponentNotInCatalogHint,
+                style: MealoraTypography.notInCatalogHint,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: MealoraSpacing.sm),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: _ComponentOption(
+                  icon: Icons.search,
+                  title: text.foodComponentSearchCatalogAction,
+                  subtitle: text.foodComponentSearchCatalogSub,
+                  background: MealoraColors.glassSoft,
+                  border: MealoraColors.componentOptionBorder,
+                  onTap: onSearch,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ComponentOption(
+                  icon: Icons.add_circle_outline,
+                  title: text.foodComponentCreateFoodAction,
+                  subtitle: text.foodComponentCreateFoodSub,
+                  background: MealoraColors.iconFieldGreen,
+                  border: MealoraColors.componentOptionCreateBorder,
+                  onTap: onCreate,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ComponentOption extends StatelessWidget {
+  const _ComponentOption({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.background,
+    required this.border,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color background;
+  final Color border;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(MealoraRadius.chip + 6);
+    return Semantics(
+      button: true,
+      label: '$title. $subtitle',
+      excludeSemantics: true,
+      child: Material(
+        color: background,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(color: border),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: radius,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(icon, size: 18, color: MealoraColors.primary),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(title, style: MealoraTypography.componentOptionTitle),
+                const SizedBox(height: MealoraSpacing.xxs),
+                Text(subtitle, style: MealoraTypography.componentOptionSub),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+ServingSize _servingOf(Food food, String? servingId) =>
+    servingId == null ? food.defaultServing : food.servingById(servingId);
+
+/// Label sajian satu satuan dari tebakan model ("potong" → "1 potong").
+String unitServingLabel(String? unit) {
+  final trimmed = unit?.trim() ?? '';
+  if (trimmed.isEmpty) return '1 porsi';
+  return RegExp(r'^\d').hasMatch(trimmed) ? trimmed : '1 $trimmed';
+}
+
+/// Takaran komponen dengan satuan (change 021, design D6): "1 potong",
+/// "1,5 × 1 cangkir". Tanpa padanan memakai satuan tebakan model.
+String componentAmount(PhotoDraftComponent component, String? servingLabel) =>
+    DiaryFormat.entryAmount(
+      servingLabel ?? unitServingLabel(component.quantityUnitLabel),
+      component.quantity,
+    );
+
+/// Label sajian padanan sebuah komponen, `null` bila tanpa padanan.
+final componentServingLabelProvider = FutureProvider.autoDispose
+    .family<String?, PhotoDraftComponent>((ref, component) async {
+      final foodId = component.matchedFoodId;
+      if (foodId == null) return null;
+      final food = await ref.read(foodRepositoryProvider).findById(foodId);
+      if (food == null) return null;
+      return _servingOf(food, component.matchedServingId).label;
+    });

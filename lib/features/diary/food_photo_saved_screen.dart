@@ -8,9 +8,10 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/clock/clock.dart';
-import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
+import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/food_photo_draft_storage.dart';
+import 'package:mealora/features/history/history_screen.dart';
 import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/features/share/meal_share_card.dart';
 import 'package:mealora/features/share/share_card_frame.dart';
@@ -95,14 +96,29 @@ class _FoodPhotoSavedScreenState extends ConsumerState<FoodPhotoSavedScreen> {
     navigator.popUntil((route) => route.isFirst);
   }
 
-  Future<void> _openPreview() async {
+  /// [withoutTotal] membuka kartu tanpa total (change 021, design D5).
+  Future<void> _openPreview({bool withoutTotal = false}) async {
     final text = AppText.of(context);
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (_) => SharePreviewScreen(
-          card: MealShareCard(data: widget.meal),
-          caption: text.shareMealPreviewCaption,
+          card: MealShareCard(
+            data: withoutTotal ? widget.meal.withoutNutrition() : widget.meal,
+          ),
+          caption: withoutTotal
+              ? text.shareMealNoTotalCaption
+              : text.shareMealPreviewCaption,
         ),
+      ),
+    );
+  }
+
+  /// "Lengkapi dulu": buku harian tanggal itu, tempat catatannya bisa
+  /// disunting dan makanannya diganti (design D5).
+  Future<void> _openDiary() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => HistoryCalendarScreen(initialDate: widget.date),
       ),
     );
   }
@@ -111,6 +127,10 @@ class _FoodPhotoSavedScreenState extends ConsumerState<FoodPhotoSavedScreen> {
   Widget build(BuildContext context) {
     final text = AppText.of(context);
     final meal = widget.meal;
+    final total = meal.total;
+    // Change 021 (design D5): energi belum lengkap → kartu tanpa total.
+    final incomplete = !total.isComplete;
+    final cardData = incomplete ? meal.withoutNutrition() : meal;
 
     return PopScope(
       canPop: false,
@@ -172,7 +192,7 @@ class _FoodPhotoSavedScreenState extends ConsumerState<FoodPhotoSavedScreen> {
                     text.foodPhotoSavedSubtitle(
                       meal.mealTimeLabel,
                       meal.items.length,
-                      IdFormat.integer(meal.totalKcal),
+                      DiaryFormat.partialKcal(total, text),
                     ),
                     textAlign: TextAlign.center,
                     style: MealoraTypography.subtitle,
@@ -200,7 +220,7 @@ class _FoodPhotoSavedScreenState extends ConsumerState<FoodPhotoSavedScreen> {
                               child: SizedBox(
                                 width: ShareCardSize.width,
                                 height: ShareCardSize.height,
-                                child: MealShareCard(data: meal),
+                                child: MealShareCard(data: cardData),
                               ),
                             ),
                           ),
@@ -215,11 +235,33 @@ class _FoodPhotoSavedScreenState extends ConsumerState<FoodPhotoSavedScreen> {
                     style: MealoraTypography.caption,
                   ),
                   const SizedBox(height: MealoraSpacing.md),
-                  MealoraPrimaryButton(
-                    label: text.shareAction,
-                    icon: Icons.ios_share,
-                    onPressed: () => unawaited(_openPreview()),
-                  ),
+                  if (incomplete) ...<Widget>[
+                    MealoraNoteCard(
+                      icon: Icons.info_outline,
+                      body: text.foodPhotoSavedIncompleteNote(
+                        total.unknownCount,
+                      ),
+                      background: MealoraColors.iconFieldAmber,
+                      foreground: MealoraColors.amberText,
+                    ),
+                    const SizedBox(height: MealoraSpacing.md),
+                    MealoraPrimaryButton(
+                      label: text.foodPhotoSavedCompleteFirstAction,
+                      onPressed: () => unawaited(_openDiary()),
+                    ),
+                    const SizedBox(height: MealoraSpacing.sm),
+                    MealoraGlassButton(
+                      label: text.foodPhotoSavedShareWithoutTotalAction,
+                      icon: Icons.ios_share,
+                      onPressed: () =>
+                          unawaited(_openPreview(withoutTotal: true)),
+                    ),
+                  ] else
+                    MealoraPrimaryButton(
+                      label: text.shareAction,
+                      icon: Icons.ios_share,
+                      onPressed: () => unawaited(_openPreview()),
+                    ),
                   const SizedBox(height: MealoraSpacing.sm),
                   OutlinedButton(
                     onPressed: () => unawaited(_finish()),

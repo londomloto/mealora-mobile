@@ -368,7 +368,7 @@ class _SelectedDay extends StatelessWidget {
     final label = switch (day.state) {
       DailyEnergyState.recorded => text.energyDetailValue(
         date,
-        IdFormat.integer(day.kcal!),
+        '${day.isPartial ? '≥\u00A0' : ''}${IdFormat.integer(day.kcal!)}',
       ),
       DailyEnergyState.unknown => text.energyDetailUnknown(date),
       DailyEnergyState.notRecorded ||

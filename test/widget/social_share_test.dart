@@ -11,6 +11,7 @@ import 'package:mealora/data/local/drift_photo_draft_repository.dart';
 import 'package:mealora/data/local/drift_profile_repository.dart';
 import 'package:mealora/database/app_database.dart';
 import 'package:mealora/domain/food/meal_time.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/domain/nutrition/activity_level.dart';
@@ -54,19 +55,19 @@ void main() {
   tearDown(() => database.close());
 
   group('kartu ringkasan harian (task 2.3)', () {
-    const data = DailySummaryShareData(
-      date: LocalDate(2026, 11, 11),
-      consumedKcal: 1650,
+    final data = DailySummaryShareData(
+      date: const LocalDate(2026, 11, 11),
+      consumedKcal: PartialSum.of(<double?>[1650]),
       targetKcal: 2000,
-      proteinG: 98,
-      carbohydrateG: 196,
-      fatG: 54,
+      proteinG: PartialSum.of(<double?>[98]),
+      carbohydrateG: PartialSum.of(<double?>[196]),
+      fatG: PartialSum.of(<double?>[54]),
     );
 
     testWidgets('memuat energi/target, persentase bulat, makro, dan '
         'watermark — tanpa berat badan maupun program', (tester) async {
       await tester.pumpWidget(
-        wrapForTest(const Center(child: DailySummaryShareCard(data: data))),
+        wrapForTest(Center(child: DailySummaryShareCard(data: data))),
       );
       await tester.pumpAndSettle();
 
@@ -91,13 +92,13 @@ void main() {
     });
 
     test('persentase dibulatkan dan boleh melebihi 100%', () {
-      const over = DailySummaryShareData(
-        date: LocalDate(2026, 11, 11),
-        consumedKcal: 2350,
+      final over = DailySummaryShareData(
+        date: const LocalDate(2026, 11, 11),
+        consumedKcal: PartialSum.of(<double?>[2350]),
         targetKcal: 2000,
-        proteinG: null,
-        carbohydrateG: null,
-        fatG: null,
+        proteinG: PartialSum.of(const <double?>[]),
+        carbohydrateG: PartialSum.of(const <double?>[]),
+        fatG: PartialSum.of(const <double?>[]),
       );
       expect(data.percentOfTarget, 83);
       expect(over.percentOfTarget, 118);
@@ -275,7 +276,8 @@ void main() {
         ),
       );
       expect(card.data.items.single.name, isNotEmpty);
-      expect(card.data.items.single.portion, contains('×'));
+      // Change 021 (design D6): takaran bersatuan, "1 centong" bukan "1 × 1 centong".
+      expect(card.data.items.single.portion, '1 centong');
       expect(card.data.items.single.kcal, isNotNull);
       expect(card.data.photoPath, photo.path);
       expect(

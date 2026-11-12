@@ -382,7 +382,7 @@ class _SlotHitArea extends StatelessWidget {
     final label = switch (day.state) {
       DailyEnergyState.recorded => text.energyDaySemantics(
         date,
-        IdFormat.integer(day.kcal!),
+        '${day.isPartial ? '≥\u00A0' : ''}${IdFormat.integer(day.kcal!)}',
       ),
       DailyEnergyState.unknown => text.energyDayUnknownSemantics(date),
       DailyEnergyState.notRecorded => text.energyDayNotRecordedSemantics(date),

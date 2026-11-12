@@ -32,7 +32,7 @@ final class OcrNutritionLabelProvider implements NutritionLabelProvider {
   OcrNutritionLabelProvider({
     TextRecognitionReader? recognizeText,
     this.parser = const LabelTextParser(),
-  }) : _recognizeText = recognizeText ?? _recognizeWithMlKit;
+  }) : _recognizeText = recognizeText ?? recognizeWithMlKit;
 
   final TextRecognitionReader _recognizeText;
   final LabelTextParser parser;
@@ -59,7 +59,7 @@ final class OcrNutritionLabelProvider implements NutritionLabelProvider {
     return LabelExtractionRead(parser.parse(text));
   }
 
-  static Future<String> _recognizeWithMlKit(Uint8List imageBytes) async {
+  static Future<String> recognizeWithMlKit(Uint8List imageBytes) async {
     final tempDir = Directory.systemTemp.createTempSync('mealora_ocr_');
     try {
       final tempFile = File('${tempDir.path}/label.jpg');

@@ -224,6 +224,36 @@ abstract final class MealoraTypography {
   static TextStyle get shareCardChipLabel =>
       _jakarta(size: 12, weight: bold, color: MealoraColors.onPrimary);
 
+  /// Label "Dibagikan dari Mealora" (`96`, change 021).
+  static TextStyle get shareCardFromMealora =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.primary);
+
+  /// Kartu ringkasan di atas foto hero tinjau (`92`, change 021).
+  static TextStyle get photoReviewNoticeTitle =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.ink);
+  static TextStyle get photoReviewNoticeBody =>
+      _jakarta(size: 10, weight: regular, color: MealoraColors.muted);
+
+  /// Chip aksi baris komponen (Lengkapi/Ubah) dan baris total (`92`).
+  static TextStyle get photoReviewChip =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.primary);
+  static TextStyle get photoReviewTotals =>
+      _jakarta(size: 12, weight: semiBold, color: MealoraColors.ink);
+
+  /// Sheet komponen tanpa padanan (`93`, change 021).
+  static TextStyle get notInCatalogName =>
+      _jakarta(size: 17, weight: bold, color: MealoraColors.ink);
+  static TextStyle get notInCatalogHint =>
+      _jakarta(size: 12, weight: regular, color: MealoraColors.amberText);
+  static TextStyle get componentOptionTitle =>
+      _jakarta(size: 14, weight: bold, color: MealoraColors.ink);
+  static TextStyle get componentOptionSub =>
+      _jakarta(size: 11, weight: regular, color: MealoraColors.muted);
+
+  /// Tautan "Bagikan saja tanpa mencatat" (`92`).
+  static TextStyle get photoReviewLink =>
+      _jakarta(size: 13, weight: bold, color: MealoraColors.primary);
+
   static TextStyle get shareCardItemName =>
       _jakarta(size: 13, weight: semiBold, color: MealoraColors.ink);
 

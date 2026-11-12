@@ -13,7 +13,7 @@ import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/meal_time.dart';
-import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/domain/nutrition/activity_level.dart';
 import 'package:mealora/domain/program/program_code.dart';
@@ -22,6 +22,7 @@ import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_photo_review_screen.dart';
+import 'package:mealora/features/history/history_screen.dart';
 import 'package:mealora/features/share/daily_summary_share_card.dart';
 import 'package:mealora/features/share/share_preview_screen.dart';
 import 'package:mealora/features/shell/destinations.dart';
@@ -109,6 +110,12 @@ class _TodayBody extends StatelessWidget {
         : _programName(text, program!.programCode);
     final energyTarget = proposal?.energyTarget;
     final showsEnergyTarget = proposal?.showsEnergyTarget ?? false;
+    // Change 021 (design D1): energi dan makro hari ini dijumlah dari
+    // catatan yang diketahui saja; nilai kosong dihitung, bukan dinolkan.
+    final totals = PartialNutritionTotal.of(
+      entries.map((e) => e.totalNutrition),
+    );
+    final energyTotal = totals.energyKcal;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     // Frame Pen memakai tinggi hero 268 px dari tepi layar, termasuk status
     // bar 24 px. AppShell sudah menambahkan SafeArea, jadi tinggi konten hero
@@ -170,15 +177,13 @@ class _TodayBody extends StatelessWidget {
                             data: dailyTotal.hasAnyEntries
                                 ? DailySummaryShareData(
                                     date: today,
-                                    consumedKcal:
-                                        dailyTotal.nutrition.energy?.kcal ?? 0,
+                                    consumedKcal: energyTotal,
                                     targetKcal: showsEnergyTarget
                                         ? energyTarget?.kcal
                                         : null,
-                                    proteinG: dailyTotal.nutrition.proteinG,
-                                    carbohydrateG:
-                                        dailyTotal.nutrition.carbohydrateG,
-                                    fatG: dailyTotal.nutrition.fatG,
+                                    proteinG: totals.proteinG,
+                                    carbohydrateG: totals.carbohydrateG,
+                                    fatG: totals.fatG,
                                   )
                                 : null,
                           ),
@@ -296,12 +301,34 @@ class _TodayBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _SummaryCard(
-                  dailyTotal: dailyTotal,
+                  energyTotal: energyTotal,
+                  hasEntries: entries.isNotEmpty,
                   showsEnergyTarget: showsEnergyTarget,
                   energyTargetKcal: energyTarget?.kcal,
                   activityLevel: activityLevel,
                   text: text,
                 ),
+                // Change 021: catatan berenergi kosong disebut di sini, bukan
+                // di dalam lingkaran; mengetuknya membuka buku harian hari ini.
+                if (entries.isNotEmpty && !energyTotal.isComplete) ...<Widget>[
+                  const SizedBox(height: MealoraSpacing.md),
+                  MealoraNoteCard(
+                    key: const ValueKey<String>('today-unknown-energy-note'),
+                    icon: Icons.info_outline,
+                    title: text.todayUnknownEnergyNoteTitle(
+                      energyTotal.unknownCount,
+                    ),
+                    body: text.todayUnknownEnergyNoteBody,
+                    background: MealoraColors.iconFieldAmber,
+                    foreground: MealoraColors.amberText,
+                    onTap: () => Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            HistoryCalendarScreen(initialDate: today),
+                      ),
+                    ),
+                  ),
+                ],
                 if (pendingDraft != null) ...<Widget>[
                   const SizedBox(height: MealoraSpacing.md),
                   _PendingDraftBanner(draft: pendingDraft!, text: text),
@@ -309,7 +336,7 @@ class _TodayBody extends StatelessWidget {
                 if (proposal?.macros != null) ...<Widget>[
                   const SizedBox(height: MealoraSpacing.md),
                   _MacroCard(
-                    dailyTotal: dailyTotal,
+                    totals: totals,
                     macros: proposal!.macros!,
                     text: text,
                   ),
@@ -440,14 +467,16 @@ class _PendingDraftBanner extends StatelessWidget {
 
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard({
-    required this.dailyTotal,
+    required this.energyTotal,
+    required this.hasEntries,
     required this.showsEnergyTarget,
     required this.energyTargetKcal,
     required this.activityLevel,
     required this.text,
   });
 
-  final DailyNutritionTotal dailyTotal;
+  final PartialSum energyTotal;
+  final bool hasEntries;
   final bool showsEnergyTarget;
   final double? energyTargetKcal;
   final ActivityLevel? activityLevel;
@@ -455,8 +484,8 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final consumed = dailyTotal.nutrition.energy;
-    final displayedConsumedKcal = consumed?.kcal ?? 0;
+    final displayedConsumedKcal = energyTotal.known;
+    final consumedUnknown = hasEntries && energyTotal.isUnknown;
     final hasTarget = showsEnergyTarget && energyTargetKcal != null;
     final remainingKcal = hasTarget
         ? (energyTargetKcal! - displayedConsumedKcal)
@@ -468,7 +497,7 @@ class _SummaryCard extends StatelessWidget {
         : null;
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final ring = _CalorieRing(
-      consumedKcal: displayedConsumedKcal,
+      consumedKcal: consumedUnknown ? null : displayedConsumedKcal,
       targetKcal: hasTarget ? energyTargetKcal : null,
     );
     final details = Padding(
@@ -501,8 +530,11 @@ class _SummaryCard extends StatelessWidget {
             icon: Icons.local_fire_department_outlined,
             iconColor: MealoraColors.accent,
             label: text.todayLoggedLabel,
-            value:
-                '${IdFormat.integer(displayedConsumedKcal)} ${text.unitKilocalorie}',
+            value: consumedUnknown
+                ? text.todayConsumedUnknown
+                : '${energyTotal.isComplete ? '' : '≥ '}'
+                      '${IdFormat.integer(displayedConsumedKcal)} '
+                      '${text.unitKilocalorie}',
             largeText: largeText,
           ),
           const SizedBox(height: MealoraSpacing.xs),
@@ -621,12 +653,12 @@ class _SummaryStatRow extends StatelessWidget {
 
 class _MacroCard extends StatelessWidget {
   const _MacroCard({
-    required this.dailyTotal,
+    required this.totals,
     required this.macros,
     required this.text,
   });
 
-  final DailyNutritionTotal dailyTotal;
+  final PartialNutritionTotal totals;
   final MacronutrientTargets macros;
   final AppText text;
 
@@ -640,7 +672,7 @@ class _MacroCard extends StatelessWidget {
           Expanded(
             child: _MacroColumn(
               label: text.nutrientProtein,
-              consumed: dailyTotal.nutrition.proteinG,
+              consumed: totals.proteinG,
               target: macros.proteinGrams.toDouble(),
               color: MealoraColors.primaryBright,
               text: text,
@@ -650,7 +682,7 @@ class _MacroCard extends StatelessWidget {
           Expanded(
             child: _MacroColumn(
               label: text.nutrientCarbohydrate,
-              consumed: dailyTotal.nutrition.carbohydrateG,
+              consumed: totals.carbohydrateG,
               target: macros.carbohydrateGrams.toDouble(),
               color: MealoraColors.accent,
               text: text,
@@ -660,7 +692,7 @@ class _MacroCard extends StatelessWidget {
           Expanded(
             child: _MacroColumn(
               label: text.nutrientFat,
-              consumed: dailyTotal.nutrition.fatG,
+              consumed: totals.fatG,
               target: macros.fatGrams.toDouble(),
               color: MealoraColors.peach,
               text: text,
@@ -682,19 +714,22 @@ class _MacroColumn extends StatelessWidget {
   });
 
   final String label;
-  final double? consumed;
+
+  /// Total parsial (change 021): "≥ 45" bila sebagian catatan kosong.
+  final PartialSum consumed;
   final double target;
   final Color color;
   final AppText text;
 
   @override
   Widget build(BuildContext context) {
-    final ratio = consumed == null
+    final ratio = consumed.isUnknown
         ? 0.0
-        : (consumed! / target).clamp(0, 1).toDouble();
-    final consumedText = consumed == null
+        : (consumed.known / target).clamp(0, 1).toDouble();
+    final consumedText = consumed.isUnknown
         ? text.nutrientValueUnknown
-        : IdFormat.decimal(consumed!);
+        : '${consumed.isComplete ? '' : '≥\u00A0'}'
+              '${IdFormat.decimal(consumed.known)}';
     final valueText =
         '$consumedText / ${IdFormat.decimal(target, decimals: 0)} ${text.unitGram}';
     return Column(
@@ -785,12 +820,20 @@ class _MealRow extends StatelessWidget {
       MealTime.snack => MealoraColors.peach,
       MealTime.dinner => MealoraColors.info,
     };
-    final mealNutrition = NutritionProfile.sumAll(
-      entries.map((e) => e.totalNutrition),
+    // Change 021: energi per waktu makan juga parsial, bukan "belum
+    // diketahui" hanya karena satu catatan kosong. Format ringkas "≥ 430
+    // kkal" seperti baris Tercatat; jumlah yang belum diketahui sudah
+    // disebut di lingkaran energi.
+    final mealEnergy = PartialSum.of(
+      entries.map((e) => e.totalNutrition.energy?.kcal),
     );
     final kcal = entries.isEmpty
         ? text.todayMealNotLogged
-        : DiaryFormat.kcal(mealNutrition.energy, text);
+        : mealEnergy.isUnknown
+        ? text.todayConsumedUnknown
+        : '${mealEnergy.isComplete ? '' : '≥ '}'
+              '${IdFormat.integer(mealEnergy.known)} '
+              '${text.unitKilocalorie}';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -815,6 +858,7 @@ class _MealRow extends StatelessWidget {
             ),
           ),
           Flexible(
+            fit: FlexFit.tight,
             child: Text(
               kcal,
               textAlign: TextAlign.end,
@@ -849,6 +893,9 @@ class _CalorieRing extends StatelessWidget {
         ? (consumedKcal! / targetKcal!).clamp(0, 1).toDouble()
         : null;
     final dimension = 128 * textScale;
+    // Isi selalu di dalam lingkaran: lebar dibatasi ke bagian dalam cincin
+    // dan seluruh isi mengecil bila tidak muat (mis. skala teks besar).
+    final inner = dimension * 0.7;
 
     return SizedBox(
       width: dimension,
@@ -856,31 +903,37 @@ class _CalorieRing extends StatelessWidget {
       child: CustomPaint(
         painter: _RingPainter(ratio: ratio),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(MealoraSpacing.xs),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  consumedKcal == null
-                      ? text.todayConsumedUnknown
-                      : IdFormat.integer(consumedKcal!),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: MealoraTypography.calorieRingValue,
-                ),
-                if (targetKcal != null) ...<Widget>[
-                  const SizedBox(height: MealoraSpacing.xxs),
-                  Text(
-                    'dari ${IdFormat.integer(targetKcal!)} ${text.unitKilocalorie}',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    style: MealoraTypography.caption.copyWith(
-                      color: MealoraColors.muted,
+          child: SizedBox.square(
+            dimension: inner,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SizedBox(
+                width: inner,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      consumedKcal == null
+                          ? text.todayConsumedUnknown
+                          : IdFormat.integer(consumedKcal!),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: MealoraTypography.calorieRingValue,
                     ),
-                  ),
-                ],
-              ],
+                    if (targetKcal != null) ...<Widget>[
+                      const SizedBox(height: MealoraSpacing.xxs),
+                      Text(
+                        'dari ${IdFormat.integer(targetKcal!)} ${text.unitKilocalorie}',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        style: MealoraTypography.caption.copyWith(
+                          color: MealoraColors.muted,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),

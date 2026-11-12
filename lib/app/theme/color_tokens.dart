@@ -309,6 +309,22 @@ abstract final class MealoraColors {
   /// Bidang di dalam panel kartu makanan.
   static const Color shareCardField = Color(0xFFF4F8F5);
 
+  /// Chip "Dibagikan dari Mealora" di kartu tanpa total (`96`, change 021).
+  static const Color shareCardChipSoft = Color(0xFFF1F5F2);
+
+  /// Kartu dan pilihan sheet komponen tanpa padanan (`93`, change 021).
+  static const Color notInCatalogBorder = Color(0xFFF2D9A6);
+  static const Color componentOptionBorder = Color(0xFFC8DCCD);
+  static const Color componentOptionCreateBorder = Color(0xFF9FD9B6);
+
+  /// Scrim atas foto hero tinjau foto (`92`, change 021).
+  static const Color photoHeroScrim = Color(0x99062418);
+  static const Color photoHeroScrimClear = Color(0x00062418);
+
+  /// Tombol tutup kaca gelap di atas foto hero (`92`).
+  static const Color photoHeroButton = Color(0x590A2A1D);
+  static const Color photoHeroButtonBorder = Color(0x59FFFFFF);
+
   /// Bayangan panel mengambang dan pratinjau kartu.
   static const Color shadowShareCard = Color(0x3D04231A);
 

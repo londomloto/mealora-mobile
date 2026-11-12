@@ -17,8 +17,13 @@ class SharePreviewScreen extends ConsumerStatefulWidget {
   const SharePreviewScreen({
     required this.card,
     required this.caption,
+    this.notice,
     super.key,
   });
+
+  /// Catatan amber di atas tombol, mis. "Belum dicatat di buku harian"
+  /// untuk "Bagikan saja tanpa mencatat" (change 021, design D4).
+  final String? notice;
 
   /// Kartu 360×640 (mis. `DailySummaryShareCard`, `MealShareCard`).
   final Widget card;
@@ -93,19 +98,31 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: MealoraSpacing.sm),
-                Text(
-                  widget.caption,
-                  textAlign: TextAlign.center,
-                  style: MealoraTypography.caption,
-                ),
+                // `97` (change 021): tanpa caption; satu catatan hijau yang
+                // juga memuat keterangan lokal menggantikan dua catatan.
+                if (widget.notice == null) ...<Widget>[
+                  const SizedBox(height: MealoraSpacing.sm),
+                  Text(
+                    widget.caption,
+                    textAlign: TextAlign.center,
+                    style: MealoraTypography.caption,
+                  ),
+                ],
                 const SizedBox(height: MealoraSpacing.md),
-                MealoraNoteCard(
-                  icon: Icons.phone_android_outlined,
-                  body: text.sharePreviewLocalNote,
-                  background: MealoraColors.glassStrong,
-                  foreground: MealoraColors.muted,
-                ),
+                if (widget.notice != null)
+                  MealoraNoteCard(
+                    icon: Icons.bookmark_remove_outlined,
+                    body: widget.notice!,
+                    background: MealoraColors.noteSuccess,
+                    foreground: MealoraColors.primaryDeep,
+                  )
+                else
+                  MealoraNoteCard(
+                    icon: Icons.phone_android_outlined,
+                    body: text.sharePreviewLocalNote,
+                    background: MealoraColors.glassStrong,
+                    foreground: MealoraColors.muted,
+                  ),
                 const SizedBox(height: MealoraSpacing.md),
                 MealoraPrimaryButton(
                   label: text.shareAction,

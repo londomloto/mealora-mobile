@@ -5,37 +5,50 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mealora/app/providers.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/providers.dart';
-import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/domain/image_ai_access/label_service_failure.dart';
-import 'package:mealora/domain/image_ai_access/nutrition_label_provider.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_import.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_reading.dart';
+import 'package:mealora/features/diary/custom_food_screen.dart';
 import 'package:mealora/features/diary/label_extraction_failure_text.dart';
+import 'package:mealora/features/diary/nutrition_import_review_screen.dart';
 import 'package:mealora/features/diary/nutrition_label_review_screen.dart';
 import 'package:mealora/features/diary/packaged_food_manual_fill_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
-/// `23 · Foto label kemasan` (task 6.1-6.5, change 010): pratinjau kamera
-/// dengan bingkai panduan, persetujuan unggah inline sebelum ekstraksi, dan
-/// jalur manual tanpa unggah — selalu tersedia dari layar ini (spec,
-/// "Pengguna memilih jalur manual").
+/// `88 · Foto info gizi` (change 020, design D4; awalnya `23 · Foto label
+/// kemasan`, change 010): satu layar untuk label kemasan, layar laptop, dan
+/// artikel. Pratinjau kamera, ikon galeri, persetujuan unggah inline, dan
+/// jalur manual yang selalu tersedia.
 ///
-/// Sesuai rancangan `23`: satu layar, satu tombol ("Ekstrak untuk
-/// ditinjau") yang memotret DAN mengirim sekaligus — bukan dua langkah
-/// terpisah (kamera lalu panel persetujuan modal).
+/// Satu tombol memotret lalu membaca bertingkat lewat
+/// `NutritionReadingPipeline` (design D3): AI vision hanya dengan izin,
+/// lalu teks hasil OCR di perangkat, lalu pembacaan offline.
 class NutritionLabelPhotoScreen extends ConsumerStatefulWidget {
   const NutritionLabelPhotoScreen({
     this.barcode,
     this.date,
+    this.returnToForm = false,
     @visibleForTesting this.debugSkipCameraInit = false,
     @visibleForTesting this.debugCapture,
+    @visibleForTesting this.debugPickGallery,
     super.key,
   });
+
+  /// `true` bila dibuka dari layar tempel di form Buat makanan (design D4,
+  /// `ImportOrigin.customFoodForm`): hasil tinjau dikembalikan lewat
+  /// `Navigator.pop` sebagai `NutritionImportResult`, bukan disimpan.
+  final bool returnToForm;
+
+  /// Pengganti pemilih galeri untuk pengujian widget; `null` (bawaan,
+  /// SATU-SATUNYA jalur sungguhan) memakai photo picker sistem.
+  final Future<Uint8List?> Function()? debugPickGallery;
 
   /// `null` ketika dibuka langsung dari layar pindai barcode tanpa
   /// memindai/mengetik barcode dulu (change 010) — produk yang dihasilkan
@@ -60,13 +73,20 @@ class NutritionLabelPhotoScreen extends ConsumerStatefulWidget {
       _NutritionLabelPhotoScreenState();
 }
 
-enum _Stage { initializing, ready, unavailable, submitting, extractionFailed }
+enum _Stage {
+  initializing,
+  ready,
+  unavailable,
+  submitting,
+  extractionFailed,
+  noInfo,
+}
 
 class _NutritionLabelPhotoScreenState
     extends ConsumerState<NutritionLabelPhotoScreen> {
   CameraController? _controller;
   _Stage _stage = _Stage.initializing;
-  bool _consentChecked = false;
+
   LabelServiceFailureReason? _lastFailure;
 
   /// Foto terakhir yang berhasil diambil — dipertahankan melewati
@@ -130,16 +150,7 @@ class _NutritionLabelPhotoScreenState
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    final consentPreferenceAsync = ref.watch(
-      imageUploadConsentPreferenceProvider,
-    );
-    final consentPreference =
-        consentPreferenceAsync.valueOrNull ??
-        ImageUploadConsentPreference.askEachTime;
-    final needsConsentCheckbox =
-        consentPreference == ImageUploadConsentPreference.askEachTime;
-    final canExtract =
-        (_stage == _Stage.ready) && (!needsConsentCheckbox || _consentChecked);
+    final canExtract = _stage == _Stage.ready;
     final showExtractButton =
         _stage == _Stage.initializing ||
         _stage == _Stage.ready ||
@@ -168,7 +179,7 @@ class _NutritionLabelPhotoScreenState
                   style: MealoraTypography.subtitle,
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
-                ..._body(text, needsConsentCheckbox: needsConsentCheckbox),
+                ..._body(text),
                 const SizedBox(height: MealoraSpacing.sm),
                 Semantics(
                   button: true,
@@ -177,10 +188,28 @@ class _NutritionLabelPhotoScreenState
                   child: Center(
                     child: InkWell(
                       onTap: _openManualFill,
-                      child: Text(
-                        text.labelPhotoManualLink,
-                        style: MealoraTypography.bodyEmphasis.copyWith(
-                          color: MealoraColors.primaryDeep,
+                      child: ExcludeSemantics(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: MealoraSpacing.xs,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const Icon(
+                                Icons.edit_outlined,
+                                size: MealoraIconSize.inline,
+                                color: MealoraColors.primaryDeep,
+                              ),
+                              const SizedBox(width: MealoraSpacing.xxs),
+                              Text(
+                                text.labelPhotoManualLink,
+                                style: MealoraTypography.bodyEmphasis.copyWith(
+                                  color: MealoraColors.primaryDeep,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -202,7 +231,7 @@ class _NutritionLabelPhotoScreenState
     );
   }
 
-  List<Widget> _body(AppText text, {required bool needsConsentCheckbox}) {
+  List<Widget> _body(AppText text) {
     switch (_stage) {
       case _Stage.unavailable:
         return <Widget>[
@@ -210,6 +239,50 @@ class _NutritionLabelPhotoScreenState
             icon: Icons.videocam_off_outlined,
             title: text.labelPhotoPermissionDeniedTitle,
             body: text.labelPhotoPermissionDeniedBody,
+          ),
+        ];
+      case _Stage.noInfo:
+        return <Widget>[
+          MealoraEmptyState(
+            icon: Icons.search_off_outlined,
+            title: text.labelPhotoNoInfoTitle,
+            body: text.labelPhotoNoInfoBody,
+          ),
+          if (_capturedBytes != null) ...<Widget>[
+            const SizedBox(height: MealoraSpacing.md),
+            MealoraPrimaryButton(
+              key: const ValueKey('label-photo-analyze'),
+              label: text.analyzePhotoAction,
+              icon: Icons.image_search_outlined,
+              onPressed: () => unawaited(_analyzeCapturedPhoto()),
+            ),
+            const SizedBox(height: MealoraSpacing.xxs),
+            Text(
+              text.analyzePhotoUploadNote,
+              textAlign: TextAlign.center,
+              style: MealoraTypography.caption,
+            ),
+          ],
+          const SizedBox(height: MealoraSpacing.sm),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: MealoraGlassButton(
+                  key: const ValueKey('label-photo-retake'),
+                  onPressed: () => setState(() => _stage = _Stage.ready),
+                  icon: Icons.photo_camera_outlined,
+                  label: text.labelPhotoRetakeAction,
+                ),
+              ),
+              const SizedBox(width: MealoraSpacing.sm),
+              Expanded(
+                child: MealoraGlassButton(
+                  onPressed: _openManualFill,
+                  icon: Icons.edit_outlined,
+                  label: text.labelPhotoManualLink,
+                ),
+              ),
+            ],
           ),
         ];
       case _Stage.extractionFailed:
@@ -239,16 +312,20 @@ class _NutritionLabelPhotoScreenState
           _PreviewFrame(
             controller: _controller,
             captionText: text.labelPhotoFrameCaption,
+            galleryLabel: text.labelPhotoGalleryAction,
+            onGallery: _stage == _Stage.ready
+                ? () => unawaited(_pickFromGallery())
+                : null,
           ),
           const SizedBox(height: MealoraSpacing.lg),
           if (_stage == _Stage.submitting)
             const Center(child: CircularProgressIndicator())
           else
-            _ConsentRow(
-              visible: needsConsentCheckbox,
-              checked: _consentChecked,
-              onChanged: (value) => setState(() => _consentChecked = value),
-              text: text,
+            MealoraNoteCard(
+              icon: Icons.document_scanner_outlined,
+              title: text.labelPhotoReadNoteTitle,
+              body: text.labelPhotoReadNoteBody,
+              borderColor: MealoraColors.glassSoft,
             ),
         ];
       case _Stage.ready:
@@ -256,13 +333,17 @@ class _NutritionLabelPhotoScreenState
           _PreviewFrame(
             controller: _controller,
             captionText: text.labelPhotoFrameCaption,
+            galleryLabel: text.labelPhotoGalleryAction,
+            onGallery: _stage == _Stage.ready
+                ? () => unawaited(_pickFromGallery())
+                : null,
           ),
           const SizedBox(height: MealoraSpacing.lg),
-          _ConsentRow(
-            visible: needsConsentCheckbox,
-            checked: _consentChecked,
-            onChanged: (value) => setState(() => _consentChecked = value),
-            text: text,
+          MealoraNoteCard(
+            icon: Icons.document_scanner_outlined,
+            title: text.labelPhotoReadNoteTitle,
+            body: text.labelPhotoReadNoteBody,
+            borderColor: MealoraColors.glassSoft,
           ),
         ];
     }
@@ -283,30 +364,39 @@ class _NutritionLabelPhotoScreenState
     await _submit(bytes);
   }
 
+  Future<void> _pickFromGallery() async {
+    final Uint8List? bytes;
+    try {
+      bytes = widget.debugPickGallery != null
+          ? await widget.debugPickGallery!()
+          : await ImagePicker()
+                .pickImage(source: ImageSource.gallery)
+                .then((file) => file?.readAsBytes());
+    } on Object {
+      return;
+    }
+    if (bytes == null || !mounted) return;
+    await _submit(bytes);
+  }
+
   Future<void> _submit(Uint8List bytes) async {
     setState(() {
       _stage = _Stage.submitting;
       _capturedBytes = bytes;
     });
-    final provider = ref.read(nutritionLabelProviderProvider);
-    final outcome = await provider.extractLabel(bytes);
+    final outcome = await ref
+        .read(nutritionReadingPipelineProvider)
+        .readImage(bytes);
     if (!mounted) return;
 
     switch (outcome) {
-      case LabelExtractionRead(:final extraction):
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => NutritionLabelReviewScreen(
-              photoBytes: bytes,
-              extraction: extraction,
-              barcode: widget.barcode,
-              date: widget.date,
-            ),
-          ),
-        );
-        if (!mounted) return;
+      case NutritionReadSuccess(:final reading, :final tier)
+          when reading.hasAnyNutrient:
         setState(() => _stage = _Stage.ready);
-      case LabelExtractionServiceUnavailable(:final reason):
+        await _route(reading, tier, bytes);
+      case NutritionReadSuccess() || NutritionReadNoText():
+        setState(() => _stage = _Stage.noInfo);
+      case NutritionReadUnavailable(:final reason):
         setState(() {
           _stage = _Stage.extractionFailed;
           _lastFailure = reason;
@@ -314,7 +404,99 @@ class _NutritionLabelPhotoScreenState
     }
   }
 
+  /// "Analisis foto dengan AI" dari keadaan tidak ada info (layar 91):
+  /// foto yang sama dikirim ke AI vision atas tindakan pengguna.
+  Future<void> _analyzeCapturedPhoto() async {
+    final bytes = _capturedBytes;
+    if (bytes == null) return;
+    setState(() => _stage = _Stage.submitting);
+    final outcome = await ref
+        .read(nutritionReadingPipelineProvider)
+        .analyzePhoto(bytes);
+    if (!mounted) return;
+    switch (outcome) {
+      case NutritionReadSuccess(:final reading, :final tier)
+          when reading.hasAnyNutrient:
+        setState(() => _stage = _Stage.ready);
+        await _route(reading, tier, bytes);
+      case NutritionReadSuccess() || NutritionReadNoText():
+        setState(() => _stage = _Stage.noInfo);
+      case NutritionReadUnavailable(:final reason):
+        setState(() {
+          _stage = _Stage.extractionFailed;
+          _lastFailure = reason;
+        });
+    }
+  }
+
+  /// Tujuan hasil (spec "Tujuan hasil mengikuti konteks dan jenis sumber",
+  /// design D4).
+  Future<void> _route(
+    NutritionReading reading,
+    ReadingTier tier,
+    Uint8List bytes,
+  ) async {
+    final navigator = Navigator.of(context);
+    if (widget.returnToForm) {
+      final result = await _review(reading, tier, bytes);
+      if (result != null && mounted) navigator.pop(result);
+      return;
+    }
+
+    var kind = widget.barcode != null
+        ? NutritionSourceKind.packageLabel
+        : reading.sourceKind;
+    if (kind == NutritionSourceKind.unknown) {
+      final chosen = await showNutritionSourceChoiceSheet(context);
+      if (chosen == null || !mounted) return;
+      kind = chosen;
+    }
+
+    if (kind == NutritionSourceKind.packageLabel) {
+      await navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => NutritionLabelReviewScreen(
+            photoBytes: bytes,
+            extraction: reading.toLabelExtraction(
+              forceNeedsCheck: tier == ReadingTier.offline,
+            ),
+            barcode: widget.barcode,
+            date: widget.date,
+          ),
+        ),
+      );
+      return;
+    }
+
+    final result = await _review(reading, tier, bytes);
+    if (result == null || !mounted) return;
+    await navigator.push(
+      MaterialPageRoute<void>(
+        builder: (_) => CustomFoodScreen(date: widget.date, prefill: result),
+      ),
+    );
+  }
+
+  Future<NutritionImportResult?> _review(
+    NutritionReading reading,
+    ReadingTier tier,
+    Uint8List bytes,
+  ) => Navigator.of(context).push<NutritionImportResult>(
+    MaterialPageRoute<NutritionImportResult>(
+      builder: (_) => NutritionImportReviewScreen(
+        reading: reading,
+        tier: tier,
+        analyzePhoto: () =>
+            ref.read(nutritionReadingPipelineProvider).analyzePhoto(bytes),
+      ),
+    ),
+  );
+
   void _openManualFill() {
+    if (widget.returnToForm) {
+      Navigator.of(context).pop();
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => PackagedFoodManualFillScreen(
@@ -326,15 +508,70 @@ class _NutritionLabelPhotoScreenState
   }
 }
 
+/// Pilihan jenis simpan saat sumber tidak dapat dipastikan (spec "Jenis
+/// sumber ragu").
+Future<NutritionSourceKind?> showNutritionSourceChoiceSheet(
+  BuildContext context,
+) {
+  final text = AppText.of(context);
+  return showModalBottomSheet<NutritionSourceKind>(
+    context: context,
+    backgroundColor: MealoraColors.sheetSurface,
+    builder: (context) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(MealoraSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              text.nutritionSourceChoiceTitle,
+              style: MealoraTypography.headline,
+            ),
+            const SizedBox(height: MealoraSpacing.xxs),
+            Text(
+              text.nutritionSourceChoiceBody,
+              style: MealoraTypography.bodySmall,
+            ),
+            const SizedBox(height: MealoraSpacing.md),
+            MealoraNoteCard(
+              icon: Icons.inventory_2_outlined,
+              title: text.nutritionSourceChoicePackaged,
+              body: text.nutritionSourceChoicePackagedDescription,
+              onTap: () =>
+                  Navigator.of(context).pop(NutritionSourceKind.packageLabel),
+            ),
+            const SizedBox(height: MealoraSpacing.sm),
+            MealoraNoteCard(
+              icon: Icons.restaurant_outlined,
+              title: text.nutritionSourceChoiceCustom,
+              body: text.nutritionSourceChoiceCustomDescription,
+              onTap: () =>
+                  Navigator.of(context).pop(NutritionSourceKind.general),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// Area pratinjau kamera dengan bingkai panduan (rancangan `23`) —
 /// [controller] `null` berarti belum siap (sedang diinisialisasi, gagal,
 /// atau pengujian widget yang melewati inisialisasi sungguhan): latar
 /// gelap polos tetap tampil dengan bingkai yang sama, tanpa video.
 class _PreviewFrame extends StatelessWidget {
-  const _PreviewFrame({required this.controller, required this.captionText});
+  const _PreviewFrame({
+    required this.controller,
+    required this.captionText,
+    required this.galleryLabel,
+    required this.onGallery,
+  });
 
   final CameraController? controller;
   final String captionText;
+  final String galleryLabel;
+  final VoidCallback? onGallery;
 
   @override
   Widget build(BuildContext context) {
@@ -367,70 +604,17 @@ class _PreviewFrame extends StatelessWidget {
                 ),
               ),
             ),
+            Positioned(
+              right: MealoraSpacing.sm,
+              bottom: MealoraSpacing.sm,
+              child: IconButton.filledTonal(
+                key: const ValueKey('label-photo-gallery'),
+                tooltip: galleryLabel,
+                onPressed: onGallery,
+                icon: const Icon(Icons.photo_library_outlined),
+              ),
+            ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Baris persetujuan inline (rancangan `23`, task 3.3/6.2) — tampil hanya
-/// ketika pengaturan privasi bernilai "tanya setiap kali" (Design D3);
-/// "selalu izinkan" menyembunyikannya sepenuhnya, sesuai Design D3: pilihan
-/// tetap pengguna sendiri yang melewatkan penanyaan ini.
-class _ConsentRow extends StatelessWidget {
-  const _ConsentRow({
-    required this.visible,
-    required this.checked,
-    required this.onChanged,
-    required this.text,
-  });
-
-  final bool visible;
-  final bool checked;
-  final ValueChanged<bool> onChanged;
-  final AppText text;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!visible) {
-      return const SizedBox.shrink();
-    }
-    return Semantics(
-      label:
-          '${text.uploadConsentCheckboxLabel}. ${text.uploadConsentBody} '
-          '${checked ? text.uploadConsentCheckedState : text.uploadConsentUncheckedState}',
-      child: MealoraCard(
-        child: InkWell(
-          onTap: () => onChanged(!checked),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ExcludeSemantics(
-                child: Checkbox(
-                  value: checked,
-                  onChanged: (value) => onChanged(value ?? false),
-                ),
-              ),
-              const SizedBox(width: MealoraSpacing.xs),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      text.uploadConsentCheckboxLabel,
-                      style: MealoraTypography.bodyEmphasis,
-                    ),
-                    const SizedBox(height: MealoraSpacing.xxs),
-                    Text(
-                      text.uploadConsentBody,
-                      style: MealoraTypography.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

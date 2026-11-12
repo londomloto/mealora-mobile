@@ -2476,13 +2476,13 @@ abstract class AppText {
   /// No description provided for @addFoodBarcodeTitle.
   ///
   /// In id, this message translates to:
-  /// **'Scan barcode'**
+  /// **'Scan barcode / info gizi'**
   String get addFoodBarcodeTitle;
 
   /// No description provided for @addFoodBarcodeDescription.
   ///
   /// In id, this message translates to:
-  /// **'Cari produk kemasan dengan cepat'**
+  /// **'Produk kemasan atau info gizi'**
   String get addFoodBarcodeDescription;
 
   /// No description provided for @addFoodPrivacyLine1.
@@ -2890,7 +2890,7 @@ abstract class AppText {
   /// No description provided for @barcodeScanPhotoLabelDescription.
   ///
   /// In id, this message translates to:
-  /// **'Baca nilai nutrisi dari foto label'**
+  /// **'Label kemasan, layar laptop, atau artikel'**
   String get barcodeScanPhotoLabelDescription;
 
   /// No description provided for @barcodeScanUseCamera.
@@ -3904,13 +3904,13 @@ abstract class AppText {
   /// No description provided for @uploadConsentBody.
   ///
   /// In id, this message translates to:
-  /// **'Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.'**
+  /// **'Paling akurat. Tanpa izin atau saat AI tidak tersedia, foto dibaca di HP dan hanya teksnya yang dikirim.'**
   String get uploadConsentBody;
 
   /// No description provided for @uploadConsentCheckboxLabel.
   ///
   /// In id, this message translates to:
-  /// **'Izinkan unggah foto label ini'**
+  /// **'Izinkan unggah foto untuk dibaca AI'**
   String get uploadConsentCheckboxLabel;
 
   /// No description provided for @uploadConsentCheckedState.
@@ -3928,31 +3928,31 @@ abstract class AppText {
   /// No description provided for @labelPhotoContextLabel.
   ///
   /// In id, this message translates to:
-  /// **'INFORMASI NILAI GIZI'**
+  /// **'FOTO INFO GIZI'**
   String get labelPhotoContextLabel;
 
   /// No description provided for @labelPhotoTitle.
   ///
   /// In id, this message translates to:
-  /// **'Foto label kemasan'**
+  /// **'Foto info gizi'**
   String get labelPhotoTitle;
 
   /// No description provided for @labelPhotoSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Pastikan teks dan satuan terlihat jelas.'**
+  /// **'Label kemasan, layar laptop, atau artikel.'**
   String get labelPhotoSubtitle;
 
   /// No description provided for @labelPhotoFrameCaption.
   ///
   /// In id, this message translates to:
-  /// **'Informasi Nilai Gizi harus terbaca penuh'**
+  /// **'Angka gizi harus terlihat jelas'**
   String get labelPhotoFrameCaption;
 
   /// No description provided for @labelPhotoExtractAction.
   ///
   /// In id, this message translates to:
-  /// **'Ekstrak untuk ditinjau'**
+  /// **'Baca info gizi'**
   String get labelPhotoExtractAction;
 
   /// No description provided for @labelPhotoRetryAction.
@@ -3964,7 +3964,7 @@ abstract class AppText {
   /// No description provided for @labelPhotoManualLink.
   ///
   /// In id, this message translates to:
-  /// **'Isi label secara manual tanpa unggah'**
+  /// **'Isi secara manual'**
   String get labelPhotoManualLink;
 
   /// No description provided for @labelPhotoPermissionDeniedTitle.
@@ -4279,7 +4279,7 @@ abstract class AppText {
   /// No description provided for @foodPhotoReviewTotalSummary.
   ///
   /// In id, this message translates to:
-  /// **'· {kcal} kkal  ·  P {protein} g  ·  K {carbohydrate} g  ·  L {fat} g'**
+  /// **'· {kcal}  ·  P {protein}  ·  K {carbohydrate}  ·  L {fat}'**
   String foodPhotoReviewTotalSummary(
     String kcal,
     String protein,
@@ -5442,7 +5442,7 @@ abstract class AppText {
   /// No description provided for @foodPhotoSavedSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'{mealTime} · {count} item · {kcal} kkal'**
+  /// **'{mealTime} · {count} item · {kcal}'**
   String foodPhotoSavedSubtitle(String mealTime, int count, String kcal);
 
   /// No description provided for @foodPhotoSavedThumbCaption.
@@ -6266,6 +6266,510 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Untuk {weight} kg, pilih antara {earliest} dan {latest}.'**
   String targetHintDateRange(String weight, String earliest, String latest);
+
+  /// No description provided for @labelPhotoGalleryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dari galeri'**
+  String get labelPhotoGalleryAction;
+
+  /// No description provided for @labelPhotoNoInfoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada info gizi terbaca'**
+  String get labelPhotoNoInfoTitle;
+
+  /// No description provided for @labelPhotoNoInfoBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulisan di foto belum terbaca jelas. Kamu bisa mengirim fotonya untuk dianalisis AI, memotret ulang, atau mengisi sendiri.'**
+  String get labelPhotoNoInfoBody;
+
+  /// No description provided for @labelPhotoRetakeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto ulang'**
+  String get labelPhotoRetakeAction;
+
+  /// No description provided for @nutritionSourceChoiceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan sebagai apa?'**
+  String get nutritionSourceChoiceTitle;
+
+  /// No description provided for @nutritionSourceChoiceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kami belum yakin ini label kemasan atau info gizi umum.'**
+  String get nutritionSourceChoiceBody;
+
+  /// No description provided for @nutritionSourceChoicePackaged.
+  ///
+  /// In id, this message translates to:
+  /// **'Produk kemasan'**
+  String get nutritionSourceChoicePackaged;
+
+  /// No description provided for @nutritionSourceChoicePackagedDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Label gizi dari kemasan produk'**
+  String get nutritionSourceChoicePackagedDescription;
+
+  /// No description provided for @nutritionSourceChoiceCustom.
+  ///
+  /// In id, this message translates to:
+  /// **'Makanan buatan sendiri'**
+  String get nutritionSourceChoiceCustom;
+
+  /// No description provided for @nutritionSourceChoiceCustomDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari artikel, situs, atau info gizi umum'**
+  String get nutritionSourceChoiceCustomDescription;
+
+  /// No description provided for @customFoodPasteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel teks'**
+  String get customFoodPasteAction;
+
+  /// No description provided for @customFoodPasteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Dapat info gizi dari Google atau artikel? Ketuk \"Tempel teks\" — angkanya terisi untuk kamu periksa.'**
+  String get customFoodPasteHint;
+
+  /// No description provided for @nutritionPasteContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'BUAT MAKANAN · TEMPEL TEKS'**
+  String get nutritionPasteContextLabel;
+
+  /// No description provided for @nutritionPasteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel info gizi'**
+  String get nutritionPasteTitle;
+
+  /// No description provided for @nutritionPasteSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin jawaban Google atau artikel, tempel di sini. Kami baca angkanya, kamu yang memeriksa.'**
+  String get nutritionPasteSubtitle;
+
+  /// No description provided for @nutritionPasteFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'TEKS YANG DITEMPEL · {count}/{max}'**
+  String nutritionPasteFieldLabel(int count, int max);
+
+  /// No description provided for @nutritionPasteFieldHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel teks info gizi di sini'**
+  String get nutritionPasteFieldHint;
+
+  /// No description provided for @nutritionPasteIgnoredHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Link sumber & penjelasan manfaat diabaikan otomatis.'**
+  String get nutritionPasteIgnoredHint;
+
+  /// No description provided for @nutritionPasteClearAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus teks'**
+  String get nutritionPasteClearAction;
+
+  /// No description provided for @nutritionPasteTooLong.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks terlalu panjang. Maksimal {max} karakter.'**
+  String nutritionPasteTooLong(int max);
+
+  /// No description provided for @nutritionPastePrivacyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya teks yang dikirim, tidak disimpan di server. Butuh internet — tanpa internet, isi angka manual.'**
+  String get nutritionPastePrivacyBody;
+
+  /// No description provided for @nutritionPasteOnlineBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang dikirim hanya teks di atas. Tanpa internet, isi angka manual.'**
+  String get nutritionPasteOnlineBody;
+
+  /// No description provided for @nutritionPasteRepasteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel ulang'**
+  String get nutritionPasteRepasteAction;
+
+  /// No description provided for @nutritionPastePhotoAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get nutritionPastePhotoAction;
+
+  /// No description provided for @nutritionPasteManualLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi manual saja'**
+  String get nutritionPasteManualLink;
+
+  /// No description provided for @nutritionPasteReadAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca nilai gizi'**
+  String get nutritionPasteReadAction;
+
+  /// No description provided for @nutritionPasteEmptyClipboard.
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong. Salin teks info gizi dulu.'**
+  String get nutritionPasteEmptyClipboard;
+
+  /// No description provided for @nutritionPasteNoNumbersTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada angka gizi di teks ini'**
+  String get nutritionPasteNoNumbersTitle;
+
+  /// No description provided for @nutritionPasteNoNumbersBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari teks yang memuat kalori, protein, lemak, atau karbohidrat.'**
+  String get nutritionPasteNoNumbersBody;
+
+  /// No description provided for @nutritionReviewContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'PERIKSA HASIL BACA'**
+  String get nutritionReviewContextLabel;
+
+  /// No description provided for @nutritionReviewContextLabelOffline.
+  ///
+  /// In id, this message translates to:
+  /// **'PERIKSA HASIL BACA · OFFLINE'**
+  String get nutritionReviewContextLabelOffline;
+
+  /// No description provided for @nutritionReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah sesuai?'**
+  String get nutritionReviewTitle;
+
+  /// No description provided for @nutritionReviewSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Angka dibaca AI dari sumbermu. Ketuk nilai untuk mengubah.'**
+  String get nutritionReviewSubtitle;
+
+  /// No description provided for @nutritionReviewSubtitleOffline.
+  ///
+  /// In id, this message translates to:
+  /// **'AI tidak tersedia, jadi foto dibaca di HP. Periksa lebih teliti.'**
+  String get nutritionReviewSubtitleOffline;
+
+  /// No description provided for @nutritionReviewBasisEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'BASIS GIZI'**
+  String get nutritionReviewBasisEyebrow;
+
+  /// No description provided for @nutritionReviewBasisHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadi ukuran sajian. Pastikan sesuai porsi yang kamu makan.'**
+  String get nutritionReviewBasisHint;
+
+  /// No description provided for @nutritionReviewBasisMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'Porsi tidak tercantum. Isi ukuran sajian sendiri di form berikutnya.'**
+  String get nutritionReviewBasisMissing;
+
+  /// No description provided for @nutritionReviewServingLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran sajian'**
+  String get nutritionReviewServingLabel;
+
+  /// No description provided for @nutritionReviewServingHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mis. 100 g'**
+  String get nutritionReviewServingHint;
+
+  /// No description provided for @nutritionReviewResultsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil terbaca · perlu konfirmasi'**
+  String get nutritionReviewResultsHeading;
+
+  /// No description provided for @nutritionReviewSourceRange.
+  ///
+  /// In id, this message translates to:
+  /// **'teks: {min}–{max}'**
+  String nutritionReviewSourceRange(String min, String max);
+
+  /// No description provided for @nutritionReviewBadgeMidpoint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai tengah'**
+  String get nutritionReviewBadgeMidpoint;
+
+  /// No description provided for @nutritionReviewBadgeRead.
+  ///
+  /// In id, this message translates to:
+  /// **'Terbaca'**
+  String get nutritionReviewBadgeRead;
+
+  /// No description provided for @nutritionReviewBadgeUnread.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi nilai'**
+  String get nutritionReviewBadgeUnread;
+
+  /// No description provided for @nutritionReviewBadgeCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa'**
+  String get nutritionReviewBadgeCheck;
+
+  /// No description provided for @nutritionReviewIgnored.
+  ///
+  /// In id, this message translates to:
+  /// **'Diabaikan: {names} — belum didukung Mealora.'**
+  String nutritionReviewIgnored(String names);
+
+  /// No description provided for @nutritionReviewRangeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Rentang diambil nilai tengahnya, bisa kamu ubah.'**
+  String get nutritionReviewRangeNote;
+
+  /// No description provided for @nutritionReviewOfflineNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Pembacaan offline hanya mengenali format sederhana. Rentang dan basis porsi bisa terlewat — cek dengan sumbernya.'**
+  String get nutritionReviewOfflineNote;
+
+  /// No description provided for @nutritionReviewNameSuggestion.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan nama: {name}'**
+  String nutritionReviewNameSuggestion(String name);
+
+  /// No description provided for @nutritionReviewNameSuggestionBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa diganti di form berikutnya.'**
+  String get nutritionReviewNameSuggestionBody;
+
+  /// No description provided for @nutritionReviewNameMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama belum terbaca'**
+  String get nutritionReviewNameMissing;
+
+  /// No description provided for @nutritionReviewNameMissingBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi nama di form berikutnya.'**
+  String get nutritionReviewNameMissingBody;
+
+  /// No description provided for @nutritionReviewUseAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai di Buat makanan'**
+  String get nutritionReviewUseAction;
+
+  /// No description provided for @nutritionReviewInvalidValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa angka yang diisi. Gunakan angka 0 atau lebih.'**
+  String get nutritionReviewInvalidValue;
+
+  /// No description provided for @labelPhotoReadNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulisan dibaca di HP'**
+  String get labelPhotoReadNoteTitle;
+
+  /// No description provided for @labelPhotoReadNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya teksnya yang dikirim untuk dibaca AI. Foto diunggah hanya bila kamu memilih \"Analisis foto dengan AI\".'**
+  String get labelPhotoReadNoteBody;
+
+  /// No description provided for @analyzePhotoAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Analisis foto dengan AI'**
+  String get analyzePhotoAction;
+
+  /// No description provided for @analyzePhotoUploadNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto hanya dikirim saat kamu menekan tombol ini. Foto tidak disimpan.'**
+  String get analyzePhotoUploadNote;
+
+  /// No description provided for @reviewAnalyzePhotoLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil kurang tepat? Analisis foto dengan AI'**
+  String get reviewAnalyzePhotoLink;
+
+  /// No description provided for @analyzePhotoFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Analisis foto belum berhasil. Coba lagi nanti atau ubah nilainya sendiri.'**
+  String get analyzePhotoFailed;
+
+  /// No description provided for @nutritionPartialTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'{known} + {count} belum diketahui'**
+  String nutritionPartialTotal(String known, int count);
+
+  /// No description provided for @nutritionPartialSuffix.
+  ///
+  /// In id, this message translates to:
+  /// **'+ {count} belum diketahui'**
+  String nutritionPartialSuffix(int count);
+
+  /// No description provided for @foodComponentNotInCatalog.
+  ///
+  /// In id, this message translates to:
+  /// **'belum ada di katalog'**
+  String get foodComponentNotInCatalog;
+
+  /// No description provided for @foodPhotoReviewCompleteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi'**
+  String get foodPhotoReviewCompleteAction;
+
+  /// No description provided for @foodPhotoReviewCompleteSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi {name}'**
+  String foodPhotoReviewCompleteSemantics(String name);
+
+  /// No description provided for @foodPhotoReviewCompleteItemsAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi {count} bahan'**
+  String foodPhotoReviewCompleteItemsAction(int count);
+
+  /// No description provided for @foodPhotoReviewShareWithoutLogging.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan saja tanpa mencatat'**
+  String get foodPhotoReviewShareWithoutLogging;
+
+  /// No description provided for @foodPhotoReviewUnmatchedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} bahan belum ada di katalog'**
+  String foodPhotoReviewUnmatchedTitle(int count);
+
+  /// No description provided for @foodPhotoReviewUnmatchedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi dulu agar total kalori benar.'**
+  String get foodPhotoReviewUnmatchedBody;
+
+  /// No description provided for @listConjunctionAnd.
+  ///
+  /// In id, this message translates to:
+  /// **'dan'**
+  String get listConjunctionAnd;
+
+  /// No description provided for @foodComponentNotInCatalogHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di katalog — nutrisinya belum diketahui.'**
+  String get foodComponentNotInCatalogHint;
+
+  /// No description provided for @foodComponentSearchCatalogAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari di katalog'**
+  String get foodComponentSearchCatalogAction;
+
+  /// No description provided for @foodComponentSearchCatalogSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih makanan serupa'**
+  String get foodComponentSearchCatalogSub;
+
+  /// No description provided for @foodComponentCreateFoodAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat makanan ini'**
+  String get foodComponentCreateFoodAction;
+
+  /// No description provided for @foodComponentCreateFoodSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel teks atau foto info gizi'**
+  String get foodComponentCreateFoodSub;
+
+  /// No description provided for @shareCardFromMealora.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibagikan dari Mealora'**
+  String get shareCardFromMealora;
+
+  /// No description provided for @shareMealNotLoggedNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dicatat di buku harian — kembali untuk melengkapi kapan saja. Gambar dibuat di HP, tidak diunggah.'**
+  String get shareMealNotLoggedNote;
+
+  /// No description provided for @shareMealNoTotalCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu makanan · foto tanpa angka gizi'**
+  String get shareMealNoTotalCaption;
+
+  /// No description provided for @foodPhotoSavedIncompleteNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Energi {count} bahan belum diketahui, jadi totalnya belum lengkap.'**
+  String foodPhotoSavedIncompleteNote(int count);
+
+  /// No description provided for @foodPhotoSavedCompleteFirstAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi dulu'**
+  String get foodPhotoSavedCompleteFirstAction;
+
+  /// No description provided for @todayUnknownEnergyNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} catatan hari ini belum diketahui energinya'**
+  String todayUnknownEnergyNoteTitle(int count);
+
+  /// No description provided for @diaryUnknownEnergyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} catatan belum diketahui energinya'**
+  String diaryUnknownEnergyNote(int count);
+
+  /// No description provided for @todayUnknownEnergyNoteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Total di atas belum lengkap. Ketuk untuk melengkapi di buku harian.'**
+  String get todayUnknownEnergyNoteBody;
+
+  /// No description provided for @foodPhotoSavedShareWithoutTotalAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan tanpa total'**
+  String get foodPhotoSavedShareWithoutTotalAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

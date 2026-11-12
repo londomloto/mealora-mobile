@@ -5,6 +5,7 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/core/format/id_formatters.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/features/share/share_card_frame.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
@@ -31,6 +32,8 @@ final class MealShareData {
     required this.mealTimeLabel,
     required this.items,
     required this.photoPath,
+    this.showNutrition = true,
+    this.notLogged = false,
   });
 
   final String mealTimeLabel;
@@ -39,8 +42,24 @@ final class MealShareData {
   /// `null` bila foto tidak lagi ada — kartu memakai latar pengganti.
   final String? photoPath;
 
-  double get totalKcal =>
-      items.fold<double>(0, (sum, item) => sum + (item.kcal ?? 0));
+  /// Kartu tanpa total (change 021, design D4): tanpa kalori, makro, dan
+  /// angka per komponen.
+  final bool showNutrition;
+
+  /// Makanan belum dicatat di buku harian ("Bagikan saja tanpa mencatat").
+  final bool notLogged;
+
+  /// Total energi jujur (change 021, design D1): komponen berenergi kosong
+  /// dihitung belum diketahui, bukan nol.
+  PartialSum get total => PartialSum.of(items.map((item) => item.kcal));
+
+  MealShareData withoutNutrition({bool notLogged = false}) => MealShareData(
+    mealTimeLabel: mealTimeLabel,
+    items: items,
+    photoPath: photoPath,
+    showNutrition: false,
+    notLogged: notLogged,
+  );
 }
 
 /// `62 · Kartu Makanan` (task 3.4): foto penuh, chip watermark + waktu
@@ -150,100 +169,209 @@ class MealShareCard extends StatelessWidget {
             left: MealoraSpacing.md,
             right: MealoraSpacing.md,
             bottom: MealoraSpacing.md,
+            child: data.showNutrition
+                ? _NutritionPanel(
+                    visible: visible,
+                    hidden: hidden,
+                    total: data.total,
+                    text: text,
+                  )
+                : _NamesPanel(items: data.items, text: text),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Panel bawah kartu tanpa total (`96`): nama komponen dan chip
+/// "Dibagikan dari Mealora", tanpa angka gizi.
+class _NamesPanel extends StatelessWidget {
+  const _NamesPanel({required this.items, required this.text});
+
+  final List<MealShareItem> items;
+  final AppText text;
+
+  /// "Cheesecake, muffin, kue kering, dan kopi susu" (`96`).
+  String _sentence() {
+    final names = items.map((i) => i.name.trim()).toList(growable: false);
+    if (names.length <= 1) return names.join();
+    if (names.length == 2) {
+      return '${names[0]} ${text.listConjunctionAnd} ${names[1]}';
+    }
+    return '${names.sublist(0, names.length - 1).join(', ')}, '
+        '${text.listConjunctionAnd} ${names.last}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const ValueKey<String>('meal-share-names-panel'),
+      padding: const EdgeInsets.all(MealoraSpacing.md),
+      decoration: BoxDecoration(
+        color: MealoraColors.surface,
+        borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowShareCard,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            _sentence(),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: MealoraTypography.shareCardItemName,
+          ),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
             child: Container(
-              padding: const EdgeInsets.all(MealoraSpacing.md),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: MealoraColors.surface,
-                borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
-                boxShadow: const <BoxShadow>[
-                  BoxShadow(
-                    color: MealoraColors.shadowShareCard,
-                    offset: Offset(0, 14),
-                    blurRadius: 34,
-                  ),
-                ],
+                color: MealoraColors.shareCardChipSoft,
+                borderRadius: BorderRadius.circular(MealoraRadius.chip),
               ),
-              child: Column(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  for (var i = 0; i < visible.length; i++) ...<Widget>[
-                    if (i > 0) const Divider(height: 13),
-                    _ItemRow(item: visible[i], text: text),
-                  ],
-                  if (hidden > 0) ...<Widget>[
-                    const SizedBox(height: MealoraSpacing.xxs),
-                    Text(
-                      text.shareCardMoreItems(hidden),
-                      style: MealoraTypography.shareCardItemDetail,
-                    ),
-                  ],
-                  const SizedBox(height: MealoraSpacing.sm),
-                  Container(
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: MealoraColors.shareCardField,
-                      border: Border.all(color: MealoraColors.line),
-                      borderRadius: BorderRadius.circular(MealoraRadius.chip),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 38,
-                          height: 38,
-                          decoration: BoxDecoration(
-                            color: MealoraColors.iconFieldAmber,
-                            borderRadius: BorderRadius.circular(
-                              MealoraRadius.compactIconField,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.local_fire_department_outlined,
-                            size: 20,
-                            color: MealoraColors.accent,
-                          ),
-                        ),
-                        const SizedBox(width: MealoraSpacing.sm),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                text.shareCardTotalLabel,
-                                style: MealoraTypography.shareCardTotalLabel,
-                              ),
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: <Widget>[
-                                    Text(
-                                      '±${IdFormat.integer(data.totalKcal)}',
-                                      style:
-                                          MealoraTypography.shareCardTotalValue,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      text.unitKilocalorie,
-                                      style:
-                                          MealoraTypography.shareCardTotalUnit,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  const Icon(
+                    Icons.eco_outlined,
+                    size: 14,
+                    color: MealoraColors.primaryDeep,
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      text.shareCardFromMealora,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: MealoraTypography.shareCardFromMealora,
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NutritionPanel extends StatelessWidget {
+  const _NutritionPanel({
+    required this.visible,
+    required this.hidden,
+    required this.total,
+    required this.text,
+  });
+
+  final List<MealShareItem> visible;
+  final int hidden;
+  final PartialSum total;
+  final AppText text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(MealoraSpacing.md),
+      decoration: BoxDecoration(
+        color: MealoraColors.surface,
+        borderRadius: BorderRadius.circular(MealoraRadius.choiceCard),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: MealoraColors.shadowShareCard,
+            offset: Offset(0, 14),
+            blurRadius: 34,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          for (var i = 0; i < visible.length; i++) ...<Widget>[
+            if (i > 0) const Divider(height: 13),
+            _ItemRow(item: visible[i], text: text),
+          ],
+          if (hidden > 0) ...<Widget>[
+            const SizedBox(height: MealoraSpacing.xxs),
+            Text(
+              text.shareCardMoreItems(hidden),
+              style: MealoraTypography.shareCardItemDetail,
+            ),
+          ],
+          const SizedBox(height: MealoraSpacing.sm),
+          Container(
+            height: 64,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: MealoraColors.shareCardField,
+              border: Border.all(color: MealoraColors.line),
+              borderRadius: BorderRadius.circular(MealoraRadius.chip),
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: MealoraColors.iconFieldAmber,
+                    borderRadius: BorderRadius.circular(
+                      MealoraRadius.compactIconField,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.local_fire_department_outlined,
+                    size: 20,
+                    color: MealoraColors.accent,
+                  ),
+                ),
+                const SizedBox(width: MealoraSpacing.sm),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        text.shareCardTotalLabel,
+                        style: MealoraTypography.shareCardTotalLabel,
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: <Widget>[
+                            Text(
+                              total.isUnknown
+                                  ? text.nutrientValueUnknown
+                                  : '±${IdFormat.integer(total.known)}',
+                              style: MealoraTypography.shareCardTotalValue,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              total.isComplete || total.isUnknown
+                                  ? text.unitKilocalorie
+                                  : '${text.unitKilocalorie} '
+                                        '${text.nutritionPartialSuffix(total.unknownCount)}',
+                              style: MealoraTypography.shareCardTotalUnit,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],

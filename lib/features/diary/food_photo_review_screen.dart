@@ -1,7 +1,10 @@
 import 'dart:async' show unawaited;
 import 'dart:io';
 
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealora/app/providers.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
@@ -9,10 +12,10 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/errors/result.dart';
-import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/domain/diary/meal_entry.dart' show NewMealEntry;
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
@@ -26,6 +29,7 @@ import 'package:mealora/features/diary/voice_input_shared.dart'
     show voiceUndeterminedLabel;
 import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/features/share/meal_share_card.dart';
+import 'package:mealora/features/share/share_preview_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `03 · Tinjau foto makanan` (task 5.1/5.2/5.8/5.9, change 011): ringkasan
@@ -67,9 +71,34 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
         (c) => c.matchedFoodId != null && !c.quantityUndetermined,
       );
 
+  /// Komponen tanpa padanan (change 021, design D2).
+  List<PhotoDraftComponent> get _unmatched => _draft.components
+      .where((c) => c.matchedFoodId == null)
+      .toList(growable: false);
+
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
+    final photo = _draft.sourceImagePath;
+    final unmatchedCount = _unmatched.length;
+    // Change 021 (`92`): bila ada bahan tanpa padanan, kartu ringkasan
+    // menyebut jumlahnya; selain itu tetap catatan saran foto/suara.
+    final noticeTitle = unmatchedCount > 0
+        ? text.foodPhotoReviewUnmatchedTitle(unmatchedCount)
+        : switch (widget.origin) {
+            ComponentDraftOrigin.photo => text.foodPhotoReviewBadge,
+            ComponentDraftOrigin.voice => text.voiceReviewBadge,
+            ComponentDraftOrigin.voiceOnDevice => text.voiceReviewOnDeviceBadge,
+          };
+    final noticeBody = unmatchedCount > 0
+        ? text.foodPhotoReviewUnmatchedBody
+        : switch (widget.origin) {
+            ComponentDraftOrigin.photo => text.foodPhotoReviewBadgeNote,
+            ComponentDraftOrigin.voice => text.voiceReviewBadgeNote,
+            ComponentDraftOrigin.voiceOnDevice =>
+              text.voiceReviewOnDeviceBadgeNote,
+          };
+    final content = _content(text);
 
     return PopScope(
       canPop: false,
@@ -80,169 +109,228 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
       child: Scaffold(
         backgroundColor: MealoraColors.background,
         body: MealoraBlobBackdrop(
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                MealoraSpacing.programHeroGutter,
-                MealoraSpacing.lg,
-                MealoraSpacing.programHeroGutter,
-                MealoraSpacing.xl,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Semantics(
-                        button: true,
-                        label: text.backButtonSemantics,
-                        child: InkWell(
-                          onTap: () => unawaited(_confirmCancel()),
-                          borderRadius: BorderRadius.circular(
-                            MealoraRadius.pill,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(MealoraSpacing.xxs),
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: MealoraColors.ink,
-                            ),
-                          ),
+          child: photo == null
+              ? SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      MealoraSpacing.programHeroGutter,
+                      MealoraSpacing.lg,
+                      MealoraSpacing.programHeroGutter,
+                      MealoraSpacing.xl,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _backHeader(text),
+                        const SizedBox(height: MealoraSpacing.md),
+                        MealoraNoteCard(
+                          icon: Icons.info_outline,
+                          title: noticeTitle,
+                          body: noticeBody,
+                          background: MealoraColors.iconFieldAmber,
+                          foreground: MealoraColors.amberText,
                         ),
+                        const SizedBox(height: MealoraSpacing.lg),
+                        ...content,
+                      ],
+                    ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom:
+                        MealoraSpacing.xl +
+                        MediaQuery.paddingOf(context).bottom,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _PhotoHero(
+                        path: photo,
+                        closeLabel: text.backButtonSemantics,
+                        onClose: () => unawaited(_confirmCancel()),
+                        noticeTitle: noticeTitle,
+                        noticeBody: noticeBody,
                       ),
-                      Expanded(
-                        child: Text(
-                          widget.origin.isVoice
-                              ? text.voiceReviewComponentsContextLabel
-                              : text.foodPhotoReviewContextLabel,
-                          style: MealoraTypography.eyebrow,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          MealoraSpacing.programHeroGutter,
+                          MealoraSpacing.md,
+                          MealoraSpacing.programHeroGutter,
+                          0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: content,
                         ),
                       ),
                     ],
                   ),
-                  if (_draft.sourceImagePath != null) ...<Widget>[
-                    const SizedBox(height: MealoraSpacing.sm),
-                    MealoraCard(
-                      radius: MealoraRadius.choiceCard,
-                      padding: const EdgeInsets.all(MealoraSpacing.xxs),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          MealoraRadius.choiceCard - MealoraSpacing.xxs,
-                        ),
-                        child: Image.file(
-                          File(_draft.sourceImagePath!),
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: MealoraSpacing.md),
-                  MealoraNoteCard(
-                    icon: Icons.info_outline,
-                    title: switch (widget.origin) {
-                      ComponentDraftOrigin.photo => text.foodPhotoReviewBadge,
-                      ComponentDraftOrigin.voice => text.voiceReviewBadge,
-                      ComponentDraftOrigin.voiceOnDevice =>
-                        text.voiceReviewOnDeviceBadge,
-                    },
-                    body: switch (widget.origin) {
-                      ComponentDraftOrigin.photo =>
-                        text.foodPhotoReviewBadgeNote,
-                      ComponentDraftOrigin.voice => text.voiceReviewBadgeNote,
-                      ComponentDraftOrigin.voiceOnDevice =>
-                        text.voiceReviewOnDeviceBadgeNote,
-                    },
-                    background: MealoraColors.iconFieldAmber,
-                    foreground: MealoraColors.amberText,
-                  ),
-                  const SizedBox(height: MealoraSpacing.lg),
-                  Text(
-                    widget.origin.isVoice
-                        ? text.voiceReviewComponentsTitle
-                        : text.foodPhotoReviewTitle,
-                    style: MealoraTypography.title,
-                  ),
-                  const SizedBox(height: MealoraSpacing.xxs),
-                  Text(
-                    text.foodPhotoReviewSubtitle,
-                    style: MealoraTypography.subtitle,
-                  ),
-                  const SizedBox(height: MealoraSpacing.lg),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        text.foodPhotoReviewEmptyTitle,
-                        style: MealoraTypography.sectionTitle,
-                      ),
-                      Text(
-                        text.foodPhotoReviewComponentCount(
-                          _draft.components.length,
-                        ),
-                        style: MealoraTypography.caption,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: MealoraSpacing.sm),
-                  if (_draft.components.isEmpty)
-                    MealoraEmptyState(
-                      icon: Icons.restaurant_outlined,
-                      title: text.foodPhotoReviewEmptyTitle,
-                      body: text.foodComponentCorrectionAddAction,
-                    )
-                  else
-                    MealoraCard(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        children: <Widget>[
-                          for (
-                            var i = 0;
-                            i < _draft.components.length;
-                            i++
-                          ) ...<Widget>[
-                            if (i > 0) const Divider(height: 1),
-                            _ComponentSummaryRow(
-                              component: _draft.components[i],
-                              text: text,
-                              onEdit: () => unawaited(_openCorrection()),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  const SizedBox(height: MealoraSpacing.md),
-                  _MealTimeField(
-                    mealTime: _draft.mealTime,
-                    onPicked: (mealTime) => unawaited(_setMealTime(mealTime)),
-                  ),
-                  const SizedBox(height: MealoraSpacing.lg),
-                  _TotalSummary(components: _draft.components, text: text),
-                  const SizedBox(height: MealoraSpacing.lg),
-                  MealoraPrimaryButton(
-                    label: text.foodPhotoReviewConfirmAction,
-                    onPressed: _canConfirm ? () => unawaited(_confirm()) : null,
-                  ),
-                ],
-              ),
-            ),
-          ),
+                ),
         ),
       ),
     );
   }
 
-  Future<void> _openCorrection() async {
+  Widget _backHeader(AppText text) => Row(
+    children: <Widget>[
+      Semantics(
+        button: true,
+        label: text.backButtonSemantics,
+        child: InkWell(
+          onTap: () => unawaited(_confirmCancel()),
+          borderRadius: BorderRadius.circular(MealoraRadius.pill),
+          child: const Padding(
+            padding: EdgeInsets.all(MealoraSpacing.xxs),
+            child: Icon(Icons.arrow_back, color: MealoraColors.ink),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Text(
+          widget.origin.isVoice
+              ? text.voiceReviewComponentsContextLabel
+              : text.foodPhotoReviewContextLabel,
+          style: MealoraTypography.eyebrow,
+        ),
+      ),
+    ],
+  );
+
+  List<Widget> _content(AppText text) => <Widget>[
+    Text(
+      widget.origin.isVoice
+          ? text.voiceReviewComponentsTitle
+          : text.foodPhotoReviewTitle,
+      style: MealoraTypography.title,
+    ),
+    const SizedBox(height: MealoraSpacing.xxs),
+    Text(text.foodPhotoReviewSubtitle, style: MealoraTypography.subtitle),
+    const SizedBox(height: MealoraSpacing.lg),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          text.foodPhotoReviewEmptyTitle,
+          style: MealoraTypography.sectionTitle,
+        ),
+        Text(
+          text.foodPhotoReviewComponentCount(_draft.components.length),
+          style: MealoraTypography.caption,
+        ),
+      ],
+    ),
+    const SizedBox(height: MealoraSpacing.sm),
+    if (_draft.components.isEmpty)
+      MealoraEmptyState(
+        icon: Icons.restaurant_outlined,
+        title: text.foodPhotoReviewEmptyTitle,
+        body: text.foodComponentCorrectionAddAction,
+      )
+    else
+      MealoraCard(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          children: <Widget>[
+            for (var i = 0; i < _draft.components.length; i++) ...<Widget>[
+              if (i > 0) const Divider(height: 1),
+              _ComponentSummaryRow(
+                component: _draft.components[i],
+                text: text,
+                onEdit: () => unawaited(_openCorrection()),
+                onComplete: () => unawaited(
+                  _openCorrection(
+                    focusComponentId: _draft.components[i].localId,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    const SizedBox(height: MealoraSpacing.md),
+    _MealTimeField(
+      mealTime: _draft.mealTime,
+      onPicked: (mealTime) => unawaited(_setMealTime(mealTime)),
+    ),
+    const SizedBox(height: MealoraSpacing.lg),
+    _TotalSummary(components: _draft.components, text: text),
+    const SizedBox(height: MealoraSpacing.md),
+    if (_unmatched.isNotEmpty) ...<Widget>[
+      MealoraPrimaryButton(
+        label: text.foodPhotoReviewCompleteItemsAction(_unmatched.length),
+        onPressed: _saving
+            ? null
+            : () => unawaited(
+                _openCorrection(focusComponentId: _unmatched.first.localId),
+              ),
+      ),
+      if (widget.origin == ComponentDraftOrigin.photo) ...<Widget>[
+        const SizedBox(height: MealoraSpacing.xs),
+        Center(
+          child: TextButton.icon(
+            key: const ValueKey<String>('review-share-without-logging'),
+            onPressed: () => unawaited(_shareWithoutLogging()),
+            icon: const Icon(
+              Icons.ios_share,
+              size: 14,
+              color: MealoraColors.primary,
+            ),
+            label: Text(
+              text.foodPhotoReviewShareWithoutLogging,
+              style: MealoraTypography.photoReviewLink,
+            ),
+          ),
+        ),
+      ],
+    ] else
+      MealoraPrimaryButton(
+        label: text.foodPhotoReviewConfirmAction,
+        onPressed: _canConfirm ? () => unawaited(_confirm()) : null,
+      ),
+  ];
+
+  Future<void> _openCorrection({String? focusComponentId}) async {
     final updated = await Navigator.of(context).push<PhotoDraft>(
       MaterialPageRoute<PhotoDraft>(
-        builder: (_) =>
-            FoodComponentCorrectionScreen(draft: _draft, origin: widget.origin),
+        builder: (_) => FoodComponentCorrectionScreen(
+          draft: _draft,
+          origin: widget.origin,
+          focusComponentId: focusComponentId,
+        ),
       ),
     );
     if (updated != null && mounted) {
       setState(() => _draft = updated);
     }
+  }
+
+  /// "Bagikan saja tanpa mencatat" (change 021, design D4): kartu tanpa
+  /// total dari draf apa adanya. Tidak menulis buku harian; menutup
+  /// pratinjau kembali ke layar ini dengan draf utuh.
+  Future<void> _shareWithoutLogging() async {
+    final text = AppText.of(context);
+    final data = MealShareData(
+      mealTimeLabel: DiaryFormat.mealTimeLabel(_draft.mealTime, text),
+      items: <MealShareItem>[
+        for (final c in _draft.components)
+          MealShareItem(
+            name: c.matchedFoodName ?? c.foodNameGuess,
+            portion: componentAmount(c, null),
+            kcal: null,
+          ),
+      ],
+      photoPath: _draft.sourceImagePath,
+    ).withoutNutrition(notLogged: true);
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => SharePreviewScreen(
+          card: MealShareCard(data: data),
+          caption: text.shareMealNoTotalCaption,
+          notice: text.shareMealNotLoggedNote,
+        ),
+      ),
+    );
   }
 
   Future<void> _setMealTime(MealTime mealTime) async {
@@ -331,7 +419,7 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
       shareItems.add(
         MealShareItem(
           name: food.name,
-          portion: '${IdFormat.decimal(component.quantity)} × ${serving.label}',
+          portion: DiaryFormat.entryAmount(serving.label, component.quantity),
           kcal: serving.nutrition.scaledBy(component.quantity).energy?.kcal,
         ),
       );
@@ -400,24 +488,32 @@ class _ComponentSummaryRow extends ConsumerWidget {
     required this.component,
     required this.text,
     required this.onEdit,
+    required this.onComplete,
   });
 
   final PhotoDraftComponent component;
   final AppText text;
   final VoidCallback onEdit;
 
+  /// "Lengkapi" untuk komponen tanpa padanan (change 021, design D2).
+  final VoidCallback onComplete;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final name = component.matchedFoodName ?? component.foodNameGuess;
+    final unmatched = component.matchedFoodId == null;
+    final servingLabel = ref
+        .watch(componentServingLabelProvider(component))
+        .valueOrNull;
     return FutureBuilder<NutritionProfile?>(
       future: _nutritionFor(ref),
       builder: (context, snapshot) {
         final nutrition = snapshot.data;
-        final detail = component.matchedFoodId == null
-            ? text.foodComponentMatchMissing
+        final detail = unmatched
+            ? text.foodComponentNotInCatalog
             : component.quantityUndetermined
             ? voiceUndeterminedLabel(text, component.quantityUnitLabel)
-            : '${component.quantity.toStringAsFixed(1).replaceAll('.', ',')}× '
+            : '${componentAmount(component, servingLabel)} '
                   '·  ${DiaryFormat.kcal(nutrition?.energy, text)}';
         return SizedBox(
           height: 52,
@@ -440,15 +536,31 @@ class _ComponentSummaryRow extends ConsumerWidget {
                         detail,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: MealoraTypography.caption,
+                        style: unmatched
+                            ? MealoraTypography.caption.copyWith(
+                                color: MealoraColors.coralText,
+                              )
+                            : MealoraTypography.caption,
                       ),
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed: onEdit,
-                  child: Text(text.foodPhotoReviewEditAction),
-                ),
+                const SizedBox(width: 10),
+                if (unmatched)
+                  _ActionChip(
+                    label: text.foodPhotoReviewCompleteAction,
+                    semanticsLabel: text.foodPhotoReviewCompleteSemantics(name),
+                    background: MealoraColors.iconFieldCoral,
+                    foreground: MealoraColors.coralText,
+                    onTap: onComplete,
+                  )
+                else
+                  _ActionChip(
+                    label: text.foodPhotoReviewEditAction,
+                    background: MealoraColors.iconFieldGreen,
+                    foreground: MealoraColors.primary,
+                    onTap: onEdit,
+                  ),
               ],
             ),
           ),
@@ -478,37 +590,52 @@ class _TotalSummary extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FutureBuilder<NutritionProfile>(
+    return FutureBuilder<PartialNutritionTotal>(
       future: _total(ref),
       builder: (context, snapshot) {
-        final total = snapshot.data ?? NutritionProfile.unknown;
+        final total = snapshot.data;
+        if (total == null) return const SizedBox.shrink();
+        // Change 021 (design D1): nilai belum diketahui tidak pernah nol;
+        // total belum lengkap berwarna amber (`92`).
         return Text(
           text.foodPhotoReviewTotalSummary(
-            IdFormat.decimal(total.energy?.kcal ?? 0),
-            IdFormat.decimal(total.proteinG ?? 0),
-            IdFormat.decimal(total.carbohydrateG ?? 0),
-            IdFormat.decimal(total.fatG ?? 0),
+            DiaryFormat.partialKcal(total.energyKcal, text),
+            DiaryFormat.partialGramsCompact(total.proteinG, text),
+            DiaryFormat.partialGramsCompact(total.carbohydrateG, text),
+            DiaryFormat.partialGramsCompact(total.fatG, text),
           ),
-          style: MealoraTypography.bodyEmphasis,
+          style: MealoraTypography.photoReviewTotals.copyWith(
+            color: total.energyKcal.isComplete
+                ? MealoraColors.ink
+                : MealoraColors.amberText,
+          ),
         );
       },
     );
   }
 
-  Future<NutritionProfile> _total(WidgetRef ref) async {
+  /// Komponen tanpa padanan, takaran belum jelas, atau makanan yang hilang
+  /// diwakili `null` — dihitung belum diketahui, bukan dilewati.
+  Future<PartialNutritionTotal> _total(WidgetRef ref) async {
     final repository = ref.read(foodRepositoryProvider);
-    final profiles = <NutritionProfile>[];
+    final profiles = <NutritionProfile?>[];
     for (final component in components) {
       final foodId = component.matchedFoodId;
-      if (foodId == null || component.quantityUndetermined) continue;
+      if (foodId == null || component.quantityUndetermined) {
+        profiles.add(null);
+        continue;
+      }
       final food = await repository.findById(foodId);
-      if (food == null) continue;
+      if (food == null) {
+        profiles.add(null);
+        continue;
+      }
       final serving = component.matchedServingId == null
           ? food.defaultServing
           : food.servingById(component.matchedServingId!);
       profiles.add(serving.nutrition.scaledBy(component.quantity));
     }
-    return NutritionProfile.sumAll(profiles);
+    return PartialNutritionTotal.of(profiles);
   }
 }
 
@@ -568,5 +695,228 @@ class _MealTimeField extends StatelessWidget {
     if (picked != null) {
       onPicked(picked);
     }
+  }
+}
+
+/// Chip aksi berbentuk pil di baris komponen (`92`): Lengkapi (coral)
+/// atau Ubah (hijau).
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({
+    required this.label,
+    required this.background,
+    required this.foreground,
+    required this.onTap,
+    this.semanticsLabel,
+  });
+
+  final String label;
+  final String? semanticsLabel;
+  final Color background;
+  final Color foreground;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticsLabel ?? label,
+      excludeSemantics: true,
+      child: Material(
+        color: background,
+        borderRadius: BorderRadius.circular(MealoraRadius.chip),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(MealoraRadius.chip),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 27),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: MealoraSpacing.sm,
+                vertical: 6,
+              ),
+              child: Center(
+                widthFactor: 1,
+                heightFactor: 1,
+                child: Text(
+                  label,
+                  style: MealoraTypography.photoReviewChip.copyWith(
+                    color: foreground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Foto hero tinjau foto (`92`, change 021): foto penuh selebar layar
+/// dengan tombol tutup kaca dan kartu ringkasan yang menumpang di tepi
+/// bawahnya.
+class _PhotoHero extends StatelessWidget {
+  const _PhotoHero({
+    required this.path,
+    required this.closeLabel,
+    required this.onClose,
+    required this.noticeTitle,
+    required this.noticeBody,
+  });
+
+  static const double photoHeight = 300;
+  static const double noticeOverlap = 38;
+
+  final String path;
+  final String closeLabel;
+  final VoidCallback onClose;
+  final String noticeTitle;
+  final String noticeBody;
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: _stack(top),
+    );
+  }
+
+  Widget _stack(double top) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 72 - noticeOverlap),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(MealoraRadius.sheet),
+            ),
+            child: SizedBox(
+              height: photoHeight + top,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  Image.file(
+                    File(path),
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) =>
+                        const ColoredBox(color: MealoraColors.track),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 140 + top,
+                    child: const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            MealoraColors.photoHeroScrim,
+                            MealoraColors.photoHeroScrimClear,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 22,
+          top: top + 32,
+          child: Semantics(
+            button: true,
+            label: closeLabel,
+            excludeSemantics: true,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(MealoraRadius.chip),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Material(
+                  color: MealoraColors.photoHeroButton,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(MealoraRadius.chip),
+                    side: const BorderSide(
+                      color: MealoraColors.photoHeroButtonBorder,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: onClose,
+                    borderRadius: BorderRadius.circular(MealoraRadius.chip),
+                    child: const SizedBox.square(
+                      dimension: 44,
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 18,
+                        color: MealoraColors.onPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 22,
+          right: 22,
+          bottom: 0,
+          // Kaca buram + bayangan seperti desain (`MealoraCard`).
+          child: MealoraCard(
+            radius: MealoraRadius.cardLarge,
+            padding: const EdgeInsets.symmetric(
+              horizontal: MealoraSpacing.md,
+              vertical: MealoraSpacing.md,
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: MealoraColors.iconFieldAmber,
+                    borderRadius: BorderRadius.circular(
+                      MealoraRadius.compactIconField,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    size: 18,
+                    color: MealoraColors.accent,
+                  ),
+                ),
+                const SizedBox(width: MealoraSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        noticeTitle,
+                        style: MealoraTypography.photoReviewNoticeTitle,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        noticeBody,
+                        style: MealoraTypography.photoReviewNoticeBody,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

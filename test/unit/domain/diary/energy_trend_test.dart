@@ -106,6 +106,20 @@ void main() {
       expect(trend.averageKcal, 400);
     });
 
+    test('hari dengan catatan berenergi kosong tetap tergambar sebagai '
+        'batas bawah dan tidak ikut rata-rata (change 021)', () {
+      final trend = build(<String, DiaryDayEnergy>{
+        '2026-11-06': const DiaryDayEnergy.known(2000),
+        '2026-11-07': const DiaryDayEnergy.known(769, unknownCount: 1),
+      });
+
+      expect(trend.days[1].state, DailyEnergyState.recorded);
+      expect(trend.days[1].kcal, 769);
+      expect(trend.days[1].isPartial, isTrue);
+      expect(trend.averageKcal, 2000);
+      expect(trend.recordedDays, 1);
+    });
+
     test('rentang kosong tidak punya rata-rata', () {
       final trend = build(const <String, DiaryDayEnergy>{});
       expect(trend.averageKcal, isNull);

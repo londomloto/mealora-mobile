@@ -176,6 +176,7 @@ void main() {
         'lib/data/remote/vision_proxy_label_provider.dart',
         'lib/data/remote/vision_proxy_food_component_provider.dart',
         'lib/data/remote/model_proxy_food_sentence_parser.dart',
+        'lib/data/remote/model_proxy_nutrition_reader.dart',
         'lib/data/remote/proxy_app_config_source.dart',
       };
 

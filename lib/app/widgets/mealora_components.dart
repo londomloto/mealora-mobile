@@ -384,6 +384,45 @@ class MealoraPrimaryButton extends StatelessWidget {
   }
 }
 
+/// Tombol sekunder kaca (rancangan `.pen` layar 83/90 — "Tempel ulang",
+/// "Foto", "Foto ulang", "Isi manual"): latar kaca, border hijau muda,
+/// tinggi 56, label tebal warna ink, ikon abu.
+class MealoraGlassButton extends StatelessWidget {
+  const MealoraGlassButton({
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+    super.key,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: MealoraIconSize.action),
+      label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(56),
+        padding: const EdgeInsets.symmetric(horizontal: MealoraSpacing.sm),
+        backgroundColor: MealoraColors.glassSoft,
+        foregroundColor: MealoraColors.ink,
+        iconColor: MealoraColors.muted,
+        side: const BorderSide(color: MealoraColors.secondaryButtonBorder),
+        textStyle: MealoraTypography.button.copyWith(
+          color: MealoraColors.ink,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(MealoraRadius.button),
+        ),
+      ),
+    );
+  }
+}
+
 /// "Glass chip" — kapsul kaca buram dengan ikon dan label, dipakai untuk
 /// status ringkas (mis. "Program aktif").
 class MealoraChip extends StatelessWidget {

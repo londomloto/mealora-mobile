@@ -664,8 +664,8 @@
   "addFoodVoiceDescription": "Sebutkan saja yang kamu makan",
   "addFoodPhotoTitle": "Foto makanan",
   "addFoodPhotoDescription": "Dapatkan saran dari fotomu",
-  "addFoodBarcodeTitle": "Scan barcode",
-  "addFoodBarcodeDescription": "Cari produk kemasan dengan cepat",
+  "addFoodBarcodeTitle": "Scan barcode / info gizi",
+  "addFoodBarcodeDescription": "Produk kemasan atau info gizi",
   "addFoodPrivacyLine1": "Foto hanya diunggah dengan izinmu.",
   "addFoodPrivacyLine2": "Suara & input manual jalan tanpa internet.",
   "addFoodPathUnavailable": "Jalur ini belum tersedia. Pakai pencarian atau buat makanan sendiri dulu, ya.",
@@ -792,7 +792,7 @@
   "barcodeScanManualLink": "Masukkan barcode manual",
   "barcodeScanManualDescription": "Ketik nomor yang tertera di kemasan",
   "barcodeScanPhotoLabelLink": "Foto Info Gizi",
-  "barcodeScanPhotoLabelDescription": "Baca nilai nutrisi dari foto label",
+  "barcodeScanPhotoLabelDescription": "Label kemasan, layar laptop, atau artikel",
   "barcodeScanUseCamera": "Gunakan kamera",
   "barcodeScanSlowHint": "Kode belum terbaca? Ketik nomor secara manual.",
   "barcodeScanPermissionDeniedTitle": "Izin kamera ditolak",
@@ -1087,17 +1087,17 @@
       }
     }
   },
-  "uploadConsentBody": "Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.",
-  "uploadConsentCheckboxLabel": "Izinkan unggah foto label ini",
+  "uploadConsentBody": "Paling akurat. Tanpa izin atau saat AI tidak tersedia, foto dibaca di HP dan hanya teksnya yang dikirim.",
+  "uploadConsentCheckboxLabel": "Izinkan unggah foto untuk dibaca AI",
   "uploadConsentCheckedState": "Dicentang",
   "uploadConsentUncheckedState": "Belum dicentang",
-  "labelPhotoContextLabel": "INFORMASI NILAI GIZI",
-  "labelPhotoTitle": "Foto label kemasan",
-  "labelPhotoSubtitle": "Pastikan teks dan satuan terlihat jelas.",
-  "labelPhotoFrameCaption": "Informasi Nilai Gizi harus terbaca penuh",
-  "labelPhotoExtractAction": "Ekstrak untuk ditinjau",
+  "labelPhotoContextLabel": "FOTO INFO GIZI",
+  "labelPhotoTitle": "Foto info gizi",
+  "labelPhotoSubtitle": "Label kemasan, layar laptop, atau artikel.",
+  "labelPhotoFrameCaption": "Angka gizi harus terlihat jelas",
+  "labelPhotoExtractAction": "Baca info gizi",
   "labelPhotoRetryAction": "Coba lagi dengan foto ini",
-  "labelPhotoManualLink": "Isi label secara manual tanpa unggah",
+  "labelPhotoManualLink": "Isi secara manual",
   "labelPhotoPermissionDeniedTitle": "Kamera tidak dapat diakses",
   "labelPhotoPermissionDeniedBody": "Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa mengisi nilai label secara manual.",
   "labelReviewContextLabel": "TINJAU HASIL BACAAN",
@@ -1173,7 +1173,7 @@
   },
   "foodPhotoReviewEditAction": "Ubah",
   "foodPhotoReviewNoMatchLabel": "Belum ada padanan — pilih atau buat makanan",
-  "foodPhotoReviewTotalSummary": "· {kcal} kkal  ·  P {protein} g  ·  K {carbohydrate} g  ·  L {fat} g",
+  "foodPhotoReviewTotalSummary": "· {kcal}  ·  P {protein}  ·  K {carbohydrate}  ·  L {fat}",
   "@foodPhotoReviewTotalSummary": {
     "placeholders": {
       "kcal": {
@@ -1468,7 +1468,7 @@
   },
   "shareCardTotalLabel": "Estimasi total kalori",
   "foodPhotoSavedTitle": "Tersimpan!",
-  "foodPhotoSavedSubtitle": "{mealTime} · {count} item · {kcal} kkal",
+  "foodPhotoSavedSubtitle": "{mealTime} · {count} item · {kcal}",
   "@foodPhotoSavedSubtitle": {
     "placeholders": {
       "mealTime": {
@@ -1842,5 +1842,153 @@
   "targetHintMinimumWeight": "Minimal aman untuk tinggimu: {weight} kg",
   "@targetHintMinimumWeight": {"placeholders": {"weight": {"type": "String"}}},
   "targetHintDateRange": "Untuk {weight} kg, pilih antara {earliest} dan {latest}.",
-  "@targetHintDateRange": {"placeholders": {"weight": {"type": "String"}, "earliest": {"type": "String"}, "latest": {"type": "String"}}}
+  "@targetHintDateRange": {"placeholders": {"weight": {"type": "String"}, "earliest": {"type": "String"}, "latest": {"type": "String"}}},
+  "labelPhotoGalleryAction": "Pilih dari galeri",
+  "labelPhotoNoInfoTitle": "Tidak ada info gizi terbaca",
+  "labelPhotoNoInfoBody": "Tulisan di foto belum terbaca jelas. Kamu bisa mengirim fotonya untuk dianalisis AI, memotret ulang, atau mengisi sendiri.",
+  "labelPhotoRetakeAction": "Foto ulang",
+  "nutritionSourceChoiceTitle": "Simpan sebagai apa?",
+  "nutritionSourceChoiceBody": "Kami belum yakin ini label kemasan atau info gizi umum.",
+  "nutritionSourceChoicePackaged": "Produk kemasan",
+  "nutritionSourceChoicePackagedDescription": "Label gizi dari kemasan produk",
+  "nutritionSourceChoiceCustom": "Makanan buatan sendiri",
+  "nutritionSourceChoiceCustomDescription": "Dari artikel, situs, atau info gizi umum",
+  "customFoodPasteAction": "Tempel teks",
+  "customFoodPasteHint": "Dapat info gizi dari Google atau artikel? Ketuk \"Tempel teks\" — angkanya terisi untuk kamu periksa.",
+  "nutritionPasteContextLabel": "BUAT MAKANAN · TEMPEL TEKS",
+  "nutritionPasteTitle": "Tempel info gizi",
+  "nutritionPasteSubtitle": "Salin jawaban Google atau artikel, tempel di sini. Kami baca angkanya, kamu yang memeriksa.",
+  "nutritionPasteFieldLabel": "TEKS YANG DITEMPEL · {count}/{max}",
+  "@nutritionPasteFieldLabel": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "nutritionPasteFieldHint": "Tempel teks info gizi di sini",
+  "nutritionPasteIgnoredHint": "Link sumber & penjelasan manfaat diabaikan otomatis.",
+  "nutritionPasteClearAction": "Hapus teks",
+  "nutritionPasteTooLong": "Teks terlalu panjang. Maksimal {max} karakter.",
+  "@nutritionPasteTooLong": {"placeholders": {"max": {"type": "int"}}},
+  "nutritionPastePrivacyBody": "Hanya teks yang dikirim, tidak disimpan di server. Butuh internet — tanpa internet, isi angka manual.",
+  "nutritionPasteOnlineBody": "Yang dikirim hanya teks di atas. Tanpa internet, isi angka manual.",
+  "nutritionPasteRepasteAction": "Tempel ulang",
+  "nutritionPastePhotoAction": "Foto",
+  "nutritionPasteManualLink": "Isi manual saja",
+  "nutritionPasteReadAction": "Baca nilai gizi",
+  "nutritionPasteEmptyClipboard": "Clipboard kosong. Salin teks info gizi dulu.",
+  "nutritionPasteNoNumbersTitle": "Tidak ada angka gizi di teks ini",
+  "nutritionPasteNoNumbersBody": "Cari teks yang memuat kalori, protein, lemak, atau karbohidrat.",
+  "nutritionReviewContextLabel": "PERIKSA HASIL BACA",
+  "nutritionReviewContextLabelOffline": "PERIKSA HASIL BACA · OFFLINE",
+  "nutritionReviewTitle": "Sudah sesuai?",
+  "nutritionReviewSubtitle": "Angka dibaca AI dari sumbermu. Ketuk nilai untuk mengubah.",
+  "nutritionReviewSubtitleOffline": "AI tidak tersedia, jadi foto dibaca di HP. Periksa lebih teliti.",
+  "nutritionReviewBasisEyebrow": "BASIS GIZI",
+  "nutritionReviewBasisHint": "Jadi ukuran sajian. Pastikan sesuai porsi yang kamu makan.",
+  "nutritionReviewBasisMissing": "Porsi tidak tercantum. Isi ukuran sajian sendiri di form berikutnya.",
+  "nutritionReviewServingLabel": "Ukuran sajian",
+  "nutritionReviewServingHint": "Mis. 100 g",
+  "nutritionReviewResultsHeading": "Hasil terbaca · perlu konfirmasi",
+  "nutritionReviewSourceRange": "teks: {min}–{max}",
+  "@nutritionReviewSourceRange": {"placeholders": {"min": {"type": "String"}, "max": {"type": "String"}}},
+  "nutritionReviewBadgeMidpoint": "Nilai tengah",
+  "nutritionReviewBadgeRead": "Terbaca",
+  "nutritionReviewBadgeUnread": "Isi nilai",
+  "nutritionReviewBadgeCheck": "Periksa",
+  "nutritionReviewIgnored": "Diabaikan: {names} — belum didukung Mealora.",
+  "@nutritionReviewIgnored": {"placeholders": {"names": {"type": "String"}}},
+  "nutritionReviewRangeNote": "Rentang diambil nilai tengahnya, bisa kamu ubah.",
+  "nutritionReviewOfflineNote": "Pembacaan offline hanya mengenali format sederhana. Rentang dan basis porsi bisa terlewat — cek dengan sumbernya.",
+  "nutritionReviewNameSuggestion": "Usulan nama: {name}",
+  "@nutritionReviewNameSuggestion": {"placeholders": {"name": {"type": "String"}}},
+  "nutritionReviewNameSuggestionBody": "Bisa diganti di form berikutnya.",
+  "nutritionReviewNameMissing": "Nama belum terbaca",
+  "nutritionReviewNameMissingBody": "Isi nama di form berikutnya.",
+  "nutritionReviewUseAction": "Pakai di Buat makanan",
+  "nutritionReviewInvalidValue": "Periksa angka yang diisi. Gunakan angka 0 atau lebih.",
+  "labelPhotoReadNoteTitle": "Tulisan dibaca di HP",
+  "labelPhotoReadNoteBody": "Hanya teksnya yang dikirim untuk dibaca AI. Foto diunggah hanya bila kamu memilih \"Analisis foto dengan AI\".",
+  "analyzePhotoAction": "Analisis foto dengan AI",
+  "analyzePhotoUploadNote": "Foto hanya dikirim saat kamu menekan tombol ini. Foto tidak disimpan.",
+  "reviewAnalyzePhotoLink": "Hasil kurang tepat? Analisis foto dengan AI",
+  "analyzePhotoFailed": "Analisis foto belum berhasil. Coba lagi nanti atau ubah nilainya sendiri.",
+  "nutritionPartialTotal": "{known} + {count} belum diketahui",
+  "@nutritionPartialTotal": {
+    "placeholders": {
+      "known": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nutritionPartialSuffix": "+ {count} belum diketahui",
+  "@nutritionPartialSuffix": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodComponentNotInCatalog": "belum ada di katalog",
+  "foodPhotoReviewCompleteAction": "Lengkapi",
+  "foodPhotoReviewCompleteSemantics": "Lengkapi {name}",
+  "@foodPhotoReviewCompleteSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foodPhotoReviewCompleteItemsAction": "Lengkapi {count} bahan",
+  "@foodPhotoReviewCompleteItemsAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodPhotoReviewShareWithoutLogging": "Bagikan saja tanpa mencatat",
+  "foodPhotoReviewUnmatchedTitle": "{count} bahan belum ada di katalog",
+  "@foodPhotoReviewUnmatchedTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodPhotoReviewUnmatchedBody": "Lengkapi dulu agar total kalori benar.",
+  "listConjunctionAnd": "dan",
+  "foodComponentNotInCatalogHint": "Belum ada di katalog — nutrisinya belum diketahui.",
+  "foodComponentSearchCatalogAction": "Cari di katalog",
+  "foodComponentSearchCatalogSub": "Pilih makanan serupa",
+  "foodComponentCreateFoodAction": "Buat makanan ini",
+  "foodComponentCreateFoodSub": "Tempel teks atau foto info gizi",
+  "shareCardFromMealora": "Dibagikan dari Mealora",
+  "shareMealNotLoggedNote": "Belum dicatat di buku harian — kembali untuk melengkapi kapan saja. Gambar dibuat di HP, tidak diunggah.",
+  "shareMealNoTotalCaption": "Kartu makanan · foto tanpa angka gizi",
+  "foodPhotoSavedIncompleteNote": "Energi {count} bahan belum diketahui, jadi totalnya belum lengkap.",
+  "@foodPhotoSavedIncompleteNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodPhotoSavedCompleteFirstAction": "Lengkapi dulu",
+  "todayUnknownEnergyNoteTitle": "{count} catatan hari ini belum diketahui energinya",
+  "@todayUnknownEnergyNoteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "diaryUnknownEnergyNote": "{count} catatan belum diketahui energinya",
+  "@diaryUnknownEnergyNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayUnknownEnergyNoteBody": "Total di atas belum lengkap. Ketuk untuk melengkapi di buku harian.",
+  "foodPhotoSavedShareWithoutTotalAction": "Bagikan tanpa total"
 }

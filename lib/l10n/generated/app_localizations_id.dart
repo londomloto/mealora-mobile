@@ -1360,10 +1360,10 @@ class AppTextId extends AppText {
   String get addFoodPhotoDescription => 'Dapatkan saran dari fotomu';
 
   @override
-  String get addFoodBarcodeTitle => 'Scan barcode';
+  String get addFoodBarcodeTitle => 'Scan barcode / info gizi';
 
   @override
-  String get addFoodBarcodeDescription => 'Cari produk kemasan dengan cepat';
+  String get addFoodBarcodeDescription => 'Produk kemasan atau info gizi';
 
   @override
   String get addFoodPrivacyLine1 => 'Foto hanya diunggah dengan izinmu.';
@@ -1593,7 +1593,7 @@ class AppTextId extends AppText {
 
   @override
   String get barcodeScanPhotoLabelDescription =>
-      'Baca nilai nutrisi dari foto label';
+      'Label kemasan, layar laptop, atau artikel';
 
   @override
   String get barcodeScanUseCamera => 'Gunakan kamera';
@@ -2171,10 +2171,11 @@ class AppTextId extends AppText {
 
   @override
   String get uploadConsentBody =>
-      'Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.';
+      'Paling akurat. Tanpa izin atau saat AI tidak tersedia, foto dibaca di HP dan hanya teksnya yang dikirim.';
 
   @override
-  String get uploadConsentCheckboxLabel => 'Izinkan unggah foto label ini';
+  String get uploadConsentCheckboxLabel =>
+      'Izinkan unggah foto untuk dibaca AI';
 
   @override
   String get uploadConsentCheckedState => 'Dicentang';
@@ -2183,26 +2184,25 @@ class AppTextId extends AppText {
   String get uploadConsentUncheckedState => 'Belum dicentang';
 
   @override
-  String get labelPhotoContextLabel => 'INFORMASI NILAI GIZI';
+  String get labelPhotoContextLabel => 'FOTO INFO GIZI';
 
   @override
-  String get labelPhotoTitle => 'Foto label kemasan';
+  String get labelPhotoTitle => 'Foto info gizi';
 
   @override
-  String get labelPhotoSubtitle => 'Pastikan teks dan satuan terlihat jelas.';
+  String get labelPhotoSubtitle => 'Label kemasan, layar laptop, atau artikel.';
 
   @override
-  String get labelPhotoFrameCaption =>
-      'Informasi Nilai Gizi harus terbaca penuh';
+  String get labelPhotoFrameCaption => 'Angka gizi harus terlihat jelas';
 
   @override
-  String get labelPhotoExtractAction => 'Ekstrak untuk ditinjau';
+  String get labelPhotoExtractAction => 'Baca info gizi';
 
   @override
   String get labelPhotoRetryAction => 'Coba lagi dengan foto ini';
 
   @override
-  String get labelPhotoManualLink => 'Isi label secara manual tanpa unggah';
+  String get labelPhotoManualLink => 'Isi secara manual';
 
   @override
   String get labelPhotoPermissionDeniedTitle => 'Kamera tidak dapat diakses';
@@ -2392,7 +2392,7 @@ class AppTextId extends AppText {
     String carbohydrate,
     String fat,
   ) {
-    return '· $kcal kkal  ·  P $protein g  ·  K $carbohydrate g  ·  L $fat g';
+    return '· $kcal  ·  P $protein  ·  K $carbohydrate  ·  L $fat';
   }
 
   @override
@@ -3047,7 +3047,7 @@ class AppTextId extends AppText {
 
   @override
   String foodPhotoSavedSubtitle(String mealTime, int count, String kcal) {
-    return '$mealTime · $count item · $kcal kkal';
+    return '$mealTime · $count item · $kcal';
   }
 
   @override
@@ -3554,4 +3554,312 @@ class AppTextId extends AppText {
   String targetHintDateRange(String weight, String earliest, String latest) {
     return 'Untuk $weight kg, pilih antara $earliest dan $latest.';
   }
+
+  @override
+  String get labelPhotoGalleryAction => 'Pilih dari galeri';
+
+  @override
+  String get labelPhotoNoInfoTitle => 'Tidak ada info gizi terbaca';
+
+  @override
+  String get labelPhotoNoInfoBody =>
+      'Tulisan di foto belum terbaca jelas. Kamu bisa mengirim fotonya untuk dianalisis AI, memotret ulang, atau mengisi sendiri.';
+
+  @override
+  String get labelPhotoRetakeAction => 'Foto ulang';
+
+  @override
+  String get nutritionSourceChoiceTitle => 'Simpan sebagai apa?';
+
+  @override
+  String get nutritionSourceChoiceBody =>
+      'Kami belum yakin ini label kemasan atau info gizi umum.';
+
+  @override
+  String get nutritionSourceChoicePackaged => 'Produk kemasan';
+
+  @override
+  String get nutritionSourceChoicePackagedDescription =>
+      'Label gizi dari kemasan produk';
+
+  @override
+  String get nutritionSourceChoiceCustom => 'Makanan buatan sendiri';
+
+  @override
+  String get nutritionSourceChoiceCustomDescription =>
+      'Dari artikel, situs, atau info gizi umum';
+
+  @override
+  String get customFoodPasteAction => 'Tempel teks';
+
+  @override
+  String get customFoodPasteHint =>
+      'Dapat info gizi dari Google atau artikel? Ketuk \"Tempel teks\" — angkanya terisi untuk kamu periksa.';
+
+  @override
+  String get nutritionPasteContextLabel => 'BUAT MAKANAN · TEMPEL TEKS';
+
+  @override
+  String get nutritionPasteTitle => 'Tempel info gizi';
+
+  @override
+  String get nutritionPasteSubtitle =>
+      'Salin jawaban Google atau artikel, tempel di sini. Kami baca angkanya, kamu yang memeriksa.';
+
+  @override
+  String nutritionPasteFieldLabel(int count, int max) {
+    return 'TEKS YANG DITEMPEL · $count/$max';
+  }
+
+  @override
+  String get nutritionPasteFieldHint => 'Tempel teks info gizi di sini';
+
+  @override
+  String get nutritionPasteIgnoredHint =>
+      'Link sumber & penjelasan manfaat diabaikan otomatis.';
+
+  @override
+  String get nutritionPasteClearAction => 'Hapus teks';
+
+  @override
+  String nutritionPasteTooLong(int max) {
+    return 'Teks terlalu panjang. Maksimal $max karakter.';
+  }
+
+  @override
+  String get nutritionPastePrivacyBody =>
+      'Hanya teks yang dikirim, tidak disimpan di server. Butuh internet — tanpa internet, isi angka manual.';
+
+  @override
+  String get nutritionPasteOnlineBody =>
+      'Yang dikirim hanya teks di atas. Tanpa internet, isi angka manual.';
+
+  @override
+  String get nutritionPasteRepasteAction => 'Tempel ulang';
+
+  @override
+  String get nutritionPastePhotoAction => 'Foto';
+
+  @override
+  String get nutritionPasteManualLink => 'Isi manual saja';
+
+  @override
+  String get nutritionPasteReadAction => 'Baca nilai gizi';
+
+  @override
+  String get nutritionPasteEmptyClipboard =>
+      'Clipboard kosong. Salin teks info gizi dulu.';
+
+  @override
+  String get nutritionPasteNoNumbersTitle => 'Tidak ada angka gizi di teks ini';
+
+  @override
+  String get nutritionPasteNoNumbersBody =>
+      'Cari teks yang memuat kalori, protein, lemak, atau karbohidrat.';
+
+  @override
+  String get nutritionReviewContextLabel => 'PERIKSA HASIL BACA';
+
+  @override
+  String get nutritionReviewContextLabelOffline =>
+      'PERIKSA HASIL BACA · OFFLINE';
+
+  @override
+  String get nutritionReviewTitle => 'Sudah sesuai?';
+
+  @override
+  String get nutritionReviewSubtitle =>
+      'Angka dibaca AI dari sumbermu. Ketuk nilai untuk mengubah.';
+
+  @override
+  String get nutritionReviewSubtitleOffline =>
+      'AI tidak tersedia, jadi foto dibaca di HP. Periksa lebih teliti.';
+
+  @override
+  String get nutritionReviewBasisEyebrow => 'BASIS GIZI';
+
+  @override
+  String get nutritionReviewBasisHint =>
+      'Jadi ukuran sajian. Pastikan sesuai porsi yang kamu makan.';
+
+  @override
+  String get nutritionReviewBasisMissing =>
+      'Porsi tidak tercantum. Isi ukuran sajian sendiri di form berikutnya.';
+
+  @override
+  String get nutritionReviewServingLabel => 'Ukuran sajian';
+
+  @override
+  String get nutritionReviewServingHint => 'Mis. 100 g';
+
+  @override
+  String get nutritionReviewResultsHeading =>
+      'Hasil terbaca · perlu konfirmasi';
+
+  @override
+  String nutritionReviewSourceRange(String min, String max) {
+    return 'teks: $min–$max';
+  }
+
+  @override
+  String get nutritionReviewBadgeMidpoint => 'Nilai tengah';
+
+  @override
+  String get nutritionReviewBadgeRead => 'Terbaca';
+
+  @override
+  String get nutritionReviewBadgeUnread => 'Isi nilai';
+
+  @override
+  String get nutritionReviewBadgeCheck => 'Periksa';
+
+  @override
+  String nutritionReviewIgnored(String names) {
+    return 'Diabaikan: $names — belum didukung Mealora.';
+  }
+
+  @override
+  String get nutritionReviewRangeNote =>
+      'Rentang diambil nilai tengahnya, bisa kamu ubah.';
+
+  @override
+  String get nutritionReviewOfflineNote =>
+      'Pembacaan offline hanya mengenali format sederhana. Rentang dan basis porsi bisa terlewat — cek dengan sumbernya.';
+
+  @override
+  String nutritionReviewNameSuggestion(String name) {
+    return 'Usulan nama: $name';
+  }
+
+  @override
+  String get nutritionReviewNameSuggestionBody =>
+      'Bisa diganti di form berikutnya.';
+
+  @override
+  String get nutritionReviewNameMissing => 'Nama belum terbaca';
+
+  @override
+  String get nutritionReviewNameMissingBody => 'Isi nama di form berikutnya.';
+
+  @override
+  String get nutritionReviewUseAction => 'Pakai di Buat makanan';
+
+  @override
+  String get nutritionReviewInvalidValue =>
+      'Periksa angka yang diisi. Gunakan angka 0 atau lebih.';
+
+  @override
+  String get labelPhotoReadNoteTitle => 'Tulisan dibaca di HP';
+
+  @override
+  String get labelPhotoReadNoteBody =>
+      'Hanya teksnya yang dikirim untuk dibaca AI. Foto diunggah hanya bila kamu memilih \"Analisis foto dengan AI\".';
+
+  @override
+  String get analyzePhotoAction => 'Analisis foto dengan AI';
+
+  @override
+  String get analyzePhotoUploadNote =>
+      'Foto hanya dikirim saat kamu menekan tombol ini. Foto tidak disimpan.';
+
+  @override
+  String get reviewAnalyzePhotoLink =>
+      'Hasil kurang tepat? Analisis foto dengan AI';
+
+  @override
+  String get analyzePhotoFailed =>
+      'Analisis foto belum berhasil. Coba lagi nanti atau ubah nilainya sendiri.';
+
+  @override
+  String nutritionPartialTotal(String known, int count) {
+    return '$known + $count belum diketahui';
+  }
+
+  @override
+  String nutritionPartialSuffix(int count) {
+    return '+ $count belum diketahui';
+  }
+
+  @override
+  String get foodComponentNotInCatalog => 'belum ada di katalog';
+
+  @override
+  String get foodPhotoReviewCompleteAction => 'Lengkapi';
+
+  @override
+  String foodPhotoReviewCompleteSemantics(String name) {
+    return 'Lengkapi $name';
+  }
+
+  @override
+  String foodPhotoReviewCompleteItemsAction(int count) {
+    return 'Lengkapi $count bahan';
+  }
+
+  @override
+  String get foodPhotoReviewShareWithoutLogging =>
+      'Bagikan saja tanpa mencatat';
+
+  @override
+  String foodPhotoReviewUnmatchedTitle(int count) {
+    return '$count bahan belum ada di katalog';
+  }
+
+  @override
+  String get foodPhotoReviewUnmatchedBody =>
+      'Lengkapi dulu agar total kalori benar.';
+
+  @override
+  String get listConjunctionAnd => 'dan';
+
+  @override
+  String get foodComponentNotInCatalogHint =>
+      'Belum ada di katalog — nutrisinya belum diketahui.';
+
+  @override
+  String get foodComponentSearchCatalogAction => 'Cari di katalog';
+
+  @override
+  String get foodComponentSearchCatalogSub => 'Pilih makanan serupa';
+
+  @override
+  String get foodComponentCreateFoodAction => 'Buat makanan ini';
+
+  @override
+  String get foodComponentCreateFoodSub => 'Tempel teks atau foto info gizi';
+
+  @override
+  String get shareCardFromMealora => 'Dibagikan dari Mealora';
+
+  @override
+  String get shareMealNotLoggedNote =>
+      'Belum dicatat di buku harian — kembali untuk melengkapi kapan saja. Gambar dibuat di HP, tidak diunggah.';
+
+  @override
+  String get shareMealNoTotalCaption => 'Kartu makanan · foto tanpa angka gizi';
+
+  @override
+  String foodPhotoSavedIncompleteNote(int count) {
+    return 'Energi $count bahan belum diketahui, jadi totalnya belum lengkap.';
+  }
+
+  @override
+  String get foodPhotoSavedCompleteFirstAction => 'Lengkapi dulu';
+
+  @override
+  String todayUnknownEnergyNoteTitle(int count) {
+    return '$count catatan hari ini belum diketahui energinya';
+  }
+
+  @override
+  String diaryUnknownEnergyNote(int count) {
+    return '$count catatan belum diketahui energinya';
+  }
+
+  @override
+  String get todayUnknownEnergyNoteBody =>
+      'Total di atas belum lengkap. Ketuk untuk melengkapi di buku harian.';
+
+  @override
+  String get foodPhotoSavedShareWithoutTotalAction => 'Bagikan tanpa total';
 }

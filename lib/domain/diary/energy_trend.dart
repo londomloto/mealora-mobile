@@ -23,6 +23,7 @@ final class DailyEnergy {
     required this.state,
     this.kcal,
     this.targetKcal,
+    this.unknownCount = 0,
   }) : assert(
          (state == DailyEnergyState.recorded) == (kcal != null),
          'kcal hanya diisi untuk tanggal tercatat',
@@ -34,15 +35,24 @@ final class DailyEnergy {
 
   /// Target energi program yang berlaku pada [date]; `null` bila tidak ada.
   final double? targetKcal;
+
+  /// Catatan berenergi kosong pada tanggal tercatat (change 021): [kcal]
+  /// lalu hanya batas bawah ("≥").
+  final int unknownCount;
+
+  bool get isPartial => unknownCount > 0;
 }
 
 /// Masukan energi satu tanggal dari buku harian.
 final class DiaryDayEnergy {
-  const DiaryDayEnergy.unknown() : kcal = null;
-  const DiaryDayEnergy.known(double this.kcal);
+  const DiaryDayEnergy.unknown() : kcal = null, unknownCount = 0;
+  const DiaryDayEnergy.known(double this.kcal, {this.unknownCount = 0});
 
-  /// `null` berarti ada catatan tetapi energinya tidak diketahui.
+  /// `null` berarti tidak ada satu pun catatan yang energinya diketahui.
   final double? kcal;
+
+  /// Catatan berenergi kosong di samping [kcal] (change 021).
+  final int unknownCount;
 }
 
 /// Tren energi harian untuk rentang `[from, to]` inklusif (spec
@@ -96,13 +106,16 @@ final class EnergyTrend {
             state: DailyEnergyState.recorded,
             kcal: entry.kcal,
             targetKcal: target,
+            unknownCount: entry.unknownCount,
           ),
         );
       }
     }
 
+    // Rata-rata hanya dari hari yang lengkap: hari parsial (change 021)
+    // akan menarik rata-rata turun secara keliru.
     final recorded = days
-        .where((d) => d.state == DailyEnergyState.recorded)
+        .where((d) => d.state == DailyEnergyState.recorded && !d.isPartial)
         .toList(growable: false);
     final average = recorded.isEmpty
         ? null

@@ -105,24 +105,30 @@ void main() {
     },
   );
 
-  test(
-    'satu catatan tanpa energi membuat tanggal itu tidak diketahui',
-    () async {
-      final nasi = await food('Nasi', 400);
-      final misteri = await food('Kue misteri', null);
-      await log(const LocalDate(2026, 11, 3), nasi);
-      await log(const LocalDate(2026, 11, 3), misteri, time: MealTime.snack);
+  test('catatan tanpa energi: yang diketahui tetap dijumlah, catatan kosong '
+      'dihitung (change 021); tidak diketahui bila semuanya kosong', () async {
+    final nasi = await food('Nasi', 400);
+    final misteri = await food('Kue misteri', null);
+    await log(const LocalDate(2026, 11, 3), nasi);
+    await log(const LocalDate(2026, 11, 3), misteri, time: MealTime.snack);
 
-      final result = await repository.dailyEnergyInRange(
-        profileId,
-        from: const LocalDate(2026, 11, 3),
-        to: const LocalDate(2026, 11, 3),
-      );
+    final result = await repository.dailyEnergyInRange(
+      profileId,
+      from: const LocalDate(2026, 11, 3),
+      to: const LocalDate(2026, 11, 3),
+    );
 
-      expect(result['2026-11-03'], isNotNull);
-      expect(result['2026-11-03']!.kcal, isNull);
-    },
-  );
+    expect(result['2026-11-03']!.kcal, 400);
+    expect(result['2026-11-03']!.unknownCount, 1);
+
+    await log(const LocalDate(2026, 11, 4), misteri);
+    final onlyUnknown = await repository.dailyEnergyInRange(
+      profileId,
+      from: const LocalDate(2026, 11, 4),
+      to: const LocalDate(2026, 11, 4),
+    );
+    expect(onlyUnknown['2026-11-04']!.kcal, isNull);
+  });
 
   test('tanggal catatan pertama, null bila belum ada catatan', () async {
     expect(await repository.firstEntryDate(profileId), isNull);

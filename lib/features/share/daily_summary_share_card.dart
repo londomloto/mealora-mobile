@@ -4,6 +4,7 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/features/share/share_card_frame.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
@@ -21,20 +22,27 @@ final class DailySummaryShareData {
   });
 
   final LocalDate date;
-  final double consumedKcal;
+
+  /// Energi hari itu (change 021, design D1): catatan berenergi kosong
+  /// dihitung belum diketahui, bukan nol.
+  final PartialSum consumedKcal;
 
   /// `null` bila program tidak menampilkan target energi — kartu lalu tidak
   /// menampilkan "dari … kkal" maupun persentase.
   final double? targetKcal;
-  final double? proteinG;
-  final double? carbohydrateG;
-  final double? fatG;
+
+  /// Makro hari itu, parsial seperti [consumedKcal] (change 021).
+  final PartialSum proteinG;
+  final PartialSum carbohydrateG;
+  final PartialSum fatG;
 
   /// Dibulatkan ke bilangan bulat dan boleh melebihi 100% (Design D5).
+  /// `null` bila energi belum lengkap — persentase yang salah lebih buruk
+  /// daripada tanpa persentase (change 021).
   int? get percentOfTarget {
     final target = targetKcal;
-    if (target == null || target <= 0) return null;
-    return (consumedKcal / target * 100).round();
+    if (target == null || target <= 0 || !consumedKcal.isComplete) return null;
+    return (consumedKcal.known / target * 100).round();
   }
 }
 
@@ -51,9 +59,10 @@ class DailySummaryShareCard extends StatelessWidget {
     final percent = data.percentOfTarget;
     final ratio = target == null || target <= 0
         ? null
-        : (data.consumedKcal / target).clamp(0, 1).toDouble();
-    String grams(double? v) =>
-        v == null ? text.nutrientValueUnknown : IdFormat.integer(v);
+        : (data.consumedKcal.known / target).clamp(0, 1).toDouble();
+    String grams(PartialSum v) => v.isUnknown
+        ? text.nutrientValueUnknown
+        : '${v.isComplete ? '' : '≥\u00A0'}${IdFormat.integer(v.known)}';
 
     return ShareCardFrame(
       decoration: const BoxDecoration(
@@ -101,10 +110,20 @@ class DailySummaryShareCard extends StatelessWidget {
                         children: <Widget>[
                           FittedBox(
                             child: Text(
-                              IdFormat.integer(data.consumedKcal),
+                              data.consumedKcal.isUnknown
+                                  ? text.nutrientValueUnknown
+                                  : IdFormat.integer(data.consumedKcal.known),
                               style: MealoraTypography.shareCardRingValue,
                             ),
                           ),
+                          if (!data.consumedKcal.isComplete &&
+                              !data.consumedKcal.isUnknown)
+                            Text(
+                              text.nutritionPartialSuffix(
+                                data.consumedKcal.unknownCount,
+                              ),
+                              style: MealoraTypography.shareCardRingUnit,
+                            ),
                           Text(
                             target == null
                                 ? text.unitKilocalorie

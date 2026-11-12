@@ -15,9 +15,12 @@ import 'package:mealora/domain/food/food_repository.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
 import 'package:mealora/domain/food/recipe.dart';
 import 'package:mealora/domain/food/recipe_calculator.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_import.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_reading.dart';
 import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_component_picker_sheet.dart';
+import 'package:mealora/features/diary/nutrition_text_import_screen.dart';
 import 'package:mealora/features/diary/recipe_widgets.dart';
 import 'package:mealora/features/diary/serving_detail_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
@@ -30,7 +33,23 @@ import 'package:mealora/l10n/generated/app_localizations.dart';
 /// menjumlahkan gizi bahan. Dengan [editFood] layar ini menyunting makanan
 /// buatan pengguna, termasuk menghitung ulang resepnya.
 class CustomFoodScreen extends ConsumerStatefulWidget {
-  const CustomFoodScreen({this.date, this.editFood, super.key});
+  const CustomFoodScreen({
+    this.date,
+    this.editFood,
+    this.prefill,
+    this.returnCreatedFood = false,
+    super.key,
+  });
+
+  /// Change 021 (design D2): makanan baru dikembalikan ke pemanggil lewat
+  /// `pop(food)` alih-alih membuka `ServingDetailScreen` — dipakai saat
+  /// melengkapi komponen foto tanpa padanan.
+  final bool returnCreatedFood;
+
+  /// Nilai awal hasil impor info gizi (change 020, design D4/D5) — dipakai
+  /// saat dibuka dari Foto info gizi lewat menu scan. Tidak menyimpan apa
+  /// pun; pengguna tetap menekan Simpan.
+  final NutritionImportResult? prefill;
 
   /// Tanggal yang akan dicatat begitu takaran dikonfirmasi — `null` berarti
   /// hari ini (konvensi `logFoodEntry`, change 008 task 5.6).
@@ -86,6 +105,10 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
     for (final c in _nutrientFields.values) {
       c.addListener(_onNutrientEdited);
     }
+    final prefill = widget.prefill;
+    if (prefill != null) {
+      _applyImport(prefill);
+    }
     final food = widget.editFood;
     if (food != null) {
       _name.text = food.name;
@@ -119,6 +142,48 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
       // koreksi manual dipertahankan sampai pengguna memilih hitung ulang.
       _keepStoredValues = food.nutritionOrigin != NutritionOrigin.recipe;
       _recalculate(fill: !_keepStoredValues);
+    });
+  }
+
+  /// Mengisi form dari hasil impor (design D5): nama hanya bila kosong,
+  /// sajian hanya bila basis terbaca, nutrien selalu ditimpa.
+  void _applyImport(NutritionImportResult result) {
+    final prefill = FormPrefill.from(
+      result,
+      currentName: _name.text,
+      formatNumber: formatRecipeNumber,
+    );
+    if (prefill.name != null) {
+      _name.text = prefill.name!;
+    }
+    if (prefill.servingLabel != null) {
+      _serving.text = prefill.servingLabel!;
+    }
+    for (final e in prefill.nutrients.entries) {
+      _importFields[e.key]!.text = e.value;
+    }
+  }
+
+  late final Map<ImportNutrient, TextEditingController> _importFields =
+      <ImportNutrient, TextEditingController>{
+        ImportNutrient.energy: _energy,
+        ImportNutrient.protein: _protein,
+        ImportNutrient.carbohydrate: _carbohydrate,
+        ImportNutrient.fat: _fat,
+      };
+
+  Future<void> _openTextImport() async {
+    final result = await Navigator.of(context).push<NutritionImportResult>(
+      MaterialPageRoute<NutritionImportResult>(
+        builder: (_) => const NutritionTextImportScreen(),
+      ),
+    );
+    if (result == null || !mounted) {
+      return;
+    }
+    setState(() {
+      _error = null;
+      _applyImport(result);
     });
   }
 
@@ -313,11 +378,41 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                     icon: Icons.keyboard_arrow_down_rounded,
                   ),
                 const SizedBox(height: MealoraSpacing.lg),
-                Text(
-                  _recipeMode
-                      ? text.recipeNutritionHeading
-                      : text.customFoodNutritionHeading,
-                  style: MealoraTypography.headline,
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _recipeMode
+                            ? text.recipeNutritionHeading
+                            : text.customFoodNutritionHeading,
+                        style: MealoraTypography.headline,
+                      ),
+                    ),
+                    // Change 020: hanya pada mode isi manual (spec
+                    // "Pengguna dapat memulai dari form Buat makanan").
+                    if (!_recipeMode)
+                      Semantics(
+                        button: true,
+                        label: text.customFoodPasteAction,
+                        child: InkWell(
+                          key: const ValueKey('custom-food-paste-text'),
+                          borderRadius: BorderRadius.circular(
+                            MealoraRadius.chip,
+                          ),
+                          onTap: _loading
+                              ? null
+                              : () => unawaited(_openTextImport()),
+                          child: ExcludeSemantics(
+                            child: MealoraChip(
+                              label: text.customFoodPasteAction,
+                              icon: Icons.content_paste_go_outlined,
+                              background: MealoraColors.iconFieldGreen,
+                              foreground: MealoraColors.primaryDeep,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: MealoraSpacing.sm),
                 Row(
@@ -388,7 +483,8 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                     icon: Icons.info_outline,
                     body: _recipeMode || _editing
                         ? text.customFoodNote
-                        : text.customFoodManualHint,
+                        : '${text.customFoodPasteHint} '
+                              '${text.customFoodManualHint}',
                     borderColor: MealoraColors.glassSoft,
                   ),
                 if (_error != null) ...<Widget>[
@@ -729,7 +825,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
     if (!mounted) {
       return;
     }
-    if (_editing) {
+    if (_editing || widget.returnCreatedFood) {
       Navigator.of(context).pop(food);
       return;
     }

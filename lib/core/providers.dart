@@ -3,6 +3,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/ids/id_generator.dart';
 import 'package:mealora/domain/food_photo_input/food_component_recognition_provider.dart';
 import 'package:mealora/domain/image_ai_access/nutrition_label_provider.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_import.dart';
 import 'package:mealora/domain/reminders/reminder_scheduler.dart';
 import 'package:mealora/domain/voice_input/food_sentence_parser.dart';
 import 'package:mealora/domain/voice_input/speech_recognizer.dart';
@@ -73,6 +74,28 @@ final Provider<FoodSentenceParser> foodSentenceParserProvider =
     Provider<FoodSentenceParser>(
       (ref) => throw UnimplementedError(
         'foodSentenceParserProvider harus ditimpa di ProviderScope '
+        '(lihat lib/main.dart dan test/).',
+      ),
+    );
+
+/// Pembaca teks info gizi lewat proksi `/parse-nutrition-text` (change 020,
+/// design D5). Ditimpa dengan `ModelProxyNutritionTextReader` di
+/// `lib/main.dart`, dan dengan tiruan pada pengujian.
+final Provider<NutritionTextReader> nutritionTextReaderProvider =
+    Provider<NutritionTextReader>(
+      (ref) => throw UnimplementedError(
+        'nutritionTextReaderProvider harus ditimpa di ProviderScope '
+        '(lihat lib/main.dart dan test/).',
+      ),
+    );
+
+/// Pembacaan foto info gizi bertingkat (change 020, design D3). Ditimpa
+/// di `lib/main.dart` dengan klien proksi sungguhan dan OCR ML Kit, dan
+/// dengan tiruan pada pengujian.
+final Provider<NutritionReadingPipeline> nutritionReadingPipelineProvider =
+    Provider<NutritionReadingPipeline>(
+      (ref) => throw UnimplementedError(
+        'nutritionReadingPipelineProvider harus ditimpa di ProviderScope '
         '(lihat lib/main.dart dan test/).',
       ),
     );

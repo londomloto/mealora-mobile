@@ -13,6 +13,7 @@ import 'package:mealora/data/local/reminder_settings_repository.dart';
 import 'package:mealora/data/local/ui_preference_dao.dart';
 import 'package:mealora/data/ocr/ocr_nutrition_label_provider.dart';
 import 'package:mealora/data/remote/model_proxy_food_sentence_parser.dart';
+import 'package:mealora/data/remote/model_proxy_nutrition_reader.dart';
 import 'package:mealora/data/remote/openfoodfacts_product_client.dart';
 import 'package:mealora/data/remote/vision_proxy_food_component_provider.dart';
 import 'package:mealora/data/remote/vision_proxy_label_provider.dart';
@@ -21,6 +22,7 @@ import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/storage_bootstrap.dart';
 import 'package:mealora/domain/image_ai_access/fallback_nutrition_label_provider.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
+import 'package:mealora/domain/nutrition_import/nutrition_import.dart';
 import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/domain/profile/user_profile.dart';
 import 'package:mealora/domain/program/user_program.dart';
@@ -389,5 +391,27 @@ final Override foodSentenceParserAppOverride = foodSentenceParserProvider
           config: VisionProxyConfig.fromEnvironment,
         ),
         fallback: const RuleBasedFoodSentenceParser(),
+      ),
+    );
+
+/// Klien proksi baca info gizi (change 020, design D2): satu instans untuk
+/// jalur teks dan jalur gambar.
+final ModelProxyNutritionReader _nutritionReader = ModelProxyNutritionReader(
+  config: VisionProxyConfig.fromEnvironment,
+);
+
+/// Menimpa `nutritionTextReaderProvider` (core/providers, change 020).
+final Override nutritionTextReaderAppOverride = nutritionTextReaderProvider
+    .overrideWithValue(_nutritionReader);
+
+/// Menimpa `nutritionReadingPipelineProvider` (core/providers, change 020):
+/// AI vision (dengan izin) → OCR ML Kit + teks → OCR + pembaca lokal
+/// (design D3).
+final Override nutritionReadingPipelineAppOverride =
+    nutritionReadingPipelineProvider.overrideWithValue(
+      NutritionReadingPipeline(
+        imageReader: _nutritionReader,
+        textReader: _nutritionReader,
+        recognizeText: OcrNutritionLabelProvider.recognizeWithMlKit,
       ),
     );

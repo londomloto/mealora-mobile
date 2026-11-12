@@ -17,6 +17,7 @@ import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/domain/program/pause_interval.dart';
 import 'package:mealora/domain/program/user_program.dart';
@@ -134,11 +135,18 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
     }
     return <String, DiaryDayEnergy>{
       for (final MapEntry(:key, :value) in byDate.entries)
-        key: switch (NutritionProfile.sumAll(value).energy) {
-          final energy? => DiaryDayEnergy.known(energy.kcal),
-          null => const DiaryDayEnergy.unknown(),
-        },
+        key: _dayEnergy(value),
     };
+  }
+
+  /// Energi satu tanggal (change 021): jumlah yang diketahui ditambah
+  /// banyaknya catatan berenergi kosong; tidak diketahui hanya bila tidak
+  /// ada satu pun yang diketahui.
+  static DiaryDayEnergy _dayEnergy(List<NutritionProfile> items) {
+    final sum = PartialSum.of(items.map((p) => p.energy?.kcal));
+    return sum.isUnknown
+        ? const DiaryDayEnergy.unknown()
+        : DiaryDayEnergy.known(sum.known, unknownCount: sum.unknownCount);
   }
 
   /// Tanggal catatan makan pertama yang masih hidup, `null` bila belum ada

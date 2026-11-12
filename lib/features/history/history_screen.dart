@@ -14,7 +14,7 @@ import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/meal_time.dart';
-import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/partial_nutrition_total.dart';
 import 'package:mealora/domain/preferences/week_start.dart';
 import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/diary/diary_format.dart';
@@ -268,9 +268,15 @@ class _DiaryBodyState extends State<_DiaryBody> {
   @override
   Widget build(BuildContext context) {
     final text = widget.text;
-    final consumed = widget.total.nutrition.energy;
-    final percent = consumed != null && widget.energyTargetKcal != null
-        ? (consumed.kcal / widget.energyTargetKcal! * 100).round()
+    // Change 021: jumlah yang diketahui saja; persentase hanya bila lengkap.
+    final energy = PartialSum.of(
+      widget.entries.map((e) => e.totalNutrition.energy?.kcal),
+    );
+    final percent =
+        !energy.isUnknown &&
+            energy.isComplete &&
+            widget.energyTargetKcal != null
+        ? (energy.known / widget.energyTargetKcal! * 100).round()
         : null;
 
     return Column(
@@ -297,9 +303,20 @@ class _DiaryBodyState extends State<_DiaryBody> {
                       ),
                       const SizedBox(height: MealoraSpacing.xs),
                       Text(
-                        DiaryFormat.kcal(consumed, text),
+                        energy.isUnknown
+                            ? text.todayConsumedUnknown
+                            : '${energy.isComplete ? '' : '≥\u00A0'}'
+                                  '${IdFormat.integer(energy.known)}\u00A0'
+                                  '${text.unitKilocalorie}',
                         style: MealoraTypography.display,
                       ),
+                      if (!energy.isUnknown && !energy.isComplete)
+                        Text(
+                          text.diaryUnknownEnergyNote(energy.unknownCount),
+                          style: MealoraTypography.caption.copyWith(
+                            color: MealoraColors.amberText,
+                          ),
+                        ),
                       const SizedBox(height: MealoraSpacing.xxs),
                       Text(
                         widget.energyTargetKcal == null
@@ -379,12 +396,16 @@ class _MealSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasEntries = entries.isNotEmpty;
-    final mealNutrition = NutritionProfile.sumAll(
-      entries.map((e) => e.totalNutrition),
+    final mealEnergy = PartialSum.of(
+      entries.map((e) => e.totalNutrition.energy?.kcal),
     );
-    final totalKcal = hasEntries
-        ? DiaryFormat.kcal(mealNutrition.energy, text)
-        : text.todayMealNotLogged;
+    final totalKcal = !hasEntries
+        ? text.todayMealNotLogged
+        : mealEnergy.isUnknown
+        ? text.todayConsumedUnknown
+        : '${mealEnergy.isComplete ? '' : '≥\u00A0'}'
+              '${IdFormat.integer(mealEnergy.known)}\u00A0'
+              '${text.unitKilocalorie}';
     final itemNames = entries.map((e) => e.foodNameSnapshot).join(', ');
     final icon = switch (mealTime) {
       MealTime.breakfast => Icons.wb_twilight_rounded,
