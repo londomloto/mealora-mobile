@@ -84,6 +84,17 @@ Build rilis memakai flag yang sama:
 flutter build appbundle --release --dart-define-from-file=dart_defines.prod.json
 ```
 
+Checklist sebelum build rilis:
+
+- Signing: `android/app/build.gradle.kts` masih memakai debug key untuk
+  `release`. Siapkan upload keystore dan `android/key.properties`
+  (jangan di-commit) sebelum upload ke Play Store.
+- Naikkan `version` di `pubspec.yaml` (build number `+N` wajib naik tiap upload).
+- Setelah build live di Play Store, perbarui `APP_LATEST_VERSION` dan
+  `APP_RELEASE_NOTES` di `.env` model proxy lalu
+  `pm2 restart mealora-model-proxy --update-env`.
+  `APP_MIN_SUPPORTED_VERSION` hanya diubah kalau memang ingin force update.
+
 Menutup emulator:
 
 ```bash
