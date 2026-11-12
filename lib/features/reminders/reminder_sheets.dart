@@ -304,7 +304,12 @@ class _SheetActions extends StatelessWidget {
                 borderRadius: BorderRadius.circular(MealoraRadius.button),
               ),
             ),
-            child: Text(secondaryLabel, style: MealoraTypography.button),
+            child: Text(
+              secondaryLabel,
+              style: MealoraTypography.button.copyWith(
+                color: MealoraColors.ink,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: MealoraSpacing.sm),
