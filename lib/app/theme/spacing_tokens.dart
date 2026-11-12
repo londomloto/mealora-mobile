@@ -65,6 +65,9 @@ abstract final class MealoraRadius {
   /// Radius dok navigasi (tidak sepenuhnya kapsul — 30 px tetap).
   static const double navigation = 30;
 
+  /// Tombol bulat-kotak di atas pratinjau kamera (mis. tutup).
+  static const double cameraControl = 16;
+
   /// Ubin ikon pada kartu pilihan onboarding.
   static const double choiceIcon = 16;
 

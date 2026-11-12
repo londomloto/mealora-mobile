@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mealora/app/providers.dart';
 import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
@@ -38,6 +39,7 @@ class FoodPhotoScreen extends ConsumerStatefulWidget {
     this.date,
     @visibleForTesting this.debugSkipCameraInit = false,
     @visibleForTesting this.debugCapture,
+    @visibleForTesting this.debugPickGallery,
     super.key,
   });
 
@@ -49,6 +51,9 @@ class FoodPhotoScreen extends ConsumerStatefulWidget {
   final bool debugSkipCameraInit;
 
   final Future<Uint8List> Function()? debugCapture;
+
+  /// Pengganti `ImagePicker` untuk pengujian widget; `null` = batal pilih.
+  final Future<Uint8List?> Function()? debugPickGallery;
 
   @override
   ConsumerState<FoodPhotoScreen> createState() => _FoodPhotoScreenState();
@@ -195,7 +200,7 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
     required bool canCapture,
   }) {
     final ready = _controller?.value.isInitialized ?? false;
-    const scrim = Color(0xFF0A2A1D);
+    const scrim = MealoraColors.cameraScrim;
     return Scaffold(
       backgroundColor: MealoraColors.ink,
       body: Stack(
@@ -220,7 +225,7 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: scrim.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(MealoraRadius.pill),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -257,15 +262,19 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
                       ).closeButtonTooltip,
                       child: InkWell(
                         onTap: () => Navigator.of(context).maybePop(),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(
+                          MealoraRadius.cameraControl,
+                        ),
                         child: Container(
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
                             color: scrim.withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(
+                              MealoraRadius.cameraControl,
+                            ),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.35),
+                              color: MealoraColors.photoHeroButtonBorder,
                             ),
                           ),
                           child: const Icon(
@@ -292,10 +301,7 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
                           ),
                           Text(
                             text.foodPhotoTitle,
-                            style: MealoraTypography.title.copyWith(
-                              color: MealoraColors.onPrimary,
-                              fontSize: 20,
-                            ),
+                            style: MealoraTypography.cameraTitle,
                           ),
                         ],
                       ),
@@ -319,7 +325,7 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: MealoraColors.surface.withValues(alpha: 0.92),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(MealoraRadius.card),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(MealoraSpacing.md),
@@ -339,12 +345,32 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
                                 setState(() => _consentChecked = value),
                             text: text,
                           ),
-                        MealoraPrimaryButton(
-                          label: text.foodPhotoCaptureAction,
-                          icon: Icons.camera_alt_outlined,
-                          onPressed: canCapture
-                              ? () => unawaited(_capture())
-                              : null,
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: MealoraPrimaryButton(
+                                label: text.foodPhotoCaptureAction,
+                                icon: Icons.camera_alt_outlined,
+                                onPressed: canCapture
+                                    ? () => unawaited(_capture())
+                                    : null,
+                              ),
+                            ),
+                            const SizedBox(width: MealoraSpacing.sm),
+                            IconButton.filledTonal(
+                              key: const ValueKey('food-photo-gallery'),
+                              tooltip: text.foodPhotoGalleryAction,
+                              iconSize: 24,
+                              constraints: const BoxConstraints.tightFor(
+                                width: 52,
+                                height: 52,
+                              ),
+                              onPressed: canCapture
+                                  ? () => unawaited(_pickFromGallery())
+                                  : null,
+                              icon: const Icon(Icons.photo_library_outlined),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: MealoraSpacing.sm),
                         Semantics(
@@ -432,6 +458,22 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
       return;
     }
     if (!mounted) return;
+    await _submit(bytes);
+  }
+
+  /// Foto yang diambil sebelumnya (mis. di restoran, diunggah di rumah).
+  Future<void> _pickFromGallery() async {
+    final Uint8List? bytes;
+    try {
+      bytes = widget.debugPickGallery != null
+          ? await widget.debugPickGallery!()
+          : await ImagePicker()
+                .pickImage(source: ImageSource.gallery)
+                .then((file) => file?.readAsBytes());
+    } on Object {
+      return;
+    }
+    if (bytes == null || !mounted) return;
     await _submit(bytes);
   }
 

@@ -325,6 +325,9 @@ abstract final class MealoraColors {
   static const Color photoHeroButton = Color(0x590A2A1D);
   static const Color photoHeroButtonBorder = Color(0x59FFFFFF);
 
+  /// Dasar scrim dan pil keterangan pada kamera full screen (desain `19b`).
+  static const Color cameraScrim = Color(0xFF0A2A1D);
+
   /// Bayangan panel mengambang dan pratinjau kartu.
   static const Color shadowShareCard = Color(0x3D04231A);
 

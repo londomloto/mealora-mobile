@@ -1145,6 +1145,7 @@
   "foodPhotoConsentBody": "Analisis AI memerlukan internet. Foto hanya diunggah jika kamu mengizinkan. Catatan tetap tersimpan lokal.",
   "foodPhotoConsentCheckboxLabel": "Saya izinkan unggah foto ini",
   "foodPhotoCaptureAction": "Ambil foto & lanjutkan",
+  "foodPhotoGalleryAction": "Pilih dari galeri",
   "foodPhotoManualLink": "Tanpa internet? Pilih makanan secara manual",
   "foodPhotoPermissionDeniedTitle": "Kamera tidak dapat diakses",
   "foodPhotoPermissionDeniedBody": "Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa memilih makanan secara manual.",

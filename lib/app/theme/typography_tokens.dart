@@ -49,6 +49,14 @@ abstract final class MealoraTypography {
   static TextStyle get numberField =>
       _jakarta(size: 20, weight: bold, color: MealoraColors.ink, height: 1.2);
 
+  /// Judul di atas pratinjau kamera full screen (desain `19b`: 20 tebal).
+  static TextStyle get cameraTitle => _jakarta(
+    size: 20,
+    weight: bold,
+    color: MealoraColors.onPrimary,
+    height: 1.2,
+  );
+
   /// Judul bagian (mis. "Makanan hari ini").
   static TextStyle get sectionTitle =>
       _jakarta(size: 19, weight: bold, color: MealoraColors.ink, height: 1.3);

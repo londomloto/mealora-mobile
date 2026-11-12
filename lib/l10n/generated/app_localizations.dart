@@ -4150,6 +4150,12 @@ abstract class AppText {
   /// **'Ambil foto & lanjutkan'**
   String get foodPhotoCaptureAction;
 
+  /// No description provided for @foodPhotoGalleryAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dari galeri'**
+  String get foodPhotoGalleryAction;
+
   /// No description provided for @foodPhotoManualLink.
   ///
   /// In id, this message translates to:

@@ -2308,6 +2308,9 @@ class AppTextId extends AppText {
   String get foodPhotoCaptureAction => 'Ambil foto & lanjutkan';
 
   @override
+  String get foodPhotoGalleryAction => 'Pilih dari galeri';
+
+  @override
   String get foodPhotoManualLink =>
       'Tanpa internet? Pilih makanan secara manual';
 
