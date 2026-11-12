@@ -1607,5 +1607,34 @@
   "recipeAmountZeroError": "Jumlah harus lebih dari 0.",
   "recipeAmountGramRule": "Gram hanya tersedia untuk bahan yang berat takarannya diketahui. Selain itu isi kelipatan takaran, mis. 0,5.",
   "recipeAmountRawHint": "Bentuk mentah — masukkan berat sebelum dimasak.",
-  "recipeAmountAddAction": "Tambah ke resep"
+  "recipeAmountAddAction": "Tambah ke resep",
+  "appUpdateForcedEyebrow": "UPDATE DIPERLUKAN",
+  "appUpdateForcedTitle": "Perbarui Mealora dulu",
+  "appUpdateForcedSubtitle": "Versi yang terpasang sudah tidak didukung. Update sebentar, lalu lanjutkan seperti biasa.",
+  "appUpdateForcedCardTitle": "Versi {version} tidak didukung lagi",
+  "@appUpdateForcedCardTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdateForcedCardBody": "Beberapa fitur butuh versi terbaru agar tetap berjalan dengan benar.",
+  "appUpdateReleaseNotesHeading": "Yang baru",
+  "appUpdateDataSafeTitle": "Data kamu tetap aman",
+  "appUpdateDataSafeBody": "Catatan makan, berat, dan program tersimpan di HP ini dan tidak hilang saat update.",
+  "appUpdateStoreActionAndroid": "Update di Play Store",
+  "appUpdateStoreActionIos": "Update di App Store",
+  "appUpdateAvailableTitle": "Versi baru tersedia",
+  "appUpdateAvailableBody": "Mealora {version} sudah bisa diunduh. Update sekarang atau nanti, kamu tetap bisa memakai app.",
+  "@appUpdateAvailableBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdateLater": "Nanti",
+  "appUpdateNow": "Update",
+  "appUpdateStoreOpenFailed": "Toko aplikasi tidak bisa dibuka. Coba lagi sebentar."
 }

@@ -3271,4 +3271,57 @@ class AppTextId extends AppText {
 
   @override
   String get recipeAmountAddAction => 'Tambah ke resep';
+
+  @override
+  String get appUpdateForcedEyebrow => 'UPDATE DIPERLUKAN';
+
+  @override
+  String get appUpdateForcedTitle => 'Perbarui Mealora dulu';
+
+  @override
+  String get appUpdateForcedSubtitle =>
+      'Versi yang terpasang sudah tidak didukung. Update sebentar, lalu lanjutkan seperti biasa.';
+
+  @override
+  String appUpdateForcedCardTitle(String version) {
+    return 'Versi $version tidak didukung lagi';
+  }
+
+  @override
+  String get appUpdateForcedCardBody =>
+      'Beberapa fitur butuh versi terbaru agar tetap berjalan dengan benar.';
+
+  @override
+  String get appUpdateReleaseNotesHeading => 'Yang baru';
+
+  @override
+  String get appUpdateDataSafeTitle => 'Data kamu tetap aman';
+
+  @override
+  String get appUpdateDataSafeBody =>
+      'Catatan makan, berat, dan program tersimpan di HP ini dan tidak hilang saat update.';
+
+  @override
+  String get appUpdateStoreActionAndroid => 'Update di Play Store';
+
+  @override
+  String get appUpdateStoreActionIos => 'Update di App Store';
+
+  @override
+  String get appUpdateAvailableTitle => 'Versi baru tersedia';
+
+  @override
+  String appUpdateAvailableBody(String version) {
+    return 'Mealora $version sudah bisa diunduh. Update sekarang atau nanti, kamu tetap bisa memakai app.';
+  }
+
+  @override
+  String get appUpdateLater => 'Nanti';
+
+  @override
+  String get appUpdateNow => 'Update';
+
+  @override
+  String get appUpdateStoreOpenFailed =>
+      'Toko aplikasi tidak bisa dibuka. Coba lagi sebentar.';
 }

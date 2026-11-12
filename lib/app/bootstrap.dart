@@ -5,6 +5,7 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/database/app_database.dart';
+import 'package:mealora/features/app_update/app_update_gate.dart';
 import 'package:mealora/features/onboarding/onboarding_flow.dart';
 import 'package:mealora/features/reminders/reminder_lifecycle.dart';
 import 'package:mealora/features/shell/app_shell.dart';
@@ -50,12 +51,15 @@ class _OnboardingGate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isComplete = ref.watch(isOnboardingCompleteProvider);
 
-    return isComplete.when(
-      loading: () => const SplashScreen(),
-      error: (error, stackTrace) => const OnboardingFlow(),
-      data: (complete) => complete
-          ? const ReminderLifecycle(child: AppShell())
-          : const OnboardingFlow(),
+    // change 017: gerbang update berlaku juga selama onboarding.
+    return AppUpdateGate(
+      child: isComplete.when(
+        loading: () => const SplashScreen(),
+        error: (error, stackTrace) => const OnboardingFlow(),
+        data: (complete) => complete
+            ? const ReminderLifecycle(child: AppShell())
+            : const OnboardingFlow(),
+      ),
     );
   }
 }

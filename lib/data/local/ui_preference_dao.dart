@@ -21,6 +21,16 @@ abstract final class UiPreferenceKeys {
   /// Awal minggu kalender & ringkasan mingguan (rancangan `65`) — nilai
   /// `WeekStart.stableCode`.
   static const String weekStart = 'week_start';
+
+  /// Konfigurasi versi valid terakhir dari server, JSON (change 017).
+  static const String appConfigCache = 'app_config_cache';
+
+  /// Versi terbaru yang ditunda pengguna lewat "Nanti" (change 017).
+  static const String appUpdateDismissedVersion =
+      'app_update_dismissed_version';
+
+  /// Instan UTC ISO-8601 pengecekan versi berhasil terakhir (change 017).
+  static const String appConfigLastSuccessAt = 'app_config_last_success_at';
 }
 
 /// Akses baca/tulis preferensi antarmuka lokal.

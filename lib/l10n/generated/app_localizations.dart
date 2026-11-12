@@ -5828,6 +5828,96 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Tambah ke resep'**
   String get recipeAmountAddAction;
+
+  /// No description provided for @appUpdateForcedEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'UPDATE DIPERLUKAN'**
+  String get appUpdateForcedEyebrow;
+
+  /// No description provided for @appUpdateForcedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui Mealora dulu'**
+  String get appUpdateForcedTitle;
+
+  /// No description provided for @appUpdateForcedSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi yang terpasang sudah tidak didukung. Update sebentar, lalu lanjutkan seperti biasa.'**
+  String get appUpdateForcedSubtitle;
+
+  /// No description provided for @appUpdateForcedCardTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi {version} tidak didukung lagi'**
+  String appUpdateForcedCardTitle(String version);
+
+  /// No description provided for @appUpdateForcedCardBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Beberapa fitur butuh versi terbaru agar tetap berjalan dengan benar.'**
+  String get appUpdateForcedCardBody;
+
+  /// No description provided for @appUpdateReleaseNotesHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang baru'**
+  String get appUpdateReleaseNotesHeading;
+
+  /// No description provided for @appUpdateDataSafeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Data kamu tetap aman'**
+  String get appUpdateDataSafeTitle;
+
+  /// No description provided for @appUpdateDataSafeBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan makan, berat, dan program tersimpan di HP ini dan tidak hilang saat update.'**
+  String get appUpdateDataSafeBody;
+
+  /// No description provided for @appUpdateStoreActionAndroid.
+  ///
+  /// In id, this message translates to:
+  /// **'Update di Play Store'**
+  String get appUpdateStoreActionAndroid;
+
+  /// No description provided for @appUpdateStoreActionIos.
+  ///
+  /// In id, this message translates to:
+  /// **'Update di App Store'**
+  String get appUpdateStoreActionIos;
+
+  /// No description provided for @appUpdateAvailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi baru tersedia'**
+  String get appUpdateAvailableTitle;
+
+  /// No description provided for @appUpdateAvailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Mealora {version} sudah bisa diunduh. Update sekarang atau nanti, kamu tetap bisa memakai app.'**
+  String appUpdateAvailableBody(String version);
+
+  /// No description provided for @appUpdateLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti'**
+  String get appUpdateLater;
+
+  /// No description provided for @appUpdateNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Update'**
+  String get appUpdateNow;
+
+  /// No description provided for @appUpdateStoreOpenFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Toko aplikasi tidak bisa dibuka. Coba lagi sebentar.'**
+  String get appUpdateStoreOpenFailed;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {
