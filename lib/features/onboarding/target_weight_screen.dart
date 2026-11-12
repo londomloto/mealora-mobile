@@ -8,9 +8,11 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/program/program_code.dart';
+import 'package:mealora/domain/program/target_suggestion.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
 import 'package:mealora/features/onboarding/widgets/onboarding_scaffold.dart';
+import 'package:mealora/features/onboarding/widgets/target_suggestion_picker.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `25 · Target berat program` (task 4.9): berat awal (terbaca dari
@@ -42,15 +44,20 @@ class _OnboardingTargetWeightScreenState
           ? ''
           : draft!.targetWeight!.kg.toString(),
     );
+    _targetWeightController.addListener(_onWeightChanged);
     final targetDate = draft?.targetDate;
     _targetDate = targetDate == null
         ? null
         : DateTime(targetDate.year, targetDate.month, targetDate.day);
   }
 
+  void _onWeightChanged() => setState(() {});
+
   @override
   void dispose() {
-    _targetWeightController.dispose();
+    _targetWeightController
+      ..removeListener(_onWeightChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -66,6 +73,45 @@ class _OnboardingTargetWeightScreenState
     }
 
     final isWeightLoss = draft.selectedProgram == ProgramCode.weightLoss;
+
+    // Rentang aman (change 019, desain 25b): berat minimum selalu tampil;
+    // rentang tanggal tampil dan membatasi pemilih tanggal begitu berat
+    // tujuan yang valid diisi.
+    final typedWeightKg = double.tryParse(
+      _targetWeightController.text.trim().replaceAll(',', '.'),
+    );
+    final safeRange = draft.height == null || draft.currentWeight == null
+        ? null
+        : TargetSuggestionCalculator(ref.read(nutritionPolicyProvider))
+              .safeRange(
+                program: draft.selectedProgram!,
+                height: draft.height!,
+                currentWeight: draft.currentWeight!,
+                asOfDate: today,
+                targetWeightKg: typedWeightKg,
+              );
+    final defaultFirst = DateTime(today.year, today.month, today.day);
+    final defaultLast = DateTime(today.year + 5);
+    var firstDate = defaultFirst;
+    var lastDate = defaultLast;
+    final earliest = safeRange?.earliestDate;
+    final latest = safeRange?.latestDate;
+    if (earliest != null && latest != null) {
+      final e = DateTime(earliest.year, earliest.month, earliest.day);
+      final l = DateTime(latest.year, latest.month, latest.day);
+      if (e.isAfter(firstDate)) firstDate = e;
+      if (l.isBefore(lastDate)) lastDate = l;
+      if (lastDate.isBefore(firstDate)) {
+        firstDate = defaultFirst;
+        lastDate = defaultLast;
+      }
+    }
+    final current = _targetDate;
+    final initialDate = current == null || current.isBefore(firstDate)
+        ? firstDate
+        : current.isAfter(lastDate)
+        ? lastDate
+        : current;
     final programName = isWeightLoss
         ? text.onboardingProgramWeightLossName
         : text.onboardingProgramWeightGainName;
@@ -119,6 +165,15 @@ class _OnboardingTargetWeightScreenState
           hint: text.onboardingGoalWeightHint,
           suffix: text.unitKilogram,
         ),
+        if (safeRange != null) ...<Widget>[
+          const SizedBox(height: MealoraSpacing.xxs),
+          TargetSafeHint(
+            icon: Icons.verified_user_outlined,
+            text: text.targetHintMinimumWeight(
+              IdFormat.decimal(safeRange.minimumTargetWeightKg),
+            ),
+          ),
+        ],
         if (_targetWeightError != null) ...<Widget>[
           const SizedBox(height: MealoraSpacing.xxs),
           Text(
@@ -133,10 +188,22 @@ class _OnboardingTargetWeightScreenState
           label: text.onboardingTargetDateLabel,
           hint: text.onboardingTargetDateHint,
           value: _targetDate,
-          firstDate: DateTime(today.year, today.month, today.day),
-          lastDate: DateTime(today.year + 5),
+          firstDate: firstDate,
+          lastDate: lastDate,
+          initialDate: initialDate,
           onChanged: (value) => setState(() => _targetDate = value),
         ),
+        if (earliest != null && latest != null) ...<Widget>[
+          const SizedBox(height: MealoraSpacing.xxs),
+          TargetSafeHint(
+            icon: Icons.info_outline,
+            text: text.targetHintDateRange(
+              IdFormat.decimal(typedWeightKg!),
+              IdFormat.longDate(earliest),
+              IdFormat.longDate(latest),
+            ),
+          ),
+        ],
         const SizedBox(height: MealoraSpacing.sm),
         MealoraNoteCard(
           icon: Icons.calendar_month_outlined,

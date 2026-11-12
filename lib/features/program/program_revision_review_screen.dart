@@ -5,12 +5,17 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/format/id_formatters.dart';
+import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_target_proposal.dart';
+import 'package:mealora/domain/program/target_suggestion.dart';
 import 'package:mealora/domain/shared/program_outcome.dart';
 import 'package:mealora/domain/shared/program_warning.dart';
+import 'package:mealora/features/onboarding/onboarding_controller.dart'
+    show nutritionPolicyProvider;
 import 'package:mealora/features/onboarding/rejection_copy.dart';
+import 'package:mealora/features/onboarding/widgets/target_suggestion_picker.dart';
 import 'package:mealora/features/program/program_providers.dart';
 import 'package:mealora/features/program/program_revision_service.dart';
 import 'package:mealora/features/program/widgets/program_shared.dart';
@@ -75,7 +80,29 @@ class _ProgramRevisionReviewScreenState
     final outcome = _outcome;
 
     if (outcome is! Approved<ProgramTargetProposal>) {
-      return _RevisionRejectedView(outcome: outcome);
+      // Saran berat minimum (change 019, desain 26c). Alur ganti program
+      // tidak punya tanggal tujuan, jadi hanya kasus BMI yang mungkin.
+      final suggestions = switch (outcome) {
+        NeedsUserCorrection<ProgramTargetProposal>(
+          reasonCode: final code,
+          details: final details,
+        ) =>
+          TargetSuggestionCalculator(ref.read(nutritionPolicyProvider)).suggest(
+            reasonCode: code,
+            details: details,
+            program: widget.programCode,
+            height: _previewInputs.height,
+            currentWeight: _previewInputs.currentWeight,
+            asOfDate: ref.read(clockProvider).today(),
+            targetWeightKg: _previewInputs.specific.targetWeight?.kg,
+            targetDate: null,
+          ),
+        _ => const <TargetSuggestion>[],
+      };
+      return _RevisionRejectedView(
+        outcome: outcome,
+        suggestions: suggestions,
+      );
     }
     final proposal = outcome.value;
 
@@ -300,9 +327,16 @@ class _ProgramRevisionReviewScreenState
 }
 
 class _RevisionRejectedView extends StatelessWidget {
-  const _RevisionRejectedView({required this.outcome});
+  const _RevisionRejectedView({
+    required this.outcome,
+    this.suggestions = const <TargetSuggestion>[],
+  });
 
   final ProgramOutcome<ProgramTargetProposal> outcome;
+
+  /// Dipilih lewat tombol; berat saran dikembalikan ke layar pemilihan
+  /// program sebagai hasil rute, yang lalu meninjau ulang (change 019).
+  final List<TargetSuggestion> suggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -385,9 +419,41 @@ class _RevisionRejectedView extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (suggestions.isNotEmpty &&
+                    outcome
+                        is NeedsUserCorrection<ProgramTargetProposal>) ...<
+                  Widget
+                >[
+                  const SizedBox(height: MealoraSpacing.lg),
+                  TargetSuggestionPicker(
+                    suggestions: suggestions,
+                    reasonCode:
+                        (outcome as NeedsUserCorrection<ProgramTargetProposal>)
+                            .reasonCode,
+                    selectedIndex: 0,
+                    onSelected: (_) {},
+                  ),
+                  const SizedBox(height: MealoraSpacing.md),
+                  MealoraPrimaryButton(
+                    label: text.targetSuggestionApplyAction,
+                    onPressed: () => Navigator.of(
+                      context,
+                    ).pop<double>(suggestions.first.targetWeightKg),
+                  ),
+                  const SizedBox(height: MealoraSpacing.xs),
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.edit_outlined, size: 16),
+                      label: Text(text.targetSuggestionManualAction),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: MealoraSpacing.lg),
                 Text(
-                  text.revisionRejectedNoChangeNote,
+                  suggestions.isNotEmpty
+                      ? text.targetSuggestionNote
+                      : text.revisionRejectedNoChangeNote,
                   style: MealoraTypography.caption,
                 ),
               ],

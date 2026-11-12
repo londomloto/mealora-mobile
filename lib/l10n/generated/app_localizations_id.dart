@@ -3493,4 +3493,65 @@ class AppTextId extends AppText {
 
   @override
   String get energyRangeNextMonth => 'Bulan berikutnya';
+
+  @override
+  String get targetSuggestionHeading => 'PILIH PENYESUAIAN';
+
+  @override
+  String get targetSuggestionRecommended => 'Disarankan';
+
+  @override
+  String get targetSuggestionApplyAction => 'Terapkan dan tinjau ulang';
+
+  @override
+  String get targetSuggestionManualAction => 'Atur sendiri';
+
+  @override
+  String get targetSuggestionNote =>
+      'Pilihanmu diperiksa ulang sebelum target dibuat. Data dan program sebelumnya tidak berubah.';
+
+  @override
+  String targetSuggestionMinimumTitle(String weight) {
+    return 'Pakai $weight kg';
+  }
+
+  @override
+  String get targetSuggestionMinimumDetail =>
+      'Berat tujuan terendah yang aman untuk tinggimu.';
+
+  @override
+  String targetSuggestionKeepWeightTitle(String weight, String date) {
+    return 'Tetap $weight kg, mulai $date';
+  }
+
+  @override
+  String get targetSuggestionKeepWeightFastDetail =>
+      'Tanggal paling awal yang memenuhi batas aman.';
+
+  @override
+  String get targetSuggestionKeepWeightSlowDetail =>
+      'Tanggal paling lambat yang masih memenuhi laju minimum.';
+
+  @override
+  String targetSuggestionKeepDateTitle(String date, String weight) {
+    return 'Tetap $date, target $weight kg';
+  }
+
+  @override
+  String get targetSuggestionKeepDateFastDetail =>
+      'Berat terdekat yang aman dicapai di tanggal itu.';
+
+  @override
+  String get targetSuggestionKeepDateSlowDetail =>
+      'Berat yang memenuhi laju minimum di tanggal itu.';
+
+  @override
+  String targetHintMinimumWeight(String weight) {
+    return 'Minimal aman untuk tinggimu: $weight kg';
+  }
+
+  @override
+  String targetHintDateRange(String weight, String earliest, String latest) {
+    return 'Untuk $weight kg, pilih antara $earliest dan $latest.';
+  }
 }

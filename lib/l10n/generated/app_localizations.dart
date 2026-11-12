@@ -6176,6 +6176,96 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Bulan berikutnya'**
   String get energyRangeNextMonth;
+
+  /// No description provided for @targetSuggestionHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'PILIH PENYESUAIAN'**
+  String get targetSuggestionHeading;
+
+  /// No description provided for @targetSuggestionRecommended.
+  ///
+  /// In id, this message translates to:
+  /// **'Disarankan'**
+  String get targetSuggestionRecommended;
+
+  /// No description provided for @targetSuggestionApplyAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan dan tinjau ulang'**
+  String get targetSuggestionApplyAction;
+
+  /// No description provided for @targetSuggestionManualAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur sendiri'**
+  String get targetSuggestionManualAction;
+
+  /// No description provided for @targetSuggestionNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilihanmu diperiksa ulang sebelum target dibuat. Data dan program sebelumnya tidak berubah.'**
+  String get targetSuggestionNote;
+
+  /// No description provided for @targetSuggestionMinimumTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai {weight} kg'**
+  String targetSuggestionMinimumTitle(String weight);
+
+  /// No description provided for @targetSuggestionMinimumDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat tujuan terendah yang aman untuk tinggimu.'**
+  String get targetSuggestionMinimumDetail;
+
+  /// No description provided for @targetSuggestionKeepWeightTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tetap {weight} kg, mulai {date}'**
+  String targetSuggestionKeepWeightTitle(String weight, String date);
+
+  /// No description provided for @targetSuggestionKeepWeightFastDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal paling awal yang memenuhi batas aman.'**
+  String get targetSuggestionKeepWeightFastDetail;
+
+  /// No description provided for @targetSuggestionKeepWeightSlowDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal paling lambat yang masih memenuhi laju minimum.'**
+  String get targetSuggestionKeepWeightSlowDetail;
+
+  /// No description provided for @targetSuggestionKeepDateTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tetap {date}, target {weight} kg'**
+  String targetSuggestionKeepDateTitle(String date, String weight);
+
+  /// No description provided for @targetSuggestionKeepDateFastDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat terdekat yang aman dicapai di tanggal itu.'**
+  String get targetSuggestionKeepDateFastDetail;
+
+  /// No description provided for @targetSuggestionKeepDateSlowDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat yang memenuhi laju minimum di tanggal itu.'**
+  String get targetSuggestionKeepDateSlowDetail;
+
+  /// No description provided for @targetHintMinimumWeight.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal aman untuk tinggimu: {weight} kg'**
+  String targetHintMinimumWeight(String weight);
+
+  /// No description provided for @targetHintDateRange.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk {weight} kg, pilih antara {earliest} dan {latest}.'**
+  String targetHintDateRange(String weight, String earliest, String latest);
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

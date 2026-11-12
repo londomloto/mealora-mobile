@@ -117,6 +117,7 @@ final class OnboardingDraft {
     bool? estimateAcknowledged,
     ProgramProposalInputs? previewInputs,
     ProgramOutcome<ProgramTargetProposal>? lastOutcome,
+    bool clearPreview = false,
   }) {
     return OnboardingDraft(
       currentStep: currentStep ?? this.currentStep,
@@ -134,8 +135,10 @@ final class OnboardingDraft {
       targetDate: clearTargetDate ? null : (targetDate ?? this.targetDate),
       habitFocus: clearHabitFocus ? null : (habitFocus ?? this.habitFocus),
       estimateAcknowledged: estimateAcknowledged ?? this.estimateAcknowledged,
-      previewInputs: previewInputs ?? this.previewInputs,
-      lastOutcome: lastOutcome ?? this.lastOutcome,
+      previewInputs: clearPreview
+          ? null
+          : (previewInputs ?? this.previewInputs),
+      lastOutcome: clearPreview ? null : (lastOutcome ?? this.lastOutcome),
     );
   }
 }

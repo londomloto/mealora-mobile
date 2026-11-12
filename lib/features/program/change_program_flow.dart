@@ -4,17 +4,20 @@ import 'package:mealora/app/theme/color_tokens.dart';
 import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
+import 'package:mealora/core/format/id_formatters.dart';
 import 'package:mealora/core/providers.dart';
 import 'package:mealora/domain/program/program_code.dart';
 import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_specific_input.dart';
+import 'package:mealora/domain/program/target_suggestion.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart'
-    show profileRepositoryProvider;
+    show nutritionPolicyProvider, profileRepositoryProvider;
 import 'package:mealora/features/onboarding/program_detail_screen.dart'
     show kHabitFocusCodes;
 import 'package:mealora/features/onboarding/widgets/onboarding_choice_card.dart';
+import 'package:mealora/features/onboarding/widgets/target_suggestion_picker.dart';
 import 'package:mealora/features/program/program_name.dart';
 import 'package:mealora/features/program/program_revision_review_screen.dart';
 import 'package:mealora/features/program/program_revision_service.dart';
@@ -229,6 +232,8 @@ class _PickReplacementProgramScreenState
                           ),
                           onChanged: (_) => setState(() {}),
                         ),
+                        const SizedBox(height: MealoraSpacing.xxs),
+                        _MinimumWeightHint(),
                       ],
                       if (_error != null) ...<Widget>[
                         const SizedBox(height: MealoraSpacing.sm),
@@ -320,8 +325,8 @@ class _PickReplacementProgramScreenState
       return;
     }
     setState(() => _preparing = false);
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
+    final suggestedWeightKg = await Navigator.of(context).push<double>(
+      MaterialPageRoute<double>(
         builder: (_) => ProgramRevisionReviewScreen(
           profileId: profile.id,
           programCode: _selected!,
@@ -333,6 +338,11 @@ class _PickReplacementProgramScreenState
         ),
       ),
     );
+    // Pengguna memilih saran berat (change 019) → isi ulang dan tinjau lagi.
+    if (suggestedWeightKg != null && mounted) {
+      _targetWeightController.text = IdFormat.decimal(suggestedWeightKg);
+      await _continue();
+    }
   }
 
   Future<ProgramProposalInputs> _rebuildCurrentInputs(
@@ -353,3 +363,29 @@ class _PickReplacementProgramScreenState
     );
   }
 }
+
+/// Petunjuk berat tujuan minimum yang aman (change 019, desain 25b).
+class _MinimumWeightHint extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final height = ref.watch(_profileHeightProvider).valueOrNull;
+    if (height == null) {
+      return const SizedBox.shrink();
+    }
+    final minimum = TargetSuggestionCalculator(
+      ref.watch(nutritionPolicyProvider),
+    ).minimumTargetWeightKg(height);
+    return TargetSafeHint(
+      text: AppText.of(context).targetHintMinimumWeight(
+        IdFormat.decimal(minimum),
+      ),
+      icon: Icons.verified_user_outlined,
+    );
+  }
+}
+
+final AutoDisposeFutureProvider<Length?> _profileHeightProvider =
+    FutureProvider.autoDispose<Length?>(
+      (ref) async =>
+          (await ref.read(profileRepositoryProvider).current())?.height,
+    );

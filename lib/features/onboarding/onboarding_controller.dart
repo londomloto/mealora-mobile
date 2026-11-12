@@ -20,7 +20,9 @@ import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_repository.dart';
 import 'package:mealora/domain/program/program_specific_input.dart';
 import 'package:mealora/domain/program/program_target_proposal.dart';
+import 'package:mealora/domain/program/target_suggestion.dart';
 import 'package:mealora/domain/shared/program_outcome.dart';
+import 'package:mealora/domain/shared/reason_code.dart';
 import 'package:mealora/features/onboarding/onboarding_draft.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
 
@@ -308,9 +310,54 @@ class OnboardingController extends AsyncNotifier<OnboardingDraft> {
         targetWeight: weightResult.valueOrNull,
         targetDate: targetDate,
         clearTargetDate: targetDate == null,
+        // Masukan berubah → pratinjau lama tidak berlaku lagi (change 019);
+        // tanpa ini `prepareReview` menampilkan hasil lama.
+        clearPreview: true,
       ),
     );
     return const Ok<void>(null);
+  }
+
+  /// Saran penyesuaian untuk penolakan terakhir (change 019) — kosong bila
+  /// penolakannya bukan soal target atau laju.
+  List<TargetSuggestion> targetSuggestions() {
+    final draft = state.valueOrNull;
+    final outcome = draft?.lastOutcome;
+    final inputs = draft?.previewInputs;
+    if (draft == null || inputs == null || draft.selectedProgram == null) {
+      return const <TargetSuggestion>[];
+    }
+    final (ReasonCode code, Map<String, Object?> details) = switch (outcome) {
+      NeedsUserCorrection<ProgramTargetProposal>(
+        reasonCode: final c,
+        details: final d,
+      ) =>
+        (c, d),
+      _ => (ReasonCode.missingRequiredInput, const <String, Object?>{}),
+    };
+    return TargetSuggestionCalculator(ref.read(nutritionPolicyProvider))
+        .suggest(
+          reasonCode: code,
+          details: details,
+          program: draft.selectedProgram!,
+          height: inputs.height,
+          currentWeight: inputs.currentWeight,
+          asOfDate: ref.read(clockProvider).today(),
+          targetWeightKg: draft.targetWeight?.kg,
+          targetDate: draft.targetDate,
+        );
+  }
+
+  /// Menerapkan saran yang dipilih pengguna lalu menghitung ulang pratinjau
+  /// (change 019) — tidak pernah dipanggil tanpa tindakan pengguna.
+  Future<void> applyTargetSuggestion(TargetSuggestion suggestion) async {
+    final result = saveTargetWeightDetails(
+      targetWeightKg: suggestion.targetWeightKg,
+      targetDate: suggestion.targetDate,
+    );
+    if (result.isOk) {
+      await prepareReview();
+    }
   }
 
   /// Menghitung pratinjau (`12`, task 5.1/5.2) begitu langkah `review`

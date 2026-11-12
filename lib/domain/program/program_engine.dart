@@ -16,6 +16,13 @@ import 'package:mealora/domain/shared/reason_code.dart';
 import 'package:mealora/domain/shared/rounding.dart';
 import 'package:mealora/domain/shared/units.dart';
 
+/// Kunci `details` penolakan `targetWeightOutOfRange` yang membedakan
+/// sub-kasusnya (change 019) — kode alasannya tetap satu.
+const targetWeightViolationKey = 'violation';
+
+/// Sub-kasus `targetWeightOutOfRange` (change 019).
+enum TargetWeightViolation { belowMinBmi, wrongDirection }
+
 const _weightChangingPrograms = <ProgramCode>{
   ProgramCode.weightLoss,
   ProgramCode.weightGain,
@@ -361,6 +368,9 @@ final class ProgramEngine {
       return const EligibilityRejected(
         kind: RejectionKind.needsUserCorrection,
         reasonCode: ReasonCode.targetWeightOutOfRange,
+        details: <String, Object?>{
+          targetWeightViolationKey: TargetWeightViolation.belowMinBmi,
+        },
       );
     }
     if (program == ProgramCode.weightLoss &&
@@ -368,6 +378,9 @@ final class ProgramEngine {
       return const EligibilityRejected(
         kind: RejectionKind.needsUserCorrection,
         reasonCode: ReasonCode.targetWeightOutOfRange,
+        details: <String, Object?>{
+          targetWeightViolationKey: TargetWeightViolation.wrongDirection,
+        },
       );
     }
     if (program == ProgramCode.weightGain &&
@@ -375,6 +388,9 @@ final class ProgramEngine {
       return const EligibilityRejected(
         kind: RejectionKind.needsUserCorrection,
         reasonCode: ReasonCode.targetWeightOutOfRange,
+        details: <String, Object?>{
+          targetWeightViolationKey: TargetWeightViolation.wrongDirection,
+        },
       );
     }
     return const EligibilityPass();

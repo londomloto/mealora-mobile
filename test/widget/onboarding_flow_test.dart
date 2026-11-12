@@ -282,8 +282,8 @@ void main() {
     );
 
     testWidgets(
-      'laju yang diminta terlalu cepat menawarkan ubah masukan, bukan '
-      'program lain (task 6.3, scenario 6.12)',
+      'laju yang diminta terlalu cepat menawarkan saran dan atur sendiri, '
+      'bukan program lain (task 6.3, scenario 6.12; change 019)',
       (tester) async {
         final container = ProviderContainer(overrides: overrides());
         addTearDown(container.dispose);
@@ -314,13 +314,108 @@ void main() {
           find.text('Tanggal ini butuh laju yang terlalu cepat'),
           findsOneWidget,
         );
-        expect(find.text('Ubah masukan'), findsOneWidget);
+        expect(find.text('PILIH PENYESUAIAN'), findsOneWidget);
+        expect(find.textContaining('Tetap 62,4 kg, mulai'), findsOneWidget);
+        expect(find.textContaining(', target 66,3 kg'), findsOneWidget);
+        expect(find.text('Terapkan dan tinjau ulang'), findsOneWidget);
+        expect(find.text('Lihat program lain'), findsNothing);
         expect(find.textContaining('kkal'), findsNothing);
 
-        await tester.tap(find.text('Ubah masukan'));
+        await tester.ensureVisible(find.text('Atur sendiri'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Atur sendiri'));
         await tester.pumpAndSettle();
 
         expect(find.text('Atur target berat'), findsOneWidget);
+        expect(find.textContaining('Minimal aman untuk tinggimu'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'memilih saran menerapkannya lalu meninjau ulang (change 019)',
+      (tester) async {
+        final container = ProviderContainer(overrides: overrides());
+        addTearDown(container.dispose);
+
+        await container.read(onboardingControllerProvider.future);
+        final notifier = container.read(onboardingControllerProvider.notifier);
+        await notifier.saveProfileBasics(
+          nickname: '',
+          birthDate: const LocalDate(1997, 5, 20),
+          heightCm: 165,
+          currentWeightKg: 68.4,
+          biologicalInput: BiologicalInput.female,
+          today: const LocalDate(2026, 11, 9),
+        );
+        await notifier.saveActivityLevel(ActivityLevel.moderatelyActive);
+        notifier.selectProgram(ProgramCode.weightLoss);
+        notifier.setEstimateAcknowledged(true);
+        notifier.continueFromProgramDetail();
+        notifier.saveTargetWeightDetails(
+          targetWeightKg: 62.4,
+          targetDate: const LocalDate(2026, 12, 7),
+        );
+
+        await tester.pumpWidget(wrapFlow(container));
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(find.textContaining(', target 66,3 kg'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.textContaining(', target 66,3 kg'));
+        await tester.pump();
+        await tester.tap(find.text('Terapkan dan tinjau ulang'));
+        await tester.pumpAndSettle();
+
+        final draft = container.read(onboardingControllerProvider).value!;
+        expect(draft.targetWeight!.kg, 66.3);
+        expect(draft.targetDate, const LocalDate(2026, 12, 7));
+        expect(
+          find.text('Tanggal ini butuh laju yang terlalu cepat'),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'mengubah target manual setelah ditolak menghitung ulang pratinjau '
+      '(change 019)',
+      (tester) async {
+        final container = ProviderContainer(overrides: overrides());
+        addTearDown(container.dispose);
+
+        await container.read(onboardingControllerProvider.future);
+        final notifier = container.read(onboardingControllerProvider.notifier);
+        await notifier.saveProfileBasics(
+          nickname: '',
+          birthDate: const LocalDate(1997, 5, 20),
+          heightCm: 165,
+          currentWeightKg: 68.4,
+          biologicalInput: BiologicalInput.female,
+          today: const LocalDate(2026, 11, 9),
+        );
+        await notifier.saveActivityLevel(ActivityLevel.moderatelyActive);
+        notifier.selectProgram(ProgramCode.weightLoss);
+        notifier.setEstimateAcknowledged(true);
+        notifier.continueFromProgramDetail();
+        notifier.saveTargetWeightDetails(
+          targetWeightKg: 62.4,
+          targetDate: const LocalDate(2026, 12, 7),
+        );
+
+        await tester.pumpWidget(wrapFlow(container));
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Tanggal ini butuh laju yang terlalu cepat'),
+          findsOneWidget,
+        );
+
+        notifier.saveTargetWeightDetails(targetWeightKg: 62.4);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Tanggal ini butuh laju yang terlalu cepat'),
+          findsNothing,
+        );
       },
     );
   });
