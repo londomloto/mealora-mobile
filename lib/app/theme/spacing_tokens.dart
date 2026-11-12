@@ -50,6 +50,9 @@ abstract final class MealoraRadius {
   static const double cardLarge = 26;
   static const double welcomeCard = 28;
   static const double sheet = 32;
+
+  /// Kartu berbagi 9:16 (change 014, rancangan `59`–`62`).
+  static const double shareCard = 28;
   static const double programHeroBottom = 38;
 
   /// Ubin simbol pada splash.

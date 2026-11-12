@@ -186,6 +186,58 @@ abstract final class MealoraTypography {
   static TextStyle get calorieRingValue =>
       _jakarta(size: 28, weight: bold, color: MealoraColors.ink, height: 1);
 
+  // Kartu berbagi (change 014) — ukuran logis 360×640, rancangan `59`/`62`.
+
+  static TextStyle get shareCardDate => _jakarta(
+    size: 11,
+    weight: bold,
+    color: MealoraColors.shareCardMuted,
+    letterSpacing: 1.6,
+  );
+
+  static TextStyle get shareCardRingValue => _jakarta(
+    size: 62,
+    weight: bold,
+    color: MealoraColors.onPrimary,
+    height: 1.1,
+  );
+
+  static TextStyle get shareCardRingUnit =>
+      _jakarta(size: 14, weight: regular, color: MealoraColors.onPrimaryMuted);
+
+  static TextStyle get shareCardTarget =>
+      _jakarta(size: 17, weight: bold, color: MealoraColors.onPrimary);
+
+  static TextStyle get shareCardMacro =>
+      _jakarta(size: 12, weight: regular, color: MealoraColors.shareCardMuted);
+
+  static TextStyle get shareCardWordmark =>
+      _jakarta(size: 16, weight: bold, color: MealoraColors.onPrimary);
+
+  static TextStyle get shareCardChipWordmark =>
+      _jakarta(size: 13, weight: bold, color: MealoraColors.primary);
+
+  static TextStyle get shareCardChipLabel =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.onPrimary);
+
+  static TextStyle get shareCardItemName =>
+      _jakarta(size: 13, weight: semiBold, color: MealoraColors.ink);
+
+  static TextStyle get shareCardItemDetail =>
+      _jakarta(size: 11, weight: regular, color: MealoraColors.muted);
+
+  static TextStyle get shareCardItemKcal =>
+      _jakarta(size: 12, weight: bold, color: MealoraColors.muted);
+
+  static TextStyle get shareCardTotalLabel =>
+      _jakarta(size: 11, weight: regular, color: MealoraColors.muted);
+
+  static TextStyle get shareCardTotalValue =>
+      _jakarta(size: 24, weight: bold, color: MealoraColors.ink, height: 1.2);
+
+  static TextStyle get shareCardTotalUnit =>
+      _jakarta(size: 12, weight: semiBold, color: MealoraColors.muted);
+
   static TextStyle _jakarta({
     required double size,
     required double weight,

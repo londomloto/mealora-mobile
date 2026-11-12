@@ -2937,4 +2937,73 @@ class AppTextId extends AppText {
   @override
   String get lateMealNoticeBody =>
       'Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar.';
+
+  @override
+  String get shareAction => 'Bagikan';
+
+  @override
+  String get sharePreviewTitle => 'Bagikan';
+
+  @override
+  String get sharePreviewCloseSemantics => 'Tutup';
+
+  @override
+  String get sharePreviewLocalNote =>
+      'Gambar dibuat di HP kamu. Mealora tidak mengunggah apa pun.';
+
+  @override
+  String get shareFailedMessage => 'Kartu belum bisa dibagikan. Coba lagi.';
+
+  @override
+  String get shareSummarySemantics => 'Bagikan ringkasan hari ini';
+
+  @override
+  String get shareSummaryDisabledReason =>
+      'Catat makanan dulu untuk membagikan ringkasan.';
+
+  @override
+  String get shareSummaryPreviewCaption =>
+      'Ringkasan harian · kalori & makro hari ini';
+
+  @override
+  String get shareMealPreviewCaption =>
+      'Kartu makanan · foto & estimasi kalori';
+
+  @override
+  String shareCardOfTarget(String target) {
+    return 'dari $target kkal';
+  }
+
+  @override
+  String shareCardPercentOfTarget(int percent) {
+    return '$percent% dari target';
+  }
+
+  @override
+  String shareCardMacroLine(String protein, String carbohydrate, String fat) {
+    return 'Protein $protein g · Karbo $carbohydrate g · Lemak $fat g';
+  }
+
+  @override
+  String shareCardMoreItems(int count) {
+    return '+$count lainnya';
+  }
+
+  @override
+  String get shareCardTotalLabel => 'Estimasi total kalori';
+
+  @override
+  String get foodPhotoSavedTitle => 'Tersimpan!';
+
+  @override
+  String foodPhotoSavedSubtitle(String mealTime, int count, String kcal) {
+    return '$mealTime · $count item · $kcal kkal';
+  }
+
+  @override
+  String get foodPhotoSavedThumbCaption =>
+      'Pratinjau kartu yang akan dibagikan';
+
+  @override
+  String get foodPhotoSavedDoneAction => 'Selesai';
 }

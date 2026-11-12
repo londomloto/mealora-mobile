@@ -20,10 +20,12 @@ import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_component_correction_screen.dart';
 import 'package:mealora/features/diary/food_photo_draft_storage.dart';
+import 'package:mealora/features/diary/food_photo_saved_screen.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
 import 'package:mealora/features/diary/voice_input_shared.dart'
     show voiceUndeterminedLabel;
 import 'package:mealora/features/reminders/late_meal_notice.dart';
+import 'package:mealora/features/share/meal_share_card.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `03 · Tinjau foto makanan` (task 5.1/5.2/5.8/5.9, change 011): ringkasan
@@ -290,9 +292,13 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
     if (mounted) Navigator.of(context).pop();
   }
 
-  Future<void> _discardDraft() async {
+  /// Membuang draf DB dan — bila [keepPhoto] `false` — foto sesuai
+  /// retensi. Setelah log berhasil, foto ditahan untuk layar "Tersimpan"
+  /// (change 014, Design D3) dan dilepas saat layar itu ditutup.
+  Future<void> _discardDraft({bool keepPhoto = false}) async {
     if (!widget.origin.persistsDraft) return;
     await discardPhotoDraft(ref, _draft.id);
+    if (keepPhoto) return;
     final path = _draft.sourceImagePath;
     if (path == null) return;
     final retention = await ref.read(imageRetentionPreferenceProvider.future);
@@ -304,6 +310,7 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
   Future<void> _confirm() async {
     setState(() => _saving = true);
     final entries = <NewMealEntry>[];
+    final shareItems = <MealShareItem>[];
     for (final component in _draft.components) {
       final food = await ref
           .read(foodRepositoryProvider)
@@ -319,6 +326,13 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
           food: food,
           serving: serving,
           quantity: component.quantity,
+        ),
+      );
+      shareItems.add(
+        MealShareItem(
+          name: food.name,
+          portion: '${IdFormat.decimal(component.quantity)} × ${serving.label}',
+          kcal: serving.nutrition.scaledBy(component.quantity).energy?.kcal,
         ),
       );
     }
@@ -340,8 +354,32 @@ class _FoodPhotoReviewScreenState extends ConsumerState<FoodPhotoReviewScreen> {
       return;
     }
 
-    await _discardDraft();
+    final isPhoto = widget.origin == ComponentDraftOrigin.photo;
+    await _discardDraft(keepPhoto: isPhoto);
     if (!mounted) return;
+
+    if (isPhoto) {
+      // Layar "Tersimpan" (change 014, task 3.1) menggantikan alur foto;
+      // kembali dari sana langsung ke halaman awal.
+      final text = AppText.of(context);
+      unawaited(
+        Navigator.of(context).pushAndRemoveUntil<void>(
+          MaterialPageRoute<void>(
+            builder: (_) => FoodPhotoSavedScreen(
+              date: _draft.localDate,
+              meal: MealShareData(
+                mealTimeLabel: DiaryFormat.mealTimeLabel(_draft.mealTime, text),
+                items: shareItems,
+                photoPath: _draft.sourceImagePath,
+              ),
+            ),
+          ),
+          (route) => route.isFirst,
+        ),
+      );
+      return;
+    }
+
     // Peringatan jelang tidur (change 013, task 4.3): hanya setelah Ok.
     final lateMealNotice = ref.read(lateMealNoticeProvider);
     final messenger = ScaffoldMessenger.of(context);

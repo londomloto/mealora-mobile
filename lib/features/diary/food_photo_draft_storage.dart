@@ -33,3 +33,27 @@ Future<void> deleteDraftPhoto(String path) async {
     // Sudah tidak ada — idempoten.
   }
 }
+
+/// Menghapus foto di `food-photo-drafts/` yang tidak dirujuk draf mana pun
+/// (change 014, task 3.3, Design D4) — sisa bila aplikasi dimatikan saat
+/// layar "Tersimpan" terbuka. Hanya berkas yang lebih tua dari
+/// [olderThanUtc] yang disentuh, supaya foto yang baru saja diambil (dan
+/// drafnya belum tersimpan) tidak ikut terhapus.
+Future<void> deleteOrphanDraftPhotos({
+  required Set<String> referencedPaths,
+  required DateTime olderThanUtc,
+}) async {
+  final documentsDir = await getApplicationDocumentsDirectory();
+  final draftPhotosDir = Directory('${documentsDir.path}/food-photo-drafts');
+  if (!draftPhotosDir.existsSync()) return;
+  final referenced = referencedPaths.map(_normalize).toSet();
+  await for (final entity in draftPhotosDir.list()) {
+    if (entity is! File || referenced.contains(_normalize(entity.path))) {
+      continue;
+    }
+    final modified = entity.lastModifiedSync().toUtc();
+    if (modified.isBefore(olderThanUtc)) await deleteDraftPhoto(entity.path);
+  }
+}
+
+String _normalize(String path) => path.replaceAll(r'\', '/');

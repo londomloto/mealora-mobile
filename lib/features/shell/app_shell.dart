@@ -8,6 +8,7 @@ import 'package:mealora/features/diary/add_food_sheet.dart';
 import 'package:mealora/features/history/history_screen.dart';
 import 'package:mealora/features/profile/profile_screen.dart';
 import 'package:mealora/features/program/program_screen.dart';
+import 'package:mealora/features/share/startup_cleanup.dart';
 import 'package:mealora/features/shell/destinations.dart';
 import 'package:mealora/features/shell/floating_navigation.dart';
 import 'package:mealora/features/today/today_screen.dart';
@@ -20,6 +21,8 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(selectedDestinationProvider).valueOrNull;
+    // Sekali per proses; hasilnya tidak memengaruhi tampilan.
+    ref.watch(startupStorageCleanupProvider);
 
     if (selected == null) {
       return const Scaffold(

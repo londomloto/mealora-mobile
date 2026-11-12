@@ -5270,6 +5270,114 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar.'**
   String get lateMealNoticeBody;
+
+  /// No description provided for @shareAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan'**
+  String get shareAction;
+
+  /// No description provided for @sharePreviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan'**
+  String get sharePreviewTitle;
+
+  /// No description provided for @sharePreviewCloseSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get sharePreviewCloseSemantics;
+
+  /// No description provided for @sharePreviewLocalNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar dibuat di HP kamu. Mealora tidak mengunggah apa pun.'**
+  String get sharePreviewLocalNote;
+
+  /// No description provided for @shareFailedMessage.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu belum bisa dibagikan. Coba lagi.'**
+  String get shareFailedMessage;
+
+  /// No description provided for @shareSummarySemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan ringkasan hari ini'**
+  String get shareSummarySemantics;
+
+  /// No description provided for @shareSummaryDisabledReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat makanan dulu untuk membagikan ringkasan.'**
+  String get shareSummaryDisabledReason;
+
+  /// No description provided for @shareSummaryPreviewCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan harian · kalori & makro hari ini'**
+  String get shareSummaryPreviewCaption;
+
+  /// No description provided for @shareMealPreviewCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu makanan · foto & estimasi kalori'**
+  String get shareMealPreviewCaption;
+
+  /// No description provided for @shareCardOfTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'dari {target} kkal'**
+  String shareCardOfTarget(String target);
+
+  /// No description provided for @shareCardPercentOfTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent}% dari target'**
+  String shareCardPercentOfTarget(int percent);
+
+  /// No description provided for @shareCardMacroLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Protein {protein} g · Karbo {carbohydrate} g · Lemak {fat} g'**
+  String shareCardMacroLine(String protein, String carbohydrate, String fat);
+
+  /// No description provided for @shareCardMoreItems.
+  ///
+  /// In id, this message translates to:
+  /// **'+{count} lainnya'**
+  String shareCardMoreItems(int count);
+
+  /// No description provided for @shareCardTotalLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi total kalori'**
+  String get shareCardTotalLabel;
+
+  /// No description provided for @foodPhotoSavedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersimpan!'**
+  String get foodPhotoSavedTitle;
+
+  /// No description provided for @foodPhotoSavedSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{mealTime} · {count} item · {kcal} kkal'**
+  String foodPhotoSavedSubtitle(String mealTime, int count, String kcal);
+
+  /// No description provided for @foodPhotoSavedThumbCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau kartu yang akan dibagikan'**
+  String get foodPhotoSavedThumbCaption;
+
+  /// No description provided for @foodPhotoSavedDoneAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get foodPhotoSavedDoneAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

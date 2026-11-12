@@ -22,6 +22,8 @@ import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_photo_review_screen.dart';
+import 'package:mealora/features/share/daily_summary_share_card.dart';
+import 'package:mealora/features/share/share_preview_screen.dart';
 import 'package:mealora/features/shell/destinations.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
@@ -162,6 +164,23 @@ class _TodayBody extends StatelessWidget {
                               width: 40,
                               height: 40,
                             ),
+                          ),
+                          const SizedBox(width: 10),
+                          _ShareSummaryButton(
+                            data: dailyTotal.hasAnyEntries
+                                ? DailySummaryShareData(
+                                    date: today,
+                                    consumedKcal:
+                                        dailyTotal.nutrition.energy?.kcal ?? 0,
+                                    targetKcal: showsEnergyTarget
+                                        ? energyTarget?.kcal
+                                        : null,
+                                    proteinG: dailyTotal.nutrition.proteinG,
+                                    carbohydrateG:
+                                        dailyTotal.nutrition.carbohydrateG,
+                                    fatG: dailyTotal.nutrition.fatG,
+                                  )
+                                : null,
                           ),
                         ],
                       ),
@@ -330,6 +349,71 @@ class _TodayBody extends StatelessWidget {
 /// termasuk tepat setelah aplikasi dibuka kembali usai ditutup paksa di
 /// tengah peninjauan: penyimpanan draf sudah bertahan (Design D6), ruang
 /// utama inilah titik yang memulihkannya ke navigasi.
+/// Tombol Bagikan ringkasan di header (change 014, task 2.2, rancangan
+/// `55`/`56`). [data] `null` berarti belum ada catatan hari ini: tombol
+/// tampil nonaktif, dan mengetuknya menjelaskan alasannya alih-alih diam.
+class _ShareSummaryButton extends StatelessWidget {
+  const _ShareSummaryButton({required this.data});
+
+  final DailySummaryShareData? data;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    final enabled = data != null;
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: text.shareSummarySemantics,
+      hint: enabled ? null : text.shareSummaryDisabledReason,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: const ValueKey<String>('today-share-summary'),
+          borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+          onTap: () {
+            if (data == null) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(content: Text(text.shareSummaryDisabledReason)),
+                );
+              return;
+            }
+            Navigator.of(context).push<void>(
+              MaterialPageRoute<void>(
+                builder: (_) => SharePreviewScreen(
+                  card: DailySummaryShareCard(data: data!),
+                  caption: text.shareSummaryPreviewCaption,
+                ),
+              ),
+            );
+          },
+          child: ExcludeSemantics(
+            child: Opacity(
+              opacity: enabled ? 1 : 0.5,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: MealoraColors.glassOnHero,
+                  borderRadius: BorderRadius.circular(MealoraRadius.iconField),
+                  border: Border.all(color: MealoraColors.welcomeCardBorder),
+                ),
+                child: const Icon(
+                  Icons.ios_share,
+                  size: 20,
+                  color: MealoraColors.onPrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PendingDraftBanner extends StatelessWidget {
   const _PendingDraftBanner({required this.draft, required this.text});
 

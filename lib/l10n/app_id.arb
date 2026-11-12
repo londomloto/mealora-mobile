@@ -1,69 +1,90 @@
 {
   "@@locale": "id",
-
   "appName": "Mealora",
-  "@appName": { "description": "Nama produk." },
-
+  "@appName": {
+    "description": "Nama produk."
+  },
   "appTagline": "Diary makanan harianmu",
-  "@appTagline": { "description": "Tagline pada splash." },
-
+  "@appTagline": {
+    "description": "Tagline pada splash."
+  },
   "backButtonSemantics": "Kembali",
   "@backButtonSemantics": {
     "description": "Label pembaca layar tombol kembali bersama (MealoraBackEyebrow) — dipakai layar yang dibuka lewat push dan tidak memakai AppBar."
   },
-
   "splashPrivacyPromise": "Pribadi di perangkatmu · siap digunakan offline",
-  "@splashPrivacyPromise": { "description": "Janji penyimpanan lokal pada splash." },
-
+  "@splashPrivacyPromise": {
+    "description": "Janji penyimpanan lokal pada splash."
+  },
   "splashLoadingSemantics": "Mealora sedang disiapkan",
-  "@splashLoadingSemantics": { "description": "Label pembaca layar untuk indikator muat pada splash." },
-
+  "@splashLoadingSemantics": {
+    "description": "Label pembaca layar untuk indikator muat pada splash."
+  },
   "splashLogoSemantics": "Logo Mealora",
-  "@splashLogoSemantics": { "description": "Label pembaca layar untuk simbol merek." },
-
+  "@splashLogoSemantics": {
+    "description": "Label pembaca layar untuk simbol merek."
+  },
   "storageErrorTitle": "Penyimpanan di perangkat belum siap",
-  "@storageErrorTitle": { "description": "Judul keadaan gagal membuka penyimpanan lokal." },
-
+  "@storageErrorTitle": {
+    "description": "Judul keadaan gagal membuka penyimpanan lokal."
+  },
   "storageErrorBody": "Mealora tidak bisa membuka penyimpanan di perangkat ini, jadi catatanmu belum bisa dibaca atau ditulis. Data yang sudah ada tidak diubah.",
-  "@storageErrorBody": { "description": "Penjelasan keadaan gagal membuka penyimpanan lokal." },
-
+  "@storageErrorBody": {
+    "description": "Penjelasan keadaan gagal membuka penyimpanan lokal."
+  },
   "storageErrorReasonLabel": "Kode kegagalan",
-  "@storageErrorReasonLabel": { "description": "Label untuk kode alasan teknis." },
-
+  "@storageErrorReasonLabel": {
+    "description": "Label untuk kode alasan teknis."
+  },
   "retry": "Coba lagi",
-  "@retry": { "description": "Tindakan mencoba ulang." },
-
+  "@retry": {
+    "description": "Tindakan mencoba ulang."
+  },
   "navToday": "Hari ini",
   "navProgram": "Program",
   "programPageTitle": "Program saya",
   "programPageSubtitle": "Ruang untuk bertumbuh, pelan-pelan",
   "navHistory": "Riwayat",
   "navProfile": "Profil",
-
   "navSelectedSemantics": "{destination}, sedang dibuka",
   "@navSelectedSemantics": {
     "description": "Label pembaca layar untuk tujuan navigasi yang sedang aktif.",
-    "placeholders": { "destination": { "type": "String" } }
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      }
+    }
   },
-
   "navUnselectedSemantics": "{destination}",
   "@navUnselectedSemantics": {
     "description": "Label pembaca layar untuk tujuan navigasi yang tidak aktif.",
-    "placeholders": { "destination": { "type": "String" } }
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      }
+    }
   },
-
   "navRecordSemantics": "Catat makanan",
-  "@navRecordSemantics": { "description": "Label pembaca layar untuk tombol Catat yang terangkat di tengah navigasi." },
-
+  "@navRecordSemantics": {
+    "description": "Label pembaca layar untuk tombol Catat yang terangkat di tengah navigasi."
+  },
   "recordUnavailable": "Pencatatan makanan belum tersedia. Bagian ini menyusul pada tahap berikutnya.",
-  "@recordUnavailable": { "description": "Pesan saat tombol Catat ditekan sebelum pencatatan makanan dibangun." },
-
+  "@recordUnavailable": {
+    "description": "Pesan saat tombol Catat ditekan sebelum pencatatan makanan dibangun."
+  },
   "emptyStateBadge": "Belum ada data",
-  "@emptyStateBadge": { "description": "Penanda keadaan kosong, dipakai bersama ikon agar tidak bergantung warna saja." },
-
+  "@emptyStateBadge": {
+    "description": "Penanda keadaan kosong, dipakai bersama ikon agar tidak bergantung warna saja."
+  },
   "todaySubtitle": "Ringkasan energi dan makronutrienmu hari ini.",
   "todayGreeting": "Hai, {name}!",
-  "@todayGreeting": {"placeholders": {"name": {"type": "String"}}},
+  "@todayGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "todayDefaultName": "Teman",
   "programSubtitle": "Program yang sedang kamu jalani beserta targetnya.",
   "historySubtitle": "Catatan harianmu pada tanggal-tanggal sebelumnya.",
@@ -78,29 +99,40 @@
   "profileSubtitle": "Profil lokal, satuan, dan kendali atas datamu.",
   "profileContextLabel": "PROFIL",
   "profilePageTitle": "Hai, {name}",
-  "@profilePageTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@profilePageTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "profilePageSubtitle": "Pengaturan untuk perjalananmu.",
   "profileLocalDetail": "Profil lokal · tanpa akun",
-
   "todayEmptyTitle": "Hari ini belum tercatat",
   "todayEmptyBody": "Kalori dan makro ditampilkan sebagai \"belum diketahui\", bukan 0 kkal atau target yang gagal.",
   "todayNoProgramTargetNote": "Belum ada program aktif, jadi belum ada target pembanding.",
   "todayExcessOverTarget": "{kcal} kkal lebih dari perkiraan",
   "@todayExcessOverTarget": {
     "description": "Pernyataan netral saat konsumsi melampaui target (D11) — bukan peringatan.",
-    "placeholders": { "kcal": { "type": "String" } }
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
   },
   "todayMealNotLogged": "Belum dicatat",
   "todayLogFoodAction": "Catat makanan",
   "todayMealsHeading": "Makanan hari ini",
   "todayMealsCountFormat": "{count} waktu makan tercatat",
   "@todayMealsCountFormat": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "programEmptyTitle": "Belum ada program",
   "programEmptyBody": "Di sini nanti muncul program yang sedang kamu jalani beserta target hariannya dan perkembanganmu. Pemilihan program masuk pada tahap berikutnya.",
-
   "historyEmptyTitle": "Belum ada riwayat",
   "historyEmptyBody": "Di sini nanti muncul catatan harianmu pada tanggal-tanggal sebelumnya, lengkap dengan ringkasan energi dan makronutrien.",
   "historyEnergyRecordedLabel": "ENERGI TERCATAT",
@@ -109,43 +141,54 @@
   "historyNextMonthSemantics": "Bulan berikutnya",
   "historyDayHasRecordSemantics": "{date}, ada catatan",
   "@historyDayHasRecordSemantics": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "historyDayNoRecordSemantics": "{date}, belum ada catatan",
   "@historyDayNoRecordSemantics": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "historyDaySelectedSuffix": ", terpilih",
   "historyDayFutureSuffix": ", belum bisa dipilih",
-
   "routeNotFoundTitle": "Halaman tidak ditemukan",
   "routeNotFoundBody": "Alamat yang diminta tidak dikenali Mealora. Kamu bisa kembali ke ruang utama dan melanjutkan dari sana.",
   "routeNotFoundAction": "Kembali ke Hari ini",
-
   "unitKilogram": "kg",
   "unitCentimeter": "cm",
   "unitKilocalorie": "kkal",
   "unitGram": "g",
   "unitMilligram": "mg",
-
   "valueWithUnit": "{value} {unit}",
   "@valueWithUnit": {
     "description": "Nilai beserta satuannya, dirangkai sebagai satu kalimat utuh agar satuan dapat diganti belakangan.",
     "placeholders": {
-      "value": { "type": "String" },
-      "unit": { "type": "String" }
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
-
   "onboardingStepLabel": "LANGKAH {step} / {total}",
   "@onboardingStepLabel": {
     "description": "Indikator langkah onboarding (task 3.4, FRS 3.3.7), mis. 'LANGKAH 1 / 5'.",
     "placeholders": {
-      "step": { "type": "int" },
-      "total": { "type": "int" }
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
-
   "onboardingWelcomeEyebrow": "Diary makanan harianmu",
   "onboardingWelcomeHeading": "Kenali makananmu.\nNikmati prosesnya.",
   "onboardingWelcomeDescription": "Catat makanan, pahami kebutuhan harian, dan ikuti programmu—tanpa akun dan tetap bisa offline.",
@@ -158,7 +201,6 @@
   "onboardingWelcomePromiseFairDetail": "Target perkiraan, bukan janji instan",
   "onboardingWelcomePromisePrivacyTitle": "Privasi dulu",
   "onboardingWelcomePromisePrivacyDetail": "Data tersimpan di perangkatmu",
-
   "onboardingProfileTitle": "Kenalan dulu, yuk",
   "onboardingProfileSubtitle": "Informasi ini membantu membuat estimasi energi.",
   "onboardingNicknameLabel": "Nama panggilan (opsional)",
@@ -180,7 +222,6 @@
   "onboardingRequiredWeight": "Berat badan belum diisi.",
   "onboardingRequiredBiologicalInput": "Pilih salah satu dulu.",
   "onboardingBackSemantics": "Kembali ke langkah sebelumnya",
-
   "onboardingActivityTitle": "Seberapa aktif harimu?",
   "onboardingActivitySubtitle": "Pilih yang paling mendekati rutinitas biasa.",
   "onboardingActivitySedentaryTitle": "Lebih banyak duduk",
@@ -190,7 +231,6 @@
   "onboardingActivityVeryTitle": "Sangat aktif",
   "onboardingActivityVeryDetail": "Sering beraktivitas fisik intens",
   "onboardingActivityNote": "Faktor aktivitas memengaruhi estimasi. Pilih dengan jujur; kamu bisa mengubahnya nanti.",
-
   "onboardingProgramSelectTitle": "Pilih arahmu",
   "onboardingProgramSelectSubtitle": "Empat program. Kamu bisa menggantinya nanti.",
   "onboardingProgramHealthyName": "Makan Sehat",
@@ -202,16 +242,23 @@
   "onboardingProgramMaintenanceName": "Pertahankan",
   "onboardingProgramMaintenanceDescription": "Menjaga keseimbangan",
   "onboardingProgramTerms": "Program yang mengubah berat punya batas usia dan kondisi tertentu.",
-
   "onboardingProgramDetailFocusTitle": "Fokus {program}",
   "@onboardingProgramDetailFocusTitle": {
     "description": "Judul layar detail program untuk Makan Sehat.",
-    "placeholders": { "program": { "type": "String" } }
+    "placeholders": {
+      "program": {
+        "type": "String"
+      }
+    }
   },
   "onboardingProgramDetailGenericTitle": "Detail {program}",
   "@onboardingProgramDetailGenericTitle": {
     "description": "Judul layar detail program untuk program selain Makan Sehat.",
-    "placeholders": { "program": { "type": "String" } }
+    "placeholders": {
+      "program": {
+        "type": "String"
+      }
+    }
   },
   "onboardingProgramDetailFocusSubtitle": "Mulai dari hal-hal yang bisa kamu lakukan.",
   "onboardingProgramDetailGenericSubtitle": "Tinjau sebelum melanjutkan ke perkiraan target.",
@@ -224,11 +271,14 @@
   "onboardingAcknowledgeText": "Saya paham bahwa target dan data makanan adalah perkiraan, bukan nasihat medis.",
   "onboardingAcknowledgeRequired": "Beri pengakuan ini dulu untuk melihat pratinjau.",
   "onboardingPreviewAction": "Lihat perkiraan target",
-
   "onboardingTargetWeightContext": "PROGRAM · {program}",
   "@onboardingTargetWeightContext": {
     "description": "Label konteks layar target berat, mis. 'PROGRAM · TURUN BERAT'.",
-    "placeholders": { "program": { "type": "String" } }
+    "placeholders": {
+      "program": {
+        "type": "String"
+      }
+    }
   },
   "onboardingTargetWeightTitle": "Atur target berat",
   "onboardingTargetWeightSubtitle": "Laju perubahan berat dibatasi agar tetap aman.",
@@ -244,7 +294,6 @@
   "onboardingWeightGateNote": "Sebagian kondisi membuat target otomatis tidak dibuat. Kamu akan diberi tahu alasannya.",
   "onboardingReviewEligibilityAction": "Tinjau kelayakan",
   "onboardingRequiredTargetWeight": "Berat tujuan belum diisi.",
-
   "reviewStepLabel": "LANGKAH 5 / 5",
   "reviewTitle": "Tinjau targetmu",
   "reviewSubtitle": "Periksa semua detail sebelum program dimulai.",
@@ -261,8 +310,12 @@
   "@reviewVersionLine": {
     "description": "Baris versi kalkulator dan kebijakan pada pratinjau (FRS 4.3.1).",
     "placeholders": {
-      "calculatorVersion": { "type": "String" },
-      "policyVersion": { "type": "String" }
+      "calculatorVersion": {
+        "type": "String"
+      },
+      "policyVersion": {
+        "type": "String"
+      }
     }
   },
   "reviewNoActiveProgramNote": "Tidak ada program aktif sebelum kamu menyetujui.",
@@ -272,7 +325,6 @@
   "reviewWarningFloorApplied": "Target dinaikkan ke batas asupan aman terendah.",
   "reviewWarningRelativePaceCapApplied": "Laju perubahan berat dibatasi menurut persentase berat badanmu.",
   "reviewWarningCarbohydrateBelowRecommendedRange": "Proporsi karbohidrat berada di bawah rentang yang dianjurkan setelah penyesuaian.",
-
   "reviewChangedContextLabel": "DATA DIPERBARUI",
   "reviewChangedTitle": "Masukanmu berubah",
   "reviewChangedSubtitle": "Sejak pratinjau terakhir, beberapa datamu berubah. Pratinjau di bawah ini sudah memakai nilai terbaru.",
@@ -282,8 +334,12 @@
   "@reviewChangedValue": {
     "description": "Nilai lama dan baru pada layar masukan berubah sejak pratinjau (Design D5).",
     "placeholders": {
-      "oldValue": { "type": "String" },
-      "newValue": { "type": "String" }
+      "oldValue": {
+        "type": "String"
+      },
+      "newValue": {
+        "type": "String"
+      }
     }
   },
   "reviewChangedTargetLabel": "ESTIMASI TARGET HARIAN · DIPERBARUI",
@@ -291,7 +347,6 @@
   "reviewChangedNoteDetail": "Mealora memakai data terbarumu untuk pratinjau ini. Tidak ada yang salah dengan isianmu sebelumnya.",
   "reviewChangedConfirmation": "Program tersimpan tidak berubah sampai kamu menyetujui ulang.",
   "reviewChangedAction": "Tinjau & setujui ulang",
-
   "rejectionContextLabel": "STATUS · TARGET TIDAK DIBUAT",
   "rejectionTitle": "Target tidak dibuat",
   "rejectionSubtitle": "Kami tidak membuat target untuk kondisi ini.",
@@ -301,7 +356,6 @@
   "rejectionAlternativeAction": "Lihat program lain",
   "rejectionBackToProgramAction": "Pilih program lagi",
   "rejectionChangeInputAction": "Ubah masukan",
-
   "rejectionAgeBelowMinimumHeading": "Belum bisa membuat target otomatis",
   "rejectionAgeBelowMinimumExplanation": "Mealora membuat target otomatis untuk rentang usia dewasa. Usia yang kamu isi berada di luar rentang itu.",
   "rejectionAgeAboveSupportedHeading": "Belum bisa membuat target otomatis",
@@ -322,7 +376,11 @@
   "rejectionRequestedPaceTooFastExplanation": "Perubahan berat yang kamu minta dalam rentang waktu ini lebih cepat dari batas aman yang dipakai kalkulator ini. Tanggal paling awal yang memenuhi batas: {earliestSafeDate}.",
   "@rejectionRequestedPaceTooFastExplanation": {
     "description": "Penjelasan requestedPaceTooFast dengan tanggal paling awal yang aman (FRS 5.3.5).",
-    "placeholders": { "earliestSafeDate": { "type": "String" } }
+    "placeholders": {
+      "earliestSafeDate": {
+        "type": "String"
+      }
+    }
   },
   "rejectionRequestedPaceTooSlowHeading": "Laju ini lebih lambat dari yang didukung",
   "rejectionRequestedPaceTooSlowExplanation": "Perubahan berat yang kamu minta dalam rentang waktu ini lebih lambat dari laju minimum yang dipakai kalkulator ini.",
@@ -332,7 +390,6 @@
   "rejectionMissingValidatedPolicyExplanation": "Mealora tidak bisa menghitung target otomatis saat ini.",
   "rejectionMissingRequiredInputHeading": "Masih ada isian yang perlu dilengkapi",
   "rejectionMissingRequiredInputExplanation": "Satu atau lebih isian wajib pada langkah sebelumnya belum lengkap.",
-
   "noProgramContextLabel": "PROGRAM SAYA",
   "noProgramTitle": "Pilih programmu",
   "noProgramSubtitle": "Catatan lamamu tetap ada dan bisa dibuka.",
@@ -341,12 +398,15 @@
   "noProgramHistoryHeading": "Data sebelumnya aman",
   "noProgramHistoryExplanation": "Catatan makanan dan berat lama tetap ada meski kamu belum memilih program.",
   "noProgramAction": "Pilih program",
-
   "todayProgramChipSemantics": "Program aktif: {program}",
   "todayProgramActiveLabel": "Program aktif",
   "@todayProgramChipSemantics": {
     "description": "Label pembaca layar untuk chip program aktif di ruang Hari ini.",
-    "placeholders": { "program": { "type": "String" } }
+    "placeholders": {
+      "program": {
+        "type": "String"
+      }
+    }
   },
   "todayDailyTargetLabel": "Target energi hari ini",
   "todayConsumedUnknown": "Belum diketahui",
@@ -358,11 +418,9 @@
   "todayActivityLight": "ringan",
   "todayActivityModerate": "sedang",
   "todayActivityHigh": "tinggi",
-
   "profileIncompleteTitle": "Lengkapi profil dulu",
   "profileIncompleteBody": "Beberapa data profil belum lengkap, jadi target program belum bisa dijelaskan di sini.",
   "profileIncompleteAction": "Lengkapi profil",
-
   "pausedExplanationTitle": "Catat makanan seperti biasa",
   "pausedExplanationBody": "Buku harian dan berat badan tetap tersedia saat program dijeda.",
   "programControlsHeading": "Kendali program",
@@ -380,51 +438,73 @@
   "pausedSinceLabel": "Dijeda sejak {date}",
   "@pausedSinceLabel": {
     "description": "Keterangan tanggal mulai jeda pada ruang Program.",
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "programTargetLabel": "Target harian · perkiraan",
   "programHowCalculatedAction": "Bagaimana dihitung",
   "programLastCalculatedLabel": "Dihitung terakhir {date}",
   "@programLastCalculatedLabel": {
     "description": "Tanggal perhitungan terakhir target yang berlaku.",
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "programLatestWeightLabel": "Berat terbaru",
   "programNoWeightRecordedYet": "Belum ada catatan berat",
   "programTargetReviewTitle": "Tinjau target program",
   "programTargetReviewBody": "Berat terbaru beda cukup jauh dari yang dipakai menghitung target sekarang. Target lama tetap berlaku sampai kamu meninjau dan menyetujui yang baru.",
   "programTargetReviewSemantics": "Tinjau target program karena berat terbaru berubah signifikan",
-
   "programConsistencyHeading": "Kebiasaan minggu ini",
   "programConsistencySubheading": "Catatan makan, bukan nilai dirimu",
   "programConsistencyFooter": "{count} dari 7 hari tercatat",
   "@programConsistencyFooter": {
     "description": "Jumlah hari dalam 7 hari terakhir yang punya catatan makan.",
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "programConsistencyDaySegmentSemantics": "{date}, {filled} dari {total} waktu makan tercatat",
   "@programConsistencyDaySegmentSemantics": {
     "description": "Label pembaca layar satu batang kebiasaan harian — {filled} bisa 0 sampai {total}.",
     "placeholders": {
-      "date": { "type": "String" },
-      "filled": { "type": "int" },
-      "total": { "type": "int" }
+      "date": {
+        "type": "String"
+      },
+      "filled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "programConsistencyDayEmptySemantics": "{date}, belum ada catatan",
   "@programConsistencyDayEmptySemantics": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
-
   "howCalculatedBackSemantics": "Kembali",
   "howCalculatedContextLabel": "PROGRAM SAYA · BAGAIMANA DIHITUNG",
   "howCalculatedTitle": "Bagaimana target dihitung",
   "howCalculatedSubtitle": "Dihitung terakhir {date}",
   "@howCalculatedSubtitle": {
     "description": "Subjudul layar Bagaimana Dihitung dengan tanggal perhitungan terakhir.",
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "howCalculatedTargetEyebrow": "TARGET YANG BERLAKU · PERKIRAAN",
   "howCalculatedTargetCaption": "Perkiraan dari rumus; berubah hanya saat revisi disetujui.",
@@ -441,7 +521,6 @@
   "howCalculatedWarningPaceCapTitle": "Laju perubahan berat dibatasi",
   "howCalculatedWarningCarbTitle": "Proporsi karbohidrat disesuaikan",
   "howCalculatedReadOnlyNote": "Nilai di layar ini dibaca dari target yang tersimpan, bukan dihitung ulang.",
-
   "completeContextLabel": "PROGRAM SAYA",
   "completeTitle": "Selesaikan program?",
   "completeSubtitle": "Keputusan ini tidak menghapus perjalananmu.",
@@ -457,7 +536,6 @@
   "completeReasonSwitchingProgram": "Saya ingin mencoba program lain",
   "completeReasonTakingABreak": "Saya ingin berhenti sementara",
   "completeReasonOther": "Alasan lain",
-
   "historyProgramContextLabel": "PROGRAM SAYA",
   "historyProgramTitle": "Riwayat program",
   "historyProgramSubtitle": "Target lama tetap dapat dijelaskan.",
@@ -471,12 +549,23 @@
   "historyProgramRangeRunning": "Aktif · sejak {start}",
   "@historyProgramRangeRunning": {
     "description": "Rentang tanggal entri riwayat yang masih berjalan.",
-    "placeholders": { "start": { "type": "String" } }
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
   },
   "historyProgramRangeEnded": "{start} – {end}",
   "@historyProgramRangeEnded": {
     "description": "Rentang tanggal entri riwayat yang sudah berakhir.",
-    "placeholders": { "start": { "type": "String" }, "end": { "type": "String" } }
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
   },
   "historyProgramStateDraft": "Draf",
   "historyProgramStateActive": "Aktif",
@@ -484,7 +573,6 @@
   "historyProgramStateCompleted": "Selesai",
   "historyProgramStateChanged": "Diganti",
   "historyProgramStateCancelled": "Dibatalkan",
-
   "historyDetailContextLabel": "RIWAYAT",
   "historyDetailTargetEyebrow": "TARGET YANG DISETUJUI SAAT ITU",
   "historyDetailTargetCaption": "Perkiraan · tidak berubah karena target baru.",
@@ -500,7 +588,6 @@
   "historyDetailEndReasonNotEnded": "Belum berakhir",
   "historyDetailEndReasonUnknown": "Tidak tercatat",
   "historyDetailNote": "Input, target, dan versi asli disimpan untuk penjelasan riwayat.",
-
   "revisionComparisonHeading": "Dibandingkan dengan target sekarang",
   "revisionComparisonCurrentLabel": "Target sekarang",
   "revisionComparisonNewLabel": "Target baru",
@@ -510,7 +597,6 @@
   "revisionRejectedContextLabel": "STATUS · TARGET TIDAK DIBUAT",
   "revisionRejectedTitle": "Target tidak dibuat",
   "revisionRejectedNoChangeNote": "Program dan target yang berjalan tidak berubah.",
-
   "changeContextLabel": "GANTI PROGRAM",
   "changeTitle": "Sebelum kamu berganti",
   "changeSubtitle": "Program saat ini akan dipindahkan ke riwayat.",
@@ -525,7 +611,6 @@
   "changePickReplacementSubtitle": "Kamu bisa menggantinya lagi nanti.",
   "changeHabitFocusHeading": "Fokus kebiasaan",
   "changeReviewReplacementAction": "Tinjau target pengganti",
-
   "editProfileContextLabel": "PROFIL",
   "editProfileTitle": "Ubah data profil",
   "editProfileSubtitle": "Perubahan tidak menulis ulang target lama.",
@@ -539,18 +624,15 @@
   "editProfileDialogCancelAction": "Batal",
   "editProfileDialogSaveAction": "Simpan",
   "editProfileReviewAction": "Tinjau target baru",
-
   "profileSettingsHeading": "Akun & program",
   "profileEditAction": "Ubah profil",
   "profileUnitsLanguageAction": "Bahasa & tampilan",
   "profilePrivacyAction": "Privasi & data lokal",
   "profileAboutAction": "Tentang Mealora",
-
   "mealTimeBreakfast": "Sarapan",
   "mealTimeLunch": "Makan siang",
   "mealTimeSnack": "Camilan",
   "mealTimeDinner": "Makan malam",
-
   "nutrientEnergy": "Energi",
   "nutrientProtein": "Protein",
   "nutrientCarbohydrate": "Karbohidrat",
@@ -562,13 +644,18 @@
   "@macroMacrosShort": {
     "description": "Ringkasan tiga makro pada kartu perkiraan.",
     "placeholders": {
-      "protein": { "type": "String" },
-      "carb": { "type": "String" },
-      "fat": { "type": "String" }
+      "protein": {
+        "type": "String"
+      },
+      "carb": {
+        "type": "String"
+      },
+      "fat": {
+        "type": "String"
+      }
     }
   },
   "nutrientValueUnknown": "–",
-
   "addFoodSheetTitle": "Catat makanan",
   "addFoodSheetSubtitle": "Pilih cara yang paling nyaman untukmu",
   "addFoodSearchTitle": "Cari / input manual",
@@ -582,7 +669,6 @@
   "addFoodPrivacyLine1": "Foto hanya diunggah dengan izinmu.",
   "addFoodPrivacyLine2": "Suara & input manual jalan tanpa internet.",
   "addFoodPathUnavailable": "Jalur ini belum tersedia. Pakai pencarian atau buat makanan sendiri dulu, ya.",
-
   "foodSearchContextLabel": "CATAT MAKANAN",
   "foodSearchTitle": "Cari makanan",
   "foodSearchSubtitle": "Katalog lokal · tersedia tanpa internet",
@@ -591,7 +677,11 @@
   "foodSearchRecentHeading": "Terakhir dicatat",
   "foodSearchResultsHeading": "Hasil \"{query}\"",
   "@foodSearchResultsHeading": {
-    "placeholders": { "query": { "type": "String" } }
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
   },
   "foodSearchNoResultsTitle": "Tidak ada hasil",
   "foodSearchNoResultsBody": "Makanan ini belum ada di katalog. Kamu bisa membuatnya sendiri.",
@@ -603,11 +693,14 @@
   "foodSearchApproxPerServing": "± {kcal} / {serving}",
   "@foodSearchApproxPerServing": {
     "placeholders": {
-      "kcal": { "type": "String" },
-      "serving": { "type": "String" }
+      "kcal": {
+        "type": "String"
+      },
+      "serving": {
+        "type": "String"
+      }
     }
   },
-
   "servingDetailContextLabel": "TAMBAH KE BUKU HARIAN",
   "servingDetailSubtitle": "Pilih sajian, jumlah, dan waktu makan.",
   "servingDetailSourceCatalog": "Katalog lokal",
@@ -618,13 +711,16 @@
   "servingDetailEstimateLabel": "PERKIRAAN",
   "servingDetailAddAction": "Tambahkan ke {mealTime}",
   "@servingDetailAddAction": {
-    "placeholders": { "mealTime": { "type": "String" } }
+    "placeholders": {
+      "mealTime": {
+        "type": "String"
+      }
+    }
   },
   "servingPickerTitle": "Pilih sajian",
   "mealTimePickerTitle": "Pilih waktu makan",
   "quantityDecreaseSemantics": "Kurangi jumlah",
   "quantityIncreaseSemantics": "Tambah jumlah",
-
   "customFoodContextLabel": "KATALOG PRIBADI",
   "customFoodTitle": "Buat makanan",
   "customFoodSubtitle": "Masukkan nilai dari sumber yang kamu percaya.",
@@ -638,7 +734,6 @@
   "customFoodNameRequiredError": "Nama makanan tidak boleh kosong.",
   "customFoodServingRequiredError": "Ukuran sajian tidak boleh kosong.",
   "customFoodNegativeValueError": "Nilai gizi tidak boleh negatif.",
-
   "barcodeScanContextLabel": "PRODUK KEMASAN",
   "barcodeScanTitle": "Pindai barcode",
   "barcodeScanSubtitle": "Arahkan kode pada kemasan ke bingkai.",
@@ -659,7 +754,6 @@
   "barcodeScanManualAction": "Masukkan nomor manual",
   "barcodeScanSearchCatalogAction": "Cari di katalog",
   "barcodeScanLookupInProgress": "Mencari produk…",
-
   "barcodeManualContextLabel": "MASUKKAN MANUAL",
   "barcodeManualTitle": "Masukkan nomor barcode",
   "barcodeManualSubtitle": "Ketik nomor yang tertera di kemasan.",
@@ -670,12 +764,15 @@
   "barcodeManualNoteTitle": "Tersedia tanpa kamera dan tanpa koneksi",
   "barcodeManualNoteBody": "Pencarian produk tersimpan tetap bekerja di mode pesawat.",
   "barcodeManualSearchAction": "Cari produk",
-
   "packagedFoodNotFoundContextLabel": "HASIL PEMINDAIAN",
   "packagedFoodNotFoundTitle": "Produk belum ditemukan",
   "packagedFoodNotFoundSubtitle": "Barcode: {barcode}",
   "@packagedFoodNotFoundSubtitle": {
-    "placeholders": { "barcode": { "type": "String" } }
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
   },
   "packagedFoodNotFoundHeading": "Belum ada di katalog lokal",
   "packagedFoodNotFoundBody": "Kamu tetap bisa mencatatnya. Foto label gizi untuk mengekstrak data, atau isi nilai dari kemasan secara manual.",
@@ -683,7 +780,6 @@
   "packagedFoodNotFoundManualDescription": "Tersedia sepenuhnya offline",
   "packagedFoodNotFoundPhotoTitle": "Foto label gizi",
   "packagedFoodNotFoundPhotoDescription": "Butuh internet dan izin unggah",
-
   "packagedFoodFillContextLabel": "TANPA INTERNET",
   "packagedFoodFillTitle": "Isi label secara manual",
   "packagedFoodFillSubtitle": "Salin nilai dari kemasan, lalu periksa satuan.",
@@ -701,7 +797,6 @@
   "packagedFoodFillContinueAction": "Tinjau sebelum mencatat",
   "packagedFoodFillNameRequiredError": "Nama produk tidak boleh kosong.",
   "packagedFoodFillInvalidNumberError": "Bukan angka yang sah.",
-
   "packagedFoodReviewContextLabel": "TINJAU PRODUK",
   "packagedFoodReviewTitle": "Tinjau produk",
   "packagedFoodReviewSubtitle": "Cocokkan dengan kemasan di tanganmu",
@@ -711,11 +806,19 @@
   "packagedFoodReviewNutritionHeadingPer100g": "Nutrisi per 100 g",
   "packagedFoodReviewServingsOption": "{count} sajian",
   "@packagedFoodReviewServingsOption": {
-    "placeholders": { "count": { "type": "String" } }
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
   },
   "packagedFoodReviewWholePackageOption": "1 kemasan · {units} sajian",
   "@packagedFoodReviewWholePackageOption": {
-    "placeholders": { "units": { "type": "String" } }
+    "placeholders": {
+      "units": {
+        "type": "String"
+      }
+    }
   },
   "packagedFoodReviewGramsLabel": "Gram yang dimakan",
   "packagedFoodReviewQuantityHeading": "Jumlah yang dimakan",
@@ -723,20 +826,31 @@
   "packagedFoodReviewCorrectedBadge": "Dikoreksi",
   "packagedFoodReviewVerifiedOn": "Diverifikasi {date}",
   "@packagedFoodReviewVerifiedOn": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "packagedFoodReviewConfirmAction": "Catat · {kcal}",
   "@packagedFoodReviewConfirmAction": {
-    "placeholders": { "kcal": { "type": "String" } }
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
   },
-
   "diaryEyebrowToday": "HARI INI",
   "diaryTitle": "Buku harian",
   "diaryLocalNote": "catatan di perangkat",
   "diaryRecordedTodayLabel": "TERCATAT HARI INI",
   "diaryTargetLabel": "Target perkiraan {kcal} kkal",
   "@diaryTargetLabel": {
-    "placeholders": { "kcal": { "type": "String" } }
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
   },
   "diaryTargetPercentCaption": "target",
   "diaryPreviousDaySemantics": "Hari sebelumnya",
@@ -748,21 +862,32 @@
   "diaryUnknownMacrosNote": "Protein, karbo, lemak · belum diketahui",
   "diaryEntryMenuSemantics": "Opsi catatan {food}",
   "@diaryEntryMenuSemantics": {
-    "placeholders": { "food": { "type": "String" } }
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
   },
-
   "editEntryContextFormat": "{mealTime} · {date}",
   "@editEntryContextFormat": {
     "placeholders": {
-      "mealTime": { "type": "String" },
-      "date": { "type": "String" }
+      "mealTime": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
     }
   },
   "editEntryTitle": "Ubah catatan",
   "editEntrySubtitle": "Perubahan hanya berlaku untuk catatan ini.",
   "editEntrySnapshotDetail": "Sajian saat dicatat · {serving}",
   "@editEntrySnapshotDetail": {
-    "placeholders": { "serving": { "type": "String" } }
+    "placeholders": {
+      "serving": {
+        "type": "String"
+      }
+    }
   },
   "editEntryQuantityLabel": "Jumlah yang dimakan",
   "editEntryUpdatedEstimateLabel": "Perkiraan setelah diubah",
@@ -772,7 +897,6 @@
   "editEntryDeleteConfirmBody": "Catatan ini akan hilang dari buku harian dan ringkasan harian akan menyesuaikan.",
   "editEntryDeleteConfirmAction": "Hapus",
   "editEntryDeleteCancelAction": "Batal",
-
   "weightAddTitle": "Tambah berat",
   "weightEditTitle": "Ubah catatan berat",
   "weightAddSubtitle": "Catat kapan pun, berat selalu terpantau.",
@@ -787,27 +911,40 @@
   "weightInvalidNumberError": "Masukkan angka berat yang sah.",
   "weightOutOfRangeError": "Berat ini di luar rentang yang masuk akal.",
   "weightFutureDateError": "Tanggal catatan tidak boleh di masa depan.",
-
   "weightMonitorTitle": "Catatan berat",
   "weightMonitorSubtitle": "Lihat arah perubahan, bukan nilai mutlak.",
   "weightMonitorEyebrow": "CATAT BERAT",
   "weightLatestLabel": "TERBARU · {date}",
   "@weightLatestLabel": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "weightLatestSemantics": "Berat terbaru {weight} kilogram, tercatat {date}",
   "@weightLatestSemantics": {
     "placeholders": {
-      "weight": { "type": "String" },
-      "date": { "type": "String" }
+      "weight": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
     }
   },
   "weightVsProgramStart": "Awal program {weight} kg · {direction} {delta} kg",
   "@weightVsProgramStart": {
     "placeholders": {
-      "weight": { "type": "String" },
-      "direction": { "type": "String" },
-      "delta": { "type": "String" }
+      "weight": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
     }
   },
   "weightDirectionDown": "penurunan",
@@ -825,9 +962,15 @@
   "weightEntrySemantics": "{date} pukul {time}, {weight} kilogram",
   "@weightEntrySemantics": {
     "placeholders": {
-      "date": { "type": "String" },
-      "time": { "type": "String" },
-      "weight": { "type": "String" }
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "weightEditEntryAction": "Sunting",
@@ -836,14 +979,12 @@
   "weightDeleteConfirmBody": "Catatan ini akan hilang dari tren dan daftar catatan terakhir.",
   "weightDeleteConfirmAction": "Hapus",
   "weightDeleteCancelAction": "Batal",
-
   "labelExtractionUnavailableTitle": "Pembacaan otomatis belum bisa dilakukan",
   "labelExtractionReasonOffline": "Tidak ada koneksi internet saat ini.",
   "labelExtractionReasonTimeout": "Layanan pembacaan tidak merespons.",
   "labelExtractionReasonQuotaExceeded": "Layanan pembacaan sedang tidak tersedia.",
   "labelExtractionReasonRefused": "Layanan tidak bisa membaca foto ini.",
   "labelExtractionDraftPreservedNote": "Foto dan nilai yang sudah kamu isi tetap tersimpan.",
-
   "privacySettingsContextLabel": "PRIVASI",
   "privacySettingsTitle": "Privasi & data lokal",
   "privacySettingsSubtitle": "Atur bagaimana foto label diperlakukan saat Mealora membacanya.",
@@ -858,7 +999,6 @@
   "privacySettingsRetentionKeepTitle": "Simpan di perangkat",
   "privacySettingsRetentionKeepDetail": "Foto tetap tersimpan di perangkat ini agar bisa diperiksa lagi.",
   "privacySettingsNote": "Foto hanya dikirim ke layanan pembacaan label saat kamu setuju, dan tidak pernah disimpan di luar perangkat ini.",
-
   "displaySettingsContextLabel": "PROFIL",
   "displaySettingsTitle": "Bahasa & tampilan",
   "displaySettingsSubtitle": "Atur bahasa aplikasi dan awal minggu.",
@@ -874,23 +1014,35 @@
   "displaySettingsWeekStartMonday": "Senin",
   "displaySettingsWeekStartSunday": "Minggu",
   "displaySettingsNote": "Awal minggu mengatur ringkasan mingguan di Riwayat dan Program. Catatan lamamu tetap utuh.",
-
   "aboutContextLabel": "PROFIL",
   "aboutTitle": "Tentang Mealora",
   "aboutSubtitle": "Versi aplikasi dan informasi penting.",
   "aboutAppName": "Mealora",
   "aboutVersion": "Versi {version} · build {build}",
-  "@aboutVersion": {"placeholders": {"version": {"type": "String"}, "build": {"type": "String"}}},
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
   "aboutLicensesAction": "Lisensi sumber terbuka",
   "aboutDisclaimer": "Mealora membantu mencatat makan dan memperkirakan gizi. Angkanya perkiraan, bukan nasihat kesehatan. Untuk kebutuhan khusus, bicarakan dengan tenaga kesehatan.",
   "aboutFooter": "Dibuat di Indonesia · © {year} Mealora",
-  "@aboutFooter": {"placeholders": {"year": {"type": "String"}}},
-
+  "@aboutFooter": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
   "uploadConsentBody": "Ekstraksi memerlukan internet. Kamu tetap dapat mengetik nilainya sendiri saat offline.",
   "uploadConsentCheckboxLabel": "Izinkan unggah foto label ini",
   "uploadConsentCheckedState": "Dicentang",
   "uploadConsentUncheckedState": "Belum dicentang",
-
   "labelPhotoContextLabel": "INFORMASI NILAI GIZI",
   "labelPhotoTitle": "Foto label kemasan",
   "labelPhotoSubtitle": "Pastikan teks dan satuan terlihat jelas.",
@@ -900,7 +1052,6 @@
   "labelPhotoManualLink": "Isi label secara manual tanpa unggah",
   "labelPhotoPermissionDeniedTitle": "Kamera tidak dapat diakses",
   "labelPhotoPermissionDeniedBody": "Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa mengisi nilai label secara manual.",
-
   "labelReviewContextLabel": "TINJAU HASIL BACAAN",
   "labelReviewTitle": "Periksa nilai yang terbaca",
   "labelReviewSubtitle": "Ini bacaan yang perlu diperiksa, bukan data terverifikasi. Bandingkan dengan fotonya.",
@@ -911,8 +1062,12 @@
   "labelReviewPackageArithmeticNote": "1 kemasan = {multiplier}× nilai per sajian ({servingSize}).",
   "@labelReviewPackageArithmeticNote": {
     "placeholders": {
-      "multiplier": { "type": "String" },
-      "servingSize": { "type": "String" }
+      "multiplier": {
+        "type": "String"
+      },
+      "servingSize": {
+        "type": "String"
+      }
     }
   },
   "labelReviewConfidenceConfident": "Terbaca yakin",
@@ -922,7 +1077,11 @@
   "labelReviewValueMarkedAbsent": "Ditandai tidak tercantum di kemasan",
   "labelReviewPendingValuesNote": "Lengkapi dulu: {fields}.",
   "@labelReviewPendingValuesNote": {
-    "placeholders": { "fields": { "type": "String" } }
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
   },
   "labelReviewConfirmAction": "Konfirmasi nilai",
   "labelReviewCancelAction": "Batal",
@@ -930,7 +1089,6 @@
   "labelReviewCancelConfirmBody": "Foto dan nilai yang sudah dibaca tidak akan disimpan sebagai produk.",
   "labelReviewCancelConfirmAction": "Ya, batalkan",
   "labelReviewCancelKeepReviewingAction": "Lanjutkan meninjau",
-
   "foodPhotoContextLabel": "FOTO MAKANAN",
   "foodPhotoTitle": "Ambil foto makanan",
   "foodPhotoSubtitle": "Saran dari foto selalu perlu diperiksa.",
@@ -942,7 +1100,6 @@
   "foodPhotoManualLink": "Tanpa internet? Pilih makanan secara manual",
   "foodPhotoPermissionDeniedTitle": "Kamera tidak dapat diakses",
   "foodPhotoPermissionDeniedBody": "Izin kamera ditolak atau tidak tersedia. Kamu tetap bisa memilih makanan secara manual.",
-
   "foodPhotoDraftContextLabel": "FOTO MAKANAN",
   "foodPhotoDraftSavedTitle": "Foto tersimpan sebagai draf",
   "foodPhotoDraftSavedBody": "Belum ada catatan makan yang dibuat.",
@@ -952,7 +1109,6 @@
   "foodPhotoDraftManualHeading": "Lanjut tanpa AI",
   "foodPhotoDraftManualDescription": "Cari makanan di katalog, tambah bahan, lalu atur porsinya sendiri.",
   "foodPhotoDraftManualAction": "Pilih makanan manual",
-
   "foodPhotoReviewContextLabel": "TINJAU FOTO MAKANAN",
   "foodPhotoReviewBadge": "Saran foto · porsi perlu dicek",
   "foodPhotoReviewBadgeNote": "Nutrisi dari padanan katalog; periksa bahan.",
@@ -961,17 +1117,29 @@
   "foodPhotoReviewEmptyTitle": "Isi piringmu",
   "foodPhotoReviewComponentCount": "{count, plural, =0{Tidak ada bahan} =1{1 bahan} other{{count} bahan}}",
   "@foodPhotoReviewComponentCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "foodPhotoReviewEditAction": "Ubah",
   "foodPhotoReviewNoMatchLabel": "Belum ada padanan — pilih atau buat makanan",
   "foodPhotoReviewTotalSummary": "· {kcal} kkal  ·  P {protein} g  ·  K {carbohydrate} g  ·  L {fat} g",
   "@foodPhotoReviewTotalSummary": {
     "placeholders": {
-      "kcal": { "type": "String" },
-      "protein": { "type": "String" },
-      "carbohydrate": { "type": "String" },
-      "fat": { "type": "String" }
+      "kcal": {
+        "type": "String"
+      },
+      "protein": {
+        "type": "String"
+      },
+      "carbohydrate": {
+        "type": "String"
+      },
+      "fat": {
+        "type": "String"
+      }
     }
   },
   "foodPhotoReviewConfirmAction": "Konfirmasi & catat",
@@ -979,7 +1147,6 @@
   "foodPhotoReviewCancelConfirmBody": "Belum ada catatan yang dibuat. Draf fotonya akan dibuang sesuai pengaturan privasi.",
   "foodPhotoReviewCancelConfirmAction": "Ya, batalkan",
   "foodPhotoReviewCancelKeepReviewingAction": "Lanjutkan meninjau",
-
   "foodComponentCorrectionBadge": "DRAF FOTO MAKANAN",
   "foodComponentCorrectionTitle": "Ubah komponen",
   "foodComponentCorrectionSubtitle": "Setiap bahan dan porsi bisa kamu koreksi.",
@@ -1003,7 +1170,6 @@
   "foodComponentPickerCreateLink": "Buat makanan baru",
   "foodComponentPickerNoResultsTitle": "Tidak ditemukan",
   "foodComponentPickerNoResultsBody": "Coba kata kunci lain, atau buat makanan baru.",
-
   "todayPendingDraftTitle": "Draf foto makanan menunggu",
   "todayPendingDraftBody": "Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.",
   "todayPendingDraftSemantics": "Draf foto makanan menunggu. Belum ada catatan yang dibuat. Ketuk untuk melanjutkan peninjauan.",
@@ -1024,7 +1190,13 @@
   "voiceListeningTitle": "Mendengarkan…",
   "voiceListeningSubtitle": "Selesai bicara? Ketuk Selesai. Kamu tetap bisa membatalkan.",
   "voiceListeningBadge": "Merekam · {elapsed}",
-  "@voiceListeningBadge": {"placeholders": {"elapsed": {"type": "String"}}},
+  "@voiceListeningBadge": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
   "voiceListeningMicActive": "Mikrofon aktif",
   "voiceListeningSemantics": "Sedang merekam, mikrofon aktif. Ketuk Selesai untuk berhenti.",
   "voiceListeningPartialLabel": "TERDENGAR SEJAUH INI",
@@ -1074,7 +1246,13 @@
   "voiceParsedIgnoredPartShort": "Bagian di luar makanan diabaikan, tidak dijalankan.",
   "voiceScopeRejectedTitle": "Suara hanya untuk mencatat makanan",
   "voiceScopeRejectedBody": "Tidak ada yang dijalankan atau diubah. {where}",
-  "@voiceScopeRejectedBody": {"placeholders": {"where": {"type": "String"}}},
+  "@voiceScopeRejectedBody": {
+    "placeholders": {
+      "where": {
+        "type": "String"
+      }
+    }
+  },
   "voiceScopeWhereWeight": "Berat badan dicatat di ruang Program.",
   "voiceScopeWhereProgram": "Program diatur di ruang Program.",
   "voiceScopeWhereProfile": "Profil dan pengaturan ada di ruang Profil.",
@@ -1091,13 +1269,25 @@
   "voiceComponentCorrectionBadge": "DAFTAR DARI KALIMAT",
   "voiceQuantityUndetermined": "jumlah belum ditentukan",
   "voiceQuantityUndeterminedWithUnit": "jumlah belum ditentukan · disebut \"{unit}\"",
-  "@voiceQuantityUndeterminedWithUnit": {"placeholders": {"unit": {"type": "String"}}},
+  "@voiceQuantityUndeterminedWithUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "voiceParseNothingFoundTitle": "Tidak ada makanan yang dikenali",
   "voiceParseNothingFoundBody": "Perbaiki kalimatnya, atau cari makanannya di katalog. Tidak ada yang dicatat.",
   "profileRemindersAction": "Pengingat",
   "profileRemindersOff": "Mati",
   "profileRemindersOnCount": "{count} menyala",
-  "@profileRemindersOnCount": {"placeholders": {"count": {"type": "int"}}},
+  "@profileRemindersOnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "remindersContextLabel": "PENGINGAT",
   "remindersTitle": "Pengingat",
   "remindersSubtitle": "Notifikasi muncul di HP ini saja. Waktunya bisa bergeser beberapa menit.",
@@ -1130,12 +1320,33 @@
   "remindersBlockedBody": "Notifikasi diblokir. Pengingat tidak bisa muncul sampai kamu mengizinkannya.",
   "remindersBlockedAction": "Buka pengaturan",
   "remindersToggleSemantics": "Pengingat {name}",
-  "@remindersToggleSemantics": {"placeholders": {"name": {"type": "String"}}},
+  "@remindersToggleSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "remindersTimeSemantics": "Ubah jam {name}, sekarang {time}",
-  "@remindersTimeSemantics": {"placeholders": {"name": {"type": "String"}, "time": {"type": "String"}}},
+  "@remindersTimeSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "remindersTimePickerTitle": "Pilih jam",
   "remindersTimePickerDaily": "{name} · pengingat harian",
-  "@remindersTimePickerDaily": {"placeholders": {"name": {"type": "String"}}},
+  "@remindersTimePickerDaily": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "remindersTimePickerWeekly": "Timbang berat · pengingat mingguan",
   "remindersTimePickerBedtime": "Jam tidur · untuk peringatan makan larut",
   "remindersTimePickerNote": "Waktu notifikasi bisa bergeser beberapa menit mengikuti penghematan baterai.",
@@ -1159,5 +1370,70 @@
   "reminderWeighTitle": "Waktunya timbang",
   "reminderWeighBody": "Catat berat badanmu minggu ini.",
   "lateMealNoticeTitle": "Sudah dekat jam tidur.",
-  "lateMealNoticeBody": "Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar."
+  "lateMealNoticeBody": "Makan berat menjelang tidur bisa membuat tidur kurang nyenyak. Pilih porsi ringan kalau masih lapar.",
+  "shareAction": "Bagikan",
+  "sharePreviewTitle": "Bagikan",
+  "sharePreviewCloseSemantics": "Tutup",
+  "sharePreviewLocalNote": "Gambar dibuat di HP kamu. Mealora tidak mengunggah apa pun.",
+  "shareFailedMessage": "Kartu belum bisa dibagikan. Coba lagi.",
+  "shareSummarySemantics": "Bagikan ringkasan hari ini",
+  "shareSummaryDisabledReason": "Catat makanan dulu untuk membagikan ringkasan.",
+  "shareSummaryPreviewCaption": "Ringkasan harian · kalori & makro hari ini",
+  "shareMealPreviewCaption": "Kartu makanan · foto & estimasi kalori",
+  "shareCardOfTarget": "dari {target} kkal",
+  "@shareCardOfTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCardPercentOfTarget": "{percent}% dari target",
+  "@shareCardPercentOfTarget": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "shareCardMacroLine": "Protein {protein} g · Karbo {carbohydrate} g · Lemak {fat} g",
+  "@shareCardMacroLine": {
+    "placeholders": {
+      "protein": {
+        "type": "String"
+      },
+      "carbohydrate": {
+        "type": "String"
+      },
+      "fat": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCardMoreItems": "+{count} lainnya",
+  "@shareCardMoreItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareCardTotalLabel": "Estimasi total kalori",
+  "foodPhotoSavedTitle": "Tersimpan!",
+  "foodPhotoSavedSubtitle": "{mealTime} · {count} item · {kcal} kkal",
+  "@foodPhotoSavedSubtitle": {
+    "placeholders": {
+      "mealTime": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "foodPhotoSavedThumbCaption": "Pratinjau kartu yang akan dibagikan",
+  "foodPhotoSavedDoneAction": "Selesai"
 }

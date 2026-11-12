@@ -266,4 +266,47 @@ abstract final class MealoraColors {
   /// Dokumen v2 tidak mendefinisikan ulang warna galat; nilai Material lama
   /// dipertahankan karena sudah memenuhi kontras AA (6,54:1 di atas putih).
   static const Color danger = Color(0xFFB3261E);
+
+  // Kartu berbagi (change 014) — rancangan `59`–`62` dan `57` di
+  // `mealora-v2.pen`.
+
+  /// Gradien kartu ringkasan harian (`59`, rotasi 200°).
+  static const List<Color> shareCardGradient = <Color>[
+    Color(0xFF0A6B4C),
+    Color(0xFF077A50),
+    Color(0xFF35C97E),
+  ];
+
+  /// Tanggal dan baris makro di kartu ringkasan.
+  static const Color shareCardMuted = Color(0xFFBFE8CF);
+
+  /// Lintasan cincin di kartu ringkasan.
+  static const Color shareCardTrack = Color(0x2EFFFFFF);
+
+  /// Scrim atas/bawah di atas foto kartu makanan (`62`).
+  static const Color shareCardScrim = Color(0x660A1F17);
+  static const Color shareCardScrimClear = Color(0x000A1F17);
+
+  /// Chip watermark putih di atas foto kartu makanan.
+  static const Color shareCardChip = Color(0xE8FFFFFF);
+
+  /// Chip waktu makan gelap di atas foto kartu makanan.
+  static const Color shareCardDarkChip = Color(0x730A1F17);
+  static const Color shareCardDarkChipBorder = Color(0x47FFFFFF);
+
+  /// Bidang di dalam panel kartu makanan.
+  static const Color shareCardField = Color(0xFFF4F8F5);
+
+  /// Bayangan panel mengambang dan pratinjau kartu.
+  static const Color shadowShareCard = Color(0x3D04231A);
+
+  /// Gradien pengganti saat kartu makanan tanpa foto.
+  static const List<Color> shareCardPhotoFallback = <Color>[
+    Color(0xFF8C5A2B),
+    Color(0xFFC98B4B),
+    Color(0xFFE8C98A),
+  ];
+
+  /// Tombol sekunder di atas latar kaca (`57`, "Selesai").
+  static const Color secondaryButtonBorder = Color(0xFFD7E7DB);
 }
