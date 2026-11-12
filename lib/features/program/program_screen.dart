@@ -15,6 +15,7 @@ import 'package:mealora/domain/program/program_proposal_inputs.dart';
 import 'package:mealora/domain/program/program_state.dart';
 import 'package:mealora/domain/program/user_program.dart';
 import 'package:mealora/domain/shared/units.dart';
+import 'package:mealora/features/energy/widgets/energy_week_card.dart';
 import 'package:mealora/features/onboarding/onboarding_controller.dart';
 import 'package:mealora/features/onboarding/onboarding_flow.dart';
 import 'package:mealora/features/onboarding/onboarding_step.dart';
@@ -267,6 +268,8 @@ class _RunningProgramView extends ConsumerWidget {
                         WeekStart.defaultValue,
                   ),
                 ),
+                const SizedBox(height: MealoraSpacing.sm),
+                const EnergyWeekCard(),
                 const SizedBox(height: MealoraSpacing.sm),
                 progressAsync.when(
                   loading: () => const SizedBox.shrink(),

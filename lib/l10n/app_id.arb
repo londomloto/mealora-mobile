@@ -1636,5 +1636,191 @@
   },
   "appUpdateLater": "Nanti",
   "appUpdateNow": "Update",
-  "appUpdateStoreOpenFailed": "Toko aplikasi tidak bisa dibuka. Coba lagi sebentar."
+  "appUpdateStoreOpenFailed": "Toko aplikasi tidak bisa dibuka. Coba lagi sebentar.",
+  "energyDaySemantics": "{date}, {kcal} kkal",
+  "@energyDaySemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDayUnknownSemantics": "{date}, energi belum diketahui",
+  "@energyDayUnknownSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDayNotRecordedSemantics": "{date}, belum dicatat",
+  "@energyDayNotRecordedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDayFutureSemantics": "{date}, belum terjadi",
+  "@energyDayFutureSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDayNotRecordedShort": "belum",
+  "energyDayUnknownShort": "?",
+  "energyWeekHeading": "Energi minggu ini",
+  "energyWeekOpenSemantics": "Buka pantauan energi",
+  "energySummary": "Rata-rata {average} dari {target} kkal · {count} hari tercatat",
+  "@energySummary": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "energySummaryNoTarget": "Rata-rata {average} kkal · {count} hari tercatat",
+  "@energySummaryNoTarget": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "energySummaryTargetChanged": "Rata-rata {average} kkal · target berubah · {count} hari tercatat",
+  "@energySummaryTargetChanged": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "energyNoRecordsYet": "Belum ada catatan makan di rentang ini.",
+  "energyCardFooter": "Hari kosong tidak dihitung ke rata-rata. Ketuk untuk detail.",
+  "energyMonitorTitle": "Pantauan energi",
+  "energyMonitorSubtitle": "Energi harian dibanding target, apa adanya.",
+  "energyRangeLabel": "RENTANG",
+  "energyRangeValue": "{from} – {to}",
+  "@energyRangeValue": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "energyRangeChange": "Ubah",
+  "energyRangeChangeSemantics": "Rentang {range}. Ketuk untuk mengubah.",
+  "@energyRangeChangeSemantics": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "energyAverageEyebrow": "RATA-RATA · {recorded} DARI {total} HARI TERCATAT",
+  "@energyAverageEyebrow": {
+    "placeholders": {
+      "recorded": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "energyKcalValue": "{value} kkal",
+  "@energyKcalValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "energyHeroTarget": "Target {target} kkal",
+  "@energyHeroTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "energyHeroTargetChanged": "Target berubah dalam rentang ini",
+  "energyHeroNoTarget": "Tidak ada target program pada rentang ini",
+  "energyHeroMissing": "{count} hari belum dicatat",
+  "@energyHeroMissing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "energyChartHeading": "Energi harian",
+  "energyLegendLine": "kkal",
+  "energyLegendTarget": "target",
+  "energyMissingLegend": "Belum dicatat — tidak dihitung ke rata-rata",
+  "energyTapHint": "Ketuk tanggal untuk melihat detail dan membuka Riwayat",
+  "energyDetailValue": "{date} · {kcal} kkal",
+  "@energyDetailValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDetailNotRecorded": "{date} · belum dicatat",
+  "@energyDetailNotRecorded": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "energyDetailUnknown": "{date} · energi belum diketahui",
+  "@energyDetailUnknown": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "energyOpenHistory": "Buka Riwayat",
+  "energyEmptyTitle": "Belum ada catatan energi",
+  "energyEmptyBody": "Belum ada catatan makan pada rentang ini. Catatan yang kamu tambahkan akan muncul di sini.",
+  "energyEmptyAction": "Catat makanan",
+  "energyRangePickerTitle": "Pilih rentang tanggal",
+  "energyRangePickerSubtitle": "Ketuk tanggal mulai, lalu tanggal akhir.",
+  "energyRangeDays": "{count} hari",
+  "@energyRangeDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "energyRangeApply": "Terapkan",
+  "energyRangePrevMonth": "Bulan sebelumnya",
+  "energyRangeNextMonth": "Bulan berikutnya"
 }

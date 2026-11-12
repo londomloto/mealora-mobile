@@ -5918,6 +5918,264 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Toko aplikasi tidak bisa dibuka. Coba lagi sebentar.'**
   String get appUpdateStoreOpenFailed;
+
+  /// No description provided for @energyDaySemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, {kcal} kkal'**
+  String energyDaySemantics(String date, String kcal);
+
+  /// No description provided for @energyDayUnknownSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, energi belum diketahui'**
+  String energyDayUnknownSemantics(String date);
+
+  /// No description provided for @energyDayNotRecordedSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, belum dicatat'**
+  String energyDayNotRecordedSemantics(String date);
+
+  /// No description provided for @energyDayFutureSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, belum terjadi'**
+  String energyDayFutureSemantics(String date);
+
+  /// No description provided for @energyDayNotRecordedShort.
+  ///
+  /// In id, this message translates to:
+  /// **'belum'**
+  String get energyDayNotRecordedShort;
+
+  /// No description provided for @energyDayUnknownShort.
+  ///
+  /// In id, this message translates to:
+  /// **'?'**
+  String get energyDayUnknownShort;
+
+  /// No description provided for @energyWeekHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Energi minggu ini'**
+  String get energyWeekHeading;
+
+  /// No description provided for @energyWeekOpenSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka pantauan energi'**
+  String get energyWeekOpenSemantics;
+
+  /// No description provided for @energySummary.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata {average} dari {target} kkal · {count} hari tercatat'**
+  String energySummary(String average, String target, int count);
+
+  /// No description provided for @energySummaryNoTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata {average} kkal · {count} hari tercatat'**
+  String energySummaryNoTarget(String average, int count);
+
+  /// No description provided for @energySummaryTargetChanged.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata {average} kkal · target berubah · {count} hari tercatat'**
+  String energySummaryTargetChanged(String average, int count);
+
+  /// No description provided for @energyNoRecordsYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan makan di rentang ini.'**
+  String get energyNoRecordsYet;
+
+  /// No description provided for @energyCardFooter.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari kosong tidak dihitung ke rata-rata. Ketuk untuk detail.'**
+  String get energyCardFooter;
+
+  /// No description provided for @energyMonitorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantauan energi'**
+  String get energyMonitorTitle;
+
+  /// No description provided for @energyMonitorSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Energi harian dibanding target, apa adanya.'**
+  String get energyMonitorSubtitle;
+
+  /// No description provided for @energyRangeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'RENTANG'**
+  String get energyRangeLabel;
+
+  /// No description provided for @energyRangeValue.
+  ///
+  /// In id, this message translates to:
+  /// **'{from} – {to}'**
+  String energyRangeValue(String from, String to);
+
+  /// No description provided for @energyRangeChange.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah'**
+  String get energyRangeChange;
+
+  /// No description provided for @energyRangeChangeSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Rentang {range}. Ketuk untuk mengubah.'**
+  String energyRangeChangeSemantics(String range);
+
+  /// No description provided for @energyAverageEyebrow.
+  ///
+  /// In id, this message translates to:
+  /// **'RATA-RATA · {recorded} DARI {total} HARI TERCATAT'**
+  String energyAverageEyebrow(int recorded, int total);
+
+  /// No description provided for @energyKcalValue.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} kkal'**
+  String energyKcalValue(String value);
+
+  /// No description provided for @energyHeroTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'Target {target} kkal'**
+  String energyHeroTarget(String target);
+
+  /// No description provided for @energyHeroTargetChanged.
+  ///
+  /// In id, this message translates to:
+  /// **'Target berubah dalam rentang ini'**
+  String get energyHeroTargetChanged;
+
+  /// No description provided for @energyHeroNoTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada target program pada rentang ini'**
+  String get energyHeroNoTarget;
+
+  /// No description provided for @energyHeroMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hari belum dicatat'**
+  String energyHeroMissing(int count);
+
+  /// No description provided for @energyChartHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Energi harian'**
+  String get energyChartHeading;
+
+  /// No description provided for @energyLegendLine.
+  ///
+  /// In id, this message translates to:
+  /// **'kkal'**
+  String get energyLegendLine;
+
+  /// No description provided for @energyLegendTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'target'**
+  String get energyLegendTarget;
+
+  /// No description provided for @energyMissingLegend.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dicatat — tidak dihitung ke rata-rata'**
+  String get energyMissingLegend;
+
+  /// No description provided for @energyTapHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk tanggal untuk melihat detail dan membuka Riwayat'**
+  String get energyTapHint;
+
+  /// No description provided for @energyDetailValue.
+  ///
+  /// In id, this message translates to:
+  /// **'{date} · {kcal} kkal'**
+  String energyDetailValue(String date, String kcal);
+
+  /// No description provided for @energyDetailNotRecorded.
+  ///
+  /// In id, this message translates to:
+  /// **'{date} · belum dicatat'**
+  String energyDetailNotRecorded(String date);
+
+  /// No description provided for @energyDetailUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'{date} · energi belum diketahui'**
+  String energyDetailUnknown(String date);
+
+  /// No description provided for @energyOpenHistory.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Riwayat'**
+  String get energyOpenHistory;
+
+  /// No description provided for @energyEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan energi'**
+  String get energyEmptyTitle;
+
+  /// No description provided for @energyEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan makan pada rentang ini. Catatan yang kamu tambahkan akan muncul di sini.'**
+  String get energyEmptyBody;
+
+  /// No description provided for @energyEmptyAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat makanan'**
+  String get energyEmptyAction;
+
+  /// No description provided for @energyRangePickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih rentang tanggal'**
+  String get energyRangePickerTitle;
+
+  /// No description provided for @energyRangePickerSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk tanggal mulai, lalu tanggal akhir.'**
+  String get energyRangePickerSubtitle;
+
+  /// No description provided for @energyRangeDays.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hari'**
+  String energyRangeDays(int count);
+
+  /// No description provided for @energyRangeApply.
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan'**
+  String get energyRangeApply;
+
+  /// No description provided for @energyRangePrevMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan sebelumnya'**
+  String get energyRangePrevMonth;
+
+  /// No description provided for @energyRangeNextMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan berikutnya'**
+  String get energyRangeNextMonth;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {

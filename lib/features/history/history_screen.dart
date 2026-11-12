@@ -559,7 +559,11 @@ class _UnknownDiaryBody extends StatelessWidget {
 /// `16` untuk ringkasan tanggal terpilih (design D6) — tidak ada komponen
 /// ringkasan kedua, cuma sumber tanggalnya yang berbeda.
 class HistoryCalendarScreen extends ConsumerStatefulWidget {
-  const HistoryCalendarScreen({super.key});
+  const HistoryCalendarScreen({this.initialDate, super.key});
+
+  /// Tanggal yang langsung terpilih saat dibuka (mis. dari grafik energi,
+  /// change 018). `null` atau tanggal setelah hari ini berarti hari ini.
+  final LocalDate? initialDate;
 
   @override
   ConsumerState<HistoryCalendarScreen> createState() =>
@@ -569,6 +573,17 @@ class HistoryCalendarScreen extends ConsumerStatefulWidget {
 class _HistoryCalendarScreenState extends ConsumerState<HistoryCalendarScreen> {
   HistoryMonth? _displayedMonth;
   LocalDate? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initialDate;
+    if (initial != null &&
+        initial.compareTo(ref.read(clockProvider).today()) <= 0) {
+      _selectedDate = initial;
+      _displayedMonth = HistoryMonth.of(initial);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

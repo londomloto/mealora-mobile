@@ -12,6 +12,7 @@ import 'package:mealora/database/tables/meal_entry_items_table.dart';
 import 'package:mealora/database/tables/weight_records_table.dart';
 import 'package:mealora/domain/diary/daily_nutrition_total.dart';
 import 'package:mealora/domain/diary/diary_repository.dart';
+import 'package:mealora/domain/diary/energy_trend.dart' show DiaryDayEnergy;
 import 'package:mealora/domain/diary/meal_entry.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/meal_time.dart';
@@ -96,6 +97,62 @@ class DriftDiaryRepository extends DatabaseAccessor<AppDatabase>
       );
     final rows = await query.get();
     return rows.map((row) => row.read(mealEntries.localDate)!).toSet();
+  }
+
+  /// Energi per tanggal pada rentang `[from, to]` inklusif dalam satu kueri
+  /// (change 018, design D1). Tanggal tanpa catatan tidak muncul di hasil;
+  /// aturan penjumlahan sama dengan [dailyTotal] (satu energi tidak
+  /// diketahui membuat total tanggal itu tidak diketahui).
+  Future<Map<String, DiaryDayEnergy>> dailyEnergyInRange(
+    String profileId, {
+    required LocalDate from,
+    required LocalDate to,
+  }) async {
+    final query =
+        select(mealEntries).join([
+          innerJoin(
+            mealEntryItems,
+            mealEntryItems.mealEntryId.equalsExp(mealEntries.id),
+          ),
+        ])..where(
+          mealEntries.profileId.equals(profileId) &
+              mealEntries.localDate.isBiggerOrEqualValue(from.iso) &
+              mealEntries.localDate.isSmallerOrEqualValue(to.iso) &
+              UserRecords.active(mealEntries.deletedAt) &
+              UserRecords.active(mealEntryItems.deletedAt),
+        );
+    final rows = await query.get();
+    final byDate = <String, List<NutritionProfile>>{};
+    for (final row in rows) {
+      final entry = _toDomain(
+        row.readTable(mealEntries),
+        row.readTable(mealEntryItems),
+      );
+      byDate
+          .putIfAbsent(entry.localDate.iso, () => [])
+          .add(entry.totalNutrition);
+    }
+    return <String, DiaryDayEnergy>{
+      for (final MapEntry(:key, :value) in byDate.entries)
+        key: switch (NutritionProfile.sumAll(value).energy) {
+          final energy? => DiaryDayEnergy.known(energy.kcal),
+          null => const DiaryDayEnergy.unknown(),
+        },
+    };
+  }
+
+  /// Tanggal catatan makan pertama yang masih hidup, `null` bila belum ada
+  /// — batas awal pemilih rentang energi (change 018, design D6).
+  Future<LocalDate?> firstEntryDate(String profileId) async {
+    final earliest = mealEntries.localDate.min();
+    final query = selectOnly(mealEntries)
+      ..addColumns([earliest])
+      ..where(
+        mealEntries.profileId.equals(profileId) &
+            UserRecords.active(mealEntries.deletedAt),
+      );
+    final value = (await query.getSingle()).read(earliest);
+    return value == null ? null : LocalDate.parse(value);
   }
 
   @override

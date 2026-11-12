@@ -3324,4 +3324,173 @@ class AppTextId extends AppText {
   @override
   String get appUpdateStoreOpenFailed =>
       'Toko aplikasi tidak bisa dibuka. Coba lagi sebentar.';
+
+  @override
+  String energyDaySemantics(String date, String kcal) {
+    return '$date, $kcal kkal';
+  }
+
+  @override
+  String energyDayUnknownSemantics(String date) {
+    return '$date, energi belum diketahui';
+  }
+
+  @override
+  String energyDayNotRecordedSemantics(String date) {
+    return '$date, belum dicatat';
+  }
+
+  @override
+  String energyDayFutureSemantics(String date) {
+    return '$date, belum terjadi';
+  }
+
+  @override
+  String get energyDayNotRecordedShort => 'belum';
+
+  @override
+  String get energyDayUnknownShort => '?';
+
+  @override
+  String get energyWeekHeading => 'Energi minggu ini';
+
+  @override
+  String get energyWeekOpenSemantics => 'Buka pantauan energi';
+
+  @override
+  String energySummary(String average, String target, int count) {
+    return 'Rata-rata $average dari $target kkal · $count hari tercatat';
+  }
+
+  @override
+  String energySummaryNoTarget(String average, int count) {
+    return 'Rata-rata $average kkal · $count hari tercatat';
+  }
+
+  @override
+  String energySummaryTargetChanged(String average, int count) {
+    return 'Rata-rata $average kkal · target berubah · $count hari tercatat';
+  }
+
+  @override
+  String get energyNoRecordsYet => 'Belum ada catatan makan di rentang ini.';
+
+  @override
+  String get energyCardFooter =>
+      'Hari kosong tidak dihitung ke rata-rata. Ketuk untuk detail.';
+
+  @override
+  String get energyMonitorTitle => 'Pantauan energi';
+
+  @override
+  String get energyMonitorSubtitle =>
+      'Energi harian dibanding target, apa adanya.';
+
+  @override
+  String get energyRangeLabel => 'RENTANG';
+
+  @override
+  String energyRangeValue(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get energyRangeChange => 'Ubah';
+
+  @override
+  String energyRangeChangeSemantics(String range) {
+    return 'Rentang $range. Ketuk untuk mengubah.';
+  }
+
+  @override
+  String energyAverageEyebrow(int recorded, int total) {
+    return 'RATA-RATA · $recorded DARI $total HARI TERCATAT';
+  }
+
+  @override
+  String energyKcalValue(String value) {
+    return '$value kkal';
+  }
+
+  @override
+  String energyHeroTarget(String target) {
+    return 'Target $target kkal';
+  }
+
+  @override
+  String get energyHeroTargetChanged => 'Target berubah dalam rentang ini';
+
+  @override
+  String get energyHeroNoTarget => 'Tidak ada target program pada rentang ini';
+
+  @override
+  String energyHeroMissing(int count) {
+    return '$count hari belum dicatat';
+  }
+
+  @override
+  String get energyChartHeading => 'Energi harian';
+
+  @override
+  String get energyLegendLine => 'kkal';
+
+  @override
+  String get energyLegendTarget => 'target';
+
+  @override
+  String get energyMissingLegend =>
+      'Belum dicatat — tidak dihitung ke rata-rata';
+
+  @override
+  String get energyTapHint =>
+      'Ketuk tanggal untuk melihat detail dan membuka Riwayat';
+
+  @override
+  String energyDetailValue(String date, String kcal) {
+    return '$date · $kcal kkal';
+  }
+
+  @override
+  String energyDetailNotRecorded(String date) {
+    return '$date · belum dicatat';
+  }
+
+  @override
+  String energyDetailUnknown(String date) {
+    return '$date · energi belum diketahui';
+  }
+
+  @override
+  String get energyOpenHistory => 'Buka Riwayat';
+
+  @override
+  String get energyEmptyTitle => 'Belum ada catatan energi';
+
+  @override
+  String get energyEmptyBody =>
+      'Belum ada catatan makan pada rentang ini. Catatan yang kamu tambahkan akan muncul di sini.';
+
+  @override
+  String get energyEmptyAction => 'Catat makanan';
+
+  @override
+  String get energyRangePickerTitle => 'Pilih rentang tanggal';
+
+  @override
+  String get energyRangePickerSubtitle =>
+      'Ketuk tanggal mulai, lalu tanggal akhir.';
+
+  @override
+  String energyRangeDays(int count) {
+    return '$count hari';
+  }
+
+  @override
+  String get energyRangeApply => 'Terapkan';
+
+  @override
+  String get energyRangePrevMonth => 'Bulan sebelumnya';
+
+  @override
+  String get energyRangeNextMonth => 'Bulan berikutnya';
 }
