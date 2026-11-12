@@ -202,9 +202,12 @@ class _PathCard extends StatelessWidget {
             child: InkWell(
               onTap: onTap,
               child: Container(
-                height: 84,
+                // Tinggi minimum, bukan tetap: pada skala teks besar kartu
+                // ikut memanjang alih-alih memotong keterangan.
+                constraints: const BoxConstraints(minHeight: 84),
                 padding: const EdgeInsets.symmetric(
                   horizontal: MealoraSpacing.md,
+                  vertical: MealoraSpacing.sm,
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(color: MealoraColors.glassBorder),
