@@ -34,6 +34,17 @@ void main() {
       expect(lower, isNotEmpty);
     });
 
+    test(
+      'sinonim frasa: "nasi putih" menemukan Nasi lebih dulu (FRS 1)',
+      () async {
+        final results = await repository.search('Nasi Putih');
+        expect(results.first.name, 'Nasi');
+        // Kata "putih" di luar frasa tetap dicari seperti biasa.
+        final garlic = await repository.search('bawang putih');
+        expect(garlic.map((f) => f.name), contains('Bawang putih'));
+      },
+    );
+
     test('mencocokkan bagian mana pun dari nama', () async {
       final results = await repository.search('putih');
       expect(results.map((f) => f.name), contains('Bawang putih'));

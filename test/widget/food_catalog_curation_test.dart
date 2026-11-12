@@ -248,8 +248,8 @@ void main() {
         const FoodsCompanion(form: Value('ready')),
       );
       final ordered = await foods(db).search('teh');
-      expect(ordered.first.id, other.id);
-      expect(ordered.last.id, dry.id);
+      final ids = ordered.map((f) => f.id).toList();
+      expect(ids.indexOf(other.id), lessThan(ids.indexOf(dry.id)));
 
       await (db.update(db.foods)..where((f) => f.id.equals(dry.id))).write(
         const FoodsCompanion(isActive: Value(false)),

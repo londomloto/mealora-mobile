@@ -16,7 +16,7 @@ const String _kSourceVersion = 'kaggle-indo-nutrition-v1';
 /// Naikkan nilai ini setiap kali dataset `tool/food_catalog/` (dan
 /// `food_catalog_data.dart` hasil bangkitannya) berubah agar perangkat yang
 /// sudah memakai skema terbaru tetap mendapat penambahan/perbaikan katalog.
-const String kFoodCatalogSeedVersion = 'tkpi-2026-11-12-v5';
+const String kFoodCatalogSeedVersion = 'tkpi-2026-11-12-v11';
 const String _kFoodCatalogSeedPreferenceKey = 'food_catalog_seed_version';
 
 /// Waktu tetap untuk created_at/updated_at/verified_at baris katalog --

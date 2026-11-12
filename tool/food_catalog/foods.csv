@@ -173,7 +173,7 @@ tkpi-171,Buah rukam segar,other,raw,true,113,0.8,26.8,0.3,7.7,171,ER017 (PDF hlm
 tkpi-172,Buah ruruhi segar,other,raw,true,29,2.1,3.6,0.7,2.6,172,ER018 (PDF hlm. 44),true,
 tkpi-173,Buah tuppa segar,other,raw,true,67,0.4,15.9,0.2,,173,ER019 (PDF hlm. 44),true,
 tkpi-174,Buaya daging dendeng mentah,side_dish,raw,true,365,49.6,30.8,4.8,,174,FP004 (PDF hlm. 51),true,
-tkpi-175,Bubur,other,ready,false,60,1,13,60,,175,,false,Dinonaktifkan: tidak ada di TKPI 2017 dan energi menyimpang >50% dari 4P+4K+9L (galat data sumber turunan)
+tkpi-175,Bubur nasi,other,ready,true,44.6,1.1,9.6,0.2,0,Resep turunan TKPI 2017,AR001 (PDF hlm. 16),false,
 tkpi-176,Bubur sagu,staple,ready,true,167,0.2,33,4,,176,BP023 (PDF hlm. 24),true,
 tkpi-177,Bubur tinotuan (Manado),other,ready,true,156,2.3,15.6,0.2,8.2,177,AP040 (PDF hlm. 18),true,"Nilai sesuai TKPI 2017 AP040; inkonsistensi ada di sumber, menunggu sumber pembanding"
 tkpi-178,Bulgogi masakan,other,ready,true,72,11.4,1.4,4.9,1.7,178,FP040 (PDF hlm. 53),true,"Nilai sesuai TKPI 2017 FP040; inkonsistensi ada di sumber, menunggu sumber pembanding"
@@ -1000,7 +1000,7 @@ tkpi-998,Pisang Ambon,snack,,true,99,1.2,25.8,0.2,,998,,false,
 tkpi-999,Pisang angleng (pisang ampyang) segar,snack,ready,true,68,1.3,17.2,0.2,0.8,999,ER075 (PDF hlm. 47),true,
 tkpi-1000,Pisang ayam segar,snack,ready,true,120,1.1,26.8,0.2,4.1,1000,ER076 (PDF hlm. 47),true,
 tkpi-1001,Pisang gapi segar,snack,ready,true,131,1.6,31.1,0.1,11.7,1001,ER077 (PDF hlm. 47),true,
-tkpi-1002,Pisang goreng,snack,ready,false,220,2.3,6.3,2.3,,1002,,false,Dinonaktifkan: tidak ada di TKPI 2017 dan energi menyimpang >50% dari 4P+4K+9L (galat data sumber turunan)
+tkpi-1002,Pisang goreng,snack,ready,true,209,1.9,32.8,8.5,4,Resep turunan TKPI 2017,ER081 (PDF hlm. 47); AP025 (PDF hlm. 18); MP007 (PDF hlm. 67); KR012 (PDF hlm. 66),false,
 tkpi-1003,Pisang goroho segar,snack,ready,true,119,1.5,27.9,0.2,4.6,1003,ER078 (PDF hlm. 47),true,
 tkpi-1004,Pisang hijau segar,snack,ready,true,121,1,28.9,0.1,0.4,1004,ER079 (PDF hlm. 47),true,
 tkpi-1005,Pisang kayu segar,snack,ready,true,100,1.4,23.6,0.5,2.6,1005,ER080 (PDF hlm. 47),true,
@@ -1315,7 +1315,7 @@ tkpi-1313,Ubi jalar manis segar,staple,raw,true,83,1.5,18.8,0.2,0.6,1313,BR029 (
 tkpi-1314,Ubi jalar merah,staple,,true,123,1.8,27.9,0.7,,1314,,false,
 tkpi-1315,Ubi jalar merah segar,staple,raw,true,151,1.6,35.4,0.3,0.7,1315,BR030 (PDF hlm. 23),true,
 tkpi-1316,Ubi jalar putih,staple,,true,123,1.8,27.9,0.7,,1316,,false,
-tkpi-1317,Ubi jalar rebus,staple,ready,false,114,1.4,25.6,9.6,,1317,,false,Dinonaktifkan: tidak ada di TKPI 2017 dan energi menyimpang >50% dari 4P+4K+9L (galat data sumber turunan)
+tkpi-1317,Ubi jalar rebus,staple,ready,true,100,0.7,23.8,0.3,1,1317,BP011 (PDF hlm. 23),false,
 tkpi-1318,Ubi jalar sayur,staple,ready,true,184,1.4,22.5,0.3,,1318,,false,"Tidak ada di TKPI 2017; nilai sumber turunan dipertahankan dan belum terverifikasi, inkonsistensi menunggu sumber pembanding"
 tkpi-1319,Ubi jalar tinta/ kemayung,staple,,true,108,0.5,25.6,0.4,4.2,1319,BR032 (PDF hlm. 23),true,
 tkpi-1320,Ubi jalar tinta/ kemayung kukus,staple,ready,true,165,0.9,39.8,0.2,1.1,1320,BP012 (PDF hlm. 23),true,
@@ -1345,3 +1345,16 @@ tkpi-1343,Wortel kukus,vegetable,ready,true,37,1,8.3,0.6,1.1,1343,DP021 (PDF hlm
 tkpi-1344,Wortel rebus,vegetable,ready,true,28,0.7,6.3,0.5,0.8,1344,DP020 (PDF hlm. 41),true,
 tkpi-1345,Yangko,other,,true,254,3,58.1,1.1,0.8,1345,AP114 (PDF hlm. 21),true,
 tkpi-1346,Yoghurt,side_dish,,true,52,3.3,4,2.5,0,1346,JP011 (PDF hlm. 65),true,
+racik-teh-manis,Teh manis (seduh),drink,ready,true,27.5,0,6.6,0,0,Resep turunan TKPI 2017,MP007 (PDF hlm. 67),false,
+racik-teh-tawar,Teh tawar (seduh),drink,ready,true,0,0,0,0,0,Resep turunan TKPI 2017,,false,
+racik-kopi-hitam,Kopi hitam (seduh),drink,ready,true,0,0,0,0,0,Resep turunan TKPI 2017,,false,
+racik-kopi-susu,Kopi susu (seduh),drink,ready,true,57.2,1.4,9.2,1.7,0,Resep turunan TKPI 2017,JP007 (PDF hlm. 65),false,
+racik-es-teh-manis,Es teh manis,drink,ready,true,29.2,0,7,0,0,Resep turunan TKPI 2017,MP007 (PDF hlm. 67),false,
+racik-lontong,Lontong,staple,ready,true,140,3.3,30.2,0.7,0.1,Resep turunan TKPI 2017,AR001 (PDF hlm. 16),false,
+racik-perkedel-kentang,Perkedel kentang,side_dish,ready,true,145.3,3.7,12.9,9,0.5,Resep turunan TKPI 2017,BR013 (PDF hlm. 22); HR002 (PDF hlm. 64); NR007 (PDF hlm. 68); KR012 (PDF hlm. 66),false,
+racik-pecel-sayur,Pecel sayur,vegetable,ready,true,95.8,4.4,8.9,5.7,1.2,Resep turunan TKPI 2017,DP002 (PDF hlm. 41); DP012 (PDF hlm. 41); DP018 (PDF hlm. 41); CP012 (PDF hlm. 29); MP006 (PDF hlm. 67); NR014 (PDF hlm. 68),false,
+racik-sambal,Sambal,other,ready,true,154.2,1.9,10.4,12,3.2,Resep turunan TKPI 2017,NR014 (PDF hlm. 68); NR015 (PDF hlm. 68); NR007 (PDF hlm. 68); NR008 (PDF hlm. 68); DR161 (PDF hlm. 40); KR012 (PDF hlm. 66),false,
+racik-ikan-nila-goreng,Ikan nila goreng,side_dish,ready,true,197.2,23.1,0,11.1,0,Resep turunan TKPI 2017,GR048 (PDF hlm. 58); KR012 (PDF hlm. 66),false,
+racik-ikan-tenggiri,Ikan tenggiri segar,side_dish,ready,true,100,13.7,8,1.5,0,Resep turunan TKPI 2017,GR070 (PDF hlm. 58),false,
+racik-tahu-isi,Tahu isi,snack,ready,true,172.5,7.8,10.7,12.1,0.3,Resep turunan TKPI 2017,CP061 (PDF hlm. 32); DR148 (PDF hlm. 40); DR166 (PDF hlm. 41); AP025 (PDF hlm. 18); KR012 (PDF hlm. 66),false,
+racik-pepes-tahu,Pepes tahu,side_dish,ready,true,95.7,11,1.4,5.8,0.2,Resep turunan TKPI 2017,CP061 (PDF hlm. 32); HR002 (PDF hlm. 64); NR007 (PDF hlm. 68); NR014 (PDF hlm. 68),false,

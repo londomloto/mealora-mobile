@@ -90,9 +90,11 @@ void main() {
     });
 
     test('jumlah takaran tersimpan sama dengan dataset', () async {
-      final servings = await (db.select(
-        db.foodServings,
-      )..where((s) => s.foodId.like('food-tkpi-%'))).get();
+      final servings =
+          await (db.select(db.foodServings)..where(
+                (s) => s.foodId.isIn(dataset.foods.map((f) => 'food-${f.id}')),
+              ))
+              .get();
       expect(servings, hasLength(dataset.servings.length));
     });
   });

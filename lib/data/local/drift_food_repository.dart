@@ -62,12 +62,9 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
 
   @override
   Future<List<Food>> search(String query) async {
-    final tokens = query
-        .trim()
-        .toLowerCase()
-        .split(RegExp(r'\s+'))
-        .where((t) => t.isNotEmpty)
-        .toList();
+    final tokens = _replacePhrases(
+      query.trim().toLowerCase(),
+    ).split(RegExp(r'\s+')).where((t) => t.isNotEmpty).toList();
     if (tokens.isEmpty) {
       return const <Food>[];
     }
@@ -76,7 +73,7 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
     // change 015 D8). Kata asli dicocokkan sebagai potongan seperti
     // sebelumnya; sinonim hanya di awal kata supaya "mi" tidak cocok dengan
     // "kismis". SQLite `LIKE` tidak peka huruf besar-kecil untuk ASCII.
-    final trimmed = query.trim();
+    final trimmed = _replacePhrases(query.trim().toLowerCase());
     final rows =
         await (select(foods)
               ..where((t) {
@@ -171,12 +168,30 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
     ];
   }
 
-  /// Bentuk lain dari [token] menurut sinonim pencarian, dua arah.
+  /// Bentuk lain dari [token] menurut sinonim pencarian, dua arah. Sinonim
+  /// frasa ditangani [_replacePhrases], bukan di sini.
   static Set<String> _synonymsOf(String token) => <String>{
     ?kFoodSearchSynonyms[token],
     for (final e in kFoodSearchSynonyms.entries)
-      if (e.value == token) e.key,
+      if (e.value == token && !e.key.contains(' ')) e.key,
   }..remove(token);
+
+  /// Ganti sinonim frasa (mis. "nasi putih" → "nasi") sebelum kueri dipecah
+  /// per kata, karena setiap kata wajib ada di nama makanan.
+  static String _replacePhrases(String query) {
+    var result = query;
+    for (final e in kFoodSearchSynonyms.entries) {
+      if (!e.key.contains(' ')) continue;
+      result = result.replaceAll(
+        RegExp(
+          '(?<![\\p{L}\\p{N}])${RegExp.escape(e.key)}(?![\\p{L}\\p{N}])',
+          unicode: true,
+        ),
+        e.value,
+      );
+    }
+    return result;
+  }
 
   @override
   Future<List<RecentFood>> recentlyLogged(
