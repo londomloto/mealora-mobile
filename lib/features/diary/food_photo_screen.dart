@@ -56,6 +56,10 @@ class FoodPhotoScreen extends ConsumerStatefulWidget {
 
 enum _Stage { initializing, ready, unavailable, submitting }
 
+/// `true` = kamera full screen (rancangan `19b`); `false` = tata letak lama
+/// berbingkai (rancangan `19`), yang masih dipertahankan di bawah.
+const bool _useFullScreenCamera = true;
+
 class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
   CameraController? _controller;
   _Stage _stage = _Stage.initializing;
@@ -123,6 +127,14 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
     final canCapture =
         (_stage == _Stage.ready) && (!needsConsentCheckbox || _consentChecked);
 
+    if (_useFullScreenCamera && _stage != _Stage.unavailable) {
+      return _fullScreenCamera(
+        text,
+        needsConsentCheckbox: needsConsentCheckbox,
+        canCapture: canCapture,
+      );
+    }
+
     return Scaffold(
       backgroundColor: MealoraColors.background,
       body: MealoraBlobBackdrop(
@@ -171,6 +183,194 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Kamera memenuhi layar; header dan kontrol ditumpuk di atas pratinjau
+  /// supaya pengguna leluasa membingkai foto.
+  Widget _fullScreenCamera(
+    AppText text, {
+    required bool needsConsentCheckbox,
+    required bool canCapture,
+  }) {
+    final ready = _controller?.value.isInitialized ?? false;
+    const scrim = Color(0xFF0A2A1D);
+    return Scaffold(
+      backgroundColor: MealoraColors.ink,
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          if (ready) _CoverCameraPreview(controller: _controller!),
+          const Align(
+            alignment: Alignment.topCenter,
+            child: _Scrim(height: 190, color: scrim, fromTop: true),
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: _Scrim(height: 324, color: scrim, fromTop: false),
+          ),
+          Align(
+            alignment: const Alignment(0, -0.3),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const _GuideCorners(width: 310, height: 300),
+                const SizedBox(height: MealoraSpacing.sm),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scrim.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    child: Text(
+                      text.foodPhotoFrameCaption,
+                      style: MealoraTypography.bodySmall.copyWith(
+                        color: MealoraColors.onPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  MealoraSpacing.programHeroGutter,
+                  MealoraSpacing.sm,
+                  MealoraSpacing.programHeroGutter,
+                  0,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Semantics(
+                      button: true,
+                      label: MaterialLocalizations.of(
+                        context,
+                      ).closeButtonTooltip,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).maybePop(),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: scrim.withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.35),
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            size: 18,
+                            color: MealoraColors.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: MealoraSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            text.foodPhotoContextLabel,
+                            style: MealoraTypography.bodySmall.copyWith(
+                              color: MealoraColors.lime,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Text(
+                            text.foodPhotoTitle,
+                            style: MealoraTypography.title.copyWith(
+                              color: MealoraColors.onPrimary,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  MealoraSpacing.md,
+                  0,
+                  MealoraSpacing.md,
+                  MealoraSpacing.lg,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: MealoraColors.surface.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(MealoraSpacing.md),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        if (_stage == _Stage.submitting)
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: MealoraSpacing.sm),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else if (needsConsentCheckbox)
+                          _CompactConsentRow(
+                            checked: _consentChecked,
+                            onChanged: (value) =>
+                                setState(() => _consentChecked = value),
+                            text: text,
+                          ),
+                        MealoraPrimaryButton(
+                          label: text.foodPhotoCaptureAction,
+                          icon: Icons.camera_alt_outlined,
+                          onPressed: canCapture
+                              ? () => unawaited(_capture())
+                              : null,
+                        ),
+                        const SizedBox(height: MealoraSpacing.sm),
+                        Semantics(
+                          button: true,
+                          link: true,
+                          label: text.foodPhotoManualLink,
+                          child: Center(
+                            child: InkWell(
+                              onTap: _openManualSearch,
+                              child: Text(
+                                text.foodPhotoManualLink,
+                                style: MealoraTypography.bodyEmphasis.copyWith(
+                                  color: MealoraColors.primaryDeep,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -323,7 +523,7 @@ class _PreviewFrame extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            if (ready) CameraPreview(controller!),
+            if (ready) _CoverCameraPreview(controller: controller!),
             Center(
               child: Container(
                 width: 240,
@@ -408,6 +608,172 @@ class _ConsentPanel extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Fills the frame with the camera feed at its native aspect ratio (crop,
+/// not stretch), matching how the barcode scanner preview behaves.
+class _CoverCameraPreview extends StatelessWidget {
+  const _CoverCameraPreview({required this.controller});
+
+  final CameraController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = controller.value.previewSize;
+    if (size == null) return CameraPreview(controller);
+    // previewSize is reported in sensor (landscape) orientation; the app is
+    // portrait, so swap width/height for layout.
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: size.height,
+        height: size.width,
+        child: CameraPreview(controller),
+      ),
+    );
+  }
+}
+
+class _Scrim extends StatelessWidget {
+  const _Scrim({
+    required this.height,
+    required this.color,
+    required this.fromTop,
+  });
+
+  final double height;
+  final Color color;
+  final bool fromTop;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: fromTop ? Alignment.topCenter : Alignment.bottomCenter,
+            end: fromTop ? Alignment.bottomCenter : Alignment.topCenter,
+            colors: <Color>[
+              color.withValues(alpha: fromTop ? 0.8 : 0.9),
+              color.withValues(alpha: 0),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bingkai panduan berupa empat sudut lime (rancangan `19b`).
+class _GuideCorners extends StatelessWidget {
+  const _GuideCorners({required this.width, required this.height});
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    const side = BorderSide(color: MealoraColors.lime, width: 3);
+    const r = Radius.circular(14);
+    Widget corner(Alignment a) {
+      final top = a.y < 0;
+      final left = a.x < 0;
+      return Align(
+        alignment: a,
+        child: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            border: Border(
+              top: top ? side : BorderSide.none,
+              bottom: top ? BorderSide.none : side,
+              left: left ? side : BorderSide.none,
+              right: left ? BorderSide.none : side,
+            ),
+            borderRadius: BorderRadius.only(
+              topLeft: top && left ? r : Radius.zero,
+              topRight: top && !left ? r : Radius.zero,
+              bottomLeft: !top && left ? r : Radius.zero,
+              bottomRight: !top && !left ? r : Radius.zero,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return IgnorePointer(
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Stack(
+          children: <Widget>[
+            corner(Alignment.topLeft),
+            corner(Alignment.topRight),
+            corner(Alignment.bottomLeft),
+            corner(Alignment.bottomRight),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Persetujuan unggah ringkas di panel kontrol bawah (rancangan `19b`).
+class _CompactConsentRow extends StatelessWidget {
+  const _CompactConsentRow({
+    required this.checked,
+    required this.onChanged,
+    required this.text,
+  });
+
+  final bool checked;
+  final ValueChanged<bool> onChanged;
+  final AppText text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label:
+          '${text.foodPhotoConsentBody} ${text.foodPhotoConsentCheckboxLabel}. '
+          '${checked ? text.uploadConsentCheckedState : text.uploadConsentUncheckedState}',
+      child: InkWell(
+        onTap: () => onChanged(!checked),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: MealoraSpacing.sm),
+          child: Row(
+            children: <Widget>[
+              ExcludeSemantics(
+                child: Checkbox(
+                  value: checked,
+                  onChanged: (value) => onChanged(value ?? false),
+                ),
+              ),
+              const SizedBox(width: MealoraSpacing.xxs),
+              Expanded(
+                child: ExcludeSemantics(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        text.foodPhotoConsentCheckboxLabel,
+                        style: MealoraTypography.bodyEmphasis,
+                      ),
+                      Text(
+                        text.foodPhotoConsentBody,
+                        style: MealoraTypography.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

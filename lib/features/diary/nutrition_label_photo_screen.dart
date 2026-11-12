@@ -347,7 +347,7 @@ class _PreviewFrame extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            if (ready) CameraPreview(controller!),
+            if (ready) _CoverCameraPreview(controller: controller!),
             Center(
               child: Container(
                 width: 240,
@@ -432,6 +432,31 @@ class _ConsentRow extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Fills the frame with the camera feed at its native aspect ratio (crop,
+/// not stretch), matching how the barcode scanner preview behaves.
+class _CoverCameraPreview extends StatelessWidget {
+  const _CoverCameraPreview({required this.controller});
+
+  final CameraController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = controller.value.previewSize;
+    if (size == null) return CameraPreview(controller);
+    // previewSize is reported in sensor (landscape) orientation; the app is
+    // portrait, so swap width/height for layout.
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: size.height,
+        height: size.width,
+        child: CameraPreview(controller),
       ),
     );
   }
