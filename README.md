@@ -70,6 +70,20 @@ Menjalankan aplikasi di emulator itu:
 flutter run -d emulator-5554 --debug
 ```
 
+Fitur AI (scan label, foto makanan, parse teks) butuh model proxy. Salin
+`dart_defines.example.json` menjadi `dart_defines.prod.json`, isi URL dan
+token proxy (file ini di-gitignore), lalu jalankan dengan:
+
+```bash
+flutter run -d emulator-5554 --dart-define-from-file=dart_defines.prod.json
+```
+
+Build rilis memakai flag yang sama:
+
+```bash
+flutter build appbundle --release --dart-define-from-file=dart_defines.prod.json
+```
+
 Menutup emulator:
 
 ```bash
