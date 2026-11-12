@@ -10,6 +10,8 @@ mixin _$DriftFoodRepositoryMixin on DatabaseAccessor<AppDatabase> {
   $ProfilesTable get profiles => attachedDatabase.profiles;
   $MealEntriesTable get mealEntries => attachedDatabase.mealEntries;
   $MealEntryItemsTable get mealEntryItems => attachedDatabase.mealEntryItems;
+  $RecipeIngredientsTable get recipeIngredients =>
+      attachedDatabase.recipeIngredients;
   DriftFoodRepositoryManager get managers => DriftFoodRepositoryManager(this);
 }
 
@@ -33,5 +35,10 @@ class DriftFoodRepositoryManager {
       $$MealEntryItemsTableTableManager(
         _db.attachedDatabase,
         _db.mealEntryItems,
+      );
+  $$RecipeIngredientsTableTableManager get recipeIngredients =>
+      $$RecipeIngredientsTableTableManager(
+        _db.attachedDatabase,
+        _db.recipeIngredients,
       );
 }

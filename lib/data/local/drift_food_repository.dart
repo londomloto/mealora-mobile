@@ -9,12 +9,15 @@ import 'package:mealora/database/tables/foods_table.dart';
 import 'package:mealora/database/tables/meal_entries_table.dart';
 import 'package:mealora/database/tables/meal_entry_items_table.dart';
 import 'package:mealora/database/tables/nutrition_values_table.dart';
+import 'package:mealora/database/tables/recipe_ingredients_table.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/food_category.dart';
 import 'package:mealora/domain/food/food_provenance.dart';
 import 'package:mealora/domain/food/food_repository.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
 import 'package:mealora/domain/food/recent_food.dart';
+import 'package:mealora/domain/food/recipe.dart';
+import 'package:mealora/domain/food/recipe_calculator.dart';
 import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/domain/shared/units.dart';
 
@@ -29,6 +32,7 @@ part 'drift_food_repository.g.dart';
     NutritionValues,
     MealEntries,
     MealEntryItems,
+    RecipeIngredients,
   ],
 )
 class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
@@ -200,6 +204,7 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
           name: name,
           category: category.stableCode,
           isUserCreated: const Value<bool>(true),
+          nutritionOrigin: Value<String?>(NutritionOrigin.manual.stableCode),
         ),
       );
       await _writeServing(
@@ -235,8 +240,21 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
           updatedAt: Value<DateTime>(now),
           createdAt: Value<DateTime>(existing.createdAt),
           revision: Value<int>(existing.revision + 1),
+          // Isi manual atas makanan resep: resep tetap tersimpan sebagai
+          // rujukan, tapi bukan lagi sumber angka (Design D4).
+          nutritionOrigin: Value<String?>(NutritionOrigin.manual.stableCode),
         ),
       );
+      // Takaran tambahan (mis. "100 g" makanan resep) akan basi terhadap
+      // nilai manual baru, jadi dihapus lunak; catatan lama tetap utuh
+      // karena menyimpan potret gizinya sendiri.
+      await (update(foodServings)..where(
+            (t) =>
+                t.foodId.equals(foodId) &
+                t.isDefault.equals(false) &
+                UserRecords.active(t.deletedAt),
+          ))
+          .write(FoodServingsCompanion(deletedAt: Value<DateTime?>(now)));
       await (update(
         foodServings,
       )..where((t) => t.id.equals(servingRow.id))).write(
@@ -259,11 +277,310 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
     return (await findById(foodId))!;
   }
 
+  @override
+  Future<Food> createRecipeFood({
+    required String name,
+    required FoodCategory category,
+    required List<RecipeIngredientInput> ingredients,
+    required RecipeYield recipeYield,
+    required NutritionProfile perServing,
+    required NutritionOrigin origin,
+  }) async {
+    _checkRecipe(ingredients, recipeYield);
+    final now = _clock.nowUtc();
+    final foodId = _ids.next();
+    await transaction(() async {
+      await into(foods).insert(
+        FoodsCompanion.insert(
+          id: foodId,
+          createdAt: now,
+          updatedAt: now,
+          name: name,
+          category: category.stableCode,
+          isUserCreated: const Value<bool>(true),
+          nutritionOrigin: Value<String?>(origin.stableCode),
+          recipeYieldServings: Value<double?>(recipeYield.servings),
+          recipeYieldGrams: Value<double?>(recipeYield.finishedGrams),
+        ),
+      );
+      await _writeRecipeServings(foodId, recipeYield, perServing, now);
+      await _writeIngredients(foodId, ingredients, now);
+    });
+    return (await findById(foodId))!;
+  }
+
+  @override
+  Future<Food> updateRecipeFood(
+    String foodId, {
+    required String name,
+    required List<RecipeIngredientInput> ingredients,
+    required RecipeYield recipeYield,
+    required NutritionProfile perServing,
+    required NutritionOrigin origin,
+  }) async {
+    _checkRecipe(ingredients, recipeYield);
+    final now = _clock.nowUtc();
+    final existing = await (select(
+      foods,
+    )..where((t) => t.id.equals(foodId))).getSingle();
+    await transaction(() async {
+      await (update(foods)..where((t) => t.id.equals(foodId))).write(
+        FoodsCompanion(
+          name: Value<String>(name),
+          updatedAt: Value<DateTime>(now),
+          revision: Value<int>(existing.revision + 1),
+          nutritionOrigin: Value<String?>(origin.stableCode),
+          recipeYieldServings: Value<double?>(recipeYield.servings),
+          recipeYieldGrams: Value<double?>(recipeYield.finishedGrams),
+        ),
+      );
+      await (update(recipeIngredients)..where(
+            (t) =>
+                t.recipeFoodId.equals(foodId) & UserRecords.active(t.deletedAt),
+          ))
+          .write(RecipeIngredientsCompanion(deletedAt: Value<DateTime?>(now)));
+      await _writeRecipeServings(foodId, recipeYield, perServing, now);
+      await _writeIngredients(foodId, ingredients, now);
+    });
+    return (await findById(foodId))!;
+  }
+
+  @override
+  Future<SavedRecipe?> recipeOf(String foodId) async {
+    final food = await (select(
+      foods,
+    )..where((t) => t.id.equals(foodId))).getSingleOrNull();
+    if (food == null || food.recipeYieldServings == null) {
+      return null;
+    }
+    final rows =
+        await (select(recipeIngredients)
+              ..where(
+                (t) =>
+                    t.recipeFoodId.equals(foodId) &
+                    UserRecords.active(t.deletedAt),
+              )
+              ..orderBy([(t) => OrderingTerm.asc(t.position)]))
+            .get();
+    final ingredients = <SavedRecipeIngredient>[];
+    for (final row in rows) {
+      final amount = row.grams != null
+          ? RecipeGrams(row.grams!)
+          : RecipeServingMultiple(row.servingMultiple!);
+      if (row.ingredientFoodId == null) {
+        ingredients.add(
+          SavedRecipeIngredient(label: row.freeTextName!, amount: amount),
+        );
+        continue;
+      }
+      // Bahan dibaca tanpa saringan terhapus: makanan/takaran yang dipakai
+      // resep tetap dihitung dengan nilai tersimpannya.
+      final ingredientRow = await (select(
+        foods,
+      )..where((t) => t.id.equals(row.ingredientFoodId!))).getSingle();
+      final ingredientFood = await _assemble(ingredientRow);
+      final servingRow = await (select(
+        foodServings,
+      )..where((t) => t.id.equals(row.ingredientServingId!))).getSingle();
+      ingredients.add(
+        SavedRecipeIngredient(
+          label: ingredientFood.name,
+          food: ingredientFood,
+          serving: await _servingFrom(servingRow),
+          amount: amount,
+        ),
+      );
+    }
+    return SavedRecipe(
+      ingredients: ingredients,
+      recipeYield: RecipeYield(
+        servings: food.recipeYieldServings!,
+        finishedGrams: food.recipeYieldGrams,
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteUserFood(String foodId) async {
+    final recipe = alias(foods, 'recipe');
+    final usages =
+        await (select(recipeIngredients).join([
+              innerJoin(
+                recipe,
+                recipe.id.equalsExp(recipeIngredients.recipeFoodId),
+              ),
+            ])..where(
+              recipeIngredients.ingredientFoodId.equals(foodId) &
+                  UserRecords.active(recipeIngredients.deletedAt) &
+                  UserRecords.active(recipe.deletedAt),
+            ))
+            .get();
+    if (usages.isNotEmpty) {
+      throw FoodInUseAsIngredientException(
+        <String>{
+          for (final row in usages) row.readTable(recipe).name,
+        }.toList(growable: false),
+      );
+    }
+    final now = _clock.nowUtc();
+    await (update(
+      foods,
+    )..where((t) => t.id.equals(foodId) & t.isUserCreated.equals(true))).write(
+      FoodsCompanion(
+        deletedAt: Value<DateTime?>(now),
+        updatedAt: Value<DateTime>(now),
+      ),
+    );
+  }
+
+  void _checkRecipe(
+    List<RecipeIngredientInput> ingredients,
+    RecipeYield recipeYield,
+  ) {
+    if (ingredients.isEmpty) {
+      throw ArgumentError.value(ingredients, 'ingredients', 'kosong');
+    }
+    if (RecipeValidation.positive(recipeYield.servings) != null ||
+        (recipeYield.finishedGrams != null &&
+            RecipeValidation.positive(recipeYield.finishedGrams) != null)) {
+      throw ArgumentError.value(recipeYield, 'recipeYield');
+    }
+    for (final i in ingredients) {
+      if (RecipeValidation.positive(i.amount.value) != null) {
+        throw ArgumentError.value(i.amount.value, 'amount');
+      }
+    }
+  }
+
+  Future<void> _writeIngredients(
+    String recipeFoodId,
+    List<RecipeIngredientInput> ingredients,
+    DateTime now,
+  ) async {
+    for (final (position, i) in ingredients.indexed) {
+      await into(recipeIngredients).insert(
+        RecipeIngredientsCompanion.insert(
+          id: _ids.next(),
+          createdAt: now,
+          updatedAt: now,
+          recipeFoodId: recipeFoodId,
+          ingredientFoodId: Value<String?>(i.foodId),
+          ingredientServingId: Value<String?>(i.servingId),
+          freeTextName: Value<String?>(i.freeTextName),
+          grams: Value<double?>(
+            i.amount is RecipeGrams ? i.amount.value : null,
+          ),
+          servingMultiple: Value<double?>(
+            i.amount is RecipeServingMultiple ? i.amount.value : null,
+          ),
+          position: position,
+        ),
+      );
+    }
+  }
+
+  /// Takaran makanan resep (task 2.2): "1 porsi" bawaan berisi gizi per
+  /// sajian; bila berat jadi diisi, porsi diberi padanan gram dan takaran
+  /// "100 g" ditambahkan supaya makanan bisa dicatat dalam gram dan dipakai
+  /// sebagai bahan resep lain.
+  Future<void> _writeRecipeServings(
+    String foodId,
+    RecipeYield recipeYield,
+    NutritionProfile perServing,
+    DateTime now,
+  ) async {
+    final finished = recipeYield.finishedGrams;
+    final portionGrams = finished == null
+        ? null
+        : finished / recipeYield.servings;
+    final portion = ServingSizeInput(
+      label: portionGrams == null
+          ? '1 porsi'
+          : '1 porsi · ${_formatGrams(portionGrams)} g',
+      amount: 1,
+      unit: 'porsi',
+      gramEquivalent: portionGrams,
+      nutrition: perServing,
+    );
+
+    final active =
+        await (select(foodServings)..where(
+              (t) => t.foodId.equals(foodId) & UserRecords.active(t.deletedAt),
+            ))
+            .get();
+    final defaultRow = active.where((s) => s.isDefault).firstOrNull;
+    if (defaultRow == null) {
+      await _writeServing(
+        servingId: _ids.next(),
+        foodId: foodId,
+        serving: portion,
+        now: now,
+      );
+    } else {
+      await _updateServing(defaultRow.id, portion, now);
+    }
+
+    final weightRow = active
+        .where((s) => !s.isDefault && s.unit == 'g' && s.amount == 100)
+        .firstOrNull;
+    if (portionGrams == null) {
+      if (weightRow != null) {
+        await (update(foodServings)..where((t) => t.id.equals(weightRow.id)))
+            .write(FoodServingsCompanion(deletedAt: Value<DateTime?>(now)));
+      }
+      return;
+    }
+    final per100g = ServingSizeInput(
+      label: '100 g',
+      amount: 100,
+      unit: 'g',
+      gramEquivalent: 100,
+      nutrition: perServing.scaledBy(100 / portionGrams),
+    );
+    if (weightRow == null) {
+      await _writeServing(
+        servingId: _ids.next(),
+        foodId: foodId,
+        serving: per100g,
+        now: now,
+        isDefault: false,
+      );
+    } else {
+      await _updateServing(weightRow.id, per100g, now);
+    }
+  }
+
+  Future<void> _updateServing(
+    String servingId,
+    ServingSizeInput serving,
+    DateTime now,
+  ) async {
+    await (update(foodServings)..where((t) => t.id.equals(servingId))).write(
+      FoodServingsCompanion(
+        label: Value<String>(serving.label),
+        amount: Value<double>(serving.amount),
+        unit: Value<String>(serving.unit),
+        gramEquivalent: Value<double?>(serving.gramEquivalent),
+        updatedAt: Value<DateTime>(now),
+      ),
+    );
+    await (update(nutritionValues)..where((t) => t.servingId.equals(servingId)))
+        .write(_nutritionCompanion(serving.nutrition, updatedAt: now));
+  }
+
+  static String _formatGrams(double grams) {
+    final rounded = (grams * 10).round() / 10;
+    return rounded == rounded.roundToDouble()
+        ? rounded.toInt().toString()
+        : rounded.toString().replaceAll('.', ',');
+  }
+
   Future<void> _writeServing({
     required String servingId,
     required String foodId,
     required ServingSizeInput serving,
     required DateTime now,
+    bool isDefault = true,
   }) async {
     await into(foodServings).insert(
       FoodServingsCompanion.insert(
@@ -275,7 +592,7 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
         amount: serving.amount,
         unit: serving.unit,
         gramEquivalent: Value<double?>(serving.gramEquivalent),
-        isDefault: const Value<bool>(true),
+        isDefault: Value<bool>(isDefault),
       ),
     );
     await into(nutritionValues).insert(
@@ -321,27 +638,12 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
               (t) => t.foodId.equals(row.id) & UserRecords.active(t.deletedAt),
             ))
             .get();
-    final servings = <ServingSize>[];
-    for (final servingRow in servingRows) {
-      final nutritionRow = await (select(
-        nutritionValues,
-      )..where((t) => t.servingId.equals(servingRow.id))).getSingleOrNull();
-      servings.add(
-        ServingSize(
-          id: servingRow.id,
-          label: servingRow.label,
-          amount: servingRow.amount,
-          unit: servingRow.unit,
-          gramEquivalent: servingRow.gramEquivalent,
-          isDefault: servingRow.isDefault,
-          nutrition: _nutritionFrom(nutritionRow),
-          provenanceTier: ServingProvenanceTier.fromStableCode(
-            servingRow.provenanceTier,
-          ),
-        ),
-      );
-    }
+    final servings = <ServingSize>[
+      for (final servingRow in servingRows) await _servingFrom(servingRow),
+    ];
     return Food(
+      form: FoodForm.fromStableCode(row.form),
+      nutritionOrigin: NutritionOrigin.fromStableCode(row.nutritionOrigin),
       id: row.id,
       name: row.name,
       brand: row.brand,
@@ -356,6 +658,24 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
               verifiedAt: row.verifiedAt,
             ),
       servings: servings,
+    );
+  }
+
+  Future<ServingSize> _servingFrom(FoodServingRow servingRow) async {
+    final nutritionRow = await (select(
+      nutritionValues,
+    )..where((t) => t.servingId.equals(servingRow.id))).getSingleOrNull();
+    return ServingSize(
+      id: servingRow.id,
+      label: servingRow.label,
+      amount: servingRow.amount,
+      unit: servingRow.unit,
+      gramEquivalent: servingRow.gramEquivalent,
+      isDefault: servingRow.isDefault,
+      nutrition: _nutritionFrom(nutritionRow),
+      provenanceTier: ServingProvenanceTier.fromStableCode(
+        servingRow.provenanceTier,
+      ),
     );
   }
 

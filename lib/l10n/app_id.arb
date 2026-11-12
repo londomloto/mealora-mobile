@@ -1483,5 +1483,129 @@
     }
   },
   "foodPhotoSavedThumbCaption": "Pratinjau kartu yang akan dibagikan",
-  "foodPhotoSavedDoneAction": "Selesai"
+  "foodPhotoSavedDoneAction": "Selesai",
+  "customFoodEditTitle": "Sunting makanan",
+  "customFoodEditContextLabel": "SUNTING MAKANAN",
+  "customFoodEditAction": "Sunting makanan",
+  "customFoodSaveChangesAction": "Simpan perubahan",
+  "customFoodModeHeading": "Cara mengisi gizi",
+  "customFoodModeManual": "Isi manual",
+  "customFoodModeRecipe": "Hitung dari bahan",
+  "customFoodManualHint": "Tidak punya data gizinya? Pilih \"Hitung dari bahan\" — aplikasi menjumlahkan gizi dari bahan masakanmu.",
+  "foodFormReady": "siap makan",
+  "foodFormRaw": "mentah",
+  "foodFormDry": "kering",
+  "recipeIngredientsHeading": "Bahan ({count})",
+  "@recipeIngredientsHeading": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipeIngredientsEmpty": "Belum ada bahan. Tambahkan bahan masakanmu satu per satu.",
+  "recipeAddIngredient": "Tambah bahan",
+  "recipeRemoveIngredient": "Hapus {name}",
+  "@recipeRemoveIngredient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeIngredientNoData": "tanpa data gizi",
+  "recipeAmountGrams": "{amount} g",
+  "@recipeAmountGrams": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeAmountServing": "{amount} × {serving}",
+  "@recipeAmountServing": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "serving": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeYieldHeading": "Hasil resep",
+  "recipeYieldServingsLabel": "Jumlah porsi",
+  "recipeYieldGramsLabel": "Berat jadi (g) · opsional",
+  "recipeYieldGramsHelper": "Timbang setelah matang",
+  "recipeYieldServingsError": "Jumlah porsi harus lebih dari 0.",
+  "recipeYieldGramsError": "Berat jadi harus lebih dari 0 g, atau kosongkan.",
+  "recipeDecreaseServings": "Kurangi porsi",
+  "recipeIncreaseServings": "Tambah porsi",
+  "recipeOilReminder": "Menggoreng? Tambahkan minyak yang terserap sebagai bahan agar energinya tidak terlalu rendah.",
+  "recipeNoIngredientsError": "Tambahkan sekurang-kurangnya satu bahan.",
+  "recipeIncompleteBanner": "Total belum lengkap: {names} tidak punya sebagian data gizi, jadi totalnya bisa lebih tinggi.",
+  "@recipeIncompleteBanner": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeIncompleteChip": "tidak lengkap",
+  "recipeNutritionHeading": "Nutrisi per sajian",
+  "recipeCorrectedNotice": "Nilai dikoreksi manual, jadi hitungan dari bahan tidak lagi dipakai.",
+  "recipeRecalculateAction": "Hitung ulang dari bahan",
+  "recipeRecalculateTitle": "Hitung ulang dari bahan?",
+  "recipeRecalculateBody": "Koreksimu akan ditimpa dengan hasil hitungan dari bahan saat ini.",
+  "recipeRecalculateConfirm": "Hitung ulang",
+  "recipeRecalculateCancel": "Biarkan koreksi",
+  "recipeBreakdownAction": "Lihat rincian per bahan",
+  "recipeBreakdownTitle": "Rincian gizi",
+  "recipeBreakdownSubtitle": "Kontribusi tiap bahan terhadap total resep.",
+  "recipeBreakdownIngredientColumn": "BAHAN",
+  "recipeBreakdownTotalRow": "Total resep",
+  "recipeBreakdownPerServing": "Per sajian · 1 dari {servings} porsi",
+  "@recipeBreakdownPerServing": {
+    "placeholders": {
+      "servings": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeBreakdownPer100g": "Per 100 g hasil masakan ({grams} g): {kcal} kkal",
+  "@recipeBreakdownPer100g": {
+    "placeholders": {
+      "grams": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeBreakdownIncompleteMark": "* belum termasuk bahan yang datanya tidak lengkap.",
+  "recipePickerTitle": "Pilih bahan",
+  "recipePickerFallbackHeading": "Tidak menemukan bahannya?",
+  "recipePickerCreateTitle": "Buat bahan baru",
+  "recipePickerCreateBody": "Isi gizi per 100 g dari label kemasan. Tersimpan dan bisa dipakai lagi.",
+  "recipePickerFreeTextTitle": "Tambah tanpa data gizi",
+  "recipePickerFreeTextBody": "Cukup nama dan jumlah. Total resep akan ditandai tidak lengkap.",
+  "recipePer100gHeading": "Nilai gizi per 100 g",
+  "recipeFreeTextNameLabel": "Nama bahan",
+  "recipeAmountModeGram": "Gram",
+  "recipeAmountModeServing": "Takaran ({serving})",
+  "@recipeAmountModeServing": {
+    "placeholders": {
+      "serving": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeAmountModeMultiple": "Jumlah (kali)",
+  "recipeAmountLabelGram": "Berat (g)",
+  "recipeAmountLabelServing": "Jumlah takaran",
+  "recipeAmountZeroError": "Jumlah harus lebih dari 0.",
+  "recipeAmountGramRule": "Gram hanya tersedia untuk bahan yang berat takarannya diketahui. Selain itu isi kelipatan takaran, mis. 0,5.",
+  "recipeAmountRawHint": "Bentuk mentah — masukkan berat sebelum dimasak.",
+  "recipeAmountAddAction": "Tambah ke resep"
 }

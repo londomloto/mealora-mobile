@@ -107,7 +107,7 @@ void main() {
       v10,
       expectedSchemaVersion: kSchemaVersion,
     );
-    expect(kSchemaVersion, 10);
+    expect(kSchemaVersion, greaterThanOrEqualTo(10));
     expect(check.isHealthy, isTrue, reason: check.toString());
 
     expect(await itemRows(v10), itemsBefore);

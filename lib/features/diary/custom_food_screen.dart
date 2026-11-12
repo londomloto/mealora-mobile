@@ -10,22 +10,35 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/errors/failure.dart';
 import 'package:mealora/core/errors/result.dart';
 import 'package:mealora/core/validation/value_rules.dart';
+import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/food_repository.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
+import 'package:mealora/domain/food/recipe.dart';
+import 'package:mealora/domain/food/recipe_calculator.dart';
 import 'package:mealora/domain/shared/units.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
+import 'package:mealora/features/diary/food_component_picker_sheet.dart';
+import 'package:mealora/features/diary/recipe_widgets.dart';
 import 'package:mealora/features/diary/serving_detail_screen.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `15 · Makanan buatan sendiri` (task 6.6/6.7): nama, ukuran sajian, dan
 /// nilai gizi — nilai belum diketahui dikosongkan, bukan nol (spec
 /// food-catalog, "Pengguna dapat membuat makanan sendiri").
+///
+/// Change 016 (`72`–`77`): isi manual tetap bawaan; "Hitung dari bahan"
+/// menjumlahkan gizi bahan. Dengan [editFood] layar ini menyunting makanan
+/// buatan pengguna, termasuk menghitung ulang resepnya.
 class CustomFoodScreen extends ConsumerStatefulWidget {
-  const CustomFoodScreen({this.date, super.key});
+  const CustomFoodScreen({this.date, this.editFood, super.key});
 
   /// Tanggal yang akan dicatat begitu takaran dikonfirmasi — `null` berarti
   /// hari ini (konvensi `logFoodEntry`, change 008 task 5.6).
   final LocalDate? date;
+
+  /// Makanan buatan pengguna yang disunting; `null` untuk membuat baru.
+  /// Saat menyunting, layar ditutup dengan [Food] tersimpan.
+  final Food? editFood;
 
   @override
   ConsumerState<CustomFoodScreen> createState() => _CustomFoodScreenState();
@@ -38,19 +51,190 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
   final _protein = TextEditingController();
   final _carbohydrate = TextEditingController();
   final _fat = TextEditingController();
+  final _servings = TextEditingController(text: '1');
+  final _finishedGrams = TextEditingController();
+
+  late final Map<RecipeNutrient, TextEditingController> _nutrientFields =
+      <RecipeNutrient, TextEditingController>{
+        RecipeNutrient.energy: _energy,
+        RecipeNutrient.protein: _protein,
+        RecipeNutrient.carbohydrate: _carbohydrate,
+        RecipeNutrient.fat: _fat,
+      };
+
+  bool _recipeMode = false;
+  final List<SavedRecipeIngredient> _ingredients = <SavedRecipeIngredient>[];
+  RecipeCalculation? _calculation;
+
+  /// Isi kolom gizi terakhir dari hitungan. `null` = belum pernah diisi
+  /// hitungan, atau nilai tersimpan adalah koreksi manual (Design D4).
+  Map<RecipeNutrient, String>? _filled;
 
   String? _error;
   bool _saving = false;
+  bool _loading = false;
+
+  /// Resep tersimpan berasal-manual: nilai koreksi dipertahankan sampai
+  /// pengguna mengonfirmasi hitung ulang (Design D4).
+  bool _keepStoredValues = false;
+
+  bool get _editing => widget.editFood != null;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in _nutrientFields.values) {
+      c.addListener(_onNutrientEdited);
+    }
+    final food = widget.editFood;
+    if (food != null) {
+      _name.text = food.name;
+      _serving.text = food.defaultServing.label;
+      final n = food.defaultServing.nutrition;
+      for (final e in _nutrientFields.entries) {
+        final v = nutrientValue(n, e.key);
+        e.value.text = v == null ? '' : formatRecipeNumber(v);
+      }
+      _loading = true;
+      unawaited(_loadRecipe(food));
+    }
+  }
+
+  Future<void> _loadRecipe(Food food) async {
+    final recipe = await loadRecipe(ref, food.id);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _loading = false;
+      if (recipe == null) {
+        return;
+      }
+      _recipeMode = true;
+      _ingredients.addAll(recipe.ingredients);
+      _servings.text = formatRecipeNumber(recipe.recipeYield.servings);
+      final grams = recipe.recipeYield.finishedGrams;
+      _finishedGrams.text = grams == null ? '' : formatRecipeNumber(grams);
+      // Resep dihitung ulang dari nilai bahan saat ini (Design D3); nilai
+      // koreksi manual dipertahankan sampai pengguna memilih hitung ulang.
+      _keepStoredValues = food.nutritionOrigin != NutritionOrigin.recipe;
+      _recalculate(fill: !_keepStoredValues);
+    });
+  }
+
+  void _onNutrientEdited() {
+    if (_recipeMode) {
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
-    _name.dispose();
-    _serving.dispose();
-    _energy.dispose();
-    _protein.dispose();
-    _carbohydrate.dispose();
-    _fat.dispose();
+    for (final c in <TextEditingController>[
+      _name,
+      _serving,
+      _energy,
+      _protein,
+      _carbohydrate,
+      _fat,
+      _servings,
+      _finishedGrams,
+    ]) {
+      c.dispose();
+    }
     super.dispose();
+  }
+
+  /// Hasil resep dari isian; `null` bila porsi/berat jadi tidak sah.
+  RecipeYield? get _yield {
+    final servings = parseRecipeNumber(_servings.text);
+    if (RecipeValidation.positive(servings) != null) {
+      return null;
+    }
+    final gramsRaw = _finishedGrams.text.trim();
+    final grams = gramsRaw.isEmpty ? null : parseRecipeNumber(gramsRaw);
+    if (gramsRaw.isNotEmpty && RecipeValidation.positive(grams) != null) {
+      return null;
+    }
+    return RecipeYield(servings: servings!, finishedGrams: grams);
+  }
+
+  /// Nilai di kolom gizi berbeda dari isian hitungan terakhir.
+  bool get _corrected {
+    final filled = _filled;
+    if (filled == null) {
+      return _calculation != null;
+    }
+    return _nutrientFields.entries.any(
+      (e) => e.value.text.trim() != filled[e.key],
+    );
+  }
+
+  /// Menghitung ulang resep; mengisi kolom gizi bila [fill], atau bila
+  /// kolom belum dikoreksi pengguna.
+  void _recalculate({bool? fill}) {
+    final recipeYield = _yield;
+    if (_ingredients.isEmpty || recipeYield == null) {
+      _calculation = null;
+      return;
+    }
+    final shouldFill = fill ?? (_filled != null && !_corrected);
+    _calculation = RecipeCalculator.calculate(
+      _ingredients.map((i) => i.toCalculatorInput()).toList(),
+      recipeYield,
+    );
+    if (shouldFill) {
+      final filled = <RecipeNutrient, String>{};
+      for (final e in _nutrientFields.entries) {
+        final v = nutrientValue(_calculation!.perServing, e.key);
+        filled[e.key] = v == null ? '' : formatRecipeNumber(v);
+        e.value.text = filled[e.key]!;
+      }
+      _filled = filled;
+    }
+  }
+
+  void _changeRecipe(VoidCallback change) {
+    setState(() {
+      final firstCalculation = _calculation == null && _filled == null;
+      change();
+      _recalculate(fill: firstCalculation && !_keepStoredValues ? true : null);
+    });
+  }
+
+  Future<void> _addIngredient() async {
+    final pick = await showRecipeIngredientPickerSheet(context);
+    if (pick == null || !mounted) {
+      return;
+    }
+    final ingredient = await showRecipeAmountSheet(context, pick: pick);
+    if (ingredient == null || !mounted) {
+      return;
+    }
+    _changeRecipe(() => _ingredients.add(ingredient));
+  }
+
+  Future<void> _confirmRecalculate(AppText text) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(text.recipeRecalculateTitle),
+        content: Text(text.recipeRecalculateBody),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(text.recipeRecalculateCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(text.recipeRecalculateConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      setState(() => _recalculate(fill: true));
+    }
   }
 
   @override
@@ -71,9 +255,16 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                MealoraBackEyebrow(label: text.customFoodContextLabel),
+                MealoraBackEyebrow(
+                  label: _editing
+                      ? text.customFoodEditContextLabel
+                      : text.customFoodContextLabel,
+                ),
                 const SizedBox(height: MealoraSpacing.xs),
-                Text(text.customFoodTitle, style: MealoraTypography.title),
+                Text(
+                  _editing ? text.customFoodEditTitle : text.customFoodTitle,
+                  style: MealoraTypography.title,
+                ),
                 const SizedBox(height: MealoraSpacing.xxs),
                 Text(
                   text.customFoodSubtitle,
@@ -87,15 +278,45 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                   icon: Icons.edit_outlined,
                 ),
                 const SizedBox(height: MealoraSpacing.md),
-                _GlassInputField(
-                  label: text.customFoodServingLabel,
-                  hint: text.customFoodServingHint,
-                  controller: _serving,
-                  icon: Icons.keyboard_arrow_down_rounded,
+                Text(
+                  text.customFoodModeHeading,
+                  style: MealoraTypography.label,
                 ),
+                const SizedBox(height: MealoraSpacing.xxs),
+                MealoraSegmentToggle<bool>(
+                  key: const ValueKey('custom-food-mode'),
+                  options: <SegmentOption<bool>>[
+                    SegmentOption<bool>(
+                      value: false,
+                      icon: Icons.edit_note,
+                      label: text.customFoodModeManual,
+                    ),
+                    SegmentOption<bool>(
+                      value: true,
+                      icon: Icons.playlist_add,
+                      label: text.customFoodModeRecipe,
+                    ),
+                  ],
+                  selected: _recipeMode,
+                  onChanged: _loading
+                      ? null
+                      : (v) => setState(() => _recipeMode = v),
+                ),
+                const SizedBox(height: MealoraSpacing.md),
+                if (_recipeMode)
+                  ..._recipeSection(text)
+                else
+                  _GlassInputField(
+                    label: text.customFoodServingLabel,
+                    hint: text.customFoodServingHint,
+                    controller: _serving,
+                    icon: Icons.keyboard_arrow_down_rounded,
+                  ),
                 const SizedBox(height: MealoraSpacing.lg),
                 Text(
-                  text.customFoodNutritionHeading,
+                  _recipeMode
+                      ? text.recipeNutritionHeading
+                      : text.customFoodNutritionHeading,
                   style: MealoraTypography.headline,
                 ),
                 const SizedBox(height: MealoraSpacing.sm),
@@ -106,6 +327,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                         label: text.nutrientEnergy,
                         unit: text.unitKilocalorie,
                         controller: _energy,
+                        incomplete: _incomplete(RecipeNutrient.energy),
                         accent: MealoraColors.amberText,
                         background: MealoraColors.iconFieldAmber,
                       ),
@@ -116,6 +338,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                         label: text.nutrientProtein,
                         unit: text.unitGram,
                         controller: _protein,
+                        incomplete: _incomplete(RecipeNutrient.protein),
                         accent: MealoraColors.primary,
                         background: MealoraColors.iconFieldGreen,
                       ),
@@ -130,6 +353,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                         label: text.nutrientCarbohydrate,
                         unit: text.unitGram,
                         controller: _carbohydrate,
+                        incomplete: _incomplete(RecipeNutrient.carbohydrate),
                         accent: MealoraColors.amberText,
                         background: MealoraColors.iconFieldAmber,
                       ),
@@ -140,6 +364,7 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                         label: text.nutrientFat,
                         unit: text.unitGram,
                         controller: _fat,
+                        incomplete: _incomplete(RecipeNutrient.fat),
                         accent: MealoraColors.coralText,
                         background: MealoraColors.iconFieldCoral,
                       ),
@@ -147,11 +372,25 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                   ],
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
-                MealoraNoteCard(
-                  icon: Icons.info_outline,
-                  body: text.customFoodNote,
-                  borderColor: MealoraColors.glassSoft,
-                ),
+                if (_recipeMode && _calculation != null && _corrected) ...[
+                  MealoraNoteCard(
+                    icon: Icons.edit_note,
+                    body: text.recipeCorrectedNotice,
+                    borderColor: MealoraColors.amberText,
+                  ),
+                  TextButton.icon(
+                    onPressed: () => unawaited(_confirmRecalculate(text)),
+                    icon: const Icon(Icons.refresh),
+                    label: Text(text.recipeRecalculateAction),
+                  ),
+                ] else
+                  MealoraNoteCard(
+                    icon: Icons.info_outline,
+                    body: _recipeMode || _editing
+                        ? text.customFoodNote
+                        : text.customFoodManualHint,
+                    borderColor: MealoraColors.glassSoft,
+                  ),
                 if (_error != null) ...<Widget>[
                   const SizedBox(height: MealoraSpacing.sm),
                   Semantics(
@@ -166,8 +405,12 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
                 ],
                 const SizedBox(height: 68),
                 MealoraPrimaryButton(
-                  label: text.customFoodSaveAction,
-                  onPressed: _saving ? null : () => unawaited(_save(text)),
+                  label: _editing
+                      ? text.customFoodSaveChangesAction
+                      : text.customFoodSaveAction,
+                  onPressed: _saving || _loading
+                      ? null
+                      : () => unawaited(_save(text)),
                 ),
               ],
             ),
@@ -177,7 +420,183 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
     );
   }
 
+  bool _incomplete(RecipeNutrient nutrient) =>
+      _recipeMode &&
+      !_corrected &&
+      (_calculation?.isIncomplete(nutrient) ?? false);
+
+  List<Widget> _recipeSection(AppText text) {
+    final calc = _calculation;
+    final servings = parseRecipeNumber(_servings.text);
+    final gramsRaw = _finishedGrams.text.trim();
+    final gramsInvalid =
+        gramsRaw.isNotEmpty &&
+        RecipeValidation.positive(parseRecipeNumber(gramsRaw)) != null;
+    return <Widget>[
+      Text(
+        text.recipeIngredientsHeading(_ingredients.length),
+        style: MealoraTypography.headline,
+      ),
+      const SizedBox(height: MealoraSpacing.xs),
+      MealoraCard(
+        padding: const EdgeInsets.fromLTRB(
+          MealoraSpacing.md,
+          MealoraSpacing.xs,
+          MealoraSpacing.xxs,
+          MealoraSpacing.xs,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            if (_ingredients.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: MealoraSpacing.sm,
+                ),
+                child: Text(
+                  text.recipeIngredientsEmpty,
+                  style: MealoraTypography.bodyMuted,
+                ),
+              ),
+            for (final (index, ingredient) in _ingredients.indexed)
+              RecipeIngredientTile(
+                key: ObjectKey(ingredient),
+                ingredient: ingredient,
+                contribution: RecipeCalculator.contributionOf(
+                  ingredient.toCalculatorInput(),
+                ),
+                // Hapus langsung tanpa konfirmasi (spec custom-food-recipe).
+                onRemove: () =>
+                    _changeRecipe(() => _ingredients.removeAt(index)),
+              ),
+            TextButton.icon(
+              key: const ValueKey('recipe-add-ingredient'),
+              onPressed: () => unawaited(_addIngredient()),
+              icon: const Icon(Icons.add),
+              label: Text(text.recipeAddIngredient),
+            ),
+          ],
+        ),
+      ),
+      if (calc != null &&
+          calc
+              .incompleteIngredientsFor(kRecipeDisplayedNutrients)
+              .isNotEmpty) ...<Widget>[
+        const SizedBox(height: MealoraSpacing.sm),
+        RecipeIncompleteBanner(calculation: calc),
+      ],
+      const SizedBox(height: MealoraSpacing.lg),
+      Text(text.recipeYieldHeading, style: MealoraTypography.headline),
+      const SizedBox(height: MealoraSpacing.xs),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  text.recipeYieldServingsLabel,
+                  style: MealoraTypography.label,
+                ),
+                const SizedBox(height: 6),
+                RecipeNumberBox(
+                  fieldKey: const ValueKey('recipe-servings'),
+                  controller: _servings,
+                  center: true,
+                  hasError: RecipeValidation.positive(servings) != null,
+                  onChanged: (_) => _changeRecipe(() {}),
+                  leading: RecipeStepButton(
+                    icon: Icons.remove,
+                    tooltip: text.recipeDecreaseServings,
+                    onPressed: (servings ?? 0) > 1
+                        ? () => _changeRecipe(
+                            () => _servings.text = formatRecipeNumber(
+                              (servings! - 1).ceilToDouble(),
+                            ),
+                          )
+                        : null,
+                  ),
+                  trailing: RecipeStepButton(
+                    icon: Icons.add,
+                    tooltip: text.recipeIncreaseServings,
+                    onPressed: () => _changeRecipe(
+                      () => _servings.text = formatRecipeNumber(
+                        ((servings ?? 0) + 1).floorToDouble(),
+                      ),
+                    ),
+                  ),
+                ),
+                if (RecipeValidation.positive(servings) != null)
+                  Text(
+                    text.recipeYieldServingsError,
+                    style: MealoraTypography.caption.copyWith(
+                      color: MealoraColors.danger,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: MealoraSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  text.recipeYieldGramsLabel,
+                  style: MealoraTypography.label,
+                ),
+                const SizedBox(height: 6),
+                RecipeNumberBox(
+                  fieldKey: const ValueKey('recipe-finished-grams'),
+                  controller: _finishedGrams,
+                  hasError: gramsInvalid,
+                  onChanged: (_) => _changeRecipe(() {}),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  gramsInvalid
+                      ? text.recipeYieldGramsError
+                      : text.recipeYieldGramsHelper,
+                  style: MealoraTypography.caption.copyWith(
+                    color: gramsInvalid ? MealoraColors.danger : null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: MealoraSpacing.md),
+      MealoraNoteCard(
+        icon: Icons.water_drop_outlined,
+        body: text.recipeOilReminder,
+        borderColor: MealoraColors.glassSoft,
+      ),
+      if (calc != null)
+        TextButton.icon(
+          key: const ValueKey('recipe-breakdown'),
+          onPressed: () => unawaited(
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => RecipeBreakdownScreen(
+                  calculation: calc,
+                  recipeYield: _yield!,
+                ),
+              ),
+            ),
+          ),
+          icon: const Icon(Icons.table_chart_outlined),
+          label: Text(text.recipeBreakdownAction),
+        ),
+    ];
+  }
+
   Future<void> _save(AppText text) async {
+    if (_recipeMode) {
+      await _saveRecipe(text);
+      return;
+    }
     final name = ValueRules.requiredText(_name.text, field: 'name');
     final servingLabel = ValueRules.requiredText(
       _serving.text,
@@ -225,13 +644,93 @@ class _CustomFoodScreenState extends ConsumerState<CustomFoodScreen> {
       ),
     );
 
-    final food = await createUserFood(
-      ref,
-      name: name.valueOrNull!,
-      serving: servingInput,
-    );
+    final editFood = widget.editFood;
+    final food = editFood == null
+        ? await createUserFood(
+            ref,
+            name: name.valueOrNull!,
+            serving: servingInput,
+          )
+        : await updateUserFood(
+            ref,
+            editFood.id,
+            name: name.valueOrNull!,
+            serving: servingInput,
+          );
+    await _finish(food);
+  }
 
+  Future<void> _saveRecipe(AppText text) async {
+    final name = ValueRules.requiredText(_name.text, field: 'name');
+    final recipeYield = _yield;
+    final calc = _calculation;
+    final fields = <RecipeNutrient, Result<double?>>{
+      for (final e in _nutrientFields.entries)
+        e.key: _parseNutrient(e.value.text, field: e.key.name),
+    };
+    final String? error;
+    if (name is Err<String>) {
+      error = text.customFoodNameRequiredError;
+    } else if (_ingredients.isEmpty) {
+      error = text.recipeNoIngredientsError;
+    } else if (recipeYield == null) {
+      error =
+          RecipeValidation.positive(parseRecipeNumber(_servings.text)) == null
+          ? text.recipeYieldGramsError
+          : text.recipeYieldServingsError;
+    } else if (fields.values.any((r) => r is Err<double?>)) {
+      error = text.customFoodNegativeValueError;
+    } else {
+      error = null;
+    }
+    if (error != null || calc == null || recipeYield == null) {
+      setState(() => _error = error ?? text.recipeNoIngredientsError);
+      return;
+    }
+
+    setState(() {
+      _error = null;
+      _saving = true;
+    });
+
+    // Tanpa koreksi: nilai hitungan apa adanya (tanpa pembulatan tampilan).
+    // Dengan koreksi: kolom yang tampil dari isian pengguna, zat lain tetap
+    // dari hitungan; asal dicatat `manual` (Design D4).
+    final corrected = _corrected;
+    final calculated = calc.perServingForStorage(kRecipeDisplayedNutrients);
+    final perServing = corrected
+        ? NutritionProfile(
+            energy: _energyOf(fields[RecipeNutrient.energy]!.valueOrNull),
+            proteinG: fields[RecipeNutrient.protein]!.valueOrNull,
+            carbohydrateG: fields[RecipeNutrient.carbohydrate]!.valueOrNull,
+            fatG: fields[RecipeNutrient.fat]!.valueOrNull,
+            fiberG: calculated.fiberG,
+            sugarG: calculated.sugarG,
+            sodiumMg: calculated.sodiumMg,
+          )
+        : calculated;
+
+    final food = await saveRecipeFood(
+      ref,
+      foodId: widget.editFood?.id,
+      name: name.valueOrNull!,
+      ingredients: _ingredients.map((i) => i.toInput()).toList(),
+      recipeYield: recipeYield,
+      perServing: perServing,
+      origin: corrected ? NutritionOrigin.manual : NutritionOrigin.recipe,
+    );
+    await _finish(food);
+  }
+
+  static Energy? _energyOf(double? kcal) =>
+      kcal == null ? null : Energy.kcalValue(kcal, field: 'energy').valueOrNull;
+
+  Future<void> _finish(Food food) async {
     if (!mounted) {
+      return;
+    }
+    if (_editing) {
+      Navigator.of(context).pop(food);
       return;
     }
     await Navigator.of(context).pushReplacement(
@@ -334,6 +833,7 @@ class _NutrientField extends StatelessWidget {
     required this.controller,
     required this.accent,
     required this.background,
+    this.incomplete = false,
   });
 
   final String label;
@@ -342,10 +842,14 @@ class _NutrientField extends StatelessWidget {
   final Color accent;
   final Color background;
 
+  /// Total hasil hitungan tidak lengkap (Design D1): ditandai, tidak pernah
+  /// tampil seolah lengkap.
+  final bool incomplete;
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 86,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 86),
       child: MealoraCard(
         radius: MealoraRadius.choiceCard,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -354,6 +858,22 @@ class _NutrientField extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(label, style: MealoraTypography.label),
+            if (incomplete)
+              Container(
+                margin: const EdgeInsets.only(top: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: MealoraColors.iconFieldAmber,
+                  borderRadius: BorderRadius.circular(MealoraRadius.track),
+                ),
+                child: Text(
+                  AppText.of(context).recipeIncompleteChip,
+                  style: MealoraTypography.caption.copyWith(
+                    color: MealoraColors.amberText,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             const SizedBox(height: 3),
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: controller,

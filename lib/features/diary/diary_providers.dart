@@ -9,7 +9,10 @@ import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/food_category.dart';
 import 'package:mealora/domain/food/food_repository.dart';
 import 'package:mealora/domain/food/meal_time.dart';
+import 'package:mealora/domain/food/nutrition_profile.dart';
 import 'package:mealora/domain/food/recent_food.dart';
+import 'package:mealora/domain/food/recipe.dart';
+import 'package:mealora/domain/food/recipe_calculator.dart';
 import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
@@ -63,6 +66,9 @@ final FutureProvider<List<RecentFood>> recentFoodsProvider =
 /// dicatat" dipakai sebelum pengguna mengetik (task 6.1).
 final FutureProviderFamily<List<Food>, String> foodSearchProvider =
     FutureProvider.family<List<Food>, String>((ref, query) {
+      // Makanan yang baru dibuat/disunting harus muncul pada kueri yang
+      // sudah pernah dicari (mis. bahan resep baru, change 016).
+      ref.watch(diaryRefreshSignalProvider);
       return ref.watch(foodRepositoryProvider).search(query);
     });
 
@@ -184,6 +190,57 @@ Future<Food> createUserFood(
   bumpDiaryRefresh(ref);
   return food;
 }
+
+/// Menyunting makanan buatan pengguna dengan isi manual (change 016).
+Future<Food> updateUserFood(
+  WidgetRef ref,
+  String foodId, {
+  required String name,
+  required ServingSizeInput serving,
+}) async {
+  final food = await ref
+      .read(foodRepositoryProvider)
+      .updateUserFood(foodId, name: name, serving: serving);
+  bumpDiaryRefresh(ref);
+  return food;
+}
+
+/// Membuat ([foodId] `null`) atau menyunting makanan resep (change 016,
+/// task 3.2/3.6).
+Future<Food> saveRecipeFood(
+  WidgetRef ref, {
+  required String? foodId,
+  required String name,
+  required List<RecipeIngredientInput> ingredients,
+  required RecipeYield recipeYield,
+  required NutritionProfile perServing,
+  required NutritionOrigin origin,
+}) async {
+  final repository = ref.read(foodRepositoryProvider);
+  final food = foodId == null
+      ? await repository.createRecipeFood(
+          name: name,
+          category: FoodCategory.other,
+          ingredients: ingredients,
+          recipeYield: recipeYield,
+          perServing: perServing,
+          origin: origin,
+        )
+      : await repository.updateRecipeFood(
+          foodId,
+          name: name,
+          ingredients: ingredients,
+          recipeYield: recipeYield,
+          perServing: perServing,
+          origin: origin,
+        );
+  bumpDiaryRefresh(ref);
+  return food;
+}
+
+/// Resep tersimpan sebuah makanan untuk layar sunting (change 016).
+Future<SavedRecipe?> loadRecipe(WidgetRef ref, String foodId) =>
+    ref.read(foodRepositoryProvider).recipeOf(foodId);
 
 /// Draf foto makanan belum selesai milik profil aktif, bila ada (change
 /// 011, task 3.4) — dipakai `TodayScreen` untuk menawarkan pemulihan draf

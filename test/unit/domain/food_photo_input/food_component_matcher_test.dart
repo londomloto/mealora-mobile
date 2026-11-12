@@ -64,6 +64,9 @@ final class _FakeFoodRepository implements FoodRepository {
     required String name,
     required ServingSizeInput serving,
   }) => throw UnimplementedError();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {

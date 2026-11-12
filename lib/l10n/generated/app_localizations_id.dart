@@ -3056,4 +3056,219 @@ class AppTextId extends AppText {
 
   @override
   String get foodPhotoSavedDoneAction => 'Selesai';
+
+  @override
+  String get customFoodEditTitle => 'Sunting makanan';
+
+  @override
+  String get customFoodEditContextLabel => 'SUNTING MAKANAN';
+
+  @override
+  String get customFoodEditAction => 'Sunting makanan';
+
+  @override
+  String get customFoodSaveChangesAction => 'Simpan perubahan';
+
+  @override
+  String get customFoodModeHeading => 'Cara mengisi gizi';
+
+  @override
+  String get customFoodModeManual => 'Isi manual';
+
+  @override
+  String get customFoodModeRecipe => 'Hitung dari bahan';
+
+  @override
+  String get customFoodManualHint =>
+      'Tidak punya data gizinya? Pilih \"Hitung dari bahan\" — aplikasi menjumlahkan gizi dari bahan masakanmu.';
+
+  @override
+  String get foodFormReady => 'siap makan';
+
+  @override
+  String get foodFormRaw => 'mentah';
+
+  @override
+  String get foodFormDry => 'kering';
+
+  @override
+  String recipeIngredientsHeading(int count) {
+    return 'Bahan ($count)';
+  }
+
+  @override
+  String get recipeIngredientsEmpty =>
+      'Belum ada bahan. Tambahkan bahan masakanmu satu per satu.';
+
+  @override
+  String get recipeAddIngredient => 'Tambah bahan';
+
+  @override
+  String recipeRemoveIngredient(String name) {
+    return 'Hapus $name';
+  }
+
+  @override
+  String get recipeIngredientNoData => 'tanpa data gizi';
+
+  @override
+  String recipeAmountGrams(String amount) {
+    return '$amount g';
+  }
+
+  @override
+  String recipeAmountServing(String amount, String serving) {
+    return '$amount × $serving';
+  }
+
+  @override
+  String get recipeYieldHeading => 'Hasil resep';
+
+  @override
+  String get recipeYieldServingsLabel => 'Jumlah porsi';
+
+  @override
+  String get recipeYieldGramsLabel => 'Berat jadi (g) · opsional';
+
+  @override
+  String get recipeYieldGramsHelper => 'Timbang setelah matang';
+
+  @override
+  String get recipeYieldServingsError => 'Jumlah porsi harus lebih dari 0.';
+
+  @override
+  String get recipeYieldGramsError =>
+      'Berat jadi harus lebih dari 0 g, atau kosongkan.';
+
+  @override
+  String get recipeDecreaseServings => 'Kurangi porsi';
+
+  @override
+  String get recipeIncreaseServings => 'Tambah porsi';
+
+  @override
+  String get recipeOilReminder =>
+      'Menggoreng? Tambahkan minyak yang terserap sebagai bahan agar energinya tidak terlalu rendah.';
+
+  @override
+  String get recipeNoIngredientsError =>
+      'Tambahkan sekurang-kurangnya satu bahan.';
+
+  @override
+  String recipeIncompleteBanner(String names) {
+    return 'Total belum lengkap: $names tidak punya sebagian data gizi, jadi totalnya bisa lebih tinggi.';
+  }
+
+  @override
+  String get recipeIncompleteChip => 'tidak lengkap';
+
+  @override
+  String get recipeNutritionHeading => 'Nutrisi per sajian';
+
+  @override
+  String get recipeCorrectedNotice =>
+      'Nilai dikoreksi manual, jadi hitungan dari bahan tidak lagi dipakai.';
+
+  @override
+  String get recipeRecalculateAction => 'Hitung ulang dari bahan';
+
+  @override
+  String get recipeRecalculateTitle => 'Hitung ulang dari bahan?';
+
+  @override
+  String get recipeRecalculateBody =>
+      'Koreksimu akan ditimpa dengan hasil hitungan dari bahan saat ini.';
+
+  @override
+  String get recipeRecalculateConfirm => 'Hitung ulang';
+
+  @override
+  String get recipeRecalculateCancel => 'Biarkan koreksi';
+
+  @override
+  String get recipeBreakdownAction => 'Lihat rincian per bahan';
+
+  @override
+  String get recipeBreakdownTitle => 'Rincian gizi';
+
+  @override
+  String get recipeBreakdownSubtitle =>
+      'Kontribusi tiap bahan terhadap total resep.';
+
+  @override
+  String get recipeBreakdownIngredientColumn => 'BAHAN';
+
+  @override
+  String get recipeBreakdownTotalRow => 'Total resep';
+
+  @override
+  String recipeBreakdownPerServing(String servings) {
+    return 'Per sajian · 1 dari $servings porsi';
+  }
+
+  @override
+  String recipeBreakdownPer100g(String grams, String kcal) {
+    return 'Per 100 g hasil masakan ($grams g): $kcal kkal';
+  }
+
+  @override
+  String get recipeBreakdownIncompleteMark =>
+      '* belum termasuk bahan yang datanya tidak lengkap.';
+
+  @override
+  String get recipePickerTitle => 'Pilih bahan';
+
+  @override
+  String get recipePickerFallbackHeading => 'Tidak menemukan bahannya?';
+
+  @override
+  String get recipePickerCreateTitle => 'Buat bahan baru';
+
+  @override
+  String get recipePickerCreateBody =>
+      'Isi gizi per 100 g dari label kemasan. Tersimpan dan bisa dipakai lagi.';
+
+  @override
+  String get recipePickerFreeTextTitle => 'Tambah tanpa data gizi';
+
+  @override
+  String get recipePickerFreeTextBody =>
+      'Cukup nama dan jumlah. Total resep akan ditandai tidak lengkap.';
+
+  @override
+  String get recipePer100gHeading => 'Nilai gizi per 100 g';
+
+  @override
+  String get recipeFreeTextNameLabel => 'Nama bahan';
+
+  @override
+  String get recipeAmountModeGram => 'Gram';
+
+  @override
+  String recipeAmountModeServing(String serving) {
+    return 'Takaran ($serving)';
+  }
+
+  @override
+  String get recipeAmountModeMultiple => 'Jumlah (kali)';
+
+  @override
+  String get recipeAmountLabelGram => 'Berat (g)';
+
+  @override
+  String get recipeAmountLabelServing => 'Jumlah takaran';
+
+  @override
+  String get recipeAmountZeroError => 'Jumlah harus lebih dari 0.';
+
+  @override
+  String get recipeAmountGramRule =>
+      'Gram hanya tersedia untuk bahan yang berat takarannya diketahui. Selain itu isi kelipatan takaran, mis. 0,5.';
+
+  @override
+  String get recipeAmountRawHint =>
+      'Bentuk mentah — masukkan berat sebelum dimasak.';
+
+  @override
+  String get recipeAmountAddAction => 'Tambah ke resep';
 }

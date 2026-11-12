@@ -6848,6 +6848,44 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, FoodRow> {
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _nutritionOriginMeta = const VerificationMeta(
+    'nutritionOrigin',
+  );
+  @override
+  late final GeneratedColumn<String> nutritionOrigin = GeneratedColumn<String>(
+    'nutrition_origin',
+    aliasedName,
+    true,
+    check: () => nutritionOrigin.isIn(kNutritionOriginValues),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 8,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recipeYieldServingsMeta =
+      const VerificationMeta('recipeYieldServings');
+  @override
+  late final GeneratedColumn<double> recipeYieldServings =
+      GeneratedColumn<double>(
+        'recipe_yield_servings',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _recipeYieldGramsMeta = const VerificationMeta(
+    'recipeYieldGrams',
+  );
+  @override
+  late final GeneratedColumn<double> recipeYieldGrams = GeneratedColumn<double>(
+    'recipe_yield_grams',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6866,6 +6904,9 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, FoodRow> {
     verifiedAt,
     form,
     isActive,
+    nutritionOrigin,
+    recipeYieldServings,
+    recipeYieldGrams,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6988,6 +7029,33 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, FoodRow> {
         isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
+    if (data.containsKey('nutrition_origin')) {
+      context.handle(
+        _nutritionOriginMeta,
+        nutritionOrigin.isAcceptableOrUnknown(
+          data['nutrition_origin']!,
+          _nutritionOriginMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recipe_yield_servings')) {
+      context.handle(
+        _recipeYieldServingsMeta,
+        recipeYieldServings.isAcceptableOrUnknown(
+          data['recipe_yield_servings']!,
+          _recipeYieldServingsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recipe_yield_grams')) {
+      context.handle(
+        _recipeYieldGramsMeta,
+        recipeYieldGrams.isAcceptableOrUnknown(
+          data['recipe_yield_grams']!,
+          _recipeYieldGramsMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -7061,6 +7129,18 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, FoodRow> {
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
       )!,
+      nutritionOrigin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nutrition_origin'],
+      ),
+      recipeYieldServings: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}recipe_yield_servings'],
+      ),
+      recipeYieldGrams: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}recipe_yield_grams'],
+      ),
     );
   }
 
@@ -7111,6 +7191,16 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
   /// baris yang pernah dicatat tidak bisa dihapus karena relasi `restrict`
   /// dari `meal_entry_items` (Design D2, change 015).
   final bool isActive;
+
+  /// Asal nilai gizi makanan buatan pengguna (change 016, D2/D4): `manual`
+  /// diisi pengguna, `recipe` dihitung dari bahan. `null` untuk bawaan.
+  final String? nutritionOrigin;
+
+  /// Hasil resep: jumlah porsi; `null` bila bukan makanan resep.
+  final double? recipeYieldServings;
+
+  /// Hasil resep: berat jadi dalam gram (opsional).
+  final double? recipeYieldGrams;
   const FoodRow({
     required this.id,
     required this.createdAt,
@@ -7128,6 +7218,9 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
     this.verifiedAt,
     this.form,
     required this.isActive,
+    this.nutritionOrigin,
+    this.recipeYieldServings,
+    this.recipeYieldGrams,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -7162,6 +7255,15 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
       map['form'] = Variable<String>(form);
     }
     map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || nutritionOrigin != null) {
+      map['nutrition_origin'] = Variable<String>(nutritionOrigin);
+    }
+    if (!nullToAbsent || recipeYieldServings != null) {
+      map['recipe_yield_servings'] = Variable<double>(recipeYieldServings);
+    }
+    if (!nullToAbsent || recipeYieldGrams != null) {
+      map['recipe_yield_grams'] = Variable<double>(recipeYieldGrams);
+    }
     return map;
   }
 
@@ -7195,6 +7297,15 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
           : Value(verifiedAt),
       form: form == null && nullToAbsent ? const Value.absent() : Value(form),
       isActive: Value(isActive),
+      nutritionOrigin: nutritionOrigin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nutritionOrigin),
+      recipeYieldServings: recipeYieldServings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recipeYieldServings),
+      recipeYieldGrams: recipeYieldGrams == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recipeYieldGrams),
     );
   }
 
@@ -7220,6 +7331,11 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
       verifiedAt: serializer.fromJson<DateTime?>(json['verifiedAt']),
       form: serializer.fromJson<String?>(json['form']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      nutritionOrigin: serializer.fromJson<String?>(json['nutritionOrigin']),
+      recipeYieldServings: serializer.fromJson<double?>(
+        json['recipeYieldServings'],
+      ),
+      recipeYieldGrams: serializer.fromJson<double?>(json['recipeYieldGrams']),
     );
   }
   @override
@@ -7242,6 +7358,9 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
       'verifiedAt': serializer.toJson<DateTime?>(verifiedAt),
       'form': serializer.toJson<String?>(form),
       'isActive': serializer.toJson<bool>(isActive),
+      'nutritionOrigin': serializer.toJson<String?>(nutritionOrigin),
+      'recipeYieldServings': serializer.toJson<double?>(recipeYieldServings),
+      'recipeYieldGrams': serializer.toJson<double?>(recipeYieldGrams),
     };
   }
 
@@ -7262,6 +7381,9 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
     Value<DateTime?> verifiedAt = const Value.absent(),
     Value<String?> form = const Value.absent(),
     bool? isActive,
+    Value<String?> nutritionOrigin = const Value.absent(),
+    Value<double?> recipeYieldServings = const Value.absent(),
+    Value<double?> recipeYieldGrams = const Value.absent(),
   }) => FoodRow(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -7281,6 +7403,15 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
     verifiedAt: verifiedAt.present ? verifiedAt.value : this.verifiedAt,
     form: form.present ? form.value : this.form,
     isActive: isActive ?? this.isActive,
+    nutritionOrigin: nutritionOrigin.present
+        ? nutritionOrigin.value
+        : this.nutritionOrigin,
+    recipeYieldServings: recipeYieldServings.present
+        ? recipeYieldServings.value
+        : this.recipeYieldServings,
+    recipeYieldGrams: recipeYieldGrams.present
+        ? recipeYieldGrams.value
+        : this.recipeYieldGrams,
   );
   FoodRow copyWithCompanion(FoodsCompanion data) {
     return FoodRow(
@@ -7310,6 +7441,15 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
           : this.verifiedAt,
       form: data.form.present ? data.form.value : this.form,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      nutritionOrigin: data.nutritionOrigin.present
+          ? data.nutritionOrigin.value
+          : this.nutritionOrigin,
+      recipeYieldServings: data.recipeYieldServings.present
+          ? data.recipeYieldServings.value
+          : this.recipeYieldServings,
+      recipeYieldGrams: data.recipeYieldGrams.present
+          ? data.recipeYieldGrams.value
+          : this.recipeYieldGrams,
     );
   }
 
@@ -7331,7 +7471,10 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
           ..write('sourceVersion: $sourceVersion, ')
           ..write('verifiedAt: $verifiedAt, ')
           ..write('form: $form, ')
-          ..write('isActive: $isActive')
+          ..write('isActive: $isActive, ')
+          ..write('nutritionOrigin: $nutritionOrigin, ')
+          ..write('recipeYieldServings: $recipeYieldServings, ')
+          ..write('recipeYieldGrams: $recipeYieldGrams')
           ..write(')'))
         .toString();
   }
@@ -7354,6 +7497,9 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
     verifiedAt,
     form,
     isActive,
+    nutritionOrigin,
+    recipeYieldServings,
+    recipeYieldGrams,
   );
   @override
   bool operator ==(Object other) =>
@@ -7374,7 +7520,10 @@ class FoodRow extends DataClass implements Insertable<FoodRow> {
           other.sourceVersion == this.sourceVersion &&
           other.verifiedAt == this.verifiedAt &&
           other.form == this.form &&
-          other.isActive == this.isActive);
+          other.isActive == this.isActive &&
+          other.nutritionOrigin == this.nutritionOrigin &&
+          other.recipeYieldServings == this.recipeYieldServings &&
+          other.recipeYieldGrams == this.recipeYieldGrams);
 }
 
 class FoodsCompanion extends UpdateCompanion<FoodRow> {
@@ -7394,6 +7543,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
   final Value<DateTime?> verifiedAt;
   final Value<String?> form;
   final Value<bool> isActive;
+  final Value<String?> nutritionOrigin;
+  final Value<double?> recipeYieldServings;
+  final Value<double?> recipeYieldGrams;
   final Value<int> rowid;
   const FoodsCompanion({
     this.id = const Value.absent(),
@@ -7412,6 +7564,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
     this.verifiedAt = const Value.absent(),
     this.form = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.nutritionOrigin = const Value.absent(),
+    this.recipeYieldServings = const Value.absent(),
+    this.recipeYieldGrams = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FoodsCompanion.insert({
@@ -7431,6 +7586,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
     this.verifiedAt = const Value.absent(),
     this.form = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.nutritionOrigin = const Value.absent(),
+    this.recipeYieldServings = const Value.absent(),
+    this.recipeYieldGrams = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -7454,6 +7612,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
     Expression<DateTime>? verifiedAt,
     Expression<String>? form,
     Expression<bool>? isActive,
+    Expression<String>? nutritionOrigin,
+    Expression<double>? recipeYieldServings,
+    Expression<double>? recipeYieldGrams,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7473,6 +7634,10 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
       if (verifiedAt != null) 'verified_at': verifiedAt,
       if (form != null) 'form': form,
       if (isActive != null) 'is_active': isActive,
+      if (nutritionOrigin != null) 'nutrition_origin': nutritionOrigin,
+      if (recipeYieldServings != null)
+        'recipe_yield_servings': recipeYieldServings,
+      if (recipeYieldGrams != null) 'recipe_yield_grams': recipeYieldGrams,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7494,6 +7659,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
     Value<DateTime?>? verifiedAt,
     Value<String?>? form,
     Value<bool>? isActive,
+    Value<String?>? nutritionOrigin,
+    Value<double?>? recipeYieldServings,
+    Value<double?>? recipeYieldGrams,
     Value<int>? rowid,
   }) {
     return FoodsCompanion(
@@ -7513,6 +7681,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
       verifiedAt: verifiedAt ?? this.verifiedAt,
       form: form ?? this.form,
       isActive: isActive ?? this.isActive,
+      nutritionOrigin: nutritionOrigin ?? this.nutritionOrigin,
+      recipeYieldServings: recipeYieldServings ?? this.recipeYieldServings,
+      recipeYieldGrams: recipeYieldGrams ?? this.recipeYieldGrams,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7568,6 +7739,17 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (nutritionOrigin.present) {
+      map['nutrition_origin'] = Variable<String>(nutritionOrigin.value);
+    }
+    if (recipeYieldServings.present) {
+      map['recipe_yield_servings'] = Variable<double>(
+        recipeYieldServings.value,
+      );
+    }
+    if (recipeYieldGrams.present) {
+      map['recipe_yield_grams'] = Variable<double>(recipeYieldGrams.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7593,6 +7775,9 @@ class FoodsCompanion extends UpdateCompanion<FoodRow> {
           ..write('verifiedAt: $verifiedAt, ')
           ..write('form: $form, ')
           ..write('isActive: $isActive, ')
+          ..write('nutritionOrigin: $nutritionOrigin, ')
+          ..write('recipeYieldServings: $recipeYieldServings, ')
+          ..write('recipeYieldGrams: $recipeYieldGrams, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16971,6 +17156,9 @@ typedef $$FoodsTableCreateCompanionBuilder =
       Value<DateTime?> verifiedAt,
       Value<String?> form,
       Value<bool> isActive,
+      Value<String?> nutritionOrigin,
+      Value<double?> recipeYieldServings,
+      Value<double?> recipeYieldGrams,
       Value<int> rowid,
     });
 typedef $$FoodsTableUpdateCompanionBuilder =
@@ -16991,6 +17179,9 @@ typedef $$FoodsTableUpdateCompanionBuilder =
       Value<DateTime?> verifiedAt,
       Value<String?> form,
       Value<bool> isActive,
+      Value<String?> nutritionOrigin,
+      Value<double?> recipeYieldServings,
+      Value<double?> recipeYieldGrams,
       Value<int> rowid,
     });
 
@@ -17148,6 +17339,21 @@ class $$FoodsTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
     column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nutritionOrigin => $composableBuilder(
+    column: $table.nutritionOrigin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get recipeYieldServings => $composableBuilder(
+    column: $table.recipeYieldServings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get recipeYieldGrams => $composableBuilder(
+    column: $table.recipeYieldGrams,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17317,6 +17523,21 @@ class $$FoodsTableOrderingComposer
     column: $table.isActive,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get nutritionOrigin => $composableBuilder(
+    column: $table.nutritionOrigin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get recipeYieldServings => $composableBuilder(
+    column: $table.recipeYieldServings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get recipeYieldGrams => $composableBuilder(
+    column: $table.recipeYieldGrams,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$FoodsTableAnnotationComposer
@@ -17385,6 +17606,21 @@ class $$FoodsTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get nutritionOrigin => $composableBuilder(
+    column: $table.nutritionOrigin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get recipeYieldServings => $composableBuilder(
+    column: $table.recipeYieldServings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get recipeYieldGrams => $composableBuilder(
+    column: $table.recipeYieldGrams,
+    builder: (column) => column,
+  );
 
   Expression<T> foodServingsRefs<T extends Object>(
     Expression<T> Function($$FoodServingsTableAnnotationComposer a) f,
@@ -17512,6 +17748,9 @@ class $$FoodsTableTableManager
                 Value<DateTime?> verifiedAt = const Value.absent(),
                 Value<String?> form = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<String?> nutritionOrigin = const Value.absent(),
+                Value<double?> recipeYieldServings = const Value.absent(),
+                Value<double?> recipeYieldGrams = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FoodsCompanion(
                 id: id,
@@ -17530,6 +17769,9 @@ class $$FoodsTableTableManager
                 verifiedAt: verifiedAt,
                 form: form,
                 isActive: isActive,
+                nutritionOrigin: nutritionOrigin,
+                recipeYieldServings: recipeYieldServings,
+                recipeYieldGrams: recipeYieldGrams,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -17550,6 +17792,9 @@ class $$FoodsTableTableManager
                 Value<DateTime?> verifiedAt = const Value.absent(),
                 Value<String?> form = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<String?> nutritionOrigin = const Value.absent(),
+                Value<double?> recipeYieldServings = const Value.absent(),
+                Value<double?> recipeYieldGrams = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FoodsCompanion.insert(
                 id: id,
@@ -17568,6 +17813,9 @@ class $$FoodsTableTableManager
                 verifiedAt: verifiedAt,
                 form: form,
                 isActive: isActive,
+                nutritionOrigin: nutritionOrigin,
+                recipeYieldServings: recipeYieldServings,
+                recipeYieldGrams: recipeYieldGrams,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

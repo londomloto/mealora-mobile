@@ -1,5 +1,6 @@
 import 'package:mealora/domain/food/food_category.dart';
 import 'package:mealora/domain/food/food_provenance.dart';
+import 'package:mealora/domain/food/recipe.dart';
 import 'package:mealora/domain/food/serving_size.dart';
 
 /// Satu makanan pada katalog perangkat: bawaan (dengan provenans) atau
@@ -13,7 +14,18 @@ final class Food {
     required this.servings,
     this.brand,
     this.provenance,
+    this.form,
+    this.nutritionOrigin,
   });
+
+  /// Bentuk makanan bila dikurasi (change 015); `null` bila belum diketahui.
+  final FoodForm? form;
+
+  /// Asal nilai gizi makanan buatan pengguna (change 016); `null` untuk
+  /// makanan bawaan.
+  final NutritionOrigin? nutritionOrigin;
+
+  bool get isRecipe => nutritionOrigin == NutritionOrigin.recipe;
 
   final String id;
   final String name;

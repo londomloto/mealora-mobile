@@ -16,6 +16,9 @@ const List<String> kFoodCategoryValues = <String>[
 /// (seduhan, masakan), `raw` = bahan mentah, `dry` = bahan kering.
 const List<String> kFoodFormValues = <String>['ready', 'raw', 'dry'];
 
+/// Nilai `nutritionOrigin` yang sah (Design D2, change 016).
+const List<String> kNutritionOriginValues = <String>['manual', 'recipe'];
+
 /// Katalog makanan di perangkat: bawaan (dengan provenans) atau buatan
 /// pengguna (assessment §11, spec food-catalog, change 007).
 ///
@@ -62,4 +65,18 @@ class Foods extends Table with UserRecordColumns {
   /// baris yang pernah dicatat tidak bisa dihapus karena relasi `restrict`
   /// dari `meal_entry_items` (Design D2, change 015).
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+
+  /// Asal nilai gizi makanan buatan pengguna (change 016, D2/D4): `manual`
+  /// diisi pengguna, `recipe` dihitung dari bahan. `null` untuk bawaan.
+  TextColumn get nutritionOrigin => text()
+      .withLength(min: 1, max: 8)
+      // ignore: recursive_getters — idiom Drift untuk CHECK yang merujuk kolomnya sendiri.
+      .check(nutritionOrigin.isIn(kNutritionOriginValues))
+      .nullable()();
+
+  /// Hasil resep: jumlah porsi; `null` bila bukan makanan resep.
+  RealColumn get recipeYieldServings => real().nullable()();
+
+  /// Hasil resep: berat jadi dalam gram (opsional).
+  RealColumn get recipeYieldGrams => real().nullable()();
 }

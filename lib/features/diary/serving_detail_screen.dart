@@ -12,6 +12,7 @@ import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food/nutrition_profile.dart';
 import 'package:mealora/domain/food/serving_size.dart';
+import 'package:mealora/features/diary/custom_food_screen.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
@@ -109,12 +110,27 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
                   style: MealoraTypography.subtitle,
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
-                MealoraChip(
-                  label: widget.food.isUserCreated
-                      ? text.servingDetailSourceCustom
-                      : text.servingDetailSourceCatalog,
-                  background: MealoraColors.iconFieldGreen,
-                  foreground: MealoraColors.primary,
+                Wrap(
+                  spacing: MealoraSpacing.xs,
+                  runSpacing: MealoraSpacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    MealoraChip(
+                      label: widget.food.isUserCreated
+                          ? text.servingDetailSourceCustom
+                          : text.servingDetailSourceCatalog,
+                      background: MealoraColors.iconFieldGreen,
+                      foreground: MealoraColors.primary,
+                    ),
+                    if (widget.food.isUserCreated) ...<Widget>[
+                      TextButton.icon(
+                        key: const ValueKey('serving-detail-edit-food'),
+                        onPressed: () => unawaited(_editFood()),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: Text(text.customFoodEditAction),
+                      ),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
                 Text(
@@ -215,6 +231,29 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
     return serving.label.contains(weight)
         ? serving.label
         : '${serving.label} · $weight';
+  }
+
+  /// Menyunting makanan buatan pengguna (change 016), lalu membuka ulang
+  /// detail sajian dengan nilai terbaru.
+  Future<void> _editFood() async {
+    final updated = await Navigator.of(context).push<Food>(
+      MaterialPageRoute<Food>(
+        builder: (_) =>
+            CustomFoodScreen(editFood: widget.food, date: widget.date),
+      ),
+    );
+    if (updated == null || !mounted) {
+      return;
+    }
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => ServingDetailScreen(
+          food: updated,
+          initialMealTime: widget.initialMealTime,
+          date: widget.date,
+        ),
+      ),
+    );
   }
 
   Future<void> _pickServing() async {

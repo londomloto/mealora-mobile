@@ -5,6 +5,7 @@ import 'package:mealora/database/migrations/food_photo_draft_indexes.dart';
 import 'package:mealora/database/migrations/packaged_food_indexes.dart';
 import 'package:mealora/database/migrations/program_indexes.dart';
 import 'package:mealora/database/migrations/program_invariant_trigger.dart';
+import 'package:mealora/database/migrations/recipe_ingredient_indexes.dart';
 import 'package:mealora/database/migrations/user_record_triggers.dart';
 import 'package:mealora/database/migrations/weight_indexes.dart';
 import 'package:mealora/database/seeds/food_catalog_seed.dart';
@@ -21,6 +22,7 @@ import 'package:mealora/database/tables/profiles_table.dart';
 import 'package:mealora/database/tables/program_events_table.dart';
 import 'package:mealora/database/tables/program_progress_table.dart';
 import 'package:mealora/database/tables/programs_table.dart';
+import 'package:mealora/database/tables/recipe_ingredients_table.dart';
 import 'package:mealora/database/tables/ui_preferences.dart';
 import 'package:mealora/database/tables/user_programs_table.dart';
 import 'package:mealora/database/tables/weight_records_table.dart';
@@ -32,7 +34,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 10;
+const int kSchemaVersion = 11;
 
 @DriftDatabase(
   tables: <Type>[
@@ -52,6 +54,7 @@ const int kSchemaVersion = 10;
     WeightRecords,
     PackagedFoodProperties,
     FoodPhotoDrafts,
+    RecipeIngredients,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -74,6 +77,7 @@ class AppDatabase extends _$AppDatabase {
       await createWeightIndexes(this);
       await createPackagedFoodIndexes(this);
       await createFoodPhotoDraftIndexes(this);
+      await createRecipeIngredientIndexes(this);
     },
     onUpgrade: (m, from, to) async {
       if (from > to) {
@@ -250,6 +254,33 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
             await m.addColumn(table, column);
           }
         }
+      }
+      if (from < 11) {
+        // Versi 10 → 11 (change 016): tabel bahan resep, asal nilai gizi,
+        // dan hasil resep. Makanan buatan pengguna lama ditandai `manual`;
+        // catatan makan tidak tersentuh (design.md Migration Plan).
+        // Blok `from < 4` membuat `foods` dengan definisi terkini, jadi
+        // kolom hanya ditambahkan bila belum ada (idiom yang sama dengan
+        // blok `from < 10`).
+        for (final column in <GeneratedColumn<Object>>[
+          foods.nutritionOrigin,
+          foods.recipeYieldServings,
+          foods.recipeYieldGrams,
+        ]) {
+          final existing = await customSelect(
+            "SELECT 1 FROM pragma_table_info('foods') WHERE name = ?",
+            variables: <Variable>[Variable<String>(column.name)],
+          ).get();
+          if (existing.isEmpty) {
+            await m.addColumn(foods, column);
+          }
+        }
+        await m.createTable(recipeIngredients);
+        await createRecipeIngredientIndexes(this);
+        await customStatement(
+          "UPDATE foods SET nutrition_origin = 'manual' "
+          'WHERE is_user_created = 1 AND nutrition_origin IS NULL',
+        );
       }
     },
     beforeOpen: (details) async {

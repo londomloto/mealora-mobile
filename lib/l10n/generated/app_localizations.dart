@@ -5456,6 +5456,378 @@ abstract class AppText {
   /// In id, this message translates to:
   /// **'Selesai'**
   String get foodPhotoSavedDoneAction;
+
+  /// No description provided for @customFoodEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting makanan'**
+  String get customFoodEditTitle;
+
+  /// No description provided for @customFoodEditContextLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'SUNTING MAKANAN'**
+  String get customFoodEditContextLabel;
+
+  /// No description provided for @customFoodEditAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting makanan'**
+  String get customFoodEditAction;
+
+  /// No description provided for @customFoodSaveChangesAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan perubahan'**
+  String get customFoodSaveChangesAction;
+
+  /// No description provided for @customFoodModeHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Cara mengisi gizi'**
+  String get customFoodModeHeading;
+
+  /// No description provided for @customFoodModeManual.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi manual'**
+  String get customFoodModeManual;
+
+  /// No description provided for @customFoodModeRecipe.
+  ///
+  /// In id, this message translates to:
+  /// **'Hitung dari bahan'**
+  String get customFoodModeRecipe;
+
+  /// No description provided for @customFoodManualHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak punya data gizinya? Pilih \"Hitung dari bahan\" — aplikasi menjumlahkan gizi dari bahan masakanmu.'**
+  String get customFoodManualHint;
+
+  /// No description provided for @foodFormReady.
+  ///
+  /// In id, this message translates to:
+  /// **'siap makan'**
+  String get foodFormReady;
+
+  /// No description provided for @foodFormRaw.
+  ///
+  /// In id, this message translates to:
+  /// **'mentah'**
+  String get foodFormRaw;
+
+  /// No description provided for @foodFormDry.
+  ///
+  /// In id, this message translates to:
+  /// **'kering'**
+  String get foodFormDry;
+
+  /// No description provided for @recipeIngredientsHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahan ({count})'**
+  String recipeIngredientsHeading(int count);
+
+  /// No description provided for @recipeIngredientsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada bahan. Tambahkan bahan masakanmu satu per satu.'**
+  String get recipeIngredientsEmpty;
+
+  /// No description provided for @recipeAddIngredient.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah bahan'**
+  String get recipeAddIngredient;
+
+  /// No description provided for @recipeRemoveIngredient.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus {name}'**
+  String recipeRemoveIngredient(String name);
+
+  /// No description provided for @recipeIngredientNoData.
+  ///
+  /// In id, this message translates to:
+  /// **'tanpa data gizi'**
+  String get recipeIngredientNoData;
+
+  /// No description provided for @recipeAmountGrams.
+  ///
+  /// In id, this message translates to:
+  /// **'{amount} g'**
+  String recipeAmountGrams(String amount);
+
+  /// No description provided for @recipeAmountServing.
+  ///
+  /// In id, this message translates to:
+  /// **'{amount} × {serving}'**
+  String recipeAmountServing(String amount, String serving);
+
+  /// No description provided for @recipeYieldHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil resep'**
+  String get recipeYieldHeading;
+
+  /// No description provided for @recipeYieldServingsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah porsi'**
+  String get recipeYieldServingsLabel;
+
+  /// No description provided for @recipeYieldGramsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat jadi (g) · opsional'**
+  String get recipeYieldGramsLabel;
+
+  /// No description provided for @recipeYieldGramsHelper.
+  ///
+  /// In id, this message translates to:
+  /// **'Timbang setelah matang'**
+  String get recipeYieldGramsHelper;
+
+  /// No description provided for @recipeYieldServingsError.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah porsi harus lebih dari 0.'**
+  String get recipeYieldServingsError;
+
+  /// No description provided for @recipeYieldGramsError.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat jadi harus lebih dari 0 g, atau kosongkan.'**
+  String get recipeYieldGramsError;
+
+  /// No description provided for @recipeDecreaseServings.
+  ///
+  /// In id, this message translates to:
+  /// **'Kurangi porsi'**
+  String get recipeDecreaseServings;
+
+  /// No description provided for @recipeIncreaseServings.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah porsi'**
+  String get recipeIncreaseServings;
+
+  /// No description provided for @recipeOilReminder.
+  ///
+  /// In id, this message translates to:
+  /// **'Menggoreng? Tambahkan minyak yang terserap sebagai bahan agar energinya tidak terlalu rendah.'**
+  String get recipeOilReminder;
+
+  /// No description provided for @recipeNoIngredientsError.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan sekurang-kurangnya satu bahan.'**
+  String get recipeNoIngredientsError;
+
+  /// No description provided for @recipeIncompleteBanner.
+  ///
+  /// In id, this message translates to:
+  /// **'Total belum lengkap: {names} tidak punya sebagian data gizi, jadi totalnya bisa lebih tinggi.'**
+  String recipeIncompleteBanner(String names);
+
+  /// No description provided for @recipeIncompleteChip.
+  ///
+  /// In id, this message translates to:
+  /// **'tidak lengkap'**
+  String get recipeIncompleteChip;
+
+  /// No description provided for @recipeNutritionHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Nutrisi per sajian'**
+  String get recipeNutritionHeading;
+
+  /// No description provided for @recipeCorrectedNotice.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai dikoreksi manual, jadi hitungan dari bahan tidak lagi dipakai.'**
+  String get recipeCorrectedNotice;
+
+  /// No description provided for @recipeRecalculateAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hitung ulang dari bahan'**
+  String get recipeRecalculateAction;
+
+  /// No description provided for @recipeRecalculateTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hitung ulang dari bahan?'**
+  String get recipeRecalculateTitle;
+
+  /// No description provided for @recipeRecalculateBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksimu akan ditimpa dengan hasil hitungan dari bahan saat ini.'**
+  String get recipeRecalculateBody;
+
+  /// No description provided for @recipeRecalculateConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hitung ulang'**
+  String get recipeRecalculateConfirm;
+
+  /// No description provided for @recipeRecalculateCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan koreksi'**
+  String get recipeRecalculateCancel;
+
+  /// No description provided for @recipeBreakdownAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat rincian per bahan'**
+  String get recipeBreakdownAction;
+
+  /// No description provided for @recipeBreakdownTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rincian gizi'**
+  String get recipeBreakdownTitle;
+
+  /// No description provided for @recipeBreakdownSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontribusi tiap bahan terhadap total resep.'**
+  String get recipeBreakdownSubtitle;
+
+  /// No description provided for @recipeBreakdownIngredientColumn.
+  ///
+  /// In id, this message translates to:
+  /// **'BAHAN'**
+  String get recipeBreakdownIngredientColumn;
+
+  /// No description provided for @recipeBreakdownTotalRow.
+  ///
+  /// In id, this message translates to:
+  /// **'Total resep'**
+  String get recipeBreakdownTotalRow;
+
+  /// No description provided for @recipeBreakdownPerServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Per sajian · 1 dari {servings} porsi'**
+  String recipeBreakdownPerServing(String servings);
+
+  /// No description provided for @recipeBreakdownPer100g.
+  ///
+  /// In id, this message translates to:
+  /// **'Per 100 g hasil masakan ({grams} g): {kcal} kkal'**
+  String recipeBreakdownPer100g(String grams, String kcal);
+
+  /// No description provided for @recipeBreakdownIncompleteMark.
+  ///
+  /// In id, this message translates to:
+  /// **'* belum termasuk bahan yang datanya tidak lengkap.'**
+  String get recipeBreakdownIncompleteMark;
+
+  /// No description provided for @recipePickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bahan'**
+  String get recipePickerTitle;
+
+  /// No description provided for @recipePickerFallbackHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak menemukan bahannya?'**
+  String get recipePickerFallbackHeading;
+
+  /// No description provided for @recipePickerCreateTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat bahan baru'**
+  String get recipePickerCreateTitle;
+
+  /// No description provided for @recipePickerCreateBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi gizi per 100 g dari label kemasan. Tersimpan dan bisa dipakai lagi.'**
+  String get recipePickerCreateBody;
+
+  /// No description provided for @recipePickerFreeTextTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah tanpa data gizi'**
+  String get recipePickerFreeTextTitle;
+
+  /// No description provided for @recipePickerFreeTextBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Cukup nama dan jumlah. Total resep akan ditandai tidak lengkap.'**
+  String get recipePickerFreeTextBody;
+
+  /// No description provided for @recipePer100gHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai gizi per 100 g'**
+  String get recipePer100gHeading;
+
+  /// No description provided for @recipeFreeTextNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama bahan'**
+  String get recipeFreeTextNameLabel;
+
+  /// No description provided for @recipeAmountModeGram.
+  ///
+  /// In id, this message translates to:
+  /// **'Gram'**
+  String get recipeAmountModeGram;
+
+  /// No description provided for @recipeAmountModeServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Takaran ({serving})'**
+  String recipeAmountModeServing(String serving);
+
+  /// No description provided for @recipeAmountModeMultiple.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah (kali)'**
+  String get recipeAmountModeMultiple;
+
+  /// No description provided for @recipeAmountLabelGram.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat (g)'**
+  String get recipeAmountLabelGram;
+
+  /// No description provided for @recipeAmountLabelServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah takaran'**
+  String get recipeAmountLabelServing;
+
+  /// No description provided for @recipeAmountZeroError.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah harus lebih dari 0.'**
+  String get recipeAmountZeroError;
+
+  /// No description provided for @recipeAmountGramRule.
+  ///
+  /// In id, this message translates to:
+  /// **'Gram hanya tersedia untuk bahan yang berat takarannya diketahui. Selain itu isi kelipatan takaran, mis. 0,5.'**
+  String get recipeAmountGramRule;
+
+  /// No description provided for @recipeAmountRawHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Bentuk mentah — masukkan berat sebelum dimasak.'**
+  String get recipeAmountRawHint;
+
+  /// No description provided for @recipeAmountAddAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah ke resep'**
+  String get recipeAmountAddAction;
 }
 
 class _AppTextDelegate extends LocalizationsDelegate<AppText> {
