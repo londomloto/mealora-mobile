@@ -1463,6 +1463,56 @@ class AppTextId extends AppText {
   String get mealTimePickerTitle => 'Pilih waktu makan';
 
   @override
+  String get servingEstimateBadge => 'perkiraan';
+
+  @override
+  String get servingEstimateSemantics => 'Berat takaran ini perkiraan';
+
+  @override
+  String servingPickerSubtitle(String food) {
+    return '$food · berat setiap takaran ditampilkan';
+  }
+
+  @override
+  String get servingPickerDefaultTag => 'Bawaan';
+
+  @override
+  String get servingPickerDirectWeight => 'berat langsung';
+
+  @override
+  String servingPickerApproxWeight(String weight) {
+    return '≈ $weight';
+  }
+
+  @override
+  String get servingPickerDerivedNote => 'dihitung dari data terukur';
+
+  @override
+  String servingPickerWeightEntry(String unit) {
+    return 'Masukkan berat sendiri ($unit)';
+  }
+
+  @override
+  String get servingPickerEstimateHint =>
+      '\"Perkiraan\" berarti berat takaran diperkirakan dari ukuran umum, belum dari penimbangan resmi. Nilai gizi per 100 g tetap dari TKPI.';
+
+  @override
+  String servingDetailWeightServing(String unit) {
+    return 'Berat sendiri ($unit)';
+  }
+
+  @override
+  String get servingDetailWeightLabel => 'Berat yang dimakan';
+
+  @override
+  String get servingDetailUseServingAction => 'Pakai takaran';
+
+  @override
+  String servingDetailWeightInvalid(String unit) {
+    return 'Berat harus lebih dari 0 $unit. Catatan belum disimpan.';
+  }
+
+  @override
   String get quantityDecreaseSemantics => 'Kurangi jumlah';
 
   @override

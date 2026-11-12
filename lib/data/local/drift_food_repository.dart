@@ -3,6 +3,7 @@ import 'package:mealora/core/clock/clock.dart';
 import 'package:mealora/core/ids/id_generator.dart';
 import 'package:mealora/data/local/user_record_support.dart';
 import 'package:mealora/database/app_database.dart';
+import 'package:mealora/database/seeds/food_catalog_seed.dart';
 import 'package:mealora/database/tables/food_servings_table.dart';
 import 'package:mealora/database/tables/foods_table.dart';
 import 'package:mealora/database/tables/meal_entries_table.dart';
@@ -57,25 +58,59 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
 
   @override
   Future<List<Food>> search(String query) async {
-    final trimmed = query.trim();
-    if (trimmed.isEmpty) {
+    final tokens = query
+        .trim()
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (tokens.isEmpty) {
       return const <Food>[];
     }
-    // SQLite `LIKE` membandingkan ASCII tanpa peka huruf besar-kecil secara
-    // bawaan (Design D3) — tidak perlu `LOWER()` tambahan untuk itu.
-    final pattern = '%$trimmed%';
-    final startsWithPattern = '$trimmed%';
+    // Setiap kata kueri harus muncul di nama (urutan bebas), dengan sinonim
+    // sehari-hari dari `synonyms.csv` sebagai alternatif ("telor" → telur,
+    // change 015 D8). Kata asli dicocokkan sebagai potongan seperti
+    // sebelumnya; sinonim hanya di awal kata supaya "mi" tidak cocok dengan
+    // "kismis". SQLite `LIKE` tidak peka huruf besar-kecil untuk ASCII.
+    final trimmed = query.trim();
     final rows =
         await (select(foods)
-              ..where(
-                (t) => t.name.like(pattern) & UserRecords.active(t.deletedAt),
-              )
+              ..where((t) {
+                var condition =
+                    UserRecords.active(t.deletedAt) & t.isActive.equals(true);
+                for (final token in tokens) {
+                  var any = t.name.like('%$token%');
+                  for (final alt in _synonymsOf(token)) {
+                    any = any | t.name.like('$alt%') | t.name.like('% $alt%');
+                  }
+                  condition = condition & any;
+                }
+                return condition;
+              })
               ..orderBy([
+                // Bentuk siap konsumsi lebih dulu, bahan mentah/kering
+                // terakhir (spec food-catalog, "Bentuk siap konsumsi
+                // dibedakan dari bahan").
                 (t) => OrderingTerm(
                   expression: CaseWhenExpression<int>(
                     cases: [
                       CaseWhen(
-                        t.name.like(startsWithPattern),
+                        t.form.equals('ready'),
+                        then: const Constant<int>(0),
+                      ),
+                      CaseWhen(
+                        t.form.isIn(const <String>['raw', 'dry']),
+                        then: const Constant<int>(2),
+                      ),
+                    ],
+                    orElse: const Constant<int>(1),
+                  ),
+                ),
+                (t) => OrderingTerm(
+                  expression: CaseWhenExpression<int>(
+                    cases: [
+                      CaseWhen(
+                        t.name.like('$trimmed%'),
                         then: const Constant<int>(0),
                       ),
                     ],
@@ -87,6 +122,13 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
             .get();
     return Future.wait(rows.map(_assemble));
   }
+
+  /// Bentuk lain dari [token] menurut sinonim pencarian, dua arah.
+  static Set<String> _synonymsOf(String token) => <String>{
+    ?kFoodSearchSynonyms[token],
+    for (final e in kFoodSearchSynonyms.entries)
+      if (e.value == token) e.key,
+  }..remove(token);
 
   @override
   Future<List<RecentFood>> recentlyLogged(
@@ -293,6 +335,9 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
           gramEquivalent: servingRow.gramEquivalent,
           isDefault: servingRow.isDefault,
           nutrition: _nutritionFrom(nutritionRow),
+          provenanceTier: ServingProvenanceTier.fromStableCode(
+            servingRow.provenanceTier,
+          ),
         ),
       );
     }
@@ -308,7 +353,7 @@ class DriftFoodRepository extends DatabaseAccessor<AppDatabase>
               sourceType: row.sourceType!,
               sourceRef: row.sourceRef!,
               sourceVersion: row.sourceVersion!,
-              verifiedAt: row.verifiedAt!,
+              verifiedAt: row.verifiedAt,
             ),
       servings: servings,
     );

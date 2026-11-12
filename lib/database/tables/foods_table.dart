@@ -12,6 +12,10 @@ const List<String> kFoodCategoryValues = <String>[
   'other',
 ];
 
+/// Nilai `form` yang sah (Design D2, change 015): `ready` = siap konsumsi
+/// (seduhan, masakan), `raw` = bahan mentah, `dry` = bahan kering.
+const List<String> kFoodFormValues = <String>['ready', 'raw', 'dry'];
+
 /// Katalog makanan di perangkat: bawaan (dengan provenans) atau buatan
 /// pengguna (assessment §11, spec food-catalog, change 007).
 ///
@@ -44,4 +48,18 @@ class Foods extends Table with UserRecordColumns {
       text().withLength(min: 1, max: 32).nullable()();
 
   DateTimeColumn get verifiedAt => dateTime().nullable()();
+
+  /// Bentuk makanan untuk mengurutkan entri siap konsumsi di atas bahan
+  /// (change 015). `null` untuk makanan buatan pengguna atau yang belum
+  /// dikurasi.
+  TextColumn get form => text()
+      .withLength(min: 1, max: 8)
+      // ignore: recursive_getters — idiom Drift untuk CHECK yang merujuk kolomnya sendiri.
+      .check(form.isIn(kFoodFormValues))
+      .nullable()();
+
+  /// `false` menyembunyikan makanan dari pencarian tanpa menghapusnya —
+  /// baris yang pernah dicatat tidak bisa dihapus karena relasi `restrict`
+  /// dari `meal_entry_items` (Design D2, change 015).
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
 }

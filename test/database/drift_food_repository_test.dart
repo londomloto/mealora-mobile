@@ -36,7 +36,7 @@ void main() {
 
     test('mencocokkan bagian mana pun dari nama', () async {
       final results = await repository.search('putih');
-      expect(results.map((f) => f.name), contains('Bawang Putih'));
+      expect(results.map((f) => f.name), contains('Bawang putih'));
     });
 
     test('mendahulukan kecocokan di awal nama', () async {

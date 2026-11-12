@@ -41,6 +41,7 @@ abstract final class MealoraSpacing {
 /// Radius sudut.
 abstract final class MealoraRadius {
   static const double track = 4;
+  static const double badge = 8;
   static const double compactIconField = 12;
   static const double iconField = 14;
   static const double chip = 18;

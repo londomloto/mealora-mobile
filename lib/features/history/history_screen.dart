@@ -471,7 +471,10 @@ class _MealSection extends StatelessWidget {
                               style: MealoraTypography.bodySmall,
                             ),
                             Text(
-                              entry.servingLabelSnapshot,
+                              DiaryFormat.entryAmount(
+                                entry.servingLabelSnapshot,
+                                entry.quantity,
+                              ),
                               style: MealoraTypography.caption,
                             ),
                           ],

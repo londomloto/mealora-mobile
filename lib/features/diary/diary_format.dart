@@ -15,6 +15,25 @@ abstract final class DiaryFormat {
       ? text.nutrientValueUnknown
       : '${IdFormat.decimal(value)} ${text.unitGram}';
 
+  /// Jumlah sebuah catatan untuk ditampilkan: takaran berat murni
+  /// ("100 g" × 1,5) menjadi "150 g" (change 015, design.md D5); takaran
+  /// lain "1,5 × 1 centong", atau labelnya saja bila jumlahnya 1.
+  static String entryAmount(String servingLabel, double quantity) {
+    final weight = RegExp(
+      r'^(\d+(?:[.,]\d+)?)\s*(g|ml)$',
+    ).firstMatch(servingLabel.trim());
+    if (weight != null) {
+      final base = double.parse(weight.group(1)!.replaceAll(',', '.'));
+      return '${_compact(base * quantity)} ${weight.group(2)}';
+    }
+    if (quantity == 1) return servingLabel;
+    return '${_compact(quantity)} × $servingLabel';
+  }
+
+  /// Angka tanpa ",0" untuk bilangan bulat (150, 1,5).
+  static String _compact(double value) =>
+      IdFormat.decimal(value, decimals: value == value.roundToDouble() ? 0 : 1);
+
   static String mealTimeLabel(MealTime mealTime, AppText text) =>
       switch (mealTime) {
         MealTime.breakfast => text.mealTimeBreakfast,

@@ -7,6 +7,7 @@ final class FoodCatalogCheck {
     required this.builtInFoodsWithoutProvenance,
     required this.foodsWithoutDefaultServing,
     required this.servingsWithoutNutrition,
+    this.builtInServingsWithoutProvenance = 0,
   });
 
   final int builtInFoodCount;
@@ -23,10 +24,16 @@ final class FoodCatalogCheck {
   /// Takaran tanpa baris nilai gizi — SHALL selalu nol.
   final int servingsWithoutNutrition;
 
+  /// Takaran makanan bawaan tanpa tingkat asal-usul beserta rujukan atau
+  /// catatan — SHALL selalu nol (spec, "Takaran tanpa asal-usul ditolak
+  /// masuk katalog", change 015).
+  final int builtInServingsWithoutProvenance;
+
   bool get isHealthy =>
       builtInFoodsWithoutProvenance == 0 &&
       foodsWithoutDefaultServing == 0 &&
-      servingsWithoutNutrition == 0;
+      servingsWithoutNutrition == 0 &&
+      builtInServingsWithoutProvenance == 0;
 }
 
 /// Memeriksa keutuhan katalog makanan: provenans lengkap pada makanan
@@ -44,8 +51,7 @@ Future<FoodCatalogCheck> verifyFoodCatalog(AppDatabase db) async {
   final missingProvenanceRows = await db.customSelect('''
 SELECT COUNT(*) AS c FROM foods
 WHERE is_user_created = 0 AND deleted_at IS NULL
-  AND (source_type IS NULL OR source_ref IS NULL OR source_version IS NULL
-       OR verified_at IS NULL)
+  AND (source_type IS NULL OR source_ref IS NULL OR source_version IS NULL)
 ''').get();
 
   final missingDefaultServingRows = await db.customSelect('''
@@ -64,6 +70,15 @@ WHERE s.deleted_at IS NULL AND NOT EXISTS (
 )
 ''').get();
 
+  final missingServingProvenanceRows = await db.customSelect('''
+SELECT COUNT(*) AS c FROM food_servings s
+JOIN foods f ON f.id = s.food_id
+WHERE f.is_user_created = 0 AND s.deleted_at IS NULL
+  AND (s.provenance_tier IS NULL
+       OR (s.provenance_tier = 'estimate' AND s.provenance_note IS NULL)
+       OR (s.provenance_tier != 'estimate' AND s.provenance_ref IS NULL))
+''').get();
+
   return FoodCatalogCheck(
     builtInFoodCount: builtInFoodCount,
     builtInFoodsWithoutProvenance:
@@ -71,5 +86,7 @@ WHERE s.deleted_at IS NULL AND NOT EXISTS (
     foodsWithoutDefaultServing:
         missingDefaultServingRows.first.data['c']! as int,
     servingsWithoutNutrition: missingNutritionRows.first.data['c']! as int,
+    builtInServingsWithoutProvenance:
+        missingServingProvenanceRows.first.data['c']! as int,
   );
 }

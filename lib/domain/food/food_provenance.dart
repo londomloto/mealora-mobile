@@ -9,7 +9,7 @@ final class FoodProvenance {
     required this.sourceType,
     required this.sourceRef,
     required this.sourceVersion,
-    required this.verifiedAt,
+    this.verifiedAt,
   });
 
   /// Jenis sumber (mis. `usda_fdc`, `tkpi`) — lihat
@@ -22,6 +22,8 @@ final class FoodProvenance {
   /// Versi/rilis sumber (mis. `SR Legacy`).
   final String sourceVersion;
 
-  /// Tanggal nilai terakhir diverifikasi terhadap sumber.
-  final DateTime verifiedAt;
+  /// Tanggal nilai terakhir diverifikasi terhadap sumber. `null` bila
+  /// makanan belum cocok dengan TKPI 2017 (belum terverifikasi, change 015
+  /// task 3.2).
+  final DateTime? verifiedAt;
 }

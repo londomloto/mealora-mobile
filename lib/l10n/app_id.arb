@@ -719,6 +719,54 @@
   },
   "servingPickerTitle": "Pilih sajian",
   "mealTimePickerTitle": "Pilih waktu makan",
+  "servingEstimateBadge": "perkiraan",
+  "servingEstimateSemantics": "Berat takaran ini perkiraan",
+  "servingPickerSubtitle": "{food} · berat setiap takaran ditampilkan",
+  "@servingPickerSubtitle": {
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "servingPickerDefaultTag": "Bawaan",
+  "servingPickerDirectWeight": "berat langsung",
+  "servingPickerApproxWeight": "≈ {weight}",
+  "@servingPickerApproxWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "servingPickerDerivedNote": "dihitung dari data terukur",
+  "servingPickerWeightEntry": "Masukkan berat sendiri ({unit})",
+  "@servingPickerWeightEntry": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "servingPickerEstimateHint": "\"Perkiraan\" berarti berat takaran diperkirakan dari ukuran umum, belum dari penimbangan resmi. Nilai gizi per 100 g tetap dari TKPI.",
+  "servingDetailWeightServing": "Berat sendiri ({unit})",
+  "@servingDetailWeightServing": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "servingDetailWeightLabel": "Berat yang dimakan",
+  "servingDetailUseServingAction": "Pakai takaran",
+  "servingDetailWeightInvalid": "Berat harus lebih dari 0 {unit}. Catatan belum disimpan.",
+  "@servingDetailWeightInvalid": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "quantityDecreaseSemantics": "Kurangi jumlah",
   "quantityIncreaseSemantics": "Tambah jumlah",
   "customFoodContextLabel": "KATALOG PRIBADI",

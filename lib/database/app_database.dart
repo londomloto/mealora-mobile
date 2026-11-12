@@ -32,7 +32,7 @@ part 'app_database.g.dart';
 /// Setiap perubahan struktur menaikkan angka ini dan menambah langkah di
 /// [AppDatabase.migration] beserta kasus uji di `test/database/`. Penurunan
 /// versi (downgrade) tidak didukung.
-const int kSchemaVersion = 9;
+const int kSchemaVersion = 10;
 
 @DriftDatabase(
   tables: <Type>[
@@ -224,6 +224,32 @@ WHERE profile_id NOT IN (SELECT id FROM profiles);
         // perubahan skema buku harian, hanya kapabilitas baru).
         await m.createTable(foodPhotoDrafts);
         await createFoodPhotoDraftIndexes(this);
+      }
+      if (from < 10) {
+        // Versi 9 → 10 (change 015): provenans per takaran, bentuk makanan,
+        // dan status aktif. Hanya `addColumn` dengan nilai bawaan aman —
+        // tidak ada baris yang disalin ulang, catatan makan tidak tersentuh
+        // (design.md D2 & Migration Plan).
+        // Blok `from < 4` membuat `foods`/`food_servings` dengan definisi
+        // terkini (sudah memuat kolom ini), jadi kolom hanya ditambahkan
+        // bila belum ada.
+        for (final (table, column)
+            in <(TableInfo<Table, Object?>, GeneratedColumn<Object>)>[
+              (foods, foods.form),
+              (foods, foods.isActive),
+              (foodServings, foodServings.provenanceTier),
+              (foodServings, foodServings.provenanceRef),
+              (foodServings, foodServings.provenanceNote),
+            ]) {
+          final existing = await customSelect(
+            "SELECT 1 FROM pragma_table_info('${table.actualTableName}') "
+            'WHERE name = ?',
+            variables: <Variable>[Variable<String>(column.name)],
+          ).get();
+          if (existing.isEmpty) {
+            await m.addColumn(table, column);
+          }
+        }
       }
     },
     beforeOpen: (details) async {

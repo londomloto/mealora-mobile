@@ -1,0 +1,2 @@
+# Pelanggaran mutu yang diketahui (aturan|subjek). Jangan menambah
+# entri baru di sini kecuali disetujui; kurangi saat dikoreksi.

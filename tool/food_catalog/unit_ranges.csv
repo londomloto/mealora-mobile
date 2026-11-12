@@ -1,0 +1,19 @@
+unit,min,max,basis,source
+gram,1,1000,derived,Satuan berat langsung; batas atas = 10 x takaran asal 100 g
+ml,1,1000,derived,Satuan volume langsung; batas atas = 4 gelas 250 ml
+sdt,2,10,official,"Permenkes 41/2014 Lampiran hlm. 41 (1 sdt minyak = 5 g) dan hlm. 65 (1 sdt kacang merah = 5 g); rentang = 0,4-2 x nilai tabel"
+sdm,4,25,official,"Permenkes 41/2014 Lampiran hlm. 9-12, 41: per sdm tepung sagu 5 g, tepung terigu 10 g, kacang hijau 10 g, mentega 15 g, teri kering 20 g"
+gelas,40,260,official,"Permenkes 41/2014 Lampiran hlm. 9, 11, 41: per gelas mie kering 50 g, mie basah 100 g, nasi ~133 g, santan 120 g, susu sapi 200 g; gelas 200-250 ml"
+potong,10,200,official,"Permenkes 41/2014 Lampiran hlm. 9-16: ikan asin 15 g, daging 35-50 g, sukun 50 g, singkong 80 g, pepaya 100-190 g per potong"
+iris,10,60,official,Permenkes 41/2014 Lampiran hlm. 9: roti putih 3 iris = 70 g
+buah,3,400,official,"Permenkes 41/2014 Lampiran hlm. 9, 15-16: kurma 5 g, anggur 8 g, apel 75-85 g, jeruk garut 115 g, belimbing 125-140 g per buah; batas atas untuk buah utuh besar (alpukat, mangga)"
+butir,8,80,official,Permenkes 41/2014 Lampiran hlm. 12-13: telur puyuh 11 g; telur ayam 55 g; telur bebek asin 50 g
+biji,5,300,official,"Permenkes 41/2014 Lampiran hlm. 9, 13, 15-16: kentang hitam ~10 g, bakso 17 g, nangka 17 g, talas ~250 g per biji"
+ekor,5,300,official,"Permenkes 41/2014 Lampiran hlm. 11-12: udang 7 g, cumi kecil 45 g, ikan sedang ~90-135 g per ekor"
+lembar,5,60,official,Permenkes 41/2014 Lampiran hlm. 10 dan 12: kembang tahu 20 g; daging asap 20 g per lembar
+centong,60,200,estimate,Tidak ada di Permenkes 41/2014; perkiraan centong nasi sehari-hari (± 1 gelas nasi = ~133 g menurut hlm. 9)
+mangkuk,100,400,estimate,Tidak ada di Permenkes 41/2014; perkiraan mangkuk sayur/sup/bakso rumah tangga
+piring,150,600,estimate,Tidak ada di Permenkes 41/2014; perkiraan satu piring makanan jadi (nasi goreng/mi goreng)
+porsi,30,600,estimate,Tidak ada di Permenkes 41/2014; porsi jajanan hingga makanan jadi
+bungkus,20,600,estimate,Tidak ada di Permenkes 41/2014; jajanan kemasan kecil hingga nasi bungkus
+density_g_per_ml,0.95,1.10,estimate,"Massa jenis minuman (g/ml): air 1,00; minuman manis/susu sedikit di atas 1; dipakai untuk cek gram = ml x massa jenis"

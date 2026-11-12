@@ -11,16 +11,13 @@ import 'package:mealora/app/theme/spacing_tokens.dart';
 import 'package:mealora/app/theme/typography_tokens.dart';
 import 'package:mealora/app/widgets/mealora_components.dart';
 import 'package:mealora/core/clock/clock.dart';
-import 'package:mealora/core/ids/id_generator.dart';
 import 'package:mealora/core/providers.dart';
-import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/meal_time.dart';
 import 'package:mealora/domain/food_photo_input/food_component_matcher.dart';
-import 'package:mealora/domain/food_photo_input/food_component_recognition.dart';
 import 'package:mealora/domain/food_photo_input/food_component_recognition_provider.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
+import 'package:mealora/domain/food_photo_input/photo_draft_component_builder.dart';
 import 'package:mealora/domain/image_ai_access/image_ai_settings.dart';
-import 'package:mealora/domain/image_ai_access/reading_confidence.dart';
 import 'package:mealora/features/diary/diary_controller.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/food_photo_draft_screen.dart';
@@ -271,7 +268,13 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
         final components = <PhotoDraftComponent>[];
         for (final recognized in recognition.components) {
           final match = await matcher.match(recognized.foodNameGuess);
-          components.add(_toDraftComponent(ids, recognized, match));
+          components.add(
+            buildPhotoDraftComponent(
+              ids: ids,
+              recognized: recognized,
+              match: match,
+            ),
+          );
         }
         draft = draft.withComponents(components);
         await savePhotoDraft(ref, draft);
@@ -292,26 +295,6 @@ class _FoodPhotoScreenState extends ConsumerState<FoodPhotoScreen> {
         if (!mounted) return;
         setState(() => _stage = _Stage.ready);
     }
-  }
-
-  PhotoDraftComponent _toDraftComponent(
-    IdGenerator ids,
-    RecognizedComponent recognized,
-    Food? match,
-  ) {
-    return PhotoDraftComponent(
-      localId: ids.next(),
-      foodNameGuess: recognized.foodNameGuess,
-      matchedFoodId: match?.id,
-      matchedServingId: match?.defaultServing.id,
-      matchedFoodName: match?.name,
-      quantity: recognized.quantity.value ?? 1,
-      quantityUnitLabel: recognized.quantity.unit,
-      cookingMethod: recognized.cookingMethod.value,
-      portionNeedsCheck: recognized.quantity.confidence.needsUserAttention,
-      cookingMethodNeedsCheck:
-          recognized.cookingMethod.confidence == ReadingConfidence.needsCheck,
-    );
   }
 
   void _openManualSearch() {

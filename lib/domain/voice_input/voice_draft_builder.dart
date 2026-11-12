@@ -1,6 +1,7 @@
 import 'package:mealora/core/ids/id_generator.dart';
 import 'package:mealora/domain/food/food.dart';
 import 'package:mealora/domain/food/serving_size.dart';
+import 'package:mealora/domain/food/serving_unit_matcher.dart';
 import 'package:mealora/domain/food_photo_input/food_component_matcher.dart';
 import 'package:mealora/domain/food_photo_input/photo_draft.dart';
 import 'package:mealora/domain/voice_input/food_sentence_parser.dart';
@@ -55,35 +56,9 @@ final class VoiceDraftBuilder {
     );
   }
 
-  static const Map<String, String> _unitAliases = <String, String>{
-    'g': 'gram',
-    'gr': 'gram',
-    'gram': 'gram',
-    'mililiter': 'ml',
-    'ml': 'ml',
-    'mangkok': 'mangkuk',
-  };
-
-  static String? _canonicalUnit(String? raw) {
-    final unit = raw?.toLowerCase().trim();
-    if (unit == null) return null;
-    return _unitAliases[unit] ?? unit;
-  }
-
   /// Takaran makanan yang satuannya sama dengan satuan baku yang disebut.
   static ServingSize? _servingFor(Food food, ParsedFoodItem item) {
     if (item.unitStatus != ParsedUnitStatus.standard) return null;
-    final unit = _canonicalUnit(item.unit);
-    if (unit == null || unit.isEmpty) return null;
-    for (final serving in food.servings) {
-      if (_canonicalUnit(serving.unit) == unit) return serving;
-    }
-    for (final serving in food.servings) {
-      final label = serving.label.toLowerCase();
-      if (RegExp('\\b${RegExp.escape(unit)}\\b').hasMatch(label)) {
-        return serving;
-      }
-    }
-    return null;
+    return ServingUnitMatcher.servingForUnit(food, item.unit);
   }
 }

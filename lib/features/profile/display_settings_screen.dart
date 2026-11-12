@@ -264,9 +264,7 @@ class _Segmented<T> extends StatelessWidget {
                     horizontal: MealoraSpacing.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: option == value
-                        ? MealoraColors.primary
-                        : null,
+                    color: option == value ? MealoraColors.primary : null,
                     borderRadius: BorderRadius.circular(MealoraRadius.pill),
                   ),
                   child: Text(

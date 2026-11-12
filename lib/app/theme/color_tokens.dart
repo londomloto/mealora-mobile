@@ -188,6 +188,11 @@ abstract final class MealoraColors {
   /// tindakan hapus (change 007).
   static const Color coralText = Color(0xFFB4452B);
 
+  /// Teks penanda "perkiraan" di atas [iconFieldAmber] — 5,4:1, lebih
+  /// gelap dari [amberText] (4,0:1) karena labelnya berukuran kecil
+  /// (change 015, desain 67/71).
+  static const Color estimateText = Color(0xFF8A5A00);
+
   /// Permukaan lembar modal (mis. lembar tambah makanan) — putih hampir
   /// pekat di atas latar aplikasi (change 007).
   static const Color sheetSurface = Color(0xF0F4FAF5);

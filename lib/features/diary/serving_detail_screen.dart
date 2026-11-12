@@ -15,6 +15,7 @@ import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
 import 'package:mealora/features/diary/option_sheet.dart';
+import 'package:mealora/features/diary/serving_picker_sheet.dart';
 import 'package:mealora/features/reminders/late_meal_notice.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
@@ -49,6 +50,23 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
   double _quantity = 1;
   bool _saving = false;
 
+  /// Masukan jumlah bebas dalam gram/ml (desain 68/69, design.md D5):
+  /// disimpan sebagai takaran 100 g/100 ml × (berat / 100).
+  bool _weightMode = false;
+  final TextEditingController _weightController = TextEditingController();
+  bool _weightInvalid = false;
+
+  ServingSize? get _weightBasis => weightBasisOf(widget.food);
+
+  double? get _weight =>
+      double.tryParse(_weightController.text.trim().replaceAll(',', '.'));
+
+  @override
+  void dispose() {
+    _weightController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +77,14 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    final estimate = _serving.nutrition.scaledBy(_quantity);
+    final basis = _weightBasis;
+    final weight = _weight;
+    final estimate = !_weightMode
+        ? _serving.nutrition.scaledBy(_quantity)
+        : (basis != null && weight != null && weight > 0)
+        ? basis.nutrition.scaledBy(weight / basis.amount)
+        : null;
+    final unit = basis == null ? 'g' : weightUnitLabel(basis);
 
     return Scaffold(
       backgroundColor: MealoraColors.background,
@@ -98,20 +123,54 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
                 ),
                 const SizedBox(height: MealoraSpacing.xs),
                 _PickerField(
-                  icon: Icons.restaurant_outlined,
-                  value: _serving.label,
+                  icon: _weightMode
+                      ? Icons.scale_outlined
+                      : Icons.restaurant_outlined,
+                  value: _weightMode
+                      ? text.servingDetailWeightServing(unit)
+                      : _servingLabel(_serving),
+                  estimate: !_weightMode && _serving.isEstimate,
                   onTap: _pickServing,
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
-                Text(
-                  text.servingDetailQuantityLabel,
-                  style: MealoraTypography.compactFieldLabel,
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _weightMode
+                            ? text.servingDetailWeightLabel
+                            : text.servingDetailQuantityLabel,
+                        style: MealoraTypography.compactFieldLabel,
+                      ),
+                    ),
+                    if (_weightMode)
+                      TextButton.icon(
+                        onPressed: () => setState(() {
+                          _weightMode = false;
+                          _weightInvalid = false;
+                        }),
+                        icon: const Icon(Icons.repeat, size: 14),
+                        label: Text(text.servingDetailUseServingAction),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: MealoraSpacing.xs),
-                _QuantityStepper(
-                  quantity: _quantity,
-                  onChanged: (value) => setState(() => _quantity = value),
-                ),
+                if (_weightMode)
+                  _WeightField(
+                    controller: _weightController,
+                    unit: unit,
+                    invalid: _weightInvalid,
+                    errorText: text.servingDetailWeightInvalid(unit),
+                    onChanged: (_) => setState(() {
+                      final w = _weight;
+                      _weightInvalid = w != null && w <= 0;
+                    }),
+                  )
+                else
+                  _QuantityStepper(
+                    quantity: _quantity,
+                    onChanged: (value) => setState(() => _quantity = value),
+                  ),
                 const SizedBox(height: MealoraSpacing.lg),
                 Text(
                   text.servingDetailMealTimeLabel,
@@ -147,20 +206,37 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
     MealTime.dinner => Icons.dark_mode_outlined,
   };
 
+  /// Label takaran dengan padanan beratnya bila label belum menyebutnya
+  /// (spec food-catalog, "Takaran saji yang bermakna").
+  String _servingLabel(ServingSize serving) {
+    final gram = serving.gramEquivalent;
+    if (gram == null || serving.isWeightBasis) return serving.label;
+    final weight = '${formatWeight(gram)} g';
+    return serving.label.contains(weight)
+        ? serving.label
+        : '${serving.label} · $weight';
+  }
+
   Future<void> _pickServing() async {
-    final text = AppText.of(context);
-    final picked = await showModalBottomSheet<ServingSize>(
+    final picked = await showModalBottomSheet<ServingPick>(
       context: context,
-      builder: (context) => OptionSheet<ServingSize>(
-        title: text.servingPickerTitle,
-        options: widget.food.servings,
-        labelOf: (s) => s.label,
-        selected: _serving,
+      isScrollControlled: true,
+      builder: (context) => ServingPickerSheet(
+        food: widget.food,
+        selected: _weightMode ? null : _serving,
       ),
     );
-    if (picked != null) {
-      setState(() => _serving = picked);
-    }
+    if (picked == null) return;
+    setState(() {
+      switch (picked) {
+        case ServingPicked(:final serving):
+          _serving = serving;
+          _weightMode = false;
+          _weightInvalid = false;
+        case WeightEntryPicked():
+          _weightMode = true;
+      }
+    });
   }
 
   Future<void> _pickMealTime() async {
@@ -180,13 +256,25 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
   }
 
   Future<void> _save() async {
+    var serving = _serving;
+    var quantity = _quantity;
+    if (_weightMode) {
+      final basis = _weightBasis;
+      final weight = _weight;
+      if (basis == null || weight == null || weight <= 0) {
+        setState(() => _weightInvalid = true);
+        return;
+      }
+      serving = basis;
+      quantity = weight / basis.amount;
+    }
     setState(() => _saving = true);
     final result = await logFoodEntry(
       ref,
       mealTime: _mealTime,
       food: widget.food,
-      serving: _serving,
-      quantity: _quantity,
+      serving: serving,
+      quantity: quantity,
       date: widget.date,
     );
     if (!mounted) {
@@ -214,7 +302,8 @@ class _ServingDetailScreenState extends ConsumerState<ServingDetailScreen> {
 class _EstimateCard extends StatelessWidget {
   const _EstimateCard({required this.estimate, required this.text});
 
-  final NutritionProfile estimate;
+  /// `null` saat berat belum sah — angka tidak ditampilkan.
+  final NutritionProfile? estimate;
   final AppText text;
 
   @override
@@ -226,20 +315,21 @@ class _EstimateCard extends StatelessWidget {
           Text(text.servingDetailEstimateLabel, style: MealoraTypography.label),
           const SizedBox(height: MealoraSpacing.xs),
           Text(
-            DiaryFormat.kcal(estimate.energy, text),
+            estimate == null ? '—' : DiaryFormat.kcal(estimate!.energy, text),
             style: MealoraTypography.headline.copyWith(
               color: MealoraColors.primary,
             ),
           ),
           const SizedBox(height: MealoraSpacing.xxs),
-          Text(
-            text.macroMacrosShort(
-              DiaryFormat.grams(estimate.proteinG, text),
-              DiaryFormat.grams(estimate.carbohydrateG, text),
-              DiaryFormat.grams(estimate.fatG, text),
+          if (estimate case final e?)
+            Text(
+              text.macroMacrosShort(
+                DiaryFormat.grams(e.proteinG, text),
+                DiaryFormat.grams(e.carbohydrateG, text),
+                DiaryFormat.grams(e.fatG, text),
+              ),
+              style: MealoraTypography.bodySmall,
             ),
-            style: MealoraTypography.bodySmall,
-          ),
         ],
       ),
     );
@@ -251,11 +341,13 @@ class _PickerField extends StatelessWidget {
     required this.icon,
     required this.value,
     required this.onTap,
+    this.estimate = false,
   });
 
   final IconData icon;
   final String value;
   final VoidCallback onTap;
+  final bool estimate;
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +387,15 @@ class _PickerField extends StatelessWidget {
               ),
               const SizedBox(width: MealoraSpacing.sm),
               Expanded(
-                child: Text(value, style: MealoraTypography.bodyEmphasis),
+                child: Wrap(
+                  spacing: MealoraSpacing.xs,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(value, style: MealoraTypography.bodyEmphasis),
+                    if (estimate) const ServingEstimateBadge(),
+                  ],
+                ),
               ),
               const Icon(
                 Icons.keyboard_arrow_down_rounded,
@@ -382,6 +482,75 @@ class _StepButton extends StatelessWidget {
           child: Icon(icon, color: MealoraColors.primary),
         ),
       ),
+    );
+  }
+}
+
+class _WeightField extends StatelessWidget {
+  const _WeightField({
+    required this.controller,
+    required this.unit,
+    required this.invalid,
+    required this.errorText,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final String unit;
+  final bool invalid;
+  final String errorText;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = invalid ? MealoraColors.danger : MealoraColors.primary;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          style: MealoraTypography.headline,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            suffixText: unit,
+            filled: true,
+            fillColor: MealoraColors.surface,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(MealoraRadius.button),
+              borderSide: BorderSide(color: borderColor, width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(MealoraRadius.button),
+              borderSide: BorderSide(color: borderColor, width: 2),
+            ),
+          ),
+        ),
+        if (invalid)
+          Padding(
+            padding: const EdgeInsets.only(top: MealoraSpacing.xs),
+            child: Row(
+              children: <Widget>[
+                const Icon(
+                  Icons.error_outline,
+                  size: 14,
+                  color: MealoraColors.danger,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    errorText,
+                    style: MealoraTypography.bodySmall.copyWith(
+                      color: MealoraColors.danger,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

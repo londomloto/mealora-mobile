@@ -12,7 +12,7 @@ import 'package:mealora/domain/food/nutrition_profile.dart';
 import 'package:mealora/domain/food/serving_size.dart';
 import 'package:mealora/features/diary/diary_format.dart';
 import 'package:mealora/features/diary/diary_providers.dart';
-import 'package:mealora/features/diary/option_sheet.dart';
+import 'package:mealora/features/diary/serving_picker_sheet.dart';
 import 'package:mealora/l10n/generated/app_localizations.dart';
 
 /// `17 · Edit catatan makanan` (task 7.2/7.3): takaran, jumlah, waktu makan,
@@ -52,6 +52,12 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
   Widget build(BuildContext context) {
     final text = AppText.of(context);
     final estimate = _serving.nutrition.scaledBy(_quantity);
+    // Takaran katalog saat ini untuk catatan ini — memberi tingkat
+    // asal-usul (penanda "perkiraan") dan satuan berat untuk tampilan jumlah.
+    final food = ref.watch(foodByIdProvider(widget.entry.foodId)).valueOrNull;
+    final current = food?.servings
+        .where((s) => s.id == _serving.id)
+        .firstOrNull;
 
     return Scaffold(
       backgroundColor: MealoraColors.background,
@@ -101,6 +107,7 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
                 _ServingPicker(
                   foodId: widget.entry.foodId,
                   serving: _serving,
+                  estimate: current?.isEstimate ?? false,
                   onChanged: (value) => setState(() => _serving = value),
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
@@ -111,6 +118,9 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
                 const SizedBox(height: MealoraSpacing.xs),
                 _QuantityRow(
                   quantity: _quantity,
+                  weightBasis: (current?.isWeightBasis ?? false)
+                      ? current
+                      : null,
                   onChanged: (value) => setState(() => _quantity = value),
                 ),
                 const SizedBox(height: MealoraSpacing.lg),
@@ -227,10 +237,18 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
 }
 
 class _QuantityRow extends StatelessWidget {
-  const _QuantityRow({required this.quantity, required this.onChanged});
+  const _QuantityRow({
+    required this.quantity,
+    required this.onChanged,
+    this.weightBasis,
+  });
 
   final double quantity;
   final ValueChanged<double> onChanged;
+
+  /// Takaran 100 g/100 ml: jumlah ditampilkan sebagai berat ("150 g"),
+  /// bukan "1,5 sajian" (design.md D5).
+  final ServingSize? weightBasis;
 
   @override
   Widget build(BuildContext context) {
@@ -260,10 +278,13 @@ class _QuantityRow extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            '${quantity.toStringAsFixed(1).replaceAll('.', ',')} sajian',
-            style: MealoraTypography.headline,
-          ),
+          Text(switch (weightBasis) {
+            final basis? =>
+              '${formatWeight(quantity * basis.amount)} '
+                  '${weightUnitLabel(basis)}',
+            null =>
+              '${quantity.toStringAsFixed(1).replaceAll('.', ',')} sajian',
+          }, style: MealoraTypography.headline),
           Semantics(
             button: true,
             label: text.quantityIncreaseSemantics,
@@ -344,15 +365,16 @@ class _ServingPicker extends ConsumerWidget {
     required this.foodId,
     required this.serving,
     required this.onChanged,
+    this.estimate = false,
   });
 
   final String foodId;
   final ServingSize serving;
   final ValueChanged<ServingSize> onChanged;
+  final bool estimate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final text = AppText.of(context);
     final food = ref.watch(foodByIdProvider(foodId)).valueOrNull;
     final options = food?.servings ?? <ServingSize>[serving];
 
@@ -361,20 +383,20 @@ class _ServingPicker extends ConsumerWidget {
       label: serving.label,
       child: InkWell(
         borderRadius: BorderRadius.circular(MealoraRadius.button),
-        onTap: options.length <= 1
+        onTap: food == null || options.length <= 1
             ? null
             : () async {
-                final picked = await showModalBottomSheet<ServingSize>(
+                final picked = await showModalBottomSheet<ServingPick>(
                   context: context,
-                  builder: (context) => OptionSheet<ServingSize>(
-                    title: text.servingPickerTitle,
-                    options: options,
-                    labelOf: (s) => s.label,
+                  isScrollControlled: true,
+                  builder: (context) => ServingPickerSheet(
+                    food: food,
                     selected: serving,
+                    offerWeightEntry: false,
                   ),
                 );
-                if (picked != null) {
-                  onChanged(picked);
+                if (picked case ServingPicked(:final serving)) {
+                  onChanged(serving);
                 }
               },
         child: Container(
@@ -407,9 +429,14 @@ class _ServingPicker extends ConsumerWidget {
               ),
               const SizedBox(width: MealoraSpacing.sm),
               Expanded(
-                child: Text(
-                  serving.label,
-                  style: MealoraTypography.bodyEmphasis,
+                child: Wrap(
+                  spacing: MealoraSpacing.xs,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(serving.label, style: MealoraTypography.bodyEmphasis),
+                    if (estimate) const ServingEstimateBadge(),
+                  ],
                 ),
               ),
               if (options.length > 1)

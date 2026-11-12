@@ -3,6 +3,7 @@ import 'package:mealora/database/app_database.dart';
 import 'package:mealora/database/migrations/food_catalog_verification.dart';
 import 'package:mealora/database/seeds/food_catalog_seed.dart';
 
+import '../../tool/food_catalog/catalog_dataset.dart';
 import 'test_database.dart';
 
 /// Seed katalog makanan: pengenal tetap, idempoten, provenans lengkap
@@ -23,6 +24,7 @@ void main() {
       'yang sama (task 2.8)', () async {
     final before = await db.select(db.foods).get();
     final idsBefore = before.map((f) => f.id).toSet();
+    final servingsBefore = await db.select(db.foodServings).get();
 
     await seedFoodCatalog(db);
     await seedFoodCatalog(db);
@@ -34,8 +36,8 @@ void main() {
 
     final servingsAfter = await db.select(db.foodServings).get();
     final nutritionAfter = await db.select(db.nutritionValues).get();
-    expect(servingsAfter, hasLength(before.length));
-    expect(nutritionAfter, hasLength(before.length));
+    expect(servingsAfter, hasLength(servingsBefore.length));
+    expect(nutritionAfter, hasLength(servingsBefore.length));
   });
 
   test('katalog lama diselaraskan tanpa menghapus makanan buatan', () async {
@@ -84,7 +86,8 @@ void main() {
         expect(food.sourceType, isNotNull, reason: food.name);
         expect(food.sourceRef, isNotNull, reason: food.name);
         expect(food.sourceVersion, isNotNull, reason: food.name);
-        expect(food.verifiedAt, isNotNull, reason: food.name);
+        // verifiedAt boleh kosong: belum cocok dengan TKPI 2017 (change
+        // 015, task 3.2).
       }
     },
   );
@@ -96,19 +99,31 @@ void main() {
     expect(check.builtInFoodCount, greaterThan(0));
   });
 
-  test(
-    'tidak ada nilai gizi dasar yang dikosongkan pada makanan bawaan',
-    () async {
-      final servings = await db.select(db.foodServings).get();
-      for (final serving in servings) {
-        final nutrition = await (db.select(
-          db.nutritionValues,
-        )..where((t) => t.servingId.equals(serving.id))).getSingle();
-        expect(nutrition.energyKcal, isNotNull, reason: serving.label);
-        expect(nutrition.proteinG, isNotNull, reason: serving.label);
-        expect(nutrition.carbohydrateG, isNotNull, reason: serving.label);
-        expect(nutrition.fatG, isNotNull, reason: serving.label);
+  test('energi makanan bawaan selalu terisi; makro yang tidak dinyatakan '
+      'sumber disimpan kosong, bukan nol (change 015, spec '
+      'food-catalog-quality)', () async {
+    final servings = await db.select(db.foodServings).get();
+    final missingMacro = <String>[];
+    for (final serving in servings) {
+      final nutrition = await (db.select(
+        db.nutritionValues,
+      )..where((t) => t.servingId.equals(serving.id))).getSingle();
+      expect(nutrition.energyKcal, isNotNull, reason: serving.id);
+      if (nutrition.proteinG == null ||
+          nutrition.carbohydrateG == null ||
+          nutrition.fatG == null) {
+        missingMacro.add(serving.foodId);
       }
-    },
-  );
+    }
+    // Makro kosong hanya bila memang kosong di dataset kurasi: kosong di
+    // TKPI 2017, atau nol yang tidak terkonfirmasi (task 3.4, alasan per
+    // item di tool/food_catalog/tkpi2017_review.csv).
+    final dataset = CatalogDataset.load('tool/food_catalog');
+    final expected = {
+      for (final f in dataset.foods)
+        if (f.proteinG == null || f.carbohydrateG == null || f.fatG == null)
+          'food-${f.id}',
+    };
+    expect(missingMacro.toSet(), expected);
+  });
 }

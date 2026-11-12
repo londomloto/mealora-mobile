@@ -1,0 +1,19 @@
+name,alasan,catatan
+Teh manis (seduh),belum ada bentuk siap minum,"Hanya ada teh daun kering; contoh di spec 4.4"
+Teh tawar (seduh),belum ada bentuk siap minum,
+Kopi hitam (seduh),belum ada bentuk siap minum,"Hanya ada kopi bubuk/instan"
+Kopi susu (seduh),belum ada bentuk siap minum,
+Es teh manis,belum ada bentuk siap minum,
+Lontong,tidak ada di katalog,
+Perkedel kentang,tidak ada di katalog,
+Pecel sayur,tidak ada di katalog,
+Sambal,tidak ada di katalog,
+Ikan nila goreng,tidak ada di katalog,
+Ikan tenggiri,tidak ada di katalog,"Hanya ada sebagai bahan pempek"
+Tahu isi,tidak ada di katalog,
+Pepes tahu,tidak ada di katalog,
+Pisang goreng,dinonaktifkan di 3.5 (galat data),"Butuh nilai pengganti dari sumber terukur"
+Bawang merah,dipulihkan dengan TKPI NR007,"Selesai: aktif lagi sebagai Bawang merah segar"
+Bubur nasi,dinonaktifkan di 3.5 (galat data),
+Ubi jalar rebus,dinonaktifkan di 3.5 (galat data),
+Kerang,dipulihkan dengan TKPI GR074,"Selesai: aktif lagi sebagai Kerang segar"

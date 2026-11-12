@@ -2659,6 +2659,84 @@ abstract class AppText {
   /// **'Pilih waktu makan'**
   String get mealTimePickerTitle;
 
+  /// No description provided for @servingEstimateBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'perkiraan'**
+  String get servingEstimateBadge;
+
+  /// No description provided for @servingEstimateSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat takaran ini perkiraan'**
+  String get servingEstimateSemantics;
+
+  /// No description provided for @servingPickerSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{food} · berat setiap takaran ditampilkan'**
+  String servingPickerSubtitle(String food);
+
+  /// No description provided for @servingPickerDefaultTag.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawaan'**
+  String get servingPickerDefaultTag;
+
+  /// No description provided for @servingPickerDirectWeight.
+  ///
+  /// In id, this message translates to:
+  /// **'berat langsung'**
+  String get servingPickerDirectWeight;
+
+  /// No description provided for @servingPickerApproxWeight.
+  ///
+  /// In id, this message translates to:
+  /// **'≈ {weight}'**
+  String servingPickerApproxWeight(String weight);
+
+  /// No description provided for @servingPickerDerivedNote.
+  ///
+  /// In id, this message translates to:
+  /// **'dihitung dari data terukur'**
+  String get servingPickerDerivedNote;
+
+  /// No description provided for @servingPickerWeightEntry.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan berat sendiri ({unit})'**
+  String servingPickerWeightEntry(String unit);
+
+  /// No description provided for @servingPickerEstimateHint.
+  ///
+  /// In id, this message translates to:
+  /// **'\"Perkiraan\" berarti berat takaran diperkirakan dari ukuran umum, belum dari penimbangan resmi. Nilai gizi per 100 g tetap dari TKPI.'**
+  String get servingPickerEstimateHint;
+
+  /// No description provided for @servingDetailWeightServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat sendiri ({unit})'**
+  String servingDetailWeightServing(String unit);
+
+  /// No description provided for @servingDetailWeightLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat yang dimakan'**
+  String get servingDetailWeightLabel;
+
+  /// No description provided for @servingDetailUseServingAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai takaran'**
+  String get servingDetailUseServingAction;
+
+  /// No description provided for @servingDetailWeightInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Berat harus lebih dari 0 {unit}. Catatan belum disimpan.'**
+  String servingDetailWeightInvalid(String unit);
+
   /// No description provided for @quantityDecreaseSemantics.
   ///
   /// In id, this message translates to:
