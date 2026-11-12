@@ -3376,6 +3376,10 @@ class AppTextId extends AppText {
   String get energyNoRecordsYet => 'Belum ada catatan makan di rentang ini.';
 
   @override
+  String get energyNoCompleteDays =>
+      'Belum ada hari dengan energi lengkap untuk dirata-rata.';
+
+  @override
   String get energyCardFooter =>
       'Hari kosong tidak dihitung ke rata-rata. Ketuk untuk detail.';
 

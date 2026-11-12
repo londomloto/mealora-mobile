@@ -88,7 +88,11 @@ class EnergyWeekCard extends ConsumerWidget {
 String energySummaryText(AppText text, EnergyTrend trend) {
   final average = trend.averageKcal;
   if (average == null) {
-    return text.energyNoRecordsYet;
+    // Ada catatan tetapi tidak satu hari pun lengkap energinya (change 021):
+    // hari parsial tidak ikut rata-rata, bukan berarti belum ada catatan.
+    return trend.hasAnyRecord
+        ? text.energyNoCompleteDays
+        : text.energyNoRecordsYet;
   }
   final avg = IdFormat.integer(average);
   if (trend.targetChanged) {

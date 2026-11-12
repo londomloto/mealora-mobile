@@ -5991,6 +5991,12 @@ abstract class AppText {
   /// **'Belum ada catatan makan di rentang ini.'**
   String get energyNoRecordsYet;
 
+  /// No description provided for @energyNoCompleteDays.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada hari dengan energi lengkap untuk dirata-rata.'**
+  String get energyNoCompleteDays;
+
   /// No description provided for @energyCardFooter.
   ///
   /// In id, this message translates to:
